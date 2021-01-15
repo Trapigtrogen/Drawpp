@@ -9,5 +9,8 @@ include_directories(include)
 include_directories(external/glad/include)
 include_directories(external/glfw/include)
 
+option(GLFW_BUILD_EXAMPLES OFF)
+option(GLFW_BUILD_TESTS OFF)
+option(GLFW_BUILD_DOCS OFF)
 add_subdirectory(external/glfw)
 target_link_libraries(${PROJECT_NAME} glfw)
