@@ -1,10 +1,10 @@
-#include <stdio.h>
+#include <tmp_main_header.hpp>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-int main() {
-
+unsigned long create_window()
+{
     glfwInit();
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
@@ -15,9 +15,13 @@ int main() {
     gladLoadGL();
     glfwSwapInterval(1);
 
-    char c = getchar();
+    return reinterpret_cast<unsigned long>(window);
+}
 
-    glfwDestroyWindow(window);
+int destroy_window(unsigned long window)
+{
+    glfwDestroyWindow(reinterpret_cast<GLFWwindow*>(window));
     glfwTerminate();
+
     return 0;
 }
