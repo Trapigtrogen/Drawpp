@@ -1,4 +1,4 @@
-Processing style graphic library for c++ using OpenGL. Support for Windows, Linux and Raspberry Pi 3 upwards
+Processing style graphic library for c++ using OpenGL. Support for Windows and Linux desktops and Raspberry Pi 3 upwards
 
 # Building
 Clone with `git clone git@gitlab.com:Trapigtrogen/graphics-library.git --recursive` to get the dependensies also
