@@ -41,4 +41,4 @@ make
 ```
 \
 \
-The build files will be in graphics-library/bin folder
+The build files will be in graphics-library/build/bin folder
