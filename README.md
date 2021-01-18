@@ -27,7 +27,7 @@ Type following in the terminal:
 ```
 cd <path to graphics-library>
 
-md build
+mkdir build
 cd build
 cmake ..
 make
