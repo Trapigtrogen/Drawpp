@@ -25,7 +25,7 @@ cmake ..
 ## Linux
 
 You need to install your distripution's development packages:
-* __Arch__ `sudo pacman -Sy base-devel --needed`
+* __Arch__ `sudo pacman -Sy base-devel`
 * __Debian__ `sudo apt-get -y install g++ libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev`
 * __Raspberry Pi OS__ `sudo apt-get -y install g++ libglu1-mesa-dev libopenal-dev libxi-dev libxrandr-dev libxinerama-dev libxcursor-dev libxxf86vm-dev libx11-dev libgl1-mesa-dev libqt5webkit5-dev libqt5sensors5-dev qtlocation5-dev libxslt1-dev libsqlite3-dev libgstreamer-plugins-base0.10-dev qt5-default libicu-dev`\
 In addition you might need to change the OpenGL driver from `sudo raspi-config` -> Advanced options -> GL Driver -> GL (Full KMS) OpenGL desktop driver with full KMS
