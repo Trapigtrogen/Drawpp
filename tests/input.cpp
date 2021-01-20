@@ -1,31 +1,31 @@
 #include <drawpp.hpp>
 
 bool showImage = false;
-DImage img;
-
-void setup() {
-	img = loadImage("assets/img.jpg");
-}
 
 void draw() {
-	if (showImage) {
-		image(img, 0, 0);
-	}
+    rect(10, 10, 10, 10);
+
+    if(showImage) {
+        rect(20, 20, 10, 10);
+    }
+    else {
+        rect(10, 10, 10, 10);
+    }
 }
 
 
 void keyPressed() {
-	if (key == CODED) {
-		if (keyCode == ESC) {
-			exit();
-		}
-	}
+    if(key == CODED) {
+        if(keyCode == ESC) {
+            exit();
+        }
+    }
 }
 
 void mousePressed() {
-	showImage = true;
+    showImage = true;
 }
 
 void mouseReleased() {
-	showImage = false;
+    showImage = false;
 }
