@@ -3,12 +3,12 @@
 
 void setup()
 {
-
+    printf("setup");
 }
 
 void draw()
 {
-    
+    printf("draw");
 }
 
 int main() 

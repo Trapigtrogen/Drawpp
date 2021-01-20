@@ -29,3 +29,8 @@ void mousePressed() {
 void mouseReleased() {
     showImage = false;
 }
+
+int main() {
+    runApp();
+    return 0;
+}

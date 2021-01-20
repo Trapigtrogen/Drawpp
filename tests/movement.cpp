@@ -13,3 +13,8 @@ void draw() {
 	rect(0, 0, 10, 10);
 	i++;
 }
+
+int main() {
+	runApp();
+	return 0;
+}

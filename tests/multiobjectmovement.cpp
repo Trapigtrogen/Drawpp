@@ -1,3 +1,5 @@
+#include <drawpp.hpp>
+
 void setup() {
 	size(200, 200);
 }
@@ -15,4 +17,9 @@ void draw() {
 	fill(255, 250, 181);
 	rect(100, 100, 10, 10);
 	i++;
+}
+
+int main() {
+	runApp();
+	return 0;
 }
