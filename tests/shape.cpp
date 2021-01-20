@@ -5,6 +5,6 @@ void setup() {
 }
 
 void draw() {
-	fill(255); // Set fill colour for next shape
+	fill(0, 250, 181); // Set fill colour for next shape
 	rect(50, 50, 10, 10); // Draw. Origin point and size
 }
