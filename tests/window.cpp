@@ -1,12 +1,18 @@
 #include <stdio.h>
 #include <drawpp.hpp>
 
-int main() {
+void setup()
+{
 
-    unsigned long w = create_window();
+}
 
-    char c = getchar();
+void draw()
+{
+    
+}
 
-    destroy_window(w);
+int main() 
+{
+    runApp();
     return 0;
 }
