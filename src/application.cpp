@@ -29,6 +29,30 @@ void Application::draw()
     ::draw();
 }
 
+void Application::size(int width, int height)
+{
+    window_properties.width = width;
+    window_properties.height = height;
+    if(window && window_properties.resizable)
+    {
+        glfwSetWindowSize(window,width,height);
+    }
+}
+
+void Application::setResizable(bool state)
+{
+    window_properties.resizable = state;
+}
+
+void Application::setTitle(const char* title)
+{
+    window_properties.title = title;
+    if(window)
+    {
+        glfwSetWindowTitle(window,title);
+    }
+}
+
 bool Application::init_application()
 {
     setup();
@@ -39,6 +63,7 @@ bool Application::init_application()
         return false;
     }
 
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     window = glfwCreateWindow(window_properties.width, 

@@ -12,6 +12,7 @@ struct WindowProperties
     const char* title = "Drawpp Application";
     int width = 200;
     int height = 200;
+    bool resizable = false;
 };
 
 class Application
@@ -22,9 +23,9 @@ public:
     virtual void setup();
     virtual void draw();
     //virtual void keyPressed();
-    //void size(int width, int height);
-    //void setTitle(const char* title);
-    //void setTitle(std::string title);
+    void size(int width, int height);
+    void setResizable(bool);
+    void setTitle(const char* title);
 
     static Application* GetInstance()
     {
