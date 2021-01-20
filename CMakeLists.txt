@@ -5,7 +5,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(OpenGLGraphicsLibrary)
 
-add_library(${PROJECT_NAME} STATIC src/tmp_main_source.cpp external/glad/src/glad.c)
+add_library(${PROJECT_NAME} STATIC src/drawpp.cpp
+                                   external/glad/src/glad.c
+                                   src/application.cpp)
 set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 include_directories(include)
