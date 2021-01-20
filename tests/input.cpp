@@ -3,7 +3,7 @@
 bool showImage = false;
 DImage img;
 
-int setup() {
+void setup() {
 	img = loadImage("assets/img.jpg");
 }
 

@@ -3,7 +3,7 @@
 DImage bg_img;
 DImage img;
 
-int setup() {
+void setup() {
 	bg_img = loadImage("assets/bg_img.jpg");
 	img = loadImage("assets/img.jpg");
 }

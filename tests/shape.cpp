@@ -1,9 +1,10 @@
 #include <drawpp.hpp>
 
-int setup() {
-	background(255, 255, 255);
+void setup() {
+	size(100, 100);
 }
 
-int draw() {
-	rect();
+void draw() {
+	//rect(x,y,w,h);
+	rect(50,50,10,10);
 }
