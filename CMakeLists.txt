@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.13.4)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project(OpenGLGraphicsLibrary)
 
 add_library(${PROJECT_NAME} STATIC src/tmp_main_source.cpp external/glad/src/glad.c)
