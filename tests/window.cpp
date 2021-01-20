@@ -8,13 +8,13 @@ void setup()
     setResizable(true);
 }
 
-void draw()
+void draw(float)
 {
     size(200,200);
 }
 
 int main() 
 {
-    runApp();
-    return 0;
+    Application app(500,300);
+    return app.run(draw,setup);
 }
