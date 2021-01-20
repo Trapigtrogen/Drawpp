@@ -41,7 +41,10 @@ void Application::size(int width, int height)
 
 void Application::setResizable(bool state)
 {
-    window_properties.resizable = state;
+    if(!window)
+    {
+        window_properties.resizable = state;
+    }
 }
 
 void Application::setTitle(const char* title)
