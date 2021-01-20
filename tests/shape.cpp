@@ -14,6 +14,9 @@ int main() {
 	return 0;
 }
 
+/*
+TEMP IMPLEMENTAITON
+
 void rect(float x, float y, float w, float h) {
 	float vertices[] = {
 		-w/2 + x, h/2 + y, // Vertex 1 (X, Y)
@@ -39,3 +42,4 @@ void triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
 		x3, y3  // Vertex 3 (X, Y)
 	};
 }
+*/
