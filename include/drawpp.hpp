@@ -2,9 +2,10 @@
 #define DPP_H
 #include <application.hpp>
 
-void draw();
-void setup();
-void runApp();
+// Window
+void size(int width, int height);
+void setResizable(bool);
+void setTitle(const char* title);
 
 // Shapes 2D
 void arc(int x, int y, int width, int height, int start, int stop);
