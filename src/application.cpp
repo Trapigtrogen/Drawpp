@@ -2,6 +2,7 @@
 #include <debug.hpp>
 #include <drawpp.hpp>
 #include <window.hpp>
+#include <input.hpp>
 
 Application::Application(int width, int height, const char* title)
 {
@@ -81,6 +82,8 @@ bool Application::init_application()
     {
         return false;
     }
+
+    glfwSetKeyCallback(window->GetHandle(),&Input::keyboard_callback);
     setup_func();
 
     return true;

@@ -12,7 +12,6 @@ void setup()
 void draw(float)
 {
     size(200,200);
-    printf("draw");
 }
 
 int main() 

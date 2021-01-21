@@ -6,7 +6,6 @@
 
 class Window;
 
-
 class Application
 {
 public:
