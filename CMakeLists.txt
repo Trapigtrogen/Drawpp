@@ -29,13 +29,17 @@ if (WIN32)
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     set(LIB_PATH ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.lib)
 else()
-    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/test_binary)
+    file(GENERATE OUTPUT ${CMAKE_BINARY_DIR}/combine.ar CONTENT "CREATE ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a
+ADDLIB $<TARGET_FILE:glfw>
+ADDLIB $<TARGET_FILE:${PROJECT_NAME}_tmp>
+SAVE
+END")
+
     add_custom_target(${PROJECT_NAME} ALL
-                        COMMAND ar -x $<TARGET_FILE:glfw>
-                        COMMAND ar -x $<TARGET_FILE:${PROJECT_NAME}_tmp>
-                        COMMAND ar -qcs ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a *.o *.obj
-                        DEPENDS glfw ${PROJECT_NAME}_tmp
-                        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test_binary)
+                    COMMAND ar -M <combine.ar
+                    COMMAND ar -s ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a
+                    DEPENDS glfw ${PROJECT_NAME}_tmp
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
     set(LIB_PATH ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a)
 endif (WIN32)
 
