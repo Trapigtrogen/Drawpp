@@ -2,9 +2,11 @@ set(CMAKE_CXX_STANDARD 11)
 
 if (NOT MSVC)
     set(CMAKE_EXE_LINKER_FLAGS "-static")
+    link_libraries(${PROJECT_NAME})
+else ()
+    link_libraries(${LIB_PATH})
 endif (NOT MSVC)
 
-link_libraries(${LIB_PATH})
 
 include_directories(include)
 
