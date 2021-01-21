@@ -15,3 +15,8 @@ void setResizable(bool state)
 {
     Application::GetInstance()->setResizable(state);
 }
+
+void exit()
+{
+    Application::GetInstance()->exit();
+}

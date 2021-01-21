@@ -2,6 +2,8 @@
 #define DPP_H
 #include <application.hpp>
 
+void exit();
+
 // Window
 void size(int width, int height);
 void setResizable(bool);

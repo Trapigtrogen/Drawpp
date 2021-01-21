@@ -18,11 +18,9 @@ public:
     void size(int width, int height);
     void setResizable(bool);
     void setTitle(const char* title);
+    void exit();
 
-    static Application* GetInstance()
-    {
-        return instance;
-    }
+    static Application* GetInstance();
 
 private:
     bool init_application();
