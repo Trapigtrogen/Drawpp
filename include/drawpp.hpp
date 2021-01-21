@@ -1,4 +1,4 @@
-
+// Main
 void draw();
 void setup();
 void runApp();
@@ -21,3 +21,16 @@ void line(int x1, int y1, int z1, int x2, int y2, int z2);
 void box(int size);
 void box(int width, int height, int dimension);
 void sphere(int radius);
+
+// Options
+void fill(int rgb);
+void fill(int rgb, int alpha);
+void fill(int r, int g, int b);
+void fill(int r, int g, int b, int alpha);
+
+// Transform
+void rotate(int rad);
+void translate(int x, int y);
+void translate(int x, int y, int z);
+
+// Input
