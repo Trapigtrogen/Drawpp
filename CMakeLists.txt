@@ -5,11 +5,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(OpenGLGraphicsLibrary)
 
-add_library(${PROJECT_NAME} STATIC src/drawpp.cpp
+add_library(${PROJECT_NAME}_tmp STATIC src/drawpp.cpp
                                    external/glad/src/glad.c
                                    src/application.cpp
                                    src/window.cpp)
-set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set_target_properties(${PROJECT_NAME}_tmp PROPERTIES 
+                        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/tmp)
 
 include_directories(include)
 include_directories(external/glad/include)
@@ -19,7 +20,24 @@ option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
 option(GLFW_BUILD_DOCS OFF)
 add_subdirectory(external/glfw)
-target_link_libraries(${PROJECT_NAME} glfw)
+target_link_libraries(${PROJECT_NAME}_tmp glfw)
+
+if (WIN32)
+    add_custom_target(${PROJECT_NAME} ALL
+                        COMMAND lib.exe /OUT:${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.lib $<TARGET_FILE:glfw> $<TARGET_FILE:${PROJECT_NAME}_tmp>
+                        DEPENDS glfw ${PROJECT_NAME}_tmp
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    set(LIB_PATH ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.lib)
+else()
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/test_binary)
+    add_custom_target(${PROJECT_NAME} ALL
+                        COMMAND ar -x $<TARGET_FILE:glfw>
+                        COMMAND ar -x $<TARGET_FILE:${PROJECT_NAME}_tmp>
+                        COMMAND ar -qcs ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a *.o *.obj
+                        DEPENDS glfw ${PROJECT_NAME}_tmp
+                        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test_binary)
+    set(LIB_PATH ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a)
+endif (WIN32)
 
 add_subdirectory(tests)
 add_subdirectory(examples)
