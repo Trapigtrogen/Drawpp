@@ -1,4 +1,7 @@
-// Main
+#ifndef DPP_H
+#define DPP_H
+#include <application.hpp>
+
 void draw();
 void setup();
 void runApp();

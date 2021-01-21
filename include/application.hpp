@@ -1,51 +1,39 @@
 #ifndef DPP_APPLICATION_H
 #define DPP_APPLICATION_H
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
 #include <cstdint>
-#include <string>
+#include <functional>
 
-struct WindowProperties
-{
-    const char* title = "Drawpp Application";
-    int width = 200;
-    int height = 200;
-};
+class Window;
+
 
 class Application
 {
 public:
-    void start_application();
+    Application(int width = 200, int height = 200, const char* title = "Title");
 
-    virtual void setup();
-    virtual void draw();
+    int run(std::function<void(float)> draw, std::function<void()> setup = [](){}, std::function<void()> cleanup = [](){});
+
     //virtual void keyPressed();
-    //void size(int width, int height);
-    //void setTitle(const char* title);
-    //void setTitle(std::string title);
+    void size(int width, int height);
+    void setResizable(bool);
+    void setTitle(const char* title);
 
     static Application* GetInstance()
     {
         return instance;
     }
 
-    static void InitInstance()
-    {
-        if(instance == nullptr)
-        {
-            instance = new Application();
-        }
-    }
-
 private:
     bool init_application();
     void cleanup_application();
     
-    GLFWwindow* window = nullptr;
-    WindowProperties window_properties;
-    bool quit_flag = false; 
+    Window* window;
+    bool quit_flag = false;
+
+    std::function<void(float)> draw_func;
+    std::function<void()> setup_func;
+    std::function<void()> cleanup_func;
 
     static Application* instance;
 };

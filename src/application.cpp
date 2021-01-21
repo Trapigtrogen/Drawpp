@@ -1,72 +1,96 @@
 #include <application.hpp>
 #include <debug.hpp>
 #include <drawpp.hpp>
+#include <window.hpp>
 
-void Application::start_application()
+Application::Application(int width, int height, const char* title)
 {
+    if(instance == nullptr)
+    {
+        instance = this;
+    }
+    else
+    {
+        dbg::error("Only one Application instance is allowed");
+        exit(1);
+    }
+    window = new Window();
+
+    window->properties.width = width>-1?width:window->properties.width;
+    window->properties.height = height>-1?height:window->properties.height;
+    window->properties.title = title;
+
+}
+
+int Application::run(std::function<void(float)> draw,
+                      std::function<void()> setup,
+                      std::function<void()> cleanup)
+{
+    draw_func = draw;
+    setup_func = setup;
+    cleanup_func = cleanup;
+
     if(!init_application())
     {
-        return;
+        return 1;
     }
 
     while(!quit_flag)
     {
         glfwPollEvents();
 
-        draw();
+        draw_func(1);
     }
 
     cleanup_application();
+
+    return 0;
 }
 
-void Application::setup()
+
+void Application::size(int width, int height)
 {
-    ::setup();
+    window->properties.width = width>-1?width:window->properties.width;
+    window->properties.height = height>-1?height:window->properties.height;
+    if(window && window->properties.resizable)
+    {
+        glfwSetWindowSize(window->GetHandle(),width,height);
+    }
 }
 
-void Application::draw()
+void Application::setResizable(bool state)
 {
-    ::draw();
+    if(!window)
+    {
+        window->properties.resizable = state;
+    }
+}
+
+void Application::setTitle(const char* title)
+{
+    window->properties.title = title;
+    if(window)
+    {
+        glfwSetWindowTitle(window->GetHandle(),title);
+    }
 }
 
 bool Application::init_application()
 {
-    setup();
-
-    if(glfwInit() == GLFW_FALSE)
+    if(!window->Init())
     {
-        dbg::error("glfwInit failed");
         return false;
     }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    window = glfwCreateWindow(window_properties.width, 
-                              window_properties.height, 
-                              window_properties.title, 
-                              NULL, NULL);
-
-    if(!window)
-    {
-        dbg::error("Window creation failed");
-        return false;
-    }
-
-    glfwMakeContextCurrent(window);
-    
-    if(!gladLoadGL())
-    {
-        dbg::error("gladLoadGL failed");
-        return false;
-    }
+    setup_func();
 
     return true;
 }
 
 void Application::cleanup_application()
 {
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    cleanup_func();
+    window->Cleanup();
+    delete window;
 }
 
 Application* Application::instance = nullptr;

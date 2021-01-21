@@ -3,16 +3,20 @@
 
 void setup()
 {
+    size(500,500);
+    setTitle("Test title");
+    setResizable(true);
     printf("setup");
 }
 
-void draw()
+void draw(float)
 {
+    size(200,200);
     printf("draw");
 }
 
 int main() 
 {
-    runApp();
-    return 0;
+    Application app(500,300);
+    return app.run(draw,setup);
 }
