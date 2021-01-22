@@ -85,15 +85,24 @@ bool Application::init_application()
     {
         return false;
     }
-    setup_func();
+
+    if(setup_func)
+    {
+        setup_func();
+    }
 
     return true;
 }
 
 void Application::cleanup_application()
 {
-    cleanup_func();
+    if(cleanup_func)
+    {
+        cleanup_func();
+    }
+
     window->Cleanup();
+    
     delete window;
 }
 
