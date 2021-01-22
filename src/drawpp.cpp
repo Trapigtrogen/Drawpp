@@ -15,3 +15,8 @@ void setResizable(bool state)
 {
     Application::GetInstance()->setResizable(state);
 }
+
+// Image
+DImage loadImage(const std::string& fileName) {
+    return DImage::loadImage(fileName);
+}

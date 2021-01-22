@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <functional>
 
+#include <image.hpp>
+
 class Window;
 
 
