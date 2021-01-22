@@ -13,6 +13,9 @@ public:
 
     int run(std::function<void(float)> draw, std::function<void()> setup = [](){}, std::function<void()> cleanup = [](){});
 
+    void setKeyPressed(std::function<void()>);
+    void setKeyReleased(std::function<void()>);
+
     //virtual void keyPressed();
     void size(int width, int height);
     void setResizable(bool);

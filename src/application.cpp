@@ -48,6 +48,15 @@ int Application::run(std::function<void(float)> draw,
     return 0;
 }
 
+void Application::setKeyPressed(std::function<void()> fun)
+{
+    Input::keyPressed_func = fun;
+}
+void Application::setKeyReleased(std::function<void()> fun)
+{
+    Input::keyReleased_func = fun;
+}
+
 
 void Application::size(int width, int height)
 {
