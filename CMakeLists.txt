@@ -53,5 +53,20 @@ else ()
 #    set(LIB_PATH ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a)
 endif (MSVC)
 
+find_package(Doxygen)
+option(GEN_DOCS "Generate documentation with doxygen" ${DOXYGEN_FOUND})
+
+if (GEN_DOCS)
+    if(NOT DOXYGEN_FOUND)
+        message(SEND_ERROR "Doxygen executable not found")
+    else ()
+        set(doxyfile ${CMAKE_BINARY_DIR}/doxyfile)
+        set(DOXYGEN_OUTPUT_DIRECTORY ./docs)
+
+        doxygen_add_docs(doxygen ALL
+                    ${CMAKE_SOURCE_DIR}/include)
+    endif (NOT DOXYGEN_FOUND)
+endif (GEN_DOCS)
+
 add_subdirectory(tests)
 add_subdirectory(examples)

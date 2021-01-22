@@ -6,7 +6,7 @@
 
 class Window;
 
-
+///Application class is the core of the program
 class Application
 {
 public:
