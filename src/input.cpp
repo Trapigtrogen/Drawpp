@@ -12,19 +12,24 @@ void Input::keyboard_callback(GLFWwindow* window, int keyc, int scancode, int ac
     {
         switch (keyc)
         {
-            case GLFW_KEY_BACKSPACE: keyCode = 0x8, key = keyCode; break;
-            case GLFW_KEY_TAB:       keyCode = 0x9, key = keyCode; break;
-            case GLFW_KEY_ENTER:     keyCode = 0xA, key = keyCode; break;
-            case GLFW_KEY_ESCAPE:    keyCode = 0x1B, key = keyCode; break;
-            case GLFW_KEY_DELETE:    keyCode = 0x7F, key = keyCode; break;
-            default:                 keyCode = keyc, key = -1; break;
+            //these keys should be within ascii range
+            case GLFW_KEY_BACKSPACE: keyCode = VK_BACKSPACE, key = keyCode; break;
+            case GLFW_KEY_TAB:       keyCode = VK_TAB, key = keyCode; break;
+            case GLFW_KEY_ENTER:     keyCode = VK_ENTER, key = keyCode; break;
+            case GLFW_KEY_ESCAPE:    keyCode = VK_ESC, key = keyCode; break;
+            case GLFW_KEY_DELETE:    keyCode = VK_DELETE, key = keyCode; break;
+
+            //rest of keys -> coded
+            default:                 keyCode = keyc, key = CODED; break;
         }
     }
+    //convert alphabeticals to lower case
     else if(keyc > 0x40 && keyc < 0x5B)
     {
         keyCode = keyc+32;
         key = keyCode;
     }
+    //rest are ascii
     else
     {
         keyCode = keyc;
