@@ -2,7 +2,7 @@
 
 bool showImage = false;
 
-void draw() {
+void draw(float d) {
     rect(10, 10, 10, 10);
 
     if(showImage) {
@@ -13,12 +13,9 @@ void draw() {
     }
 }
 
-
 void keyPressed() {
-    if(key == CODED) {
-        if(keyCode == ESC) {
-            exit();
-        }
+    if(key == VK_ESC) {
+        exit();
     }
 }
 
@@ -31,6 +28,7 @@ void mouseReleased() {
 }
 
 int main() {
-    runApp();
-    return 0;
+    Application app(500,300);
+    app.setKeyPressed(keyPressed);
+    return app.run(draw);
 }
