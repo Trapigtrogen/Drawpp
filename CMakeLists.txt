@@ -60,6 +60,7 @@ if (GEN_DOCS)
     if(NOT DOXYGEN_FOUND)
         message(SEND_ERROR "Doxygen executable not found")
     else ()
+        set(DOXYGEN_ALWAYS_DETAILED_SEC YES)
         set(doxyfile ${CMAKE_BINARY_DIR}/doxyfile)
         set(DOXYGEN_OUTPUT_DIRECTORY ./docs)
 
