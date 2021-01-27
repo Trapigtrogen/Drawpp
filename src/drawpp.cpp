@@ -17,6 +17,22 @@ void setResizable(bool state)
 }
 
 // Image
-DImage loadImage(const std::string& fileName) {
+DImage loadImage(const std::string& fileName) 
+{
     return DImage::loadImage(fileName);
+}
+
+void image(DImage image, int x, int y)
+{
+    image.drawImage(x, y, image.width, image.height);
+}
+
+void image(DImage image, int x, int y, int width, int height)
+{
+    image.drawImage(x, y, width, height);
+}
+
+void background(DImage image)
+{
+    // DEBUG TODO: Set background to image.pixels
 }

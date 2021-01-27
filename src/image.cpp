@@ -6,26 +6,61 @@
 
 DImage::~DImage() 
 {
-	printf("destructor\n");
-	//delete pixels;
-	//glDeleteTextures(1, &m_texture);
+	stbi_image_free(pixels);
 }
 
 DImage::DImage()
 {
-	printf("constructor\n");
-	pixels = new unsigned char;
+	pixels = new unsigned char[0];
+	//glDeleteTextures(1, &m_texture);
 }
 
-DImage::DImage(const DImage&& other):pixels(other.pixels), m_texture(other.m_texture)
+DImage::DImage(unsigned char* _pixels, GLuint _texture)
 {
-	printf("move constructor\n");
+	pixels = _pixels;
+	m_texture = _texture;
 }
 
-void DImage::operator=(const DImage&& other)
+DImage::DImage(const DImage& other)
 {
-	this->pixels = other.pixels;
-	this->m_texture = other.m_texture;
+	pixels = new unsigned char[strlen((char*)other.pixels)];
+	std::copy(other.pixels, other.pixels + strlen((char*)other.pixels), pixels);
+	m_texture = other.m_texture;
+	height = other.height;
+	width = other.width;
+}
+
+DImage::DImage(DImage&& other)
+{
+	pixels = other.pixels;
+	m_texture = other.m_texture;
+	height = other.height;
+	width = other.width;
+
+	other.pixels = nullptr;
+	other.m_texture = -1;
+	other.height = 0;
+	other.width = 0;
+}
+
+DImage& DImage::operator=(DImage&& other)
+{
+	if(this != &other) 
+	{
+		delete[] pixels;
+
+		pixels = other.pixels;
+		m_texture = other.m_texture;
+		height = other.height;
+		width = other.width;
+
+		other.pixels = nullptr;
+		other.m_texture = -1;
+		other.height = 0;
+		other.width = 0;
+	}
+
+	return *this;
 }
 
 void DImage::bind(unsigned int unit)
@@ -47,25 +82,34 @@ DImage DImage::loadImage(const std::string& fileName)
 	glGenTextures(1, &m_texture);
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_NEAREST);
 
-	glTextureParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTextureParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
-	DImage tmpImage;
-	tmpImage.pixels = pixels;
-	tmpImage.m_texture = m_texture;
+	return DImage(pixels, m_texture);
 
-	stbi_image_free(pixels);
-
-	return tmpImage;
 }
 
-void image(DImage image, int x, int y)
-{
-	//bind(0);
+void DImage::drawImage(int x, int y, unsigned int w, unsigned int h) {
+	bind(m_texture-1);
 	// Debug todo: Draw image
+	
+	// Draw the triangle !
+	glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+	glDisableVertexAttribArray(0);
+
+}
+
+void DImage::background(DImage* image) 
+{
+
+}
+
+void DImage::imageMode(ImageMode mode)
+{
+
 }

@@ -35,6 +35,8 @@ void fill(int r, int g, int b, int alpha);
 // Image
 DImage loadImage(const std::string& fileName);
 void image(DImage image, int x, int y);
+void image(DImage image, int x, int y, int width, int height);
+void background(DImage image);
 
 // Transform
 void rotate(int rad);
