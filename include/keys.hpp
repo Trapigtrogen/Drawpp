@@ -127,10 +127,10 @@ enum KeyID
     RIGHT   = 0xFF1,
     CENTER  = 0xFF2,
     MOUSE_4 = 0xFF3,
-    MOUSE_6 = 0xFF4,
-    MOUSE_7 = 0xFF5,
-    MOUSE_8 = 0xFF6,
-    MOUSE_9 = 0xFF7,
+    MOUSE_5 = 0xFF4,
+    MOUSE_6 = 0xFF5,
+    MOUSE_7 = 0xFF6,
+    MOUSE_8 = 0xFF7,
 };
 
 
