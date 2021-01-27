@@ -12,6 +12,8 @@ public:
     struct WindowProperties
     {
         const char* title = "Drawpp Application";
+        int width_hint = 200;
+        int height_hint = 200;
         int width = 200;
         int height = 200;
         bool resizable = false;
