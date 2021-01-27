@@ -17,8 +17,8 @@ Application::Application(int width, int height, const char* title)
     }
     window = new Window();
 
-    window->properties.width = width>-1?width:window->properties.width;
-    window->properties.height = height>-1?height:window->properties.height;
+    window->properties.width_hint = width>-1?width:window->properties.width_hint;
+    window->properties.height_hint = height>-1?height:window->properties.height_hint;
     window->properties.title = title;
 
 }
@@ -52,18 +52,52 @@ void Application::setKeyPressed(std::function<void()> fun)
 {
     Input::keyPressed_func = fun;
 }
+
 void Application::setKeyReleased(std::function<void()> fun)
 {
     Input::keyReleased_func = fun;
 }
 
+void Application::setMouseClicked(std::function<void()> fun)
+{
+    Input::mouseClicked_func = fun;
+}
+
+void Application::setMousePressed(std::function<void()> fun)
+{
+    Input::mousePressed_func = fun;
+}
+
+void Application::setMouseReleased(std::function<void()> fun)
+{
+    Input::mouseReleased_func = fun;
+}
+
+void Application::setMouseWheel(std::function<void(float)> fun)
+{
+    Input::mouseWheel_func = fun;
+}
+
+void Application::setMouseMoved(std::function<void()> fun)
+{
+    Input::mouseMoved_func = fun;
+}
+
+void Application::setMouseDragged(std::function<void()> fun)
+{
+    Input::mouseDragged_func = fun;
+}
+
 
 void Application::size(int width, int height)
 {
-    window->properties.width = width>-1?width:window->properties.width;
-    window->properties.height = height>-1?height:window->properties.height;
+    window->properties.width_hint = width>-1?width:window->properties.width_hint;
+    window->properties.height_hint = height>-1?height:window->properties.height_hint;
+    
     if(window && window->properties.resizable)
     {
+        window->properties.width    = window->properties.width_hint;
+        window->properties.height   = window->properties.height_hint;
         glfwSetWindowSize(window->GetHandle(),width,height);
     }
 }
@@ -92,7 +126,11 @@ bool Application::init_application()
         return false;
     }
 
-    glfwSetKeyCallback(window->GetHandle(),&Input::keyboard_callback);
+    glfwSetKeyCallback(         window->GetHandle(),&Input::keyboard_callback);
+    glfwSetMouseButtonCallback( window->GetHandle(),&Input::mousebtn_callback);
+    glfwSetScrollCallback(      window->GetHandle(),&Input::mousewhl_callback);
+    glfwSetCursorPosCallback(   window->GetHandle(),&Input::mousemov_callback);
+
     setup_func();
 
     return true;

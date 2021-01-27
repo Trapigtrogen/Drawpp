@@ -122,6 +122,16 @@ enum KeyID
     VK_F23  = 0x138,
     VK_F24  = 0x139,
     VK_F25  = 0x13A,
+
+    LEFT    = 0xFF0,
+    RIGHT   = 0xFF1,
+    CENTER  = 0xFF2,
+    MOUSE_4 = 0xFF3,
+    MOUSE_6 = 0xFF4,
+    MOUSE_7 = 0xFF5,
+    MOUSE_8 = 0xFF6,
+    MOUSE_9 = 0xFF7,
 };
+
 
 #endif

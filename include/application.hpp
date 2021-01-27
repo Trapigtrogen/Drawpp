@@ -16,6 +16,13 @@ public:
     void setKeyPressed(std::function<void()>);
     void setKeyReleased(std::function<void()>);
 
+    void setMouseClicked(std::function<void()>);
+    void setMousePressed(std::function<void()>);
+    void setMouseReleased(std::function<void()>);
+    void setMouseWheel(std::function<void(float)>);
+    void setMouseMoved(std::function<void()>);
+    void setMouseDragged(std::function<void()>);
+
     //virtual void keyPressed();
     void size(int width, int height);
     void setResizable(bool);

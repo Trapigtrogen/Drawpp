@@ -6,6 +6,14 @@
 char key = '\0';
 int keyCode;
 
+int mouseButton = 0;
+bool mousePressed = false;
+
+int mouseX = 0;
+int mouseY = 0;
+int pmouseX = 0;
+int pmouseY = 0;
+
 void Input::keyboard_callback(GLFWwindow* window, int keyc, int scancode, int action, int mods)
 {
     if((unsigned)keyc > 0x80)
@@ -46,5 +54,76 @@ void Input::keyboard_callback(GLFWwindow* window, int keyc, int scancode, int ac
     }
 }
 
+void Input::mousebtn_callback(GLFWwindow* window,int button, int action, int mods)
+{
+    mouseButton = button + KeyID::LEFT;
+
+    if(action == GLFW_PRESS)
+    {
+        mouseBtnStates[button] = true;
+
+        if(mousePressed_func)
+        {
+            mousePressed_func();
+        }
+
+        mouseBtnCount += 1;
+    }
+    else if(action == GLFW_RELEASE)
+    {
+        bool prev = mouseBtnStates[button];
+        mouseBtnStates[button] = false;
+
+        if(prev && mouseClicked_func)
+        {
+            mouseClicked_func();
+        }
+        
+        if(mouseReleased_func)
+        {
+            mouseReleased_func();
+        }
+
+        mouseBtnCount -= 1;
+        mousePressed = mouseBtnCount > 0;
+    }
+}
+
+void Input::mousewhl_callback(GLFWwindow* window,double xoffset, double yoffset)
+{
+    if(mouseWheel_func)
+    {
+        mouseWheel_func(yoffset);
+    }
+}
+
+void Input::mousemov_callback(GLFWwindow* window,double xpos,double ypos)
+{
+    pmouseX = mouseX;
+    pmouseY = mouseY;
+
+    mouseX = (int)xpos;
+    mouseY = (int)ypos;
+
+    if(mouseBtnCount > 0 && mouseDragged_func)
+    {
+        mouseDragged_func();
+    }
+    else if(mouseBtnCount == 0 && mouseMoved_func)
+    {
+        mouseMoved_func();
+    }
+}
+
 std::function<void()> Input::keyPressed_func = nullptr;
 std::function<void()> Input::keyReleased_func = nullptr;
+
+std::function<void()> Input::mouseClicked_func = nullptr;
+std::function<void()> Input::mousePressed_func = nullptr;
+std::function<void()> Input::mouseReleased_func = nullptr;
+std::function<void(float)> Input::mouseWheel_func = nullptr;
+std::function<void()> Input::mouseMoved_func = nullptr;
+std::function<void()> Input::mouseDragged_func = nullptr;
+
+bool Input::mouseBtnStates[8] = {false};
+int Input::mouseBtnCount = 0;
