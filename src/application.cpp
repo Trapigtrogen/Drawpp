@@ -12,14 +12,13 @@ Application::Application(int width, int height, const char* title)
     else
     {
         dbg::error("Only one Application instance is allowed");
-        exit(1);
+        ::exit(1);
     }
     window = new Window();
 
     window->properties.width = width>-1?width:window->properties.width;
     window->properties.height = height>-1?height:window->properties.height;
     window->properties.title = title;
-
 }
 
 int Application::run(std::function<void(float)> draw,
@@ -75,22 +74,41 @@ void Application::setTitle(const char* title)
     }
 }
 
+void Application::exit()
+{
+    quit_flag = true;
+}
+
 bool Application::init_application()
 {
     if(!window->Init())
     {
         return false;
     }
-    setup_func();
+
+    if(setup_func)
+    {
+        setup_func();
+    }
 
     return true;
 }
 
 void Application::cleanup_application()
 {
-    cleanup_func();
+    if(cleanup_func)
+    {
+        cleanup_func();
+    }
+
     window->Cleanup();
+    
     delete window;
+}
+
+Application* Application::GetInstance()
+{
+    return instance;
 }
 
 Application* Application::instance = nullptr;
