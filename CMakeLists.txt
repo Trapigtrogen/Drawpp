@@ -16,7 +16,7 @@ endif (MSVC)
 add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    external/glad/src/glad.c
                                    src/application.cpp
-                                   src/input.cpp)
+                                   src/input.cpp
                                    src/window.cpp)
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
