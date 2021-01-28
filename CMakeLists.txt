@@ -17,7 +17,8 @@ add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    external/glad/src/glad.c
                                    src/application.cpp
                                    src/input.cpp
-                                   src/window.cpp)
+                                   src/window.cpp
+                                   src/random.cpp)
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 
