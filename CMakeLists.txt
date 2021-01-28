@@ -9,6 +9,8 @@ add_library(${PROJECT_NAME} STATIC src/drawpp.cpp
                                    external/glad/src/glad.c
                                    src/application.cpp
                                    src/window.cpp
+                                   src/shader.cpp
+                                   src/primitives.cpp
                                    src/image.cpp)
 set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
