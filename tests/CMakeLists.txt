@@ -21,7 +21,7 @@ add_executable(test_multiobjectmovement multiobjectmovement.cpp)
 
 if (MSVC)
     add_dependencies(test_window ${PROJECT_NAME})
-    add_dependencies(test_image ${PROJECT_NAME})
+    add_dependencies(test_textures ${PROJECT_NAME})
     add_dependencies(test_shape ${PROJECT_NAME})
     add_dependencies(test_line ${PROJECT_NAME})
     add_dependencies(test_background ${PROJECT_NAME})

@@ -6,6 +6,7 @@
 #include <string>
 #include <debug.hpp>
 
+///  DImage is an object that textures can be loaded to from image or pixel set
 class DImage
 {
 public:
