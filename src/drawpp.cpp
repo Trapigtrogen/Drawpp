@@ -87,7 +87,7 @@ int year()
     return Time::year();
 }
 
-void Reset()
+void timeReset()
 {
     return Time::Reset();
 }

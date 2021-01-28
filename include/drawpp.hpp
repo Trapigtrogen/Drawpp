@@ -66,6 +66,6 @@ int hour();
 int day();
 int month();
 int year();
-void Reset();
+void timeReset();
 
 #endif
