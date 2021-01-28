@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <vector>
 
+class Random;
+
 struct DVector
 {
     ///\brief All values are initialized to zero
@@ -42,12 +44,44 @@ struct DVector
     DVector& set(const DVector& v);
 
 
-    //need random 
-    //static DVector random2D();
-    //static DVector random2D(DVector& target);
+    ///\brief Generate a random direction vector in xy plane
+    ///\return DVector
+    static DVector random2D();
 
-    //static DVector random3D();
-    //static DVector random3D(DVector& target);
+
+    ///\brief Generate a random direction vector in xy plane using \p gen
+    ///\return DVector
+    static DVector random2D(Random& gen);
+
+
+    ///\brief Generate a random direction vector in xy plane, and assing result to target
+    ///\return Reference to target
+    static DVector& random2D(DVector& target);
+
+
+    ///\brief Generate a random direction vector in xy plane using \p gen, and assing result to target
+    ///\return Reference to target
+    static DVector& random2D(DVector& target, Random& gen);
+
+
+    ///\brief Generate a random direction vector
+    ///\return DVector
+    static DVector random3D();
+
+
+    ///\brief Generate a random direction vector using \p gen
+    ///\return DVector
+    static DVector random3D(Random& gen);
+
+
+    ///\brief Generate a random direction vector, and assing result to target
+    ///\return Reference to target
+    static DVector& random3D(DVector& target);
+
+
+    ///\brief Generate a random direction vector using \p gen, and assing result to target
+    ///\return Reference to target
+    static DVector& random3D(DVector& target, Random& gen);
 
 
     ///\brief Get a direction vector from radians
