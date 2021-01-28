@@ -6,6 +6,7 @@ void setup()
     size(500,500);
     setTitle("Test title");
     setResizable(true);
+    printf("setup");
 }
 
 void draw(float)

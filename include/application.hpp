@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <random.hpp>
 
 class Window;
 
@@ -14,15 +15,25 @@ public:
 
     int run(std::function<void(float)> draw, std::function<void()> setup = [](){}, std::function<void()> cleanup = [](){});
 
+    void setKeyPressed(std::function<void()>);
+    void setKeyReleased(std::function<void()>);
+
+    void setMouseClicked(std::function<void()>);
+    void setMousePressed(std::function<void()>);
+    void setMouseReleased(std::function<void()>);
+    void setMouseWheel(std::function<void(float)>);
+    void setMouseMoved(std::function<void()>);
+    void setMouseDragged(std::function<void()>);
+
     //virtual void keyPressed();
     void size(int width, int height);
     void setResizable(bool);
     void setTitle(const char* title);
+    void exit();
 
-    static Application* GetInstance()
-    {
-        return instance;
-    }
+    static Application* GetInstance();
+
+    Random random;
 
 private:
     bool init_application();

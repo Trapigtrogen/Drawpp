@@ -41,4 +41,5 @@ make
 ```
 \
 \
-The build files will be in graphics-library/build/bin folder
+The build tests and examples will be in graphics-library/build/bin folder\
+And library in graphics-library/build/lib folder
