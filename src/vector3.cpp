@@ -1,5 +1,6 @@
 #include <vector3.hpp>
 #include <cmath>
+#include <application.hpp>
 
 DVector::DVector():x(0),y(0),z(0){}
 DVector::DVector(float n):x(n),y(n),z(n){}
@@ -30,6 +31,55 @@ DVector& DVector::set(const DVector& v)
     return *this;
 }
 
+DVector DVector::random2D()
+{
+    return random2D(Application::GetInstance()->random);
+}
+
+DVector DVector::random2D(Random& gen)
+{
+    DVector res;
+    return random2D(res,Application::GetInstance()->random);
+}
+
+DVector& DVector::random2D(DVector& target)
+{
+    return random2D(target,Application::GetInstance()->random);
+}
+
+///TODO: replace high with 2pi constant once it exists
+DVector& DVector::random2D(DVector& target, Random& gen)
+{
+    float angle = gen.random() * 6.283185307179f;
+
+    return target.set(fromAngle(angle));
+}
+
+DVector DVector::random3D()
+{
+    return random3D(Application::GetInstance()->random);
+}
+
+DVector DVector::random3D(Random& gen)
+{
+    DVector res;
+    return random3D(res,Application::GetInstance()->random);
+}
+
+DVector& DVector::random3D(DVector& target)
+{
+    return random3D(target,Application::GetInstance()->random);
+}
+
+///TODO: replace high with 2pi constant once it exists
+DVector& DVector::random3D(DVector& target, Random& gen)
+{
+    float angle = gen.randomf(0.0f,6.283185307179f);
+    float _z = gen.randomf(-1.0f, 1.0f);
+    float p = std::sqrt(1 - _z*_z);
+
+    return target.set(std::cos(angle) * p, std::sin(angle) * p, _z);
+}
 
 DVector DVector::fromAngle(float angle)
 {
