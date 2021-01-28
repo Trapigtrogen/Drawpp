@@ -1,6 +1,9 @@
 #ifndef DPP_H
 #define DPP_H
 #include <application.hpp>
+#include <keys.hpp>
+
+void exit();
 
 // Window
 void size(int width, int height);
@@ -44,6 +47,14 @@ void translate(int x, int y);
 void translate(int x, int y, int z);
 
 // Input
+extern char key;
+extern int keyCode;
+extern int mouseButton;
+
+extern int mouseX;
+extern int mouseY;
+extern int pmouseX;
+extern int pmouseY;
 
 
 #endif

@@ -9,6 +9,9 @@ bool Window::Init()
         return false;
     }
 
+    properties.width    = properties.width_hint;
+    properties.height   = properties.height_hint;
+
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
