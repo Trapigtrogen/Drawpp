@@ -50,5 +50,12 @@ extern int mouseY;
 extern int pmouseX;
 extern int pmouseY;
 
+// Random
+void randomSeed(int seed);
+int random(int high);
+int random(int low, int high);
+float random();
+float randomf(float low, float high);
+float randomGaussian();
 
 #endif

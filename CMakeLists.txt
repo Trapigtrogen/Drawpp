@@ -18,7 +18,8 @@ add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    src/application.cpp
                                    src/input.cpp
                                    src/window.cpp
-                                   src/vector3.cpp)
+                                   src/vector3.cpp
+                                   src/random.cpp)
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 

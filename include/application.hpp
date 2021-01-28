@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <random.hpp>
 
 class Window;
 
@@ -31,6 +32,8 @@ public:
     void exit();
 
     static Application* GetInstance();
+
+    Random random;
 
 private:
     bool init_application();
