@@ -58,4 +58,14 @@ float random();
 float randomf(float low, float high);
 float randomGaussian();
 
+//Time
+long long millis();
+int second();
+int minute();
+int hour();
+int day();
+int month();
+int year();
+void Reset();
+
 #endif

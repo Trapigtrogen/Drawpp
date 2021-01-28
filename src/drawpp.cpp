@@ -1,5 +1,6 @@
 #include <application.hpp>
 #include <drawpp.hpp>
+#include <time.hpp>
 
 void size(int width, int height)
 {
@@ -49,4 +50,44 @@ float randomf(float low, float high)
 float randomGaussian()
 {
     return Application::GetInstance()->random.randomGaussian();
+}
+
+long long millis()
+{
+    return Time::millis();
+}
+
+int second()
+{
+    return Time::second();
+}
+
+int minute()
+{
+    return Time::minute();
+}
+
+int hour()
+{
+    return Time::hour();
+}
+
+int day()
+{
+    return Time::day();
+}
+
+int month()
+{
+    return Time::month();
+}
+
+int year()
+{
+    return Time::year();
+}
+
+void Reset()
+{
+    return Time::Reset();
 }

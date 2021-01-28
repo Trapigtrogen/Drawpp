@@ -3,6 +3,7 @@
 #include <drawpp.hpp>
 #include <window.hpp>
 #include <input.hpp>
+#include <time.hpp>
 
 Application::Application(int width, int height, const char* title)
 {
@@ -134,6 +135,8 @@ bool Application::init_application()
     glfwSetMouseButtonCallback( window->GetHandle(),&Input::mousebtn_callback);
     glfwSetScrollCallback(      window->GetHandle(),&Input::mousewhl_callback);
     glfwSetCursorPosCallback(   window->GetHandle(),&Input::mousemov_callback);
+
+    Time::Reset();
 
     if(setup_func)
     {
