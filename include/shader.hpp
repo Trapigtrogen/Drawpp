@@ -21,22 +21,19 @@ public:
 	int getId() { return id; }
 
 private:
-    int loadShaderFile(const char* filename, char** ShaderSource, GLint* len);
-    unsigned int compileShader(unsigned int shader_type, char* shader_source);
+    std::string loadShaderFile(const char* filename);
+    GLuint compileShader(unsigned int shader_type, const char* shader_source);
     void createShaderProgram();
 
-    unsigned long getFileLength(std::ifstream& file);
+    std::streampos getFileLength(std::ifstream& file);
 
-	unsigned int id;
+    GLuint id;
 
-    GLuint vertexShaderObject;
-    GLuint fragmentShaderObject;
+    GLuint vertexShader;
+    GLuint fragmentShader;
 
-    char* shaderVSrc;
-    char* shaderFSrc;
-
-    GLint shaderVLen;
-    GLint shaderFLen;
+    std::string shaderVSrc;
+    std::string shaderFSrc;
 
     const char* defaultVertexSource = "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"

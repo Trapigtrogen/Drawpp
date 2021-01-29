@@ -5,6 +5,7 @@
 #include <functional>
 
 #include <image.hpp>
+#include <shader.hpp>
 
 class Window;
 
