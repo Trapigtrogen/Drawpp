@@ -6,6 +6,9 @@
 #include <random.hpp>
 #include <graphics.hpp>
 
+#include <image.hpp>
+#include <shader.hpp>
+
 class Window;
 
 ///Application class is the core of the program

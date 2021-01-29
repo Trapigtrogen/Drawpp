@@ -35,6 +35,17 @@ void fill(int rgb, int alpha);
 void fill(int r, int g, int b);
 void fill(int r, int g, int b, int alpha);
 
+// Image
+DImage loadImage(const std::string& fileName);
+void image(DImage image, int x, int y);
+void image(DImage image, int x, int y, int width, int height);
+void background(DImage image);
+
+// Shader
+Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader);
+Shader loadShadersFromString(const char* vertexShader, const char* fregmentShader);
+Shader loadShadersDefault();
+
 // Transform
 void rotate(int rad);
 void translate(int x, int y);
