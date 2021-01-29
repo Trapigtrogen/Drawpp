@@ -5,6 +5,11 @@
 #include <input.hpp>
 #include <chrono>
 
+void windowclose_cb(GLFWwindow* window)
+{
+    Application::GetInstance()->exit();
+}
+
 Application::Application(int width, int height, const char* title)
 {
     if(instance == nullptr)
@@ -139,6 +144,7 @@ bool Application::init_application()
     glfwSetMouseButtonCallback( window->GetHandle(),&Input::mousebtn_callback);
     glfwSetScrollCallback(      window->GetHandle(),&Input::mousewhl_callback);
     glfwSetCursorPosCallback(   window->GetHandle(),&Input::mousemov_callback);
+    glfwSetWindowCloseCallback( window->GetHandle(),&windowclose_cb);
 
     if(setup_func)
     {
