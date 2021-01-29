@@ -3,6 +3,7 @@
 #include <drawpp.hpp>
 #include <window.hpp>
 #include <input.hpp>
+#include <chrono>
 
 Application::Application(int width, int height, const char* title)
 {
@@ -35,11 +36,15 @@ int Application::run(std::function<void(float)> draw,
         return 1;
     }
 
+    std::chrono::system_clock::time_point st = std::chrono::system_clock::now();
+
     while(!quit_flag)
     {
         glfwPollEvents();
 
-        draw_func(1);
+        draw_func(std::chrono::duration<float>(std::chrono::system_clock::now()-st).count());
+
+        st = std::chrono::system_clock::now();
     }
 
     cleanup_application();
