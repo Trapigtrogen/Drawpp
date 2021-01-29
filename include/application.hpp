@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <functional>
 #include <random.hpp>
+#include <graphics.hpp>
 
 class Window;
 
@@ -38,8 +39,11 @@ public:
 private:
     bool init_application();
     void cleanup_application();
+
+    void draw_buffer();
     
     Window* window;
+    DGraphics* graphics;
     bool quit_flag = false;
 
     std::function<void(float)> draw_func;

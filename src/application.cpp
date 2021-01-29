@@ -48,8 +48,10 @@ int Application::run(std::function<void(float)> draw,
         glfwPollEvents();
 
         draw_func(std::chrono::duration<float>(std::chrono::system_clock::now()-st).count());
-
         st = std::chrono::system_clock::now();
+
+        draw_buffer();
+        glfwSwapBuffers(window->GetHandle());
     }
 
     cleanup_application();
@@ -169,6 +171,14 @@ void Application::cleanup_application()
 Application* Application::GetInstance()
 {
     return instance;
+}
+
+void Application::draw_buffer()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glViewport(0,0,window->properties.width,window->properties.height);
+
+    //bind shader, texture, and draw quad with the texture
 }
 
 Application* Application::instance = nullptr;
