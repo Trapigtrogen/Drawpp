@@ -1,17 +1,20 @@
 #include <drawpp.hpp>
 
-void setup() {
+void setup() 
+{
 	size(100, 100);
 }
 
-void draw() {
-	fill(0, 250, 181); // Set fill colour for next shape
-	rect(50, 50, 10, 10); // Draw. Origin point and size
+void draw(float) 
+{
+	//fill(0, 250, 181); // Set fill colour for next shape
+	//rect(50, 50, 10, 10); // Draw. Origin point and size
 }
 
-int main() {
-	runApp();
-	return 0;
+int main() 
+{
+	Application app(500, 300);
+	return app.run(draw);
 }
 
 /*

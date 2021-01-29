@@ -37,6 +37,7 @@ int Application::run(std::function<void(float)> draw,
 
     while(!quit_flag)
     {
+        glfwSwapBuffers(window->GetHandle());
         glfwPollEvents();
 
         draw_func(1);
