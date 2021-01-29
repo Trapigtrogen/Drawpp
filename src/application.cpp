@@ -3,6 +3,7 @@
 #include <drawpp.hpp>
 #include <window.hpp>
 #include <input.hpp>
+#include <primitives.hpp>
 
 Application::Application(int width, int height, const char* title)
 {
