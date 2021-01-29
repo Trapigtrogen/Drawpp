@@ -18,7 +18,7 @@ public:
 
 	DImage& operator=(DImage&& other);
 
-	enum ImageMode 
+	enum ImgMode
 	{
 		CORNER,	// Attach from top-left corner
 		CORNERS, // Draw to given corners
@@ -27,7 +27,7 @@ public:
 
 	static DImage loadImage(const std::string& fileName);
 
-	void imageMode(ImageMode mode);
+	void imageMode(ImgMode mode);
 
 	void drawImage(int x, int y, unsigned int w, unsigned int h);
 
