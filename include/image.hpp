@@ -11,9 +11,10 @@ class DImage
 {
 public:
 	DImage();
+	~DImage();
+
 	DImage(const DImage& other);
 	DImage(DImage&& other);
-	~DImage();
 
 	DImage& operator=(DImage&& other);
 

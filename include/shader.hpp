@@ -14,20 +14,18 @@ class Shader
 public:
     // Use default
 	Shader();
-    // Use custom
-	Shader(const char* vsFile, const char* fsFile);
 	~Shader();
+
+    Shader(const Shader& other);
+    Shader(Shader&& other);
+
+    Shader& operator=(Shader&& other);
 
 	int getId() { return id; }
 
-private:
-    std::string loadShaderFile(const char* filename);
-    GLuint compileShader(unsigned int shader_type, const char* shader_source);
-    void createShaderProgram();
-
-    std::streampos getFileLength(std::ifstream& file);
-
-    GLuint id;
+    static Shader loadShadersFromFile(const char* vsFile, const char* fsFile);
+    static Shader loadShadersFromString(const char* vsStr, const char* fsStr);
+    static Shader loadShadersDefault();
 
     GLuint vertexShader;
     GLuint fragmentShader;
@@ -35,11 +33,21 @@ private:
     std::string shaderVSrc;
     std::string shaderFSrc;
 
+private:
+    std::string readShaderFile(const char* filename);
+    GLuint compileShader(unsigned int shader_type, const char* shader_source);
+    void createShaderProgram();
+
+    GLuint id;
+
     const char* defaultVertexSource = "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
+        "layout (location = 0) in vec4 vert;\n"
+        "uniform mat4 projection;\n"
+        "uniform mat4 view;\n"
+        "uniform mat4 model;\n"
         "void main()\n"
         "{\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "   gl_Position = projection * view * model * vert;\n"
         "}\0";
 
     const char* defaultFragmentSource = "#version 330 core\n"

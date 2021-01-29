@@ -43,9 +43,11 @@ void background(DImage image)
 }
 
 // Shapes
+
 void rect(int x, int y, int width, int height)
 {
     Shader shader;
+    shader = loadShadersFromFile("D:/Projects/CPP/vertexShader.shader", "D:/Projects/CPP/fragmentShader.shader");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -95,4 +97,20 @@ void rect(int x, int y, int width, int height)
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shader.getId());
 
+}
+
+// Shader
+Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader)
+{
+    return Shader::loadShadersFromFile(vertexShader, fregmentShader);
+}
+
+Shader loadShadersFromString(const char* vertexShader, const char* fregmentShader)
+{
+    return Shader::loadShadersFromString(vertexShader, fregmentShader);
+}
+
+Shader loadShadersDefault()
+{
+    return Shader::loadShadersDefault();
 }

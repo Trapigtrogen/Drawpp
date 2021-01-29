@@ -12,7 +12,6 @@ DImage::~DImage()
 DImage::DImage()
 {
 	pixels = new unsigned char[0];
-	//glDeleteTextures(1, &m_texture);
 }
 
 DImage::DImage(unsigned char* _pixels, GLuint _texture)
@@ -90,6 +89,8 @@ DImage DImage::loadImage(const std::string& fileName)
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
+	glDeleteTextures(1, &m_texture);
+
 	return DImage(pixels, m_texture);
 
 }
@@ -97,10 +98,6 @@ DImage DImage::loadImage(const std::string& fileName)
 void DImage::drawImage(int x, int y, unsigned int w, unsigned int h) {
 	bind(m_texture-1);
 	// Debug todo: Draw image
-	
-	// Draw the triangle !
-	glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
-	glDisableVertexAttribArray(0);
 
 }
 
@@ -109,7 +106,7 @@ void DImage::background(DImage* image)
 
 }
 
-void DImage::imageMode(ImageMode mode)
+void DImage::imageMode(ImgMode mode)
 {
 
 }

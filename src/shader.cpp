@@ -4,28 +4,95 @@
 // Use default
 Shader::Shader()
 {
-    shaderVSrc = (char*)defaultVertexSource;
-    shaderFSrc = (char*)defaultFragmentSource;
-
-    createShaderProgram();
+    id = -1;
 }
 
-// Use custom
-Shader::Shader(const char* vsFile, const char* fsFile)
+Shader::Shader(const Shader& other)
 {
-    // Load shader files
-    shaderVSrc = loadShaderFile(vsFile);
-    shaderFSrc = loadShaderFile(fsFile);
+    id = other.id;
 
-    createShaderProgram();
+    shaderVSrc = other.shaderVSrc;
+    vertexShader = other.vertexShader;
+
+    shaderFSrc = other.shaderFSrc;
+    fragmentShader = other.fragmentShader;
+}
+
+Shader::Shader(Shader&& other) 
+{
+    if(id >= 0) glDeleteProgram(id);
+    id = other.id;
+    other.id = -1;
+
+    shaderVSrc = other.shaderVSrc;
+    vertexShader = other.vertexShader;
+
+    shaderFSrc = other.shaderFSrc;
+    fragmentShader = other.fragmentShader;
+}
+
+Shader& Shader::operator=(Shader&& other)
+{
+    if(this != &other) {
+        if(id >= 0) glDeleteProgram(id);
+        id = other.id;
+        other.id = -1;
+
+        shaderVSrc = other.shaderVSrc;
+        vertexShader = other.vertexShader;
+
+        shaderFSrc = other.shaderFSrc;
+        fragmentShader = other.fragmentShader;
+    }
+
+    return *this;
+}
+
+Shader Shader::loadShadersFromFile(const char* vsFile, const char* fsFile)
+{
+    Shader tmpShader;
+
+    // Load shader files
+    tmpShader.shaderVSrc = tmpShader.readShaderFile(vsFile);
+    tmpShader.shaderFSrc = tmpShader.readShaderFile(fsFile);
+
+    tmpShader.createShaderProgram();
+
+    return tmpShader;
+}
+
+Shader Shader::loadShadersFromString(const char* vsStr, const char* fsStr)
+{
+    Shader tmpShader;
+
+    // Load shader string
+    tmpShader.shaderVSrc = vsStr;
+    tmpShader.shaderFSrc = fsStr;
+
+    tmpShader.createShaderProgram();
+
+    return tmpShader;
+}
+
+Shader Shader::loadShadersDefault() 
+{
+    Shader tmpShader;
+
+    // Load shader string
+    tmpShader.shaderVSrc = tmpShader.defaultVertexSource;
+    tmpShader.shaderFSrc = tmpShader.defaultFragmentSource;
+
+    tmpShader.createShaderProgram();
+
+    return tmpShader;
 }
 
 Shader::~Shader()
 {
-    glDeleteProgram(id);
+    if(id >= 0) glDeleteProgram(id);
 }
 
-std::string Shader::loadShaderFile(const char* filename)
+std::string Shader::readShaderFile(const char* filename)
 {
     std::string content;
     std::ifstream fileStream(filename, std::ios::in);
@@ -44,6 +111,7 @@ std::string Shader::loadShaderFile(const char* filename)
     }
 
     fileStream.close();
+
     return content;
 }
 
@@ -85,16 +153,4 @@ void Shader::createShaderProgram()
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-}
-
-std::streampos getFileLength(std::ifstream& file)
-{
-    std::streampos fsize = 0;
-
-    fsize = file.tellg();
-    file.seekg(0, std::ios::end);
-    fsize = file.tellg() - fsize;
-    file.close();
-
-    return fsize;
 }
