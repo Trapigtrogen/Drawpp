@@ -41,6 +41,8 @@ int Application::run(std::function<void(float)> draw,
         return 1;
     }
 
+    started = true;
+
     std::chrono::system_clock::time_point st = std::chrono::system_clock::now();
 
     while(!quit_flag)
@@ -113,7 +115,7 @@ void Application::size(int width, int height)
 
 void Application::setResizable(bool state)
 {
-    if(!window)
+    if(!started)
     {
         window->properties.resizable = state;
     }
