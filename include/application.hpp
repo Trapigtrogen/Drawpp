@@ -7,6 +7,7 @@
 
 #include <image.hpp>
 #include <shader.hpp>
+#include <color.hpp>
 
 class Window;
 

@@ -30,6 +30,7 @@ void box(int width, int height, int dimension);
 void sphere(int radius);
 
 // Color
+void fill(Color col);
 void fill(int rgb);
 void fill(int rgb, float alpha);
 void fill(float gray);
@@ -37,12 +38,24 @@ void fill(float gray, float alpha);
 void fill(int v1, int v2, int v3);
 void fill(int v1, int v2, int v3, float alpha);
 
+void background(Color col);
 void background(int rgb);
 void background(int rgb, float alpha);
 void background(float gray);
 void background(float gray, float alpha);
 void background(int v1, int v2, int v3);
 void background(int v1, int v2, int v3, float alpha);
+
+uint8_t alpha(Color col);
+uint8_t red(Color col);
+uint8_t green(Color col);
+uint8_t blue(Color col);
+uint8_t hue(Color col);
+uint8_t saturation(Color col);
+uint8_t brightness(Color col);
+
+// Lerps color. Percentage needs to be in range 0.0 - 1.0 or it will be cut to closest point
+//Color lerpColor(Color from, Color to, float percentage);
 
 // Image
 DImage loadImage(const std::string& fileName);

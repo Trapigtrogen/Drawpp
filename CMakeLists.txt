@@ -24,7 +24,8 @@ add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    src/random.cpp
                                    src/shader.cpp
                                    src/primitives.cpp
-                                   src/image.cpp)
+                                   src/image.cpp
+                                   src/color.cpp)
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 
