@@ -3,6 +3,7 @@
 
 class DGraphics
 {
+    friend class Application;
 public:
 
     DGraphics(int width, int height);
@@ -16,6 +17,8 @@ public:
     void endDraw();
 
 private:
+
+    unsigned int get_texture_id();
 
     void set_current();
 

@@ -32,5 +32,10 @@ void DGraphics::endDraw()
     glBindFramebuffer(GL_FRAMEBUFFER,0);
 }
 
+unsigned int DGraphics::get_texture_id()
+{
+    return texture_id;
+}
+
 //unsigned int DGraphics::current_bound_buffer = 0;
 //unsigned int DGraphics::previous_bound_buffer = 0;
