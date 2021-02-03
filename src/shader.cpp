@@ -143,7 +143,7 @@ void Shader::createShaderProgram()
 
     // Compile shaders
     vertexShader = compileShader(GL_VERTEX_SHADER, shaderVSrc.c_str());
-    fragmentShader = compileShader(GL_VERTEX_SHADER, shaderFSrc.c_str());
+    fragmentShader = compileShader(GL_FRAGMENT_SHADER, shaderFSrc.c_str());
 
     glAttachShader(id, vertexShader);
     glAttachShader(id, fragmentShader);
