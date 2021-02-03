@@ -163,12 +163,10 @@ uint8_t brightness(Color col)
     return col.brightness();
 }
 
-/*
 Color lerpColor(Color from, Color to, float percentage)
 {
     return Color::lerpColor(&from, &to, percentage);
 }
-*/
 
 // Image
 
