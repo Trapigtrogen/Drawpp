@@ -53,6 +53,69 @@ float randomGaussian()
     return Application::GetInstance()->random.randomGaussian();
 }
 
+// Color
+/*
+void fill(int rgb)
+{
+    Application::GetInstance()->graphics->fill(rgb);
+}
+
+void fill(int rgb, float alpha)
+{
+    Application::GetInstance()->graphics->fill(rgb);
+}
+
+void fill(float gray)
+{
+    Application::GetInstance()->graphics->fill(gray);
+}
+
+void fill(float gray, float alpha)
+{
+    Application::GetInstance()->graphics->fill(gray, alpha);
+}
+
+void fill(int v1, int v2, int v3)
+{
+    Application::GetInstance()->graphics->fill(v1, v2, v3);
+}
+
+void fill(int v1, int v2, int v3, float alpha)
+{
+    Application::GetInstance()->graphics->fill(v1, v2, v3, alpha);
+}
+
+void background(int rgb)
+{
+    Application::GetInstance()->graphics->background(rgb);
+}
+
+void background(int rgb, float alpha)
+{
+    Application::GetInstance()->graphics->background(rgb, alpha);
+}
+
+void background(float gray)
+{
+    Application::GetInstance()->graphics->background(gray);
+}
+
+void background(float gray, float alpha)
+{
+    Application::GetInstance()->graphics->background(gray, alpha);
+}
+
+void background(int v1, int v2, int v3)
+{
+    Application::GetInstance()->graphics->background(v1, v2, v3);
+}
+
+void background(int v1, int v2, int v3, float alpha)
+{
+    Application::GetInstance()->graphics->background(v1, v2, v3, alpha);
+}
+*/
+
 // Image
 
 DImage loadImage(const std::string& fileName) 

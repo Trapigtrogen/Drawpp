@@ -29,11 +29,20 @@ void box(int size);
 void box(int width, int height, int dimension);
 void sphere(int radius);
 
-// Options
+// Color
 void fill(int rgb);
-void fill(int rgb, int alpha);
-void fill(int r, int g, int b);
-void fill(int r, int g, int b, int alpha);
+void fill(int rgb, float alpha);
+void fill(float gray);
+void fill(float gray, float alpha);
+void fill(int v1, int v2, int v3);
+void fill(int v1, int v2, int v3, float alpha);
+
+void background(int rgb);
+void background(int rgb, float alpha);
+void background(float gray);
+void background(float gray, float alpha);
+void background(int v1, int v2, int v3);
+void background(int v1, int v2, int v3, float alpha);
 
 // Image
 DImage loadImage(const std::string& fileName);
