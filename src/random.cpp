@@ -35,27 +35,13 @@ int Random::random(int low, int high)
 
 float Random::random()
 {
-    if(std::abs(fmax-1.0f) > std::numeric_limits<float>::epsilon() || 
-        std::abs(fmin) > std::numeric_limits<float>::epsilon())
-    {
-        max = 1.0f;
-        min = 0.0f;
-        funiform.param(std::uniform_real_distribution<float>::param_type(0.0f,1.0f));
-    }
-
+    funiform.param(std::uniform_real_distribution<float>::param_type(0.0f,1.0f));
     return funiform(generator);
 }
 
 float Random::randomf(float low, float high)
 {
-    if(std::abs(fmax-high) > std::numeric_limits<float>::epsilon() || 
-        std::abs(fmin-low) > std::numeric_limits<float>::epsilon())
-    {
-        max = high;
-        min = low;
-        funiform.param(std::uniform_real_distribution<float>::param_type(low,high));
-    }
-
+    funiform.param(std::uniform_real_distribution<float>::param_type(low,high));
     return funiform(generator);
 }
 
