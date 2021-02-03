@@ -11,14 +11,7 @@ void Random::randomSeed(int seed)
 
 int Random::random(int high)
 {
-    if(max != high || min != 0)
-    {
-        max = high;
-        min = 0;
-        uniform.param(std::uniform_int_distribution<int>::param_type(0,high));
-    }
-
-    return uniform(generator);
+    return random(0,high);
 }
 
 int Random::random(int low, int high)
@@ -35,8 +28,7 @@ int Random::random(int low, int high)
 
 float Random::random()
 {
-    funiform.param(std::uniform_real_distribution<float>::param_type(0.0f,1.0f));
-    return funiform(generator);
+    return randomf(0.0f,1.0f);
 }
 
 float Random::randomf(float low, float high)
