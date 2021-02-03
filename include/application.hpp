@@ -5,7 +5,6 @@
 #include <functional>
 #include <random.hpp>
 #include <graphics.hpp>
-#include <shader.hpp>
 
 class Window;
 

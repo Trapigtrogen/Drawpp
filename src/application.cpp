@@ -4,6 +4,7 @@
 #include <window.hpp>
 #include <input.hpp>
 #include <primitives.hpp>
+#include <shader.hpp>
 #include <chrono>
 
 float quad_coords[] = 
@@ -257,6 +258,8 @@ void Application::draw_buffer()
     glDisableVertexAttribArray(texc_attrib);
     
     glBindTexture(GL_TEXTURE_2D,0);
+
+    graphics->beginDraw();
 }
 
 Application* Application::instance = nullptr;
