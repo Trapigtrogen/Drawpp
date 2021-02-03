@@ -3,14 +3,14 @@
 void setup()
 {
 	//colorMode(RGB); // How to make RGB/HSB
-	Color colori(20, 250, 181);
+	Color colori(0, 250, 181);
 	Color col = colori; // Moving to another
 	int value = col.red(); // Values assign to int like in processing
 	printf("RGB: %d, %d, %d\n", col.red(), col.green(), col.blue());
 
 	// Lerp color
 	Color newCol(10, 0, 0);
-	Color lerpedColor = lerpColor(col, newCol, 0.5f);
+	Color lerpedColor = lerpColor(col, newCol, 0.5);
 	printf("lerped RGB: %d, %d, %d\n", lerpedColor.red(), lerpedColor.green(), lerpedColor.blue());
 
 	background(255, 255, 255);
