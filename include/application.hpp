@@ -5,8 +5,6 @@
 #include <functional>
 #include <random.hpp>
 #include <graphics.hpp>
-
-#include <image.hpp>
 #include <shader.hpp>
 
 class Window;
@@ -45,13 +43,13 @@ private:
 
     void draw_buffer();
     
-    Window* window;
-    DGraphics* graphics;
+    Window* window = nullptr;
+    DGraphics* graphics = nullptr;
     bool quit_flag = false;
 
-    std::function<void(float)> draw_func;
-    std::function<void()> setup_func;
-    std::function<void()> cleanup_func;
+    std::function<void(float)> draw_func = nullptr;
+    std::function<void()> setup_func = nullptr;
+    std::function<void()> cleanup_func = nullptr;
 
     static Application* instance;
 };
