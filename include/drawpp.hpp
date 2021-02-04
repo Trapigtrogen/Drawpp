@@ -4,6 +4,8 @@
 #include <keys.hpp>
 #include <image.hpp>
 #include <shader.hpp>
+#include <color.hpp>
+#include <graphics.hpp>
 
 void exit();
 
