@@ -155,6 +155,41 @@ void DGraphics::scale(const DVector& s)
     transform_mat.scale(s);
 }
 
+void DGraphics::push()
+{
+    pushMatrix();
+    pushStyle();
+}
+
+void DGraphics::pop()
+{
+    popMatrix();
+    popStyle();
+}
+
+void DGraphics::pushMatrix()
+{
+    matrix_stack.push(transform_mat);
+}
+
+void DGraphics::popMatrix()
+{
+    transform_mat = matrix_stack.top();
+    matrix_stack.pop();
+}
+
+void DGraphics::pushStyle()
+{
+    property_stack.push(properties);
+}
+
+void DGraphics::popStyle()
+{
+    properties = property_stack.top();
+    property_stack.pop();
+}
+
+
 
 unsigned int DGraphics::get_texture_id()
 {

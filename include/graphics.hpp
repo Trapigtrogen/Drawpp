@@ -1,6 +1,7 @@
 #ifndef DPP_GRAPHICS_H
 #define DPP_GRAPHICS_H
 
+#include <stack>
 #include <vector3.hpp>
 #include <matrix4.hpp>
 
@@ -85,6 +86,14 @@ public:
     //void tint(float v1, float v2, float v3);
     //void tint(float v1, float v2, float v3, float alpha);
 
+
+    //Color color(float grey);
+    //Color color(float grey, float alpha);
+
+    //affected by colorMode
+    //Color color(float v1, float v2, float v3);
+    //Color color(float v1, float v2, float v3, float alpha);
+
     void noFill();
 
     void noStroke();
@@ -107,6 +116,15 @@ public:
     void scale(float x, float y, float z);
     void scale(const DVector& s);
 
+    void push();
+    void pop();
+
+    void pushMatrix();
+    void popMatrix();
+
+    void pushStyle();
+    void popStyle();
+
 private:
 
     ///\brief Get the texture id for this graphics object
@@ -121,6 +139,9 @@ private:
     unsigned int texture_id = -1;
     unsigned int buffer_width = 0;
     unsigned int buffer_height = 0;
+
+    std::stack<DMatrix4> matrix_stack;
+    std::stack<GraphicsProperties> property_stack;
 
     //static unsigned int current_bound_buffer;
     //static unsigned int previous_bound_buffer;
