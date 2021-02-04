@@ -4,8 +4,9 @@
 #include <stack>
 #include <vector3.hpp>
 #include <matrix4.hpp>
+#include <color.hpp>
 
-class Image;
+class DImage;
 
 enum ColorMode
 {
@@ -15,19 +16,19 @@ enum ColorMode
 
 struct GraphicsProperties
 {
-    //Color last_background_color;
-    ColorMode colormode;
+    Color last_background_color = {0,0,0};
+    ColorMode colormode = ColorMode::RGB;
     float color_max1 = 255;
     float color_max2 = 255;
     float color_max3 = 255;
     float color_maxa = 255;
     bool use_stroke = false;
-    //Color stroke_color;
-    //int stroke_weight;
+    Color stroke_color = {0,0,0};
+    int stroke_weight;
     bool use_tint = false;
-    //Color tint_color;
+    Color tint_color = {0,0,0};
     bool use_fill = false;
-    //Color fill_color;
+    Color fill_color = {255,255,255};
 
 };
 
@@ -49,14 +50,14 @@ public:
     ///This does not need to be called if you call beginDraw() on another DGraphics object.
     void endDraw();
 
-    //void fill(Color rgba);
-    //void fill(Color rgb, float alpha);
-    //void fill(float grey);
-    //void fill(float grey, float alpha);
+    void fill(Color rgba);
+    void fill(Color rgb, float alpha);
+    void fill(float grey);
+    void fill(float grey, float alpha);
 
     //affected by colorMode
-    //void fill(float v1, float v2, float v3);
-    //void fill(float v1, float v2, float v3, float alpha);
+    void fill(float v1, float v2, float v3);
+    void fill(float v1, float v2, float v3, float alpha);
     	
     //void background(Color rgba)
     //void background(Color rgb, float alpha)
@@ -87,12 +88,15 @@ public:
     //void tint(float v1, float v2, float v3, float alpha);
 
 
-    //Color color(float grey);
-    //Color color(float grey, float alpha);
+    Color color(float grey);
+    Color color(float grey, float alpha);
 
     //affected by colorMode
-    //Color color(float v1, float v2, float v3);
-    //Color color(float v1, float v2, float v3, float alpha);
+    Color color(float v1, float v2, float v3);
+    Color color(float v1, float v2, float v3, float alpha);
+
+    //void image(DImage* img, float x, float y);
+    //void image(DImage* img, float x, float y, float w, float h);
 
     void noFill();
 
@@ -129,6 +133,10 @@ private:
 
     ///\brief Get the texture id for this graphics object
     unsigned int get_texture_id();
+
+    Color get_rgba(float r, float g, float b, float a);
+    Color get_hsba(float h, float s, float b, float a);
+    Color get_color(float v1, float v2, float v3, float a);
 
     void set_current();
 

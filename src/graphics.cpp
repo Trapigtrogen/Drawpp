@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <graphics.hpp>
 #include <glad/glad.h>
 #include <debug.hpp>
@@ -54,6 +55,43 @@ void DGraphics::endDraw()
     glBindFramebuffer(GL_FRAMEBUFFER,0);
 }
 
+void DGraphics::fill(Color rgba)
+{
+    properties.fill_color = rgba;
+    properties.use_fill = true;
+}
+
+void DGraphics::fill(Color rgb, float alpha)
+{
+    properties.fill_color = Color(rgb.red(),rgb.green(),rgb.blue(),alpha);
+    properties.use_fill = true;
+}
+
+void DGraphics::fill(float grey)
+{
+    fill(grey,properties.color_maxa);
+}
+
+void DGraphics::fill(float grey, float alpha)
+{
+    properties.fill_color = color(grey, alpha);
+    properties.use_fill = true;
+}
+
+void DGraphics::fill(float v1, float v2, float v3)
+{
+    properties.fill_color = get_color(v1,v2,v3,properties.color_maxa);
+    properties.use_fill = true;
+}
+
+void DGraphics::fill(float v1, float v2, float v3, float alpha)
+{
+    properties.fill_color = get_color(v1,v2,v3,alpha);
+    properties.use_fill = true;
+}
+
+
+
 void DGraphics::colorMode(ColorMode mode)
 {
     properties.colormode = mode;
@@ -84,6 +122,32 @@ void DGraphics::colorMode(ColorMode mode, float max1, float max2, float max3, fl
     properties.color_max3 = max3;
     properties.color_maxa = maxA;
 }
+
+
+Color DGraphics::color(float grey)
+{
+    return color(grey,properties.color_maxa);
+}
+
+Color DGraphics::color(float grey, float alpha)
+{
+    uint8_t v = (grey / properties.color_max1) * 255;
+    uint8_t a = (alpha / properties.color_maxa) * 255;
+
+    return Color(v,v,v,a);
+}
+
+Color DGraphics::color(float v1, float v2, float v3)
+{
+    return get_color(v1,v3,v3,properties.color_maxa);
+}
+
+Color DGraphics::color(float v1, float v2, float v3, float alpha)
+{
+    return get_color(v1,v2,v3,alpha);
+}
+
+
 
 void DGraphics::noFill()
 {
@@ -189,7 +253,77 @@ void DGraphics::popStyle()
     property_stack.pop();
 }
 
+Color DGraphics::get_rgba(float r, float g, float b, float a)
+{
+    r = std::min(0.0f,std::min(properties.color_max1,r));
+    g = std::min(0.0f,std::min(properties.color_max1,g));
+    b = std::min(0.0f,std::min(properties.color_max1,b));
+    a = std::min(0.0f,std::min(properties.color_max1,a));
+    
+    uint8_t rv = (r / properties.color_max1)*255;
+    uint8_t gv = (g / properties.color_max2)*255;
+    uint8_t bv = (b / properties.color_max3)*255;
+    uint8_t av = (a / properties.color_maxa)*255;
 
+    return Color(rv,gv,bv,av);
+}
+
+Color DGraphics::get_hsba(float h, float s, float b, float a)
+{
+    h = std::max(0.0f,std::min(properties.color_max1,h));
+    s = std::max(0.0f,std::min(properties.color_max1,s));
+    b = std::max(0.0f,std::min(properties.color_max1,b));
+    a = std::max(0.0f,std::min(properties.color_max1,a));
+    
+    float hv = h / properties.color_max1;
+    float sv = s / properties.color_max2;
+    float bv = b / properties.color_max3;
+    float av = a / properties.color_maxa;
+
+    float tr=0, tg=0, tb=0;
+
+    if(hv < 0.33333f)
+    {
+        tr = (0.33333f - hv) / 0.16666f;
+        tg = hv / 0.16666f;
+        tb = 0;
+    }
+    else if(hv < 0.66666f)
+    {
+        tr = 0;
+        tg = (0.66666f - hv) / 0.16666f;
+        tb = (hv - 0.33333f) / 0.16666f;
+    } 
+    else
+    {
+        tr = (hv - 0.66666f) / 0.16666f;
+        tg = 0;
+        tb = (1.0f - hv) / 0.16666f;
+    }
+
+    tr = std::min(tr,1.0f);
+    tg = std::min(tg,1.0f);
+    tb = std::min(tb,1.0f);
+
+    uint8_t r =  (1 - sv + sv * tr) * bv * 255;
+    uint8_t g =  (1 - sv + sv * tg) * bv * 255;
+    uint8_t bb = (1 - sv + sv * tb) * bv * 255;
+    uint8_t aa = av * 255;
+
+    return Color(r,g,bb,aa);
+}
+
+Color DGraphics::get_color(float v1, float v2, float v3, float a)
+{
+    if(properties.colormode == ColorMode::RGB)
+    {
+        return get_rgba(v1,v2,v3,a);
+    }
+    else
+    {
+        return get_hsba(v1,v2,v3,a);
+    }
+}
 
 unsigned int DGraphics::get_texture_id()
 {
