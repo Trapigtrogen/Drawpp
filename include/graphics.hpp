@@ -95,6 +95,14 @@ public:
     Color color(float v1, float v2, float v3);
     Color color(float v1, float v2, float v3, float alpha);
 
+    float red(Color c);
+    float green(Color c);
+    float blue(Color c);
+    float alpha(Color c);
+    float saturation(Color c);
+    float hue(Color c);
+    float brightness(Color c);
+
     //void image(DImage* img, float x, float y);
     //void image(DImage* img, float x, float y, float w, float h);
 

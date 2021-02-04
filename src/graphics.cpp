@@ -147,6 +147,41 @@ Color DGraphics::color(float v1, float v2, float v3, float alpha)
     return get_color(v1,v2,v3,alpha);
 }
 
+float DGraphics::red(Color c)
+{
+    return (c.red() / 255.0f) * properties.color_max1;
+}
+
+float DGraphics::green(Color c)
+{
+    return (c.green() / 255.0f) * properties.color_max2;
+}
+
+float DGraphics::blue(Color c)
+{
+    return (c.blue() / 255.0f) * properties.color_max3;
+}
+
+float DGraphics::alpha(Color c)
+{
+    return (c.alpha() / 255.0f) * properties.color_maxa;
+}
+
+float DGraphics::hue(Color c)
+{
+    return (c.hue() / 255.0f) * properties.color_max1;
+}
+
+float DGraphics::saturation(Color c)
+{
+    return (c.saturation() / 255.0f) * properties.color_max2;
+}
+
+float DGraphics::brightness(Color c)
+{
+    return (c.brightness() / 255.0f) * properties.color_max3;
+}
+
 
 
 void DGraphics::noFill()
