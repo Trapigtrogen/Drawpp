@@ -5,6 +5,7 @@
 #include <input.hpp>
 #include <primitives.hpp>
 #include <shader.hpp>
+#include <graphics.hpp>
 #include <chrono>
 
 float quad_coords[] = 

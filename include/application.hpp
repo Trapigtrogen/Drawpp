@@ -4,10 +4,10 @@
 #include <cstdint>
 #include <functional>
 #include <random.hpp>
-#include <graphics.hpp>
 #include <color.hpp>
 
 class Window;
+class DGraphics;
 
 ///Application class is the core of the program
 class Application
