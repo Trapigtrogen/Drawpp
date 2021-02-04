@@ -15,7 +15,7 @@ void setup()
 
 	//ColorMode(HSB); // DEBUG TODO	
 	Color HSBCol(163.4, 100, 250); // Same colour as RGB but in HSB values
-	printf("\nHSB mode:\n");
+	printf("\nHSB mode: (Color changin not done yet. These values are wrong)\n");
 	printf("RGB: %i, %i, %i\n", red(HSBCol), green(HSBCol), blue(HSBCol));
 	printf("HSB: %f, %f, %f\n\n", hue(HSBCol), saturation(HSBCol), brightness(HSBCol));
 
