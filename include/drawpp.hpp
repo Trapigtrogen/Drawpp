@@ -3,6 +3,7 @@
 #include <application.hpp>
 #include <keys.hpp>
 #include <image.hpp>
+#include <shader.hpp>
 
 void exit();
 
