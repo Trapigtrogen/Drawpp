@@ -7,6 +7,7 @@
 DImage::~DImage() 
 {
 	stbi_image_free(pixels);
+	if(m_texture != -1) glDeleteTextures(1, &m_texture);
 }
 
 DImage::DImage()
@@ -104,8 +105,6 @@ DImage DImage::loadImage(const std::string& fileName)
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
-	glDeleteTextures(1, &m_texture);
-
 	return DImage(pixels, m_texture);
 
 }
@@ -113,7 +112,6 @@ DImage DImage::loadImage(const std::string& fileName)
 void DImage::drawImage(int x, int y, unsigned int w, unsigned int h) {
 	bind(m_texture-1);
 	// Debug todo: Draw image
-
 }
 
 void DImage::background(DImage* image) 
