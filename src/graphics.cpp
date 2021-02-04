@@ -45,7 +45,6 @@ DGraphics::DGraphics(int width, int height)
 
 void DGraphics::beginDraw()
 {
-    properties = GraphicsProperties();
     glBindFramebuffer(GL_FRAMEBUFFER,buffer_id);
     glViewport(0,0,buffer_width,buffer_height);
 }
@@ -88,6 +87,41 @@ void DGraphics::fill(float v1, float v2, float v3, float alpha)
 {
     properties.fill_color = get_color(v1,v2,v3,alpha);
     properties.use_fill = true;
+}
+
+void DGraphics::background(Color rgba)
+{
+    glClearColor(rgba.red()/properties.color_max1,
+                rgba.green()/properties.color_max2,
+                rgba.blue()/properties.color_max3,
+                rgba.alpha()/properties.color_maxa);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void DGraphics::background(Color rgb, float alpha)
+{
+    background(Color(rgb.red(),rgb.green(),rgb.blue(),alpha));
+}
+
+void DGraphics::background(float gray)
+{
+    background(color(gray,properties.color_maxa));
+}
+
+void DGraphics::background(float gray, float alpha)
+{
+    background(color(gray,alpha));
+}
+
+
+void DGraphics::background(float v1, float v2, float v3)
+{
+    background(get_color(v1,v2,v3,properties.color_maxa));
+}
+
+void DGraphics::background(float v1, float v2, float v3, float alpha)
+{
+    background(get_color(v1,v2,v3,alpha));
 }
 
 

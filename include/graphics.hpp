@@ -59,16 +59,16 @@ public:
     void fill(float v1, float v2, float v3);
     void fill(float v1, float v2, float v3, float alpha);
     	
-    //void background(Color rgba)
-    //void background(Color rgb, float alpha)
-    //void background(float gray)
-    //void background(float gray, float alpha)
+    void background(Color rgba);
+    void background(Color rgb, float alpha);
+    void background(float gray);
+    void background(float gray, float alpha);
     //void background(const Image* image)
     //void background(const Image& image)
 
     //affected by colorMode
-    //void background(float v1, float v2, float v3)
-    //void background(float v1, float v2, float v3, float alpha)
+    void background(float v1, float v2, float v3);
+    void background(float v1, float v2, float v3, float alpha);
 
     //void clear();
 
