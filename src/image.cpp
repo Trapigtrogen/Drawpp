@@ -42,6 +42,21 @@ DImage::DImage(DImage&& other)
 	other.width = 0;
 }
 
+DImage& DImage::operator=(DImage& other)
+{
+	if(this != &other) 
+	{
+		delete[] pixels;
+
+		pixels = other.pixels;
+		m_texture = other.m_texture;
+		height = other.height;
+		width = other.width;
+	}
+
+	return *this;
+}
+
 DImage& DImage::operator=(DImage&& other)
 {
 	if(this != &other) 

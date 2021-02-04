@@ -1,4 +1,5 @@
 #include <color.hpp>
+#include <application.hpp>
 
 Color::Color() 
 {
@@ -11,50 +12,28 @@ Color::Color()
 	brightnessVal = 255;
 }
 
-Color::Color(uint8_t v1, uint8_t v2, uint8_t v3, uint8_t a) 
+Color::Color(float v1, float v2, float v3, float a)
 {
-	hueVal = v1; // DEBUG TEMP
-	saturationVal = v2; // DEBUG TEMP
-	brightnessVal = v3; // DEBUG TEMP
-
-	// if(mode==rgb) // DEBUG TODO: RGB/HSB Mode change
-	//{
+	//if(Application::GetInstance()->graphics.ColorMode == RGB) // DEBUG TODO: RGB/HSB Mode change
+	int mode = 0; // DEBUG TEMP
+	if(mode == 0)
+	{
 		redVal = v1;
 		greenVal = v2;
 		blueVal = v3;
-	//}
-	//else 
-	//{
-		//hueVal = v1;
-		//saturationVal = v2;
-		//brightnessVal = v3;
-	//}
+		RGB2HSB(v1, v2, v3);
+	}
+	else 
+	{
+		hueVal = v1;
+		saturationVal = v2;
+		brightnessVal = v3;
+		HSB2RGB(v1, v2, v3);
+	}
 		alphaVal = a;
 }
 
-Color::Color(const Color& other)
-{
-	alphaVal = other.alphaVal;
-	redVal = other.redVal;
-	greenVal = other.greenVal;
-	blueVal = other.blueVal;
-	hueVal = other.hueVal;
-	saturationVal = other.saturationVal;
-	brightnessVal = other.brightnessVal;
-}
-
-Color::Color(Color&& other)
-{
-	alphaVal = other.alphaVal;
-	redVal = other.redVal;
-	greenVal = other.greenVal;
-	blueVal = other.blueVal;
-	hueVal = other.hueVal;
-	saturationVal = other.saturationVal;
-	brightnessVal = other.brightnessVal;
-}
-
-Color& Color::operator=(Color&& other) 
+Color& Color::operator=(Color& other) 
 {
 	if(this != &other)
 	{
@@ -93,4 +72,96 @@ Color Color::lerpColor(Color* from, Color* to, float percentage)
 	tmpColor.brightnessVal = lerpBrightness;
 
 	return tmpColor;
+}
+
+void Color::RGB2HSB(uint8_t r, uint8_t g, uint8_t b)
+{
+	double themin, themax, delta;
+	float hue, saturation, brightness;
+
+	themin = std::min(r, std::min(g, b));
+	themax = std::max(r, std::max(g, b));
+	delta = themax - themin;
+	brightness = themax;
+	saturation = 0;
+	if(themax > 0)
+		saturation = delta / themax;
+	hue = 0;
+	if(delta > 0) {
+		if(themax == r && themax != g)
+			hue += (g - b) / delta;
+		if(themax == g && themax != b)
+			hue += (2 + (b - r) / delta);
+		if(themax == b && themax != r)
+			hue += (4 + (r - g) / delta);
+		hue *= 60;
+	}
+
+	hueVal = hue;
+	saturationVal = saturation * 100; // to make it percentages
+	brightnessVal = brightness;
+}
+
+void Color::HSB2RGB(float h, float s, float b)
+{
+	double hh, p, q, t, ff;
+	long i;
+	uint8_t red, green, blue;
+
+	float ss = s / 100; // percentages to 0-1
+
+	if(ss <= 0.0)  // < is bogus, just shuts up warnings
+	{
+		redVal = b;
+		greenVal = b;
+		blueVal = b;
+		return;
+	}
+	hh = h;
+	if(hh >= 360.0) hh = 0.0;
+	hh /= 60.0;
+	i = (long)hh;
+	ff = hh - i;
+	p = b * (1.0 - ss);
+	q = b * (1.0 - (ss * ff));
+	t = b * (1.0 - (ss * (1.0 - ff)));
+
+	switch(i) {
+		case 0:
+		red = b;
+		green = t;
+		blue = p;
+		break;
+		case 1:
+		red = q;
+		green = b;
+		blue = p;
+		break;
+		case 2:
+		red = p;
+		green = b;
+		blue = t;
+		break;
+
+		case 3:
+		red = p;
+		green = q;
+		blue = b;
+		break;
+		case 4:
+		red = t;
+		green = p;
+		blue = b;
+		break;
+		case 5:
+		default:
+		red = b;
+		green = p;
+		blue = q;
+		break;
+	}
+
+	redVal = red;
+	greenVal = green;
+	blueVal = blue;
 }

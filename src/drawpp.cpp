@@ -128,7 +128,7 @@ void background(int v1, int v2, int v3, float alpha)
 }
 
 
-uint8_t alpha(Color col)
+float alpha(Color col)
 {
     return col.alpha();
 }
@@ -148,17 +148,17 @@ uint8_t blue(Color col)
     return col.blue();
 }
 
-uint8_t hue(Color col)
+float hue(Color col)
 {
     return col.hue();
 }
 
-uint8_t saturation(Color col)
+float saturation(Color col)
 {
     return col.saturation();
 }
 
-uint8_t brightness(Color col)
+float brightness(Color col)
 {
     return col.brightness();
 }
