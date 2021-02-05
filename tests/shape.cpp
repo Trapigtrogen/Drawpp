@@ -1,4 +1,6 @@
 #include <drawpp.hpp>
+#include <nanosvg.h>
+#include <nanosvgrast.h>
 
 DShape shape1;
 DShape shape2;
@@ -23,6 +25,10 @@ void setup()
     shape1.addChild(&shape3);
 
     int childSize = shape1.getChildCount();
+
+    // DEBUG:
+    // Something weird about this: Randomily gives error when printing various data
+    // Then usually works just fine
 
     // Count children
     std::cout << "Shape1 has " << childSize << " children \nThey are:\n";
