@@ -94,37 +94,37 @@ void fill(int v1, int v2, int v3, float alpha)
 
 void background(Color col) {
     // DEBUG TODO: RGB/HSB Modes
-    //Application::GetInstance()->graphics->background(col.red(), col.green(), col.blue(), col.alpha());
+    Application::GetInstance()->graphics->background(col.red(), col.green(), col.blue(), col.alpha());
 }
 
 void background(int rgb)
 {
-    //Application::GetInstance()->graphics->background(rgb);
+    Application::GetInstance()->graphics->background(rgb);
 }
 
 void background(int rgb, float alpha)
 {
-    //Application::GetInstance()->graphics->background(rgb, alpha);
+    Application::GetInstance()->graphics->background(rgb, alpha);
 }
 
 void background(float gray)
 {
-    //Application::GetInstance()->graphics->background(gray);
+    Application::GetInstance()->graphics->background(gray);
 }
 
 void background(float gray, float alpha)
 {
-    //Application::GetInstance()->graphics->background(gray, alpha);
+    Application::GetInstance()->graphics->background(gray, alpha);
 }
 
 void background(int v1, int v2, int v3)
 {
-    //Application::GetInstance()->graphics->background(v1, v2, v3);
+    Application::GetInstance()->graphics->background(v1, v2, v3);
 }
 
 void background(int v1, int v2, int v3, float alpha)
 {
-    //Application::GetInstance()->graphics->background(v1, v2, v3, alpha);
+    Application::GetInstance()->graphics->background(v1, v2, v3, alpha);
 }
 
 
