@@ -163,9 +163,9 @@ float brightness(Color col)
     return col.brightness();
 }
 
-Color lerpColor(Color from, Color to, float percentage)
+Color lerpColor(const Color &from, const Color& to, float percentage)
 {
-    return Color::lerpColor(&from, &to, percentage);
+    return Color::lerpColor(from, to, percentage);
 }
 
 // Image

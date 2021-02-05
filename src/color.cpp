@@ -7,9 +7,9 @@ Color::Color()
 	redVal = 255;
 	greenVal = 255;
 	blueVal = 255;
-	hueVal = 255;
-	saturationVal = 255;
-	brightnessVal = 255;
+	hueVal = 0;
+	saturationVal = 100;
+	brightnessVal = 100;
 }
 
 Color::Color(float v1, float v2, float v3, float a)
@@ -33,6 +33,15 @@ Color::Color(float v1, float v2, float v3, float a)
 		alphaVal = a;
 }
 
+Color::Color(unsigned int c)
+{
+    alphaVal = c >> 24;
+    redVal = (c & 0x00FF0000) >> 16;
+    greenVal = (c & 0x0000FF00) >> 8;
+    blueVal = c & 0x000000FF;
+    RGB2HSB(redVal,greenVal,blueVal);
+}
+
 Color& Color::operator=(const Color& other) 
 {
 	if(this != &other)
@@ -49,29 +58,24 @@ Color& Color::operator=(const Color& other)
 	return *this;
 }
 
-Color Color::lerpColor(Color* from, Color* to, float percentage) 
+Color::operator unsigned int () const
+{
+    return ((alphaVal << 24) | (redVal << 16) | (greenVal << 8) | blueVal);
+}
+
+Color Color::lerpColor(const Color& from, const Color& to, float percentage) 
 {
 	// Ensure that the values are in the range
 	if(percentage > 1) percentage = 1.0;
 	if(percentage < 0) percentage = 0.0;
 
 	// Lerp values
-	uint8_t lerpRed = from->red() + percentage * (to->red() - from->red());
-	uint8_t lerpGreen = from->green() + percentage * (to->green() - from->green());
-	uint8_t lerpBlue = from->blue() + percentage * (to->blue() - from->blue());
-	uint8_t lerpHue = from->hue() + percentage * (to->hue() - from->hue());
-	uint8_t lerpSaturation = from->saturation() + percentage * (to->saturation() - from->saturation());
-	uint8_t lerpBrightness = from->brightness() + percentage * (to->brightness() - from->brightness());
+	uint8_t lerpRed = from.redVal + percentage * (to.redVal - from.redVal);
+	uint8_t lerpGreen = from.greenVal + percentage * (to.greenVal - from.greenVal);
+	uint8_t lerpBlue = from.blueVal + percentage * (to.blueVal - from.blueVal);
+    uint8_t lerpAlpha = from.alphaVal + percentage * (to.alphaVal - from.alphaVal);
 
-	Color tmpColor;
-	tmpColor.redVal = lerpRed;
-	tmpColor.greenVal = lerpGreen;
-	tmpColor.blueVal = lerpBlue;
-	tmpColor.hueVal = lerpHue;
-	tmpColor.saturationVal = lerpSaturation;
-	tmpColor.brightnessVal = lerpBrightness;
-
-	return tmpColor;
+	return Color(lerpRed,lerpGreen,lerpBlue,lerpAlpha);
 }
 
 void Color::RGB2HSB(uint8_t r, uint8_t g, uint8_t b)

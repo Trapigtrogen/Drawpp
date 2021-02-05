@@ -12,22 +12,25 @@ public:
     Color();
     // values 1,2,3 are rgb/hsb depending on mode
     Color(float v1, float v2, float v3, float a = 255);
+    Color(unsigned int);
     Color(const Color&) = default;
 
     Color& operator=(const Color& other);
 
-    float alpha() { return alphaVal; };
-    uint8_t red() { return redVal; };
-    uint8_t green() { return greenVal; };
-    uint8_t blue() { return blueVal; };
-    float hue() { return hueVal; };
-    float saturation() { return saturationVal; };
-    float brightness() { return brightnessVal; };
+    operator unsigned int () const;
 
-    static Color lerpColor(Color* from, Color* to, float percentage);
+    uint8_t alpha() const { return alphaVal; };
+    uint8_t red() const { return redVal; };
+    uint8_t green() const { return greenVal; };
+    uint8_t blue() const { return blueVal; };
+    float hue() const { return hueVal; };
+    float saturation() const { return saturationVal; };
+    float brightness() const { return brightnessVal; };
+
+    static Color lerpColor(const Color& from, const Color& to, float percentage);
 
 private:
-    float alphaVal;
+    uint8_t alphaVal;
     uint8_t redVal;
     uint8_t greenVal;
     uint8_t blueVal;
