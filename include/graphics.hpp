@@ -150,10 +150,13 @@ private:
     GraphicsProperties properties;
     DMatrix4 transform_mat = DMatrix4::identity();
 
+    unsigned int render_id = -1;
     unsigned int buffer_id = -1;
     unsigned int texture_id = -1;
     unsigned int buffer_width = 0;
     unsigned int buffer_height = 0;
+    int type;
+    int format;
 
     std::stack<DMatrix4> matrix_stack;
     std::stack<GraphicsProperties> property_stack;

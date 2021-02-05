@@ -36,17 +36,23 @@ DGraphics::DGraphics(int width, int height)
     glGenFramebuffers(1,&buffer_id);
 
     glBindFramebuffer(GL_FRAMEBUFFER, buffer_id);
+
     glGenTextures(1,&texture_id);
     glBindTexture(GL_TEXTURE_2D,texture_id);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,buffer_width,buffer_height,0,GL_RGB,GL_UNSIGNED_BYTE,NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,buffer_width,buffer_height,0,GL_RGB,GL_UNSIGNED_BYTE,NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture_id,0);
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
         dbg::error("Failed to create framebuffer");
     }
+
+    glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
+    glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_TYPE, &type);
 
     glBindFramebuffer(GL_FRAMEBUFFER, prev_buffer);
 }
@@ -342,10 +348,10 @@ void DGraphics::popStyle()
 
 Color DGraphics::get_rgba(float r, float g, float b, float a)
 {
-    r = std::min(0.0f,std::min(properties.color_max1,r));
-    g = std::min(0.0f,std::min(properties.color_max1,g));
-    b = std::min(0.0f,std::min(properties.color_max1,b));
-    a = std::min(0.0f,std::min(properties.color_max1,a));
+    r = std::max(0.0f,std::min(properties.color_max1,r));
+    g = std::max(0.0f,std::min(properties.color_max1,g));
+    b = std::max(0.0f,std::min(properties.color_max1,b));
+    a = std::max(0.0f,std::min(properties.color_max1,a));
     
     uint8_t rv = (r / properties.color_max1)*255;
     uint8_t gv = (g / properties.color_max2)*255;
