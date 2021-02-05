@@ -20,12 +20,12 @@ float quad_coords[] =
 
 float quadtex_coords[] = 
 {
-    -1.0f, -1.0f,
-     1.0f, -1.0f, 
-     1.0f,  1.0f, 
-    -1.0f, -1.0f, 
-     1.0f,  1.0f, 
-    -1.0f,  1.0f, 
+    0.0f, 0.0f,
+    1.0f, 0.0f, 
+    1.0f, 1.0f, 
+    0.0f, 0.0f, 
+    1.0f, 1.0f, 
+    0.0f, 1.0f, 
 };
 
 const char* quad_shader_v = R"(#version 100
