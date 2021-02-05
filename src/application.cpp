@@ -187,6 +187,11 @@ void Application::exit()
     quit_flag = true;
 }
 
+DGraphics& Application::graphics_object()
+{
+    return *graphics;
+}
+
 bool Application::init_application()
 {
     if(!window->Init())

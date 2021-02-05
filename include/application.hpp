@@ -33,6 +33,8 @@ public:
     void setTitle(const char* title);
     void exit();
 
+    DGraphics& graphics_object();
+
     static Application* GetInstance();
 
     Random random;
