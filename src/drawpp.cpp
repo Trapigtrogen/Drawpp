@@ -130,37 +130,37 @@ void background(int v1, int v2, int v3, float alpha)
 
 float alpha(Color col)
 {
-    return col.alpha();
+    return Application::GetInstance()->graphics_object().alpha(col);
 }
 
-uint8_t red(Color col)
+float red(Color col)
 {
-    return col.red();
+    return Application::GetInstance()->graphics_object().red(col);
 }
 
-uint8_t green(Color col)
+float green(Color col)
 {
-    return col.green();
+    return Application::GetInstance()->graphics_object().green(col);
 }
 
-uint8_t blue(Color col)
+float blue(Color col)
 {
-    return col.blue();
+    return Application::GetInstance()->graphics_object().blue(col);
 }
 
 float hue(Color col)
 {
-    return col.hue();
+    return Application::GetInstance()->graphics_object().hue(col);
 }
 
 float saturation(Color col)
 {
-    return col.saturation();
+    return Application::GetInstance()->graphics_object().saturation(col);
 }
 
 float brightness(Color col)
 {
-    return col.brightness();
+    return Application::GetInstance()->graphics_object().brightness(col);
 }
 
 Color lerpColor(const Color &from, const Color& to, float percentage)

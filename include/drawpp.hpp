@@ -51,9 +51,9 @@ void background(int v1, int v2, int v3);
 void background(int v1, int v2, int v3, float alpha);
 
 float alpha(Color col);
-uint8_t red(Color col);
-uint8_t green(Color col);
-uint8_t blue(Color col);
+float red(Color col);
+float green(Color col);
+float blue(Color col);
 float hue(Color col);
 float saturation(Color col);
 float brightness(Color col);
