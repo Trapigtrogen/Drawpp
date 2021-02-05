@@ -13,9 +13,10 @@ public:
 	DImage();
 	~DImage();
 
-	DImage(const DImage& other);
+	DImage(const DImage&);
 	DImage(DImage&& other);
 
+	DImage& operator=(DImage& other);
 	DImage& operator=(DImage&& other);
 
 	enum ImgMode

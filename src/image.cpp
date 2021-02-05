@@ -7,6 +7,7 @@
 DImage::~DImage() 
 {
 	stbi_image_free(pixels);
+	if(m_texture != -1) glDeleteTextures(1, &m_texture);
 }
 
 DImage::DImage()
@@ -40,6 +41,21 @@ DImage::DImage(DImage&& other)
 	other.m_texture = -1;
 	other.height = 0;
 	other.width = 0;
+}
+
+DImage& DImage::operator=(DImage& other)
+{
+	if(this != &other) 
+	{
+		delete[] pixels;
+
+		pixels = other.pixels;
+		m_texture = other.m_texture;
+		height = other.height;
+		width = other.width;
+	}
+
+	return *this;
 }
 
 DImage& DImage::operator=(DImage&& other)
@@ -89,7 +105,7 @@ DImage DImage::loadImage(const std::string& fileName)
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
-	glDeleteTextures(1, &m_texture);
+	stbi_set_flip_vertically_on_load(1);
 
 	return DImage(pixels, m_texture);
 
@@ -98,7 +114,6 @@ DImage DImage::loadImage(const std::string& fileName)
 void DImage::drawImage(int x, int y, unsigned int w, unsigned int h) {
 	bind(m_texture-1);
 	// Debug todo: Draw image
-
 }
 
 void DImage::background(DImage* image) 
