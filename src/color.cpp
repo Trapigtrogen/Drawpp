@@ -33,7 +33,7 @@ Color::Color(float v1, float v2, float v3, float a)
 		alphaVal = a;
 }
 
-Color& Color::operator=(Color& other) 
+Color& Color::operator=(const Color& other) 
 {
 	if(this != &other)
 	{

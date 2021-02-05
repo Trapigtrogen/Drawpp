@@ -14,7 +14,7 @@ public:
     Color(float v1, float v2, float v3, float a = 255);
     Color(const Color&) = default;
 
-    Color& operator=(Color& other);
+    Color& operator=(const Color& other);
 
     float alpha() { return alphaVal; };
     uint8_t red() { return redVal; };

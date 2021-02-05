@@ -29,7 +29,6 @@ struct GraphicsProperties
     Color tint_color = {0,0,0};
     bool use_fill = false;
     Color fill_color = {255,255,255};
-
 };
 
 class DGraphics

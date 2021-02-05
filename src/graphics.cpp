@@ -315,6 +315,11 @@ void DGraphics::pushMatrix()
 
 void DGraphics::popMatrix()
 {
+    if(matrix_stack.empty())
+    {
+        return;
+    }
+
     transform_mat = matrix_stack.top();
     matrix_stack.pop();
 }
@@ -326,6 +331,11 @@ void DGraphics::pushStyle()
 
 void DGraphics::popStyle()
 {
+    if(property_stack.empty())
+    {
+        return;
+    }
+
     properties = property_stack.top();
     property_stack.pop();
 }
