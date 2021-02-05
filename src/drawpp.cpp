@@ -57,7 +57,6 @@ float randomGaussian()
 
 void fill(Color col) 
 {
-    // DEBUG TODO: RGB/HSB Modes
     //Application::GetInstance()->graphics->fill(col.red(), col.green(), col.blue(), col.alpha());
 }
 
@@ -92,8 +91,8 @@ void fill(int v1, int v2, int v3, float alpha)
 }
 
 
-void background(Color col) {
-    // DEBUG TODO: RGB/HSB Modes
+void background(Color col) 
+{
     //Application::GetInstance()->graphics->background(col.red(), col.green(), col.blue(), col.alpha());
 }
 
@@ -168,6 +167,7 @@ Color lerpColor(Color from, Color to, float percentage)
     return Color::lerpColor(&from, &to, percentage);
 }
 
+
 // Image
 
 DImage loadImage(const std::string& fileName) 
@@ -189,12 +189,46 @@ void background(DImage image)
     // DEBUG TODO: Set background to image.pixels
 }
 
+
 // Shapes
+
+void shape(DShape shape, int x, int  y)
+{
+    // Draw shape
+}
+
+void shape(DShape shape, int x, int y, int w, int h)
+{
+    // Draw shape
+}
+
+DShape loadShape(std::string filename) 
+{
+    return DShape::loadShape(filename);
+}
+
+DShape createShape()
+{
+    return DShape::createShape();
+}
+
+DShape createShape(DShape::ShapeType type)
+{
+    return DShape::createShape(type); //DEBUG TEMP
+}
+
+//DShape createShape(DShape::ShapeType type, float[] p){}
+
+void triangle(int x1, int y1, int x2, int y2, int x3, int y3)
+{
+
+}
 
 void rect(int x, int y, int width, int height)
 {
 
 }
+
 
 // Shader
 

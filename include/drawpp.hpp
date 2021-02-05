@@ -10,6 +10,15 @@ void size(int width, int height);
 void setResizable(bool);
 void setTitle(const char* title);
 
+// DShape
+// Draws given shape
+void shape(DShape shape, int x,int  y);
+void shape(DShape shape, int x, int y, int w, int h);
+DShape loadShape(std::string filename);
+DShape createShape();
+DShape createShape(DShape::ShapeType type);
+//DShape createShape(DShape::ShapeType type, float[] p);
+
 // Shapes 2D
 void arc(int x, int y, int width, int height, int start, int stop);
 void arc(int x, int y, int width, int height, int start, int stop, int mode);
