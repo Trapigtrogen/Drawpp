@@ -206,6 +206,8 @@ bool Application::init_application()
     texc_attrib = glGetAttribLocation(shader->getId(),"texpos");
     tex_uniform = glGetUniformLocation(shader->getId(),"texture");
 
+    graphics->beginDraw();
+    
     if(setup_func)
     {
         setup_func();
