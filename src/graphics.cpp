@@ -28,8 +28,14 @@ DGraphics::DGraphics(int width, int height)
 {
     buffer_width = static_cast<unsigned int>(width);
     buffer_height = static_cast<unsigned int>(height);
+
+    GLint prev_buffer = (GLint)-1;
+
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &prev_buffer);
+
     glGenFramebuffers(1,&buffer_id);
 
+    glBindFramebuffer(GL_FRAMEBUFFER, buffer_id);
     glGenTextures(1,&texture_id);
     glBindTexture(GL_TEXTURE_2D,texture_id);
     glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,buffer_width,buffer_height,0,GL_RGB,GL_UNSIGNED_BYTE,NULL);
@@ -41,6 +47,8 @@ DGraphics::DGraphics(int width, int height)
     {
         dbg::error("Failed to create framebuffer");
     }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, prev_buffer);
 }
 
 void DGraphics::beginDraw()
