@@ -40,11 +40,15 @@ public:
 	void removeChild(DShape* child);
 
 	DShape* getChild(int idx);
+	size_t getChildCount();
+	DShape* getParent();
 
 	void setVisible(bool visibility) { visible = visibility; };
 	bool isVisible() { return visible; };
 
 	char* data = nullptr;
+
+	std::string debugName;
 private:
 	bool visible = true;
 

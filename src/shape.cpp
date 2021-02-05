@@ -93,6 +93,7 @@ void DShape::addChild(DShape* child)
 {
 	child->renderIdx = renderIdx + 1;
 	children.push_back(child);
+	child->addParent(this);
 }
 
 void DShape::addChild(DShape* child, int _renderIdx)
@@ -123,10 +124,20 @@ void DShape::removeParent()
 	parent = nullptr;
 }
 
+size_t DShape::getChildCount()
+{
+	return children.size();
+}
+
 DShape* DShape::getChild(int idx) 
 {
 	std::vector<DShape*>::iterator it = children.begin() + idx;
 	return *it;
+}
+
+DShape* DShape::getParent()
+{
+	return parent;
 }
 
 DShape DShape::loadShape(std::string filename)

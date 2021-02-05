@@ -13,9 +13,27 @@ void setup()
 
     shape1 = loadShape("D:/Projects/CPP/graphics-library/tests/assets/archlinux-logo-block.svg");
 
-    shape1.addChild(&shape2); // DEBUG TODO: Get rid of "&"
+    // Child tests
+    shape2.debugName = "shape2";
+    shape1.debugName = "shape1";    
+    shape3.debugName = "shape3";
+    shape4.debugName = "shape4";
+
+    shape1.addChild(&shape2); // DEBUG TODO(?): Get rid of "&"
+    shape1.addChild(&shape3);
+
+    int childSize = shape1.getChildCount();
+
+    // Count children
+    std::cout << "Shape1 has " << childSize << " children \nThey are:\n";
+    for(int i = 0; i < childSize; ++i)
+    {
+        std::cout << shape1.getChild(i)->debugName << "\n";
+    }
     
-    //std::cout << shape1.getChild(0)->data << "\n";
+    // Find parent
+    std::cout << "\nshape2 parent: " << shape2.getParent()->debugName << "\n";
+    std::cout << "shape3 parent: " << shape3.getParent()->debugName << "\n";
 }
 
 void draw(float) 
