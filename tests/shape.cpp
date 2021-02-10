@@ -1,6 +1,4 @@
 #include <drawpp.hpp>
-#include <nanosvg.h>
-#include <nanosvgrast.h>
 
 DShape shape1;
 DShape shape2;
@@ -13,23 +11,31 @@ void setup()
     setTitle("Test title");
     setResizable(true);
 
-    shape1 = loadShape("D:/Projects/CPP/graphics-library/tests/assets/archlinux-logo-block.svg");
+    //shape1 = loadShape("../../tests/assets/archlinux-logo-black.svg");
+    shape1 = loadShape("../../tests/assets/starstripe.svg");
 
     // Child tests
-    shape2.debugName = "shape2";
-    shape1.debugName = "shape1";    
-    shape3.debugName = "shape3";
-    shape4.debugName = "shape4";
+    //shape2.name = "shape2";
+    //shape1.name = "shape1";
+    //shape3.name = "shape3";
+    //shape4.name = "shape4";
 
-    shape1.addChild(&shape2); // DEBUG TODO(?): Get rid of "&"
-    shape1.addChild(&shape3);
+    //shape1.addChild(&shape2); // DEBUG TODO(?): Get rid of "&"
+    //shape1.addChild(&shape3);
 
-    int childSize = shape1.getChildCount();
+    //int childSize = shape1.getChildCount();
+
+
+
+
+
+
 
     // DEBUG:
-    // Something weird about this: Randomily gives error when printing various data
-    // Then usually works just fine
+    // Something weird about this next part: Randomily gives error when printing various data
+    // Then usually works just fine and data is always there
 
+    /*
     // Count children
     std::cout << "Shape1 has " << childSize << " children \nThey are:\n";
     for(int i = 0; i < childSize; ++i)
@@ -40,6 +46,7 @@ void setup()
     // Find parent
     std::cout << "\nshape2 parent: " << shape2.getParent()->debugName << "\n";
     std::cout << "shape3 parent: " << shape3.getParent()->debugName << "\n";
+    */
 }
 
 void draw(float) 

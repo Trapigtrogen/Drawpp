@@ -40,15 +40,19 @@ public:
 	void removeChild(DShape* child);
 
 	DShape* getChild(int idx);
+	DShape* getChild(std::string);
 	size_t getChildCount();
 	DShape* getParent();
 
 	void setVisible(bool visibility) { visible = visibility; };
 	bool isVisible() { return visible; };
 
-	char* data = nullptr;
+	unsigned char* data = nullptr;
 
-	std::string debugName;
+	// Drawable objects are in image->shapes
+	struct NSVGimage* image;
+
+	char* name;
 private:
 	bool visible = true;
 
@@ -60,7 +64,7 @@ private:
 	void addParent(DShape* _parent);
 	void removeParent();
 
-	void LoadSVG(std::string filename);
+	void loadSVG(std::string filename);
 };
 
 #endif
