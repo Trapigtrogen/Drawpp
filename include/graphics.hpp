@@ -7,6 +7,7 @@
 #include <color.hpp>
 
 class DImage;
+class Shader;
 
 enum ColorMode
 {
@@ -136,6 +137,8 @@ public:
     void pushStyle();
     void popStyle();
 
+    void ellipse(float x, float y, float sizex, float sizey);
+
 private:
 
     ///\brief Get the texture id for this graphics object
@@ -149,6 +152,7 @@ private:
 
     GraphicsProperties properties;
     DMatrix4 transform_mat = DMatrix4::identity();
+    DMatrix4 view_mat;
 
     unsigned int render_id = -1;
     unsigned int buffer_id = -1;
@@ -160,6 +164,8 @@ private:
 
     std::stack<DMatrix4> matrix_stack;
     std::stack<GraphicsProperties> property_stack;
+
+    Shader* ellipse_shader = nullptr;
 
     //static unsigned int current_bound_buffer;
     //static unsigned int previous_bound_buffer;

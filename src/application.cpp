@@ -211,6 +211,9 @@ bool Application::init_application()
     texc_attrib = glGetAttribLocation(shader->getId(),"texpos");
     tex_uniform = glGetUniformLocation(shader->getId(),"texture");
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
     graphics->beginDraw();
     
     if(setup_func)

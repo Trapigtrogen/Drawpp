@@ -1,27 +1,121 @@
 #include <algorithm>
 #include <graphics.hpp>
+#include <shader.hpp>
 #include <glad/glad.h>
 #include <debug.hpp>
 
 const float primitive_square[] = 
 {
-    -1.0f, -1.0f, 0.0f,
-     1.0f, -1.0f, 0.0f,
-     1.0f,  1.0f, 0.0f,
-    -1.0f, -1.0f, 0.0f,
-     1.0f,  1.0f, 0.0f,
-    -1.0f,  1.0f, 0.0f,
+    0.0f, -1.0f, 0.0f,
+    1.0f, -1.0f, 0.0f,
+    1.0f,  0.0f, 0.0f,
+    0.0f, -1.0f, 0.0f,
+    1.0f,  0.0f, 0.0f,
+    0.0f,  0.0f, 0.0f,
 };
 
 float coords_quad[] = 
 {
-    -1.0f, -1.0f,
-     1.0f, -1.0f, 
-     1.0f,  1.0f, 
-    -1.0f, -1.0f, 
-     1.0f,  1.0f, 
-    -1.0f,  1.0f, 
+    0.0f, 0.0f,
+    1.0f, 0.0f, 
+    1.0f, 1.0f, 
+    0.0f, 0.0f, 
+    1.0f, 1.0f, 
+    0.0f, 1.0f, 
 };
+
+const char* ellipse_shader_v = R"(#version 100
+precision mediump float;
+uniform mat4 transform;
+uniform mat4 view;
+uniform vec4 offset;
+attribute vec3 pos;
+attribute vec2 texpos;
+varying vec2 texc;
+void main()
+{
+    texc = texpos;
+
+    mat4 transf = transform;
+    transf[0][3] = transf[0][3] + offset.x;
+    transf[1][3] = transf[1][3] - offset.y;
+    transf[0][0] = transf[0][0] + offset.z;
+    transf[1][1] = transf[1][1] + offset.w;
+    mat4 mv = transf * view;
+
+    gl_Position = vec4(pos,1.0) * mv;
+}
+)";
+
+const char* ellipse_shader_f = R"(#version 100
+precision mediump float;
+uniform float strokeWeight;
+uniform vec4 strokeColor;
+uniform vec4 fillColor;
+uniform vec4 offset;
+varying vec2 texc;
+void main()
+{
+    vec2 siz2 = offset.zw / 2.0;
+    
+    vec2 tc = abs(texc * offset.zw - siz2);
+    float d = length(tc);
+    //float dd = mix(siz2.y,siz2.x,abs(texc.x-0.5)*2.0);
+    float dd = mix(siz2.x,siz2.y,cos(texc.x*2.0-1.0));
+
+    
+    //vec2 tc = abs(texc * 2.0 - 1.0) * offset.zw;
+    //float d = length(tc);
+    //float dd = mix(siz2.x,siz2.y,cos(texc.x*2.0-1.0));
+
+    //vec2 pop = offset.zw / texc
+
+    if(d < dd && d > dd-strokeWeight)
+    {
+        gl_FragColor = strokeColor;
+    }
+    else if(d < dd-strokeWeight)
+    {
+        gl_FragColor = fillColor;
+    }
+    else
+    {
+        discard;
+    }
+}
+)";
+
+void DGraphics::ellipse(float x, float y, float sizex, float sizey)
+{
+    glUseProgram(ellipse_shader->getId());
+    //glUniform2f(glGetUniformLocation(ellipse_shader->getId(),"screen"),buffer_width,buffer_height);
+    glUniform4f(glGetUniformLocation(ellipse_shader->getId(),"offset"),x,y,sizex,sizey);
+    glUniform1f(glGetUniformLocation(ellipse_shader->getId(),"strokeWeight"),1.0);
+    glUniform4f(glGetUniformLocation(ellipse_shader->getId(),"strokeColor"),properties.stroke_color.red()/255.0f,
+                                                                    properties.stroke_color.green()/255.0f,
+                                                                    properties.stroke_color.blue()/255.0f,
+                                                                    properties.stroke_color.alpha()/255.0f);
+    glUniform4f(glGetUniformLocation(ellipse_shader->getId(),"fillColor"),properties.fill_color.red()/255.0f,
+                                                                    properties.fill_color.green()/255.0f,
+                                                                    properties.fill_color.blue()/255.0f,
+                                                                    properties.fill_color.alpha()/255.0f);
+    glUniformMatrix4fv(glGetUniformLocation(ellipse_shader->getId(),"transform"),1,GL_FALSE,transform_mat.values);
+    glUniformMatrix4fv(glGetUniformLocation(ellipse_shader->getId(),"view"),1,GL_FALSE,view_mat.values);
+
+    int pos = glGetAttribLocation(ellipse_shader->getId(),"pos");
+    int texpos = glGetAttribLocation(ellipse_shader->getId(),"texpos");
+
+    glEnableVertexAttribArray(pos);
+    glEnableVertexAttribArray(texpos);
+
+    glVertexAttribPointer(texpos,2,GL_FLOAT,false,0, coords_quad);
+    glVertexAttribPointer(pos,3,GL_FLOAT,false,0, primitive_square);
+
+    glDrawArrays(GL_TRIANGLES,0,6);
+
+    glDisableVertexAttribArray(pos);
+    glDisableVertexAttribArray(texpos);
+}
 
 
 DGraphics::DGraphics(int width, int height)
@@ -55,10 +149,14 @@ DGraphics::DGraphics(int width, int height)
     glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_TYPE, &type);
 
     glBindFramebuffer(GL_FRAMEBUFFER, prev_buffer);
+
+    ellipse_shader = new Shader(Shader::loadShadersFromString(ellipse_shader_v,ellipse_shader_f));
 }
 
 void DGraphics::beginDraw()
 {
+    view_mat = DMatrix4::identity().translate(DVector(-1.0,1.0)).scale(DVector(2.0/buffer_width,2.0/buffer_height));
+    transform_mat = DMatrix4::identity();
     glBindFramebuffer(GL_FRAMEBUFFER,buffer_id);
     glViewport(0,0,buffer_width,buffer_height);
 }
@@ -259,7 +357,8 @@ void DGraphics::translate(float x, float y, float z)
 
 void DGraphics::translate(const DVector& t)
 {
-    transform_mat.translate(t);
+    //transform_mat = transform_mat.translate(DVector(t.x/buffer_width,-t.y/buffer_height));
+    view_mat = view_mat.translate(DVector(t.x,-t.y));
 }
 
 void DGraphics::rotate(float angle)
@@ -269,17 +368,17 @@ void DGraphics::rotate(float angle)
 
 void DGraphics::rotateX(float angle)
 {
-    transform_mat.rotate<Axis::X>(angle);
+    transform_mat = transform_mat.rotate<Axis::X>(angle);
 }
 
 void DGraphics::rotateY(float angle)
 {
-    transform_mat.rotate<Axis::Y>(angle);
+    transform_mat = transform_mat.rotate<Axis::Y>(angle);
 }
 
 void DGraphics::rotateZ(float angle)
 {
-    transform_mat.rotate<Axis::Z>(angle);
+    transform_mat = transform_mat.rotate<Axis::Z>(angle);
 }
 
 void DGraphics::scale(float s)
@@ -299,7 +398,8 @@ void DGraphics::scale(float x, float y, float z)
 
 void DGraphics::scale(const DVector& s)
 {
-    transform_mat.scale(s);
+    //transform_mat = transform_mat.scale(s);
+    view_mat = view_mat.scale(s);
 }
 
 void DGraphics::push()
