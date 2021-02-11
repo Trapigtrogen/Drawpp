@@ -304,6 +304,17 @@ void ellipse(int x, int y, int width, int height)
     Application::GetInstance()->graphics_object().ellipse(x,y,width,height);
 }
 
+void rect(float x, float y, float w, float h)
+{
+    Application::GetInstance()->graphics_object().rect(x,y,w,h);
+}
+
+void square(float x, float y, float size)
+{
+    Application::GetInstance()->graphics_object().square(x,y,size);
+}
+
+
 
 
 // Shader

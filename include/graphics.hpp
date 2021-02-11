@@ -152,8 +152,10 @@ public:
     void popStyle();
 
     void ellipse(float x, float y, float sizex, float sizey);
-
     void circle(float x, float y, float size);
+
+    void rect(float x, float y, float sizex, float sizey);
+    void square(float x, float y, float size);
 
 private:
 
@@ -192,10 +194,21 @@ private:
     int ellipse_shader_strokeWeight_loc;
     int ellipse_shader_strokeColor_loc;
     int ellipse_shader_fillColor_loc;
-    int ellipse_shader_transform_loc;
+    //int ellipse_shader_transform_loc;
     int ellipse_shader_view_loc;
     int ellipse_shader_vpos_loc;
     int ellipse_shader_tpos_loc;
+
+    Shader* rect_shader = nullptr;
+
+    int rect_shader_offset_loc;
+    int rect_shader_strokeWeight_loc;
+    int rect_shader_strokeColor_loc;
+    int rect_shader_fillColor_loc;
+    //int rect_shader_transform_loc;
+    int rect_shader_view_loc;
+    int rect_shader_vpos_loc;
+    int rect_shader_tpos_loc;
 
     //static unsigned int current_bound_buffer;
     //static unsigned int previous_bound_buffer;

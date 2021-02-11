@@ -96,6 +96,32 @@ void main()
 }
 )";
 
+const char* rect_shader_f = R"(#version 100
+precision mediump float;
+uniform float strokeWeight;
+uniform vec4 strokeColor;
+uniform vec4 fillColor;
+uniform vec4 offset;
+varying vec2 texc;
+
+void main()
+{
+    vec2 stroke = (vec2(1.0) / offset.zw) * strokeWeight;
+
+    bool ystroke = (texc.y > 0.0 && texc.y < stroke.y) || (texc.y < 1.0 && texc.y > 1.0-stroke.y);
+    bool xstroke = (texc.x > 0.0 && texc.x < stroke.x) || (texc.x < 1.0 && texc.x > 1.0-stroke.x);
+
+    if(ystroke || xstroke)
+    {
+        gl_FragColor = strokeColor;
+    }
+    else
+    {
+        gl_FragColor = fillColor;
+    }
+}
+)";
+
 DGraphics::DGraphics(int width, int height)
 {
     buffer_width = static_cast<unsigned int>(width);
@@ -143,6 +169,17 @@ void DGraphics::init_shaders()
     ellipse_shader_view_loc = glGetUniformLocation(ellipse_shader->getId(),"view");
     ellipse_shader_vpos_loc = glGetAttribLocation(ellipse_shader->getId(),"pos");
     ellipse_shader_tpos_loc = glGetAttribLocation(ellipse_shader->getId(),"texpos");
+
+
+    rect_shader = new Shader(Shader::loadShadersFromString(ellipse_shader_v,rect_shader_f));
+    
+    rect_shader_offset_loc = glGetUniformLocation(rect_shader->getId(),"offset");
+    rect_shader_strokeWeight_loc = glGetUniformLocation(rect_shader->getId(),"strokeWeight");
+    rect_shader_strokeColor_loc = glGetUniformLocation(rect_shader->getId(),"strokeColor");                                             
+    rect_shader_fillColor_loc = glGetUniformLocation(rect_shader->getId(),"fillColor");
+    rect_shader_view_loc = glGetUniformLocation(rect_shader->getId(),"view");
+    rect_shader_vpos_loc = glGetAttribLocation(rect_shader->getId(),"pos");
+    rect_shader_tpos_loc = glGetAttribLocation(rect_shader->getId(),"texpos");
 }
 
 void DGraphics::beginDraw()
@@ -526,6 +563,37 @@ void DGraphics::circle(float x, float y, float size)
     ellipse(x,y,size*2,size*2);
 }
 
+void DGraphics::rect(float x, float y, float sizex, float sizey)
+{
+    glUseProgram(rect_shader->getId());
+    glUniform4f(rect_shader_offset_loc,x,y,sizex,sizey);
+    glUniform1f(rect_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
+    glUniform4f(rect_shader_strokeColor_loc,properties.stroke_color.red()/255.0f,
+                                                                    properties.stroke_color.green()/255.0f,
+                                                                    properties.stroke_color.blue()/255.0f,
+                                                                    properties.stroke_color.alpha()/255.0f);
+    glUniform4f(rect_shader_fillColor_loc,properties.fill_color.red()/255.0f,
+                                                                    properties.fill_color.green()/255.0f,
+                                                                    properties.fill_color.blue()/255.0f,
+                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniformMatrix4fv(rect_shader_view_loc,1,GL_FALSE,view_mat.values);
+
+    glEnableVertexAttribArray(rect_shader_vpos_loc);
+    glEnableVertexAttribArray(rect_shader_tpos_loc);
+
+    glVertexAttribPointer(rect_shader_tpos_loc,2,GL_FLOAT,false,0, coords_quad);
+    glVertexAttribPointer(rect_shader_vpos_loc,3,GL_FLOAT,false,0, primitive_square);
+
+    glDrawArrays(GL_TRIANGLES,0,6);
+
+    glDisableVertexAttribArray(rect_shader_vpos_loc);
+    glDisableVertexAttribArray(rect_shader_tpos_loc);
+}
+
+void DGraphics::square(float x, float y, float size)
+{
+    rect(x,y,size,size);
+}
 
 
 Color DGraphics::get_rgba(float r, float g, float b, float a)
