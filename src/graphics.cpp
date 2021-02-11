@@ -54,27 +54,38 @@ uniform vec4 strokeColor;
 uniform vec4 fillColor;
 uniform vec4 offset;
 varying vec2 texc;
+
+float atan2(in float y, in float x)
+{
+    bool s = (abs(x) > abs(y));
+    return mix(radians(180.0)/2.0 - atan(x,y), atan(y,x), float(s));
+}
+
 void main()
 {
-    vec2 siz2 = offset.zw / 2.0;
-    
-    vec2 tc = abs(texc * offset.zw - siz2);
-    float d = length(tc);
-    //float dd = mix(siz2.y,siz2.x,abs(texc.x-0.5)*2.0);
-    float dd = mix(siz2.x,siz2.y,cos(texc.x*2.0-1.0));
+    vec2 tc = abs(texc*2.0 - 1.0);
+    float l = length(tc);
 
-    
-    //vec2 tc = abs(texc * 2.0 - 1.0) * offset.zw;
-    //float d = length(tc);
-    //float dd = mix(siz2.x,siz2.y,cos(texc.x*2.0-1.0));
+    float ang = atan2(tc.x,tc.y);
+    vec2 dir = vec2(cos(ang),sin(ang));
 
-    //vec2 pop = offset.zw / texc
+    //something wrong here, stroke len too large. mult by 0.66 to make better, but 
+    //it's not accurate still. also skews if width != height, so maybe this is shit overall
+    //float d2 = 1.0 - length(vec2(strokeWeight * 0.666) / (offset.wz / 2.0));
 
-    if(d < dd && d > dd-strokeWeight)
+    //this one makes a correct stroke width, if width == height.
+    //weird artefact will happen if width != height.
+    //using this for now because it's the best we got
+    vec2 p2 = (vec2(1.0) / (offset.wz / 2.0)) * vec2(strokeWeight);
+    p2.x = p2.x * abs(cos(ang));
+    p2.y = p2.y * abs(sin(ang));
+    float d2 = length(dir-p2);
+
+    if(l < 1.0 && l > d2)
     {
         gl_FragColor = strokeColor;
     }
-    else if(d < dd-strokeWeight)
+    else if(l <= d2)
     {
         gl_FragColor = fillColor;
     }
@@ -88,33 +99,29 @@ void main()
 void DGraphics::ellipse(float x, float y, float sizex, float sizey)
 {
     glUseProgram(ellipse_shader->getId());
-    //glUniform2f(glGetUniformLocation(ellipse_shader->getId(),"screen"),buffer_width,buffer_height);
-    glUniform4f(glGetUniformLocation(ellipse_shader->getId(),"offset"),x,y,sizex,sizey);
-    glUniform1f(glGetUniformLocation(ellipse_shader->getId(),"strokeWeight"),1.0);
-    glUniform4f(glGetUniformLocation(ellipse_shader->getId(),"strokeColor"),properties.stroke_color.red()/255.0f,
+    glUniform4f(ellipse_shader_offset_loc,x,y,sizex,sizey);
+    glUniform1f(ellipse_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
+    glUniform4f(ellipse_shader_strokeColor_loc,properties.stroke_color.red()/255.0f,
                                                                     properties.stroke_color.green()/255.0f,
                                                                     properties.stroke_color.blue()/255.0f,
                                                                     properties.stroke_color.alpha()/255.0f);
-    glUniform4f(glGetUniformLocation(ellipse_shader->getId(),"fillColor"),properties.fill_color.red()/255.0f,
+    glUniform4f(ellipse_shader_fillColor_loc,properties.fill_color.red()/255.0f,
                                                                     properties.fill_color.green()/255.0f,
                                                                     properties.fill_color.blue()/255.0f,
-                                                                    properties.fill_color.alpha()/255.0f);
-    glUniformMatrix4fv(glGetUniformLocation(ellipse_shader->getId(),"transform"),1,GL_FALSE,transform_mat.values);
-    glUniformMatrix4fv(glGetUniformLocation(ellipse_shader->getId(),"view"),1,GL_FALSE,view_mat.values);
+                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniformMatrix4fv(ellipse_shader_transform_loc,1,GL_FALSE,transform_mat.values);
+    glUniformMatrix4fv(ellipse_shader_view_loc,1,GL_FALSE,view_mat.values);
 
-    int pos = glGetAttribLocation(ellipse_shader->getId(),"pos");
-    int texpos = glGetAttribLocation(ellipse_shader->getId(),"texpos");
+    glEnableVertexAttribArray(ellipse_shader_vpos_loc);
+    glEnableVertexAttribArray(ellipse_shader_tpos_loc);
 
-    glEnableVertexAttribArray(pos);
-    glEnableVertexAttribArray(texpos);
-
-    glVertexAttribPointer(texpos,2,GL_FLOAT,false,0, coords_quad);
-    glVertexAttribPointer(pos,3,GL_FLOAT,false,0, primitive_square);
+    glVertexAttribPointer(ellipse_shader_tpos_loc,2,GL_FLOAT,false,0, coords_quad);
+    glVertexAttribPointer(ellipse_shader_vpos_loc,3,GL_FLOAT,false,0, primitive_square);
 
     glDrawArrays(GL_TRIANGLES,0,6);
 
-    glDisableVertexAttribArray(pos);
-    glDisableVertexAttribArray(texpos);
+    glDisableVertexAttribArray(ellipse_shader_vpos_loc);
+    glDisableVertexAttribArray(ellipse_shader_tpos_loc);
 }
 
 
@@ -150,7 +157,21 @@ DGraphics::DGraphics(int width, int height)
 
     glBindFramebuffer(GL_FRAMEBUFFER, prev_buffer);
 
+    init_shaders();
+}
+
+void DGraphics::init_shaders()
+{
     ellipse_shader = new Shader(Shader::loadShadersFromString(ellipse_shader_v,ellipse_shader_f));
+    
+    ellipse_shader_offset_loc = glGetUniformLocation(ellipse_shader->getId(),"offset");
+    ellipse_shader_strokeWeight_loc = glGetUniformLocation(ellipse_shader->getId(),"strokeWeight");
+    ellipse_shader_strokeColor_loc = glGetUniformLocation(ellipse_shader->getId(),"strokeColor");                                             
+    ellipse_shader_fillColor_loc = glGetUniformLocation(ellipse_shader->getId(),"fillColor");
+    ellipse_shader_transform_loc = glGetUniformLocation(ellipse_shader->getId(),"transform");
+    ellipse_shader_view_loc = glGetUniformLocation(ellipse_shader->getId(),"view");
+    ellipse_shader_vpos_loc = glGetAttribLocation(ellipse_shader->getId(),"pos");
+    ellipse_shader_tpos_loc = glGetAttribLocation(ellipse_shader->getId(),"texpos");
 }
 
 void DGraphics::beginDraw()
@@ -368,17 +389,18 @@ void DGraphics::rotate(float angle)
 
 void DGraphics::rotateX(float angle)
 {
-    transform_mat = transform_mat.rotate<Axis::X>(angle);
+    view_mat = view_mat.rotate<Axis::X>(-angle);
 }
 
 void DGraphics::rotateY(float angle)
 {
-    transform_mat = transform_mat.rotate<Axis::Y>(angle);
+    view_mat = view_mat.rotate<Axis::Y>(-angle);
 }
 
 void DGraphics::rotateZ(float angle)
 {
-    transform_mat = transform_mat.rotate<Axis::Z>(angle);
+    //transform_mat = transform_mat.rotate<Axis::Z>(angle);
+    view_mat = view_mat.rotate<Axis::Z>(-angle);
 }
 
 void DGraphics::scale(float s)

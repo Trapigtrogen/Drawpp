@@ -23,12 +23,12 @@ struct GraphicsProperties
     float color_max2 = 255;
     float color_max3 = 255;
     float color_maxa = 255;
-    bool use_stroke = false;
+    bool use_stroke = true;
     Color stroke_color = {0,0,0};
-    int stroke_weight;
+    float stroke_weight = 1.0f;
     bool use_tint = false;
     Color tint_color = {0,0,0};
-    bool use_fill = false;
+    bool use_fill = true;
     Color fill_color = {255,255,255};
 };
 
@@ -150,8 +150,13 @@ private:
 
     void set_current();
 
+    void init_shaders();
+
     GraphicsProperties properties;
+
+    //is this needed?
     DMatrix4 transform_mat = DMatrix4::identity();
+
     DMatrix4 view_mat;
 
     unsigned int render_id = -1;
@@ -166,6 +171,15 @@ private:
     std::stack<GraphicsProperties> property_stack;
 
     Shader* ellipse_shader = nullptr;
+
+    int ellipse_shader_offset_loc;
+    int ellipse_shader_strokeWeight_loc;
+    int ellipse_shader_strokeColor_loc;
+    int ellipse_shader_fillColor_loc;
+    int ellipse_shader_transform_loc;
+    int ellipse_shader_view_loc;
+    int ellipse_shader_vpos_loc;
+    int ellipse_shader_tpos_loc;
 
     //static unsigned int current_bound_buffer;
     //static unsigned int previous_bound_buffer;
