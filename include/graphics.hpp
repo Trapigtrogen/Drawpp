@@ -171,7 +171,7 @@ private:
     GraphicsProperties properties;
 
     //is this needed?
-    DMatrix4 transform_mat = DMatrix4::identity();
+    //DMatrix4 transform_mat = DMatrix4::identity();
 
     DMatrix4 view_mat;
 

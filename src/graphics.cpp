@@ -26,7 +26,7 @@ float coords_quad[] =
 
 const char* ellipse_shader_v = R"(#version 100
 precision mediump float;
-uniform mat4 transform;
+//uniform mat4 transform;
 uniform mat4 view;
 uniform vec4 offset;
 attribute vec3 pos;
@@ -36,7 +36,7 @@ void main()
 {
     texc = texpos;
 
-    mat4 transf = transform;
+    mat4 transf = mat4(1.0);
     transf[0][3] = transf[0][3] + offset.x;
     transf[1][3] = transf[1][3] - offset.y;
     transf[0][0] = transf[0][0] + offset.z;
@@ -139,7 +139,7 @@ void DGraphics::init_shaders()
     ellipse_shader_strokeWeight_loc = glGetUniformLocation(ellipse_shader->getId(),"strokeWeight");
     ellipse_shader_strokeColor_loc = glGetUniformLocation(ellipse_shader->getId(),"strokeColor");                                             
     ellipse_shader_fillColor_loc = glGetUniformLocation(ellipse_shader->getId(),"fillColor");
-    ellipse_shader_transform_loc = glGetUniformLocation(ellipse_shader->getId(),"transform");
+    //ellipse_shader_transform_loc = glGetUniformLocation(ellipse_shader->getId(),"transform");
     ellipse_shader_view_loc = glGetUniformLocation(ellipse_shader->getId(),"view");
     ellipse_shader_vpos_loc = glGetAttribLocation(ellipse_shader->getId(),"pos");
     ellipse_shader_tpos_loc = glGetAttribLocation(ellipse_shader->getId(),"texpos");
@@ -148,7 +148,7 @@ void DGraphics::init_shaders()
 void DGraphics::beginDraw()
 {
     view_mat = DMatrix4::identity().translate(DVector(-1.0,1.0)).scale(DVector(2.0/buffer_width,2.0/buffer_height));
-    transform_mat = DMatrix4::identity();
+    //transform_mat = DMatrix4::identity();
     glBindFramebuffer(GL_FRAMEBUFFER,buffer_id);
     glViewport(0,0,buffer_width,buffer_height);
 }
@@ -463,7 +463,7 @@ void DGraphics::pop()
 
 void DGraphics::pushMatrix()
 {
-    matrix_stack.push(transform_mat);
+    matrix_stack.push(view_mat);
 }
 
 void DGraphics::popMatrix()
@@ -473,7 +473,7 @@ void DGraphics::popMatrix()
         return;
     }
 
-    transform_mat = matrix_stack.top();
+    view_mat = matrix_stack.top();
     matrix_stack.pop();
 }
 
@@ -506,7 +506,7 @@ void DGraphics::ellipse(float x, float y, float sizex, float sizey)
                                                                     properties.fill_color.green()/255.0f,
                                                                     properties.fill_color.blue()/255.0f,
                                                                     properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
-    glUniformMatrix4fv(ellipse_shader_transform_loc,1,GL_FALSE,transform_mat.values);
+    //glUniformMatrix4fv(ellipse_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(ellipse_shader_view_loc,1,GL_FALSE,view_mat.values);
 
     glEnableVertexAttribArray(ellipse_shader_vpos_loc);
