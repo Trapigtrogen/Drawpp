@@ -207,22 +207,22 @@ void colorMode(ColorMode mode, float max1, float max2, float max3, float maxA)
 
 Color color(float grey)
 {
-    Application::GetInstance()->graphics_object().color(grey);
+    return Application::GetInstance()->graphics_object().color(grey);
 }
 
 Color color(float grey, float alpha)
 {
-    Application::GetInstance()->graphics_object().color(grey,alpha);
+    return Application::GetInstance()->graphics_object().color(grey,alpha);
 }
 
 Color color(float v1, float v2, float v3)
 {
-    Application::GetInstance()->graphics_object().color(v1,v2,v3);
+    return Application::GetInstance()->graphics_object().color(v1,v2,v3);
 }
 
 Color color(float v1, float v2, float v3, float alpha)
 {
-    Application::GetInstance()->graphics_object().color(v1,v2,v3,alpha);
+    return Application::GetInstance()->graphics_object().color(v1,v2,v3,alpha);
 }
 
 
