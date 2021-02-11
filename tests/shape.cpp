@@ -20,12 +20,14 @@ void setup()
     shape1 = loadShape("../../tests/assets/archlinux-logo-black.svg");
 
     // Normal image containing 2 elements with names/ids
-    printf("Loading empty image to shape3...\n\n");
-    shape3 = loadShape("../../tests/assets/starstripe.svg"); // only loads star and not stripe
+    printf("Loading image (multiple elements) to shape3...\n\n");
+    shape3 = loadShape("../../tests/assets/starstripe.svg");
 
     // Naming
     shape1.name = "shape1";
-    shape4.name = "shape4(manual)";
+    shape2.name = "shape2";
+    shape3.name = "shape3";
+    shape4.name = "shape4";
 
     // Manual childing tests 
     shape1.addChild(&shape4); // DEBUG TODO(?): Get rid of "&"
@@ -40,6 +42,7 @@ void setup()
     printf("\n\n\n");
 
     shape2 = shape1.getChild(0);
+    shape2 = shape3.getChild("star");
     std::cout << "shape2 name: " << shape2.name << "\n";
     
     // Find parent

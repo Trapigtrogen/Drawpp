@@ -50,7 +50,7 @@ public:
 
 	unsigned char* data = nullptr; // DEBUG: Possibly not needed
 
-	// Drawable objects are in image->shapes
+	// Drawable objects are in image->shapes. If image == NULL go through children's images
 	struct NSVGimage* image;
 
 	char* name;
