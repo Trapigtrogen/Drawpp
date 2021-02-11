@@ -70,7 +70,21 @@ public:
     void background(float v1, float v2, float v3);
     void background(float v1, float v2, float v3, float alpha);
 
-    //void clear();
+    void stroke(Color rgba);
+    void stroke(Color rgb, float alpha);
+    void stroke(float gray);
+    void stroke(float gray, float alpha);
+
+    //affected by colormode
+    void stroke(float v1, float v2, float v3);
+    void stroke(float v1, float v2, float v3, float alpha);
+
+    ///\brief Change stroke width
+    ///
+    ///Will enable stroke if it is disabled.
+    void strokeWeight(float w);
+
+    void clear();
 
     void colorMode(ColorMode mode);
     void colorMode(ColorMode mode, float max);
@@ -138,6 +152,8 @@ public:
     void popStyle();
 
     void ellipse(float x, float y, float sizex, float sizey);
+
+    void circle(float x, float y, float size);
 
 private:
 

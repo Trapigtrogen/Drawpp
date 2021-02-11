@@ -33,6 +33,13 @@ void box(int size);
 void box(int width, int height, int dimension);
 void sphere(int radius);
 
+
+void strokeWeight(float w);
+void clear();
+void noFill();
+void noStroke();
+void noTint();
+
 // Color
 void fill(Color col);
 void fill(int rgb);
@@ -42,6 +49,13 @@ void fill(float gray, float alpha);
 void fill(int v1, int v2, int v3);
 void fill(int v1, int v2, int v3, float alpha);
 
+void stroke(Color rgba);
+void stroke(Color rgb, float alpha);
+void stroke(float gray);
+void stroke(float gray, float alpha);
+void stroke(float v1, float v2, float v3);
+void stroke(float v1, float v2, float v3, float alpha);
+
 void background(Color col);
 void background(int rgb);
 void background(int rgb, float alpha);
@@ -49,6 +63,16 @@ void background(float gray);
 void background(float gray, float alpha);
 void background(int v1, int v2, int v3);
 void background(int v1, int v2, int v3, float alpha);
+
+void colorMode(ColorMode mode);
+void colorMode(ColorMode mode, float max);
+void colorMode(ColorMode mode, float max1, float max2, float max3);
+void colorMode(ColorMode mode, float max1, float max2, float max3, float maxA);
+
+Color color(float grey);
+Color color(float grey, float alpha);
+Color color(float v1, float v2, float v3);
+Color color(float v1, float v2, float v3, float alpha);
 
 float alpha(Color col);
 float red(Color col);
@@ -73,9 +97,19 @@ Shader loadShadersFromString(const char* vertexShader, const char* fregmentShade
 Shader loadShadersDefault();
 
 // Transform
-void rotate(int rad);
-void translate(int x, int y);
-void translate(int x, int y, int z);
+void translate(float x, float y);
+void translate(float x, float y, float z);
+void translate(const DVector& t);
+
+void rotate(float angle);
+void rotateX(float angle);
+void rotateY(float angle);
+void rotateZ(float angle);
+
+void scale(float s);
+void scale(float x, float y);
+void scale(float x, float y, float z);
+void scale(const DVector& s);
 
 // Input
 extern char key;
@@ -94,5 +128,14 @@ int random(int low, int high);
 float random();
 float randomf(float low, float high);
 float randomGaussian();
+
+// Push Pop
+
+void push();
+void pop();
+void pushMatrix();
+void popMatrix();
+void pushStyle();
+void popStyle();
 
 #endif

@@ -53,42 +53,100 @@ float randomGaussian()
     return Application::GetInstance()->random.randomGaussian();
 }
 
+
+void strokeWeight(float w)
+{
+    Application::GetInstance()->graphics_object().strokeWeight(w);
+}
+
+void clear()
+{
+    Application::GetInstance()->graphics_object().clear();
+}
+
+void noFill()
+{
+    Application::GetInstance()->graphics_object().noFill();
+}
+
+void noStroke()
+{
+    Application::GetInstance()->graphics_object().noStroke();
+}
+
+void noTint()
+{
+    Application::GetInstance()->graphics_object().noTint();
+}
+
+
+
 // Color
 
 void fill(Color col) 
 {
     // DEBUG TODO: RGB/HSB Modes
-    //Application::GetInstance()->graphics->fill(col.red(), col.green(), col.blue(), col.alpha());
+    Application::GetInstance()->graphics_object().fill(col.red(), col.green(), col.blue(), col.alpha());
 }
 
 void fill(int rgb)
 {
-    //Application::GetInstance()->graphics->fill(rgb);
+    Application::GetInstance()->graphics_object().fill(rgb);
 }
 
 void fill(int rgb, float alpha)
 {
-    //Application::GetInstance()->graphics->fill(rgb);
+    Application::GetInstance()->graphics_object().fill(rgb);
 }
 
 void fill(float gray)
 {
-    //Application::GetInstance()->graphics->fill(gray);
+    Application::GetInstance()->graphics_object().fill(gray);
 }
 
 void fill(float gray, float alpha)
 {
-    //Application::GetInstance()->graphics->fill(gray, alpha);
+    Application::GetInstance()->graphics_object().fill(gray, alpha);
 }
 
 void fill(int v1, int v2, int v3)
 {
-    //Application::GetInstance()->graphics->fill(v1, v2, v3);
+    Application::GetInstance()->graphics_object().fill(v1, v2, v3);
 }
 
 void fill(int v1, int v2, int v3, float alpha)
 {
-    //Application::GetInstance()->graphics->fill(v1, v2, v3, alpha);
+    Application::GetInstance()->graphics_object().fill(v1, v2, v3, alpha);
+}
+
+void stroke(Color rgba)
+{
+    Application::GetInstance()->graphics_object().stroke(rgba);
+}
+
+void stroke(Color rgb, float alpha)
+{
+    Application::GetInstance()->graphics_object().stroke(rgb,alpha);
+}
+
+void stroke(float gray)
+{
+    Application::GetInstance()->graphics_object().stroke(gray);
+}
+
+void stroke(float gray, float alpha)
+{
+    Application::GetInstance()->graphics_object().stroke(gray,alpha);
+}
+
+void stroke(float v1, float v2, float v3)
+{
+    Application::GetInstance()->graphics_object().stroke(v1,v2,v3);
+}
+
+void stroke(float v1, float v2, float v3, float alpha)
+{
+    Application::GetInstance()->graphics_object().stroke(v1,v2,v3,alpha);
 }
 
 
@@ -125,6 +183,46 @@ void background(int v1, int v2, int v3)
 void background(int v1, int v2, int v3, float alpha)
 {
     Application::GetInstance()->graphics_object().background(v1, v2, v3, alpha);
+}
+
+void colorMode(ColorMode mode)
+{
+    Application::GetInstance()->graphics_object().colorMode(mode);
+}
+
+void colorMode(ColorMode mode, float max)
+{
+    Application::GetInstance()->graphics_object().colorMode(mode,max);
+}
+
+void colorMode(ColorMode mode, float max1, float max2, float max3)
+{
+    Application::GetInstance()->graphics_object().colorMode(mode,max1,max2,max3);
+}
+
+void colorMode(ColorMode mode, float max1, float max2, float max3, float maxA)
+{
+    Application::GetInstance()->graphics_object().colorMode(mode,max1,max2,max3,maxA);
+}
+
+Color color(float grey)
+{
+    Application::GetInstance()->graphics_object().color(grey);
+}
+
+Color color(float grey, float alpha)
+{
+    Application::GetInstance()->graphics_object().color(grey,alpha);
+}
+
+Color color(float v1, float v2, float v3)
+{
+    Application::GetInstance()->graphics_object().color(v1,v2,v3);
+}
+
+Color color(float v1, float v2, float v3, float alpha)
+{
+    Application::GetInstance()->graphics_object().color(v1,v2,v3,alpha);
 }
 
 
@@ -196,6 +294,18 @@ void rect(int x, int y, int width, int height)
 
 }
 
+void circle(int x, int y, int radius)
+{
+    Application::GetInstance()->graphics_object().circle(x,y,radius);
+}
+
+void ellipse(int x, int y, int width, int height)
+{
+    Application::GetInstance()->graphics_object().ellipse(x,y,width,height);
+}
+
+
+
 // Shader
 
 Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader)
@@ -211,4 +321,95 @@ Shader loadShadersFromString(const char* vertexShader, const char* fregmentShade
 Shader loadShadersDefault()
 {
     return Shader::loadShadersDefault();
+}
+
+
+// Transform
+
+void translate(float x, float y)
+{
+    Application::GetInstance()->graphics_object().translate(x,y);
+}
+
+void translate(float x, float y, float z)
+{
+    Application::GetInstance()->graphics_object().translate(x,y,z);
+}
+
+void translate(const DVector& t)
+{
+    Application::GetInstance()->graphics_object().translate(t);
+}
+
+void rotate(float angle)
+{
+    Application::GetInstance()->graphics_object().rotate(angle);
+}
+
+void rotateX(float angle)
+{
+    Application::GetInstance()->graphics_object().rotateX(angle);
+}
+
+void rotateY(float angle)
+{
+    Application::GetInstance()->graphics_object().rotateY(angle);
+}
+
+void rotateZ(float angle)
+{
+    Application::GetInstance()->graphics_object().rotateZ(angle);
+}
+
+void scale(float s)
+{
+    Application::GetInstance()->graphics_object().scale(s);
+}
+
+void scale(float x, float y)
+{
+    Application::GetInstance()->graphics_object().scale(x,y);
+}
+
+void scale(float x, float y, float z)
+{
+    Application::GetInstance()->graphics_object().scale(x,y,z);
+}
+
+void scale(const DVector& s)
+{
+    Application::GetInstance()->graphics_object().scale(s);
+}
+
+
+// Push Pop
+
+void push()
+{
+    Application::GetInstance()->graphics_object().push();
+}
+
+void pop()
+{
+    Application::GetInstance()->graphics_object().pop();
+}
+
+void pushMatrix()
+{
+    Application::GetInstance()->graphics_object().pushMatrix();
+}
+
+void popMatrix()
+{
+    Application::GetInstance()->graphics_object().popMatrix();
+}
+
+void pushStyle()
+{
+    Application::GetInstance()->graphics_object().pushStyle();
+}
+
+void popStyle()
+{
+    Application::GetInstance()->graphics_object().popStyle();
 }

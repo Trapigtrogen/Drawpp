@@ -96,35 +96,6 @@ void main()
 }
 )";
 
-void DGraphics::ellipse(float x, float y, float sizex, float sizey)
-{
-    glUseProgram(ellipse_shader->getId());
-    glUniform4f(ellipse_shader_offset_loc,x,y,sizex,sizey);
-    glUniform1f(ellipse_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
-    glUniform4f(ellipse_shader_strokeColor_loc,properties.stroke_color.red()/255.0f,
-                                                                    properties.stroke_color.green()/255.0f,
-                                                                    properties.stroke_color.blue()/255.0f,
-                                                                    properties.stroke_color.alpha()/255.0f);
-    glUniform4f(ellipse_shader_fillColor_loc,properties.fill_color.red()/255.0f,
-                                                                    properties.fill_color.green()/255.0f,
-                                                                    properties.fill_color.blue()/255.0f,
-                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
-    glUniformMatrix4fv(ellipse_shader_transform_loc,1,GL_FALSE,transform_mat.values);
-    glUniformMatrix4fv(ellipse_shader_view_loc,1,GL_FALSE,view_mat.values);
-
-    glEnableVertexAttribArray(ellipse_shader_vpos_loc);
-    glEnableVertexAttribArray(ellipse_shader_tpos_loc);
-
-    glVertexAttribPointer(ellipse_shader_tpos_loc,2,GL_FLOAT,false,0, coords_quad);
-    glVertexAttribPointer(ellipse_shader_vpos_loc,3,GL_FLOAT,false,0, primitive_square);
-
-    glDrawArrays(GL_TRIANGLES,0,6);
-
-    glDisableVertexAttribArray(ellipse_shader_vpos_loc);
-    glDisableVertexAttribArray(ellipse_shader_tpos_loc);
-}
-
-
 DGraphics::DGraphics(int width, int height)
 {
     buffer_width = static_cast<unsigned int>(width);
@@ -199,14 +170,14 @@ void DGraphics::fill(Color rgb, float alpha)
     properties.use_fill = true;
 }
 
-void DGraphics::fill(float grey)
+void DGraphics::fill(float gray)
 {
-    fill(grey,properties.color_maxa);
+    fill(gray,properties.color_maxa);
 }
 
-void DGraphics::fill(float grey, float alpha)
+void DGraphics::fill(float gray, float alpha)
 {
-    properties.fill_color = color(grey, alpha);
+    properties.fill_color = color(gray, alpha);
     properties.use_fill = true;
 }
 
@@ -220,6 +191,60 @@ void DGraphics::fill(float v1, float v2, float v3, float alpha)
 {
     properties.fill_color = get_color(v1,v2,v3,alpha);
     properties.use_fill = true;
+}
+
+void DGraphics::stroke(Color rgba)
+{
+    properties.stroke_color = rgba;
+    properties.use_stroke = true;
+}
+
+void DGraphics::stroke(Color rgb, float alpha)
+{
+    properties.stroke_color = Color(rgb.red(),rgb.green(),rgb.blue(),alpha);
+    properties.use_stroke = true;
+}
+
+void DGraphics::stroke(float gray)
+{
+    stroke(gray,properties.color_maxa);
+}
+
+void DGraphics::stroke(float gray, float alpha)
+{
+    properties.stroke_color = color(gray, alpha);
+    properties.use_stroke = true;
+}
+
+void DGraphics::stroke(float v1, float v2, float v3)
+{
+    properties.stroke_color = get_color(v1,v2,v3,properties.color_maxa);
+    properties.use_stroke = true;
+}
+
+void DGraphics::stroke(float v1, float v2, float v3, float alpha)
+{
+    properties.stroke_color = get_color(v1,v2,v3,alpha);
+    properties.use_stroke = true;
+}
+
+void DGraphics::strokeWeight(float w)
+{
+    properties.stroke_weight = std::abs(w);
+    properties.use_stroke = true;
+}
+
+void DGraphics::clear()
+{
+    glClearColor(0.0,0.0,0.0,0.0);
+    int f1,f2;
+    glGetIntegerv(GL_BLEND_SRC_ALPHA,&f1);
+    glGetIntegerv(GL_BLEND_DST_ALPHA,&f2);
+
+    glBlendFunc(GL_ZERO,GL_SRC_ALPHA);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glBlendFunc(f1,f2);
 }
 
 void DGraphics::background(Color rgba)
@@ -467,6 +492,41 @@ void DGraphics::popStyle()
     properties = property_stack.top();
     property_stack.pop();
 }
+
+void DGraphics::ellipse(float x, float y, float sizex, float sizey)
+{
+    glUseProgram(ellipse_shader->getId());
+    glUniform4f(ellipse_shader_offset_loc,x,y,sizex,sizey);
+    glUniform1f(ellipse_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
+    glUniform4f(ellipse_shader_strokeColor_loc,properties.stroke_color.red()/255.0f,
+                                                                    properties.stroke_color.green()/255.0f,
+                                                                    properties.stroke_color.blue()/255.0f,
+                                                                    properties.stroke_color.alpha()/255.0f);
+    glUniform4f(ellipse_shader_fillColor_loc,properties.fill_color.red()/255.0f,
+                                                                    properties.fill_color.green()/255.0f,
+                                                                    properties.fill_color.blue()/255.0f,
+                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniformMatrix4fv(ellipse_shader_transform_loc,1,GL_FALSE,transform_mat.values);
+    glUniformMatrix4fv(ellipse_shader_view_loc,1,GL_FALSE,view_mat.values);
+
+    glEnableVertexAttribArray(ellipse_shader_vpos_loc);
+    glEnableVertexAttribArray(ellipse_shader_tpos_loc);
+
+    glVertexAttribPointer(ellipse_shader_tpos_loc,2,GL_FLOAT,false,0, coords_quad);
+    glVertexAttribPointer(ellipse_shader_vpos_loc,3,GL_FLOAT,false,0, primitive_square);
+
+    glDrawArrays(GL_TRIANGLES,0,6);
+
+    glDisableVertexAttribArray(ellipse_shader_vpos_loc);
+    glDisableVertexAttribArray(ellipse_shader_tpos_loc);
+}
+
+void DGraphics::circle(float x, float y, float size)
+{
+    ellipse(x,y,size*2,size*2);
+}
+
+
 
 Color DGraphics::get_rgba(float r, float g, float b, float a)
 {
