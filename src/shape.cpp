@@ -15,12 +15,12 @@ DShape::~DShape()
 		it->removeParent();
 	}
 	children.clear();
-	//nsvgDelete(image); // DEBUG NOT TESTED
 }
 
 DShape::DShape()
 {
 	data = new unsigned char[0];
+	name = (char*)"Shape";
 }
 
 DShape::DShape(const DShape& other)
@@ -31,6 +31,7 @@ DShape::DShape(const DShape& other)
 	visible = other.visible;
 	parent = other.parent;
 	image = other.image;
+	name = other.name;
 	for(auto& it : other.children)
 	{
 		addChild(it);
@@ -44,16 +45,18 @@ DShape::DShape(DShape&& other)
 	visible = other.visible;
 	parent = other.parent;
 	image = other.image;
+	name = other.name;
 	for(auto& it : other.children) 
 	{
 		addChild(it);
-		other.removeChild(it);
 	}
 
 	other.data = nullptr;
 	other.visible = 0;
 	other.parent = nullptr;
+	other.children.clear();
 	other.image = nullptr;
+	other.name = nullptr;
 }
 
 DShape& DShape::operator=(DShape& other)
@@ -61,11 +64,17 @@ DShape& DShape::operator=(DShape& other)
 	if(this != &other) 
 	{
 		delete[] data;
+		for(auto& it : children) {
+			it->removeParent();
+			it->children.clear();
+		}
+		children.clear();
 
 		data = other.data;
 		visible = other.visible;
 		parent = other.parent;
 		image = other.image;
+		name = other.name;
 		for(auto& it : other.children) 
 		{
 			addChild(it);
@@ -80,20 +89,52 @@ DShape& DShape::operator=(DShape&& other)
 	if(this != &other)
 	{
 		delete[] data;
+		for(auto& it : children) {
+			it->removeParent();
+			it->children.clear();
+		}
+		children.clear();
 
 		data = other.data;
 		visible = other.visible;
 		parent = other.parent;
 		image = other.image;
+		name = other.name;
 		for(auto& it : other.children) {
 			addChild(it);
-			other.removeChild(it);
 		}
 
 		other.data = nullptr;
 		other.visible = 0;
 		other.parent = nullptr;
+		other.children.clear();
 		other.image = nullptr;
+		other.name = nullptr;
+	}
+
+	return *this;
+}
+
+DShape& DShape::operator=(DShape* other) 
+{
+	if(this != other) 
+	{
+		delete[] data;
+		for(auto& it : children) {
+			it->removeParent();
+			it->children.clear();
+		}
+		children.clear();
+
+		data = other->data;
+		visible = other->visible;
+		parent = other->parent;
+		image = other->image;
+		name = other->name;
+		for(auto& it : other->children) 
+		{
+			addChild(it);
+		}
 	}
 
 	return *this;
@@ -102,15 +143,15 @@ DShape& DShape::operator=(DShape&& other)
 void DShape::addChild(DShape* child)
 {
 	child->renderIdx = renderIdx + 1;
-	children.push_back(child);
 	child->addParent(this);
+	children.push_back(child);
 }
 
 void DShape::addChild(DShape* child, int _renderIdx)
 {
 	child->renderIdx = _renderIdx;
-	children.push_back(child);
 	child->addParent(this);
+	children.push_back(child);
 }
 
 void DShape::removeChild(DShape* child)
@@ -163,24 +204,29 @@ DShape DShape::createShape()
 	return DShape(); // DEBUG TEMP
 }
 
-DShape DShape::createShape(ShapeType type)
+DShape DShape::createShape(DShape::ShapeType type)
 {
 	return DShape(); // DEBUG TEMP
 }
 
-//DShape DShape::createShape(ShapeType type, float[] p){}
+//DShape DShape::createShape(DShape::ShapeType type, float[] p){}
 
 void DShape::loadSVG(std::string filename)
 {
-	DShape tempShape;
-
-	// Load File
+	// Load File to object's data
 	image = nsvgParseFromFile(filename.c_str(), "px", 96);
-	int i = 1;
-	for(; image->shapes->next != NULL; ++i) {}
-	printf("children: %i", i);
 
-	for(NSVGshape* targetChild = image->shapes; targetChild->next != NULL; targetChild = targetChild->next)
+	// Empty image should not be loaded
+	if(image->shapes == nullptr) 
+	{
+		dbg::error("Image is empty. Loading has been cancelled"); 
+		nsvgDelete(image);
+		image = nullptr;
+		return;
+	}
+
+	// Make separate copies of child elements
+	for(NSVGshape* targetChild = image->shapes; targetChild != NULL; targetChild = targetChild->next) 
 	{
 		DShape* childShape = new DShape;
 		childShape->image = new NSVGimage;
@@ -189,6 +235,15 @@ void DShape::loadSVG(std::string filename)
 		childShape->name = targetChild->id;
 		childShape->image->shapes = targetChild;
 
-		addChild(childShape);
+		addChild(childShape); // Create parent-child link
+	}
+
+	// Clear dublicate data
+	image = nullptr;
+
+	// Destroy shapel chain as each child would continue it
+	for(auto& it : children)
+	{
+		it->image->shapes->next = NULL;
 	}
 }

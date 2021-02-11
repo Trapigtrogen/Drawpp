@@ -1,52 +1,58 @@
 #include <drawpp.hpp>
 
-DShape shape1;
-DShape shape2;
-DShape shape3;
-DShape shape4;
+DShape shape1; // 1 element image
+DShape shape2; // no image. child of 1
+DShape shape3; // 2 custom named element image
+DShape shape4; // empty image
 
 void setup() 
 {
     size(500, 500);
-    setTitle("Test title");
+    setTitle("Vertex Shaping");
     setResizable(true);
 
-    //shape1 = loadShape("../../tests/assets/archlinux-logo-black.svg");
-    shape1 = loadShape("../../tests/assets/starstripe.svg");
+    // Empty images are not allowed and system should revert the load after loading svg with no elements
+    printf("Loading empty image to shape4...\n");
+    shape4 = loadShape("../../tests/assets/empty.svg"); 
 
-    // Child tests
-    //shape2.name = "shape2";
-    //shape1.name = "shape1";
-    //shape3.name = "shape3";
-    //shape4.name = "shape4";
+    // Normal image containing 1 element
+    printf("Loading image (1 element) to shape1...\n");
+    shape1 = loadShape("../../tests/assets/archlinux-logo-black.svg");
 
-    //shape1.addChild(&shape2); // DEBUG TODO(?): Get rid of "&"
-    //shape1.addChild(&shape3);
+    // Normal image containing 2 elements with names/ids
+    printf("Loading empty image to shape3...\n\n");
+    shape3 = loadShape("../../tests/assets/starstripe.svg"); // only loads star and not stripe
 
-    //int childSize = shape1.getChildCount();
+    // Naming
+    shape1.name = "shape1";
+    shape4.name = "shape4(manual)";
 
+    // Manual childing tests 
+    shape1.addChild(&shape4); // DEBUG TODO(?): Get rid of "&"
 
-
-
-
-
-
-    // DEBUG:
-    // Something weird about this next part: Randomily gives error when printing various data
-    // Then usually works just fine and data is always there
-
-    /*
-    // Count children
+    // Count shape1 children
+    int childSize = shape1.getChildCount();
     std::cout << "Shape1 has " << childSize << " children \nThey are:\n";
     for(int i = 0; i < childSize; ++i)
     {
-        std::cout << shape1.getChild(i)->debugName << "\n";
+        std::cout << shape1.getChild(i)->name << "\n";
     }
+    printf("\n\n\n");
+
+    shape2 = shape1.getChild(0);
+    std::cout << "shape2 name: " << shape2.name << "\n";
     
     // Find parent
-    std::cout << "\nshape2 parent: " << shape2.getParent()->debugName << "\n";
-    std::cout << "shape3 parent: " << shape3.getParent()->debugName << "\n";
-    */
+    std::cout << "shape2 parent: " << shape2.getParent()->name << "\n";
+
+    printf("\n\n\n");
+
+    // Count shape3 children DEBUG: Only get's first child
+    childSize = shape3.getChildCount();
+    std::cout << "Shape3 has " << childSize << " children \nThey are:\n";
+    for(int i = 0; i < childSize; ++i) {
+        std::cout << shape3.getChild(i)->name << "\n";
+    }
 }
 
 void draw(float) 

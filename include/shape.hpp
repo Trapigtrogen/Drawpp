@@ -16,6 +16,7 @@ public:
 
 	DShape& operator=(DShape& other);
 	DShape& operator=(DShape&& other);
+	DShape& operator=(DShape* other);
 
 	enum ShapeType
 	{
@@ -32,8 +33,8 @@ public:
 
 	static DShape loadShape(std::string filename);
 	static DShape createShape();
-	static DShape createShape(ShapeType type);
-	//static DShape createShape(ShapeType type, float[] p);
+	static DShape createShape(DShape::ShapeType type);
+	//static DShape createShape(DShape::ShapeType type, float[] p);
 
 	void addChild(DShape* child);
 	void addChild(DShape* child, int _idx);
@@ -47,7 +48,7 @@ public:
 	void setVisible(bool visibility) { visible = visibility; };
 	bool isVisible() { return visible; };
 
-	unsigned char* data = nullptr;
+	unsigned char* data = nullptr; // DEBUG: Possibly not needed
 
 	// Drawable objects are in image->shapes
 	struct NSVGimage* image;
@@ -56,7 +57,7 @@ public:
 private:
 	bool visible = true;
 
-	int renderIdx;
+	int renderIdx = 0;
 
 	DShape* parent = nullptr;
 	std::vector<DShape*> children;
