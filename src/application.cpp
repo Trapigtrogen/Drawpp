@@ -3,6 +3,7 @@
 #include <drawpp.hpp>
 #include <window.hpp>
 #include <input.hpp>
+#include <time.hpp>
 #include <chrono>
 
 void windowclose_cb(GLFWwindow* window)
@@ -47,6 +48,7 @@ int Application::run(std::function<void(float)> draw,
 
     while(!quit_flag)
     {
+        glfwSwapBuffers(window->GetHandle());
         glfwPollEvents();
 
         draw_func(std::chrono::duration<float>(std::chrono::system_clock::now()-st).count());
@@ -147,6 +149,8 @@ bool Application::init_application()
     glfwSetScrollCallback(      window->GetHandle(),&Input::mousewhl_callback);
     glfwSetCursorPosCallback(   window->GetHandle(),&Input::mousemov_callback);
     glfwSetWindowCloseCallback( window->GetHandle(),&windowclose_cb);
+
+    Time::Reset();
 
     if(setup_func)
     {
