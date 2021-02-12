@@ -7,6 +7,7 @@
 
 #include <image.hpp>
 #include <shader.hpp>
+#include <shape.hpp>
 #include <color.hpp>
 
 class Window;
@@ -45,6 +46,7 @@ private:
     
     Window* window;
     bool quit_flag = false;
+    bool started = false;
 
     std::function<void(float)> draw_func;
     std::function<void()> setup_func;

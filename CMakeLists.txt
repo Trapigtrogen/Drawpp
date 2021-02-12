@@ -22,10 +22,11 @@ add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    src/matrix4.cpp
                                    src/vector3.cpp
                                    src/random.cpp
+                                   src/time.cpp
                                    src/shader.cpp
-                                   src/primitives.cpp
                                    src/image.cpp
-                                   src/color.cpp)
+                                   src/color.cpp
+                                   src/shape.cpp)
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 
@@ -33,6 +34,7 @@ include_directories(include)
 include_directories(external/glad/include)
 include_directories(external/glfw/include)
 include_directories(external/stb)
+include_directories(external/nanosvg)
 
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)

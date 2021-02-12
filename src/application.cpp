@@ -3,7 +3,13 @@
 #include <drawpp.hpp>
 #include <window.hpp>
 #include <input.hpp>
-#include <primitives.hpp>
+#include <time.hpp>
+#include <chrono>
+
+void windowclose_cb(GLFWwindow* window)
+{
+    Application::GetInstance()->exit();
+}
 
 Application::Application(int width, int height, const char* title)
 {
@@ -36,12 +42,18 @@ int Application::run(std::function<void(float)> draw,
         return 1;
     }
 
+    started = true;
+
+    std::chrono::system_clock::time_point st = std::chrono::system_clock::now();
+
     while(!quit_flag)
     {
         glfwSwapBuffers(window->GetHandle());
         glfwPollEvents();
 
-        draw_func(1);
+        draw_func(std::chrono::duration<float>(std::chrono::system_clock::now()-st).count());
+
+        st = std::chrono::system_clock::now();
     }
 
     cleanup_application();
@@ -105,7 +117,7 @@ void Application::size(int width, int height)
 
 void Application::setResizable(bool state)
 {
-    if(!window)
+    if(!started)
     {
         window->properties.resizable = state;
     }
@@ -136,6 +148,9 @@ bool Application::init_application()
     glfwSetMouseButtonCallback( window->GetHandle(),&Input::mousebtn_callback);
     glfwSetScrollCallback(      window->GetHandle(),&Input::mousewhl_callback);
     glfwSetCursorPosCallback(   window->GetHandle(),&Input::mousemov_callback);
+    glfwSetWindowCloseCallback( window->GetHandle(),&windowclose_cb);
+
+    Time::Reset();
 
     if(setup_func)
     {

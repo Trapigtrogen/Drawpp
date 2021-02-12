@@ -1,5 +1,6 @@
 #include <application.hpp>
 #include <drawpp.hpp>
+#include <time.hpp>
 
 void size(int width, int height)
 {
@@ -38,10 +39,12 @@ int random(int low, int high)
     return Application::GetInstance()->random.random(low,high);
 }
 
+/*
 float random()
 {
     return Application::GetInstance()->random.random();
 }
+*/
 
 float randomf(float low, float high)
 {
@@ -53,11 +56,50 @@ float randomGaussian()
     return Application::GetInstance()->random.randomGaussian();
 }
 
+long long millis()
+{
+    return Time::millis();
+}
+
+int second()
+{
+    return Time::second();
+}
+
+int minute()
+{
+    return Time::minute();
+}
+
+int hour()
+{
+    return Time::hour();
+}
+
+int day()
+{
+    return Time::day();
+}
+
+int month()
+{
+    return Time::month();
+}
+
+int year()
+{
+    return Time::year();
+}
+
+void timeReset()
+{
+    return Time::Reset();
+}
+
 // Color
 
 void fill(Color col) 
 {
-    // DEBUG TODO: RGB/HSB Modes
     //Application::GetInstance()->graphics->fill(col.red(), col.green(), col.blue(), col.alpha());
 }
 
@@ -92,8 +134,8 @@ void fill(int v1, int v2, int v3, float alpha)
 }
 
 
-void background(Color col) {
-    // DEBUG TODO: RGB/HSB Modes
+void background(Color col) 
+{
     //Application::GetInstance()->graphics->background(col.red(), col.green(), col.blue(), col.alpha());
 }
 
@@ -168,6 +210,7 @@ Color lerpColor(const Color &from, const Color& to, float percentage)
     return Color::lerpColor(from, to, percentage);
 }
 
+
 // Image
 
 DImage loadImage(const std::string& fileName) 
@@ -189,12 +232,46 @@ void background(DImage image)
     // DEBUG TODO: Set background to image.pixels
 }
 
+
 // Shapes
+
+void shape(DShape shape, int x, int  y)
+{
+    // Draw shape
+}
+
+void shape(DShape shape, int x, int y, int w, int h)
+{
+    // Draw shape
+}
+
+DShape loadShape(std::string filename) 
+{
+    return DShape::loadShape(filename);
+}
+
+DShape createShape()
+{
+    return DShape::createShape();
+}
+
+DShape createShape(DShape::ShapeType type)
+{
+    return DShape::createShape(type); //DEBUG TEMP
+}
+
+//DShape createShape(DShape::ShapeType type, float[] p){}
+
+void triangle(int x1, int y1, int x2, int y2, int x3, int y3)
+{
+
+}
 
 void rect(int x, int y, int width, int height)
 {
 
 }
+
 
 // Shader
 
