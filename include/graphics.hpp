@@ -155,6 +155,8 @@ public:
     void circle(float x, float y, float size);
 
     void rect(float x, float y, float sizex, float sizey);
+    void rect(float x, float y, float sizex, float sizey, float radii);
+    void rect(float x, float y, float sizex, float sizey, float tl, float tr, float br, float bl);
     void square(float x, float y, float size);
 
 private:
@@ -207,6 +209,7 @@ private:
     int rect_shader_fillColor_loc;
     //int rect_shader_transform_loc;
     int rect_shader_view_loc;
+    int rect_shader_radii_loc;
     int rect_shader_vpos_loc;
     int rect_shader_tpos_loc;
 

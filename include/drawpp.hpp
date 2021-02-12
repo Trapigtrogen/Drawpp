@@ -23,6 +23,8 @@ void line(int x1, int y1, int x2, int y2);
 void point(int x, int y);
 void quad(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4);
 void rect(float x, float y, float w, float h);
+void rect(float x, float y, float w, float h, float r);
+void rect(float x, float y, float w, float h, float tl, float tr, float br, float bl);
 void square(float x, float y, float size);
 void triangle(int x1, int y1, int x2, int y2, int x3, int y3);
 

@@ -291,15 +291,26 @@ void background(DImage image)
 
 void rect(int x, int y, int width, int height)
 {
-
+    Application::GetInstance()->graphics_object().rect(x,y,width,height);
 }
 
-void circle(int x, int y, int radius)
+void rect(float x, float y, float w, float h, float r)
+{
+    Application::GetInstance()->graphics_object().rect(x,y,w,h,r);
+}
+
+void rect(float x, float y, float w, float h, float tl, float tr, float br, float bl)
+{
+    Application::GetInstance()->graphics_object().rect(x,y,w,h,tl,tr,br,bl);
+}
+
+
+void circle(float x, float y, float radius)
 {
     Application::GetInstance()->graphics_object().circle(x,y,radius);
 }
 
-void ellipse(int x, int y, int width, int height)
+void ellipse(float x, float y, float width, float height)
 {
     Application::GetInstance()->graphics_object().ellipse(x,y,width,height);
 }
