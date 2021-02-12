@@ -96,7 +96,7 @@ extern int pmouseY;
 void randomSeed(int seed);
 int random(int high);
 int random(int low, int high);
-float random();
+//float random();
 float randomf(float low, float high);
 float randomGaussian();
 

@@ -53,7 +53,7 @@ public:
 	// Drawable objects are in image->shapes. If image == NULL go through children's images
 	struct NSVGimage* image;
 
-	char* name;
+	std::string name;
 private:
 	bool visible = true;
 

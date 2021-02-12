@@ -38,10 +38,12 @@ int random(int low, int high)
     return Application::GetInstance()->random.random(low,high);
 }
 
+/*
 float random()
 {
     return Application::GetInstance()->random.random();
 }
+*/
 
 float randomf(float low, float high)
 {
