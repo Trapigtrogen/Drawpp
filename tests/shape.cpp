@@ -50,7 +50,7 @@ void setup()
 
     printf("\n\n\n");
 
-    // Count shape3 children DEBUG: Only get's first child
+    // Count shape3 children
     childSize = shape3.getChildCount();
     std::cout << "Shape3 has " << childSize << " children \nThey are:\n";
     for(int i = 0; i < childSize; ++i) {
