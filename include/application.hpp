@@ -5,6 +5,11 @@
 #include <functional>
 #include <random.hpp>
 
+#include <image.hpp>
+#include <shader.hpp>
+#include <shape.hpp>
+#include <color.hpp>
+
 class Window;
 
 ///Application class is the core of the program

@@ -1,45 +1,73 @@
 #include <drawpp.hpp>
 
-void setup() {
-	size(100, 100);
+DShape shape1; // 1 element image
+DShape shape2; // no image. child of 1
+DShape shape3; // 2 custom named element image
+DShape shape4; // empty image
+
+void setup() 
+{
+    size(500, 500);
+    setTitle("Vertex Shaping");
+    setResizable(true);
+
+    // Empty images are not allowed and system should revert the load after loading svg with no elements
+    printf("Loading empty image to shape4...\n");
+    shape4 = loadShape("../../tests/assets/empty.svg"); 
+
+    // Normal image containing 1 element
+    printf("Loading image (1 element) to shape1...\n");
+    shape1 = loadShape("../../tests/assets/archlinux-logo-black.svg");
+
+    // Normal image containing 2 elements with names/ids
+    printf("Loading image (multiple elements) to shape3...\n\n");
+    shape3 = loadShape("../../tests/assets/starstripe.svg");
+
+    // Naming
+    shape1.name = "shape1";
+    shape2.name = "shape2";
+    shape3.name = "shape3";
+    shape4.name = "shape4";
+
+    // Manual childing tests 
+    shape1.addChild(&shape4); // DEBUG TODO(?): Get rid of "&"
+
+    // Count shape1 children
+    int childSize = shape1.getChildCount();
+    std::cout << "Shape1 has " << childSize << " children \nThey are:\n";
+    for(int i = 0; i < childSize; ++i)
+    {
+        std::cout << shape1.getChild(i)->name << "\n";
+    }
+    printf("\n\n\n");
+
+    shape2 = shape1.getChild(0);
+    shape2 = shape3.getChild("star");
+    std::cout << "shape2 name: " << shape2.name << "\n";
+    
+    // Find parent
+    std::cout << "shape2 parent: " << shape2.getParent()->name << "\n";
+
+    printf("\n\n\n");
+
+    // Count shape3 children
+    childSize = shape3.getChildCount();
+    std::cout << "Shape3 has " << childSize << " children \nThey are:\n";
+    for(int i = 0; i < childSize; ++i) {
+        std::cout << shape3.getChild(i)->name << "\n";
+    }
 }
 
-void draw() {
-	fill(0, 250, 181); // Set fill colour for next shape
-	rect(50, 50, 10, 10); // Draw. Origin point and size
+void draw(float) 
+{
+    //fill(0, 250, 181); // Set fill colour for next shape
+    //rect(0, 0, 10, 10); // Draw. Origin point and size
+    
+    shape(shape1, 10, 10, 80, 80);
 }
 
-int main() {
-	runApp();
-	return 0;
+int main() 
+{
+    Application app(500, 300);
+    return app.run(draw, setup);
 }
-
-/*
-TEMP IMPLEMENTAITON
-
-void rect(float x, float y, float w, float h) {
-	float vertices[] = {
-		-w/2 + x, h/2 + y, // Vertex 1 (X, Y)
-		-w/2 + x, -h/2 + y, // Vertex 2 (X, Y)
-		w/2 + x, -h/2 + y,  // Vertex 3 (X, Y)
-		-w/2 + x, h/2 + y, // Vertex 1 (X, Y)
-		w/2 + x, -h/2 + y,  // Vertex 3 (X, Y)
-		w/2 + x, h/2 + y  // Vertex 3 (X, Y)
-	};
-
-	GLuint vbo;
-	glGenBuffers(1, &vbo); // Generate 1 buffer
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-}
-
-void triangle(float x1, float y1, float x2, float y2, float x3, float y3) {
-	float vertices[] = {
-		x1, y1, // Vertex 1 (X, Y)
-		x2, y2, // Vertex 2 (X, Y)
-		x3, y3  // Vertex 3 (X, Y)
-	};
-}
-*/
