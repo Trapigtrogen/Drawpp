@@ -3,9 +3,9 @@
 #include <drawpp.hpp>
 #include <window.hpp>
 #include <input.hpp>
-#include <primitives.hpp>
 #include <shader.hpp>
 #include <graphics.hpp>
+#include <time.hpp>
 #include <chrono>
 
 float quad_coords[] = 
@@ -92,6 +92,8 @@ int Application::run(std::function<void(float)> draw,
         return 1;
     }
 
+    started = true;
+
     std::chrono::system_clock::time_point st = std::chrono::system_clock::now();
 
     while(!quit_flag)
@@ -167,7 +169,7 @@ void Application::size(int width, int height)
 
 void Application::setResizable(bool state)
 {
-    if(!window)
+    if(!started)
     {
         window->properties.resizable = state;
     }
@@ -215,6 +217,8 @@ bool Application::init_application()
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
     graphics->beginDraw();
+    
+    Time::Reset();
     
     if(setup_func)
     {

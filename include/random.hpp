@@ -56,8 +56,6 @@ private:
     //again with same parameters, no need to re-set them
     int min = 0;
     int max = 1;
-    float fmin = 0;
-    float fmax = 1;
 };
 
 #endif

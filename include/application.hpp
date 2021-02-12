@@ -4,6 +4,9 @@
 #include <cstdint>
 #include <functional>
 #include <random.hpp>
+#include <image.hpp>
+#include <shader.hpp>
+#include <shape.hpp>
 #include <color.hpp>
 
 class Window;
@@ -48,6 +51,7 @@ private:
     Window* window = nullptr;
     DGraphics* graphics = nullptr;
     bool quit_flag = false;
+    bool started = false;
 
     std::function<void(float)> draw_func = nullptr;
     std::function<void()> setup_func = nullptr;

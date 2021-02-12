@@ -1,5 +1,6 @@
 #include <application.hpp>
 #include <drawpp.hpp>
+#include <time.hpp>
 
 void size(int width, int height)
 {
@@ -38,10 +39,12 @@ int random(int low, int high)
     return Application::GetInstance()->random.random(low,high);
 }
 
+/*
 float random()
 {
     return Application::GetInstance()->random.random();
 }
+*/
 
 float randomf(float low, float high)
 {
@@ -80,6 +83,45 @@ void noTint()
 }
 
 
+long long millis()
+{
+    return Time::millis();
+}
+
+int second()
+{
+    return Time::second();
+}
+
+int minute()
+{
+    return Time::minute();
+}
+
+int hour()
+{
+    return Time::hour();
+}
+
+int day()
+{
+    return Time::day();
+}
+
+int month()
+{
+    return Time::month();
+}
+
+int year()
+{
+    return Time::year();
+}
+
+void timeReset()
+{
+    return Time::Reset();
+}
 
 // Color
 
@@ -266,6 +308,7 @@ Color lerpColor(const Color &from, const Color& to, float percentage)
     return Color::lerpColor(from, to, percentage);
 }
 
+
 // Image
 
 DImage loadImage(const std::string& fileName) 
@@ -287,11 +330,44 @@ void background(DImage image)
     // DEBUG TODO: Set background to image.pixels
 }
 
+
 // Shapes
 
-void rect(int x, int y, int width, int height)
+void shape(DShape shape, int x, int  y)
 {
-    Application::GetInstance()->graphics_object().rect(x,y,width,height);
+    // Draw shape
+}
+
+void shape(DShape shape, int x, int y, int w, int h)
+{
+    // Draw shape
+}
+
+DShape loadShape(std::string filename) 
+{
+    return DShape::loadShape(filename);
+}
+
+DShape createShape()
+{
+    return DShape::createShape();
+}
+
+DShape createShape(DShape::ShapeType type)
+{
+    return DShape::createShape(type); //DEBUG TEMP
+}
+
+//DShape createShape(DShape::ShapeType type, float[] p){}
+
+void triangle(int x1, int y1, int x2, int y2, int x3, int y3)
+{
+
+}
+
+void rect(float x, float y, float w, float h)
+{
+    Application::GetInstance()->graphics_object().rect(x,y,w,h);
 }
 
 void rect(float x, float y, float w, float h, float r)
@@ -304,6 +380,10 @@ void rect(float x, float y, float w, float h, float tl, float tr, float br, floa
     Application::GetInstance()->graphics_object().rect(x,y,w,h,tl,tr,br,bl);
 }
 
+void square(float x, float y, float size)
+{
+    Application::GetInstance()->graphics_object().square(x,y,size);
+}
 
 void circle(float x, float y, float radius)
 {
@@ -314,19 +394,6 @@ void ellipse(float x, float y, float width, float height)
 {
     Application::GetInstance()->graphics_object().ellipse(x,y,width,height);
 }
-
-void rect(float x, float y, float w, float h)
-{
-    Application::GetInstance()->graphics_object().rect(x,y,w,h);
-}
-
-void square(float x, float y, float size)
-{
-    Application::GetInstance()->graphics_object().square(x,y,size);
-}
-
-
-
 
 // Shader
 
