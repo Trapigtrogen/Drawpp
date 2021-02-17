@@ -15,6 +15,12 @@ enum ColorMode
     HSB
 };
 
+enum CapStyle
+{
+    SQUARE = 0,
+    ROUND = 1,
+};
+
 struct GraphicsProperties
 {
     Color last_background_color = {0,0,0};
@@ -30,6 +36,7 @@ struct GraphicsProperties
     Color tint_color = {0,0,0};
     bool use_fill = true;
     Color fill_color = {255,255,255};
+    CapStyle strokecap = CapStyle::ROUND;
 };
 
 class DGraphics
@@ -126,6 +133,8 @@ public:
 
     void noTint();
 
+    void strokeCap(CapStyle cap);
+
     void translate(float x, float y);
     void translate(float x, float y, float z);
     void translate(const DVector& t);
@@ -161,6 +170,9 @@ public:
 
     void triangle(float x1, float y1, float x2, float y2, float x3, float y3);
     void triangle(const DVector& p1,const DVector& p2,const DVector& p3);
+
+    void line(float x1, float y1, float x2, float y2);
+    void line(const DVector& p1,const DVector& p2);
 
 private:
 
@@ -224,6 +236,16 @@ private:
     int triangle_shader_bpos_loc;
     int triangle_shader_view_loc;
     int triangle_shader_vpos_loc;
+
+    Shader* line_shader = nullptr;
+
+    int line_shader_points_loc;
+    int line_shader_strokeWeight_loc;
+    int line_shader_strokeColor_loc;
+    int line_shader_view_loc;
+    int line_shader_cap_loc;
+    int line_shader_vpos_loc;
+    int line_shader_tpos_loc;
 
     //static unsigned int current_bound_buffer;
     //static unsigned int previous_bound_buffer;

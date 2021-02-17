@@ -62,6 +62,11 @@ void strokeWeight(float w)
     Application::GetInstance()->graphics_object().strokeWeight(w);
 }
 
+void strokeCap(CapStyle cap)
+{
+    Application::GetInstance()->graphics_object().strokeCap(cap);
+}
+
 void clear()
 {
     Application::GetInstance()->graphics_object().clear();
@@ -389,6 +394,17 @@ void ellipse(float x, float y, float width, float height)
 {
     Application::GetInstance()->graphics_object().ellipse(x,y,width,height);
 }
+
+void line(float x1, float y1, float x2, float y2)
+{
+    Application::GetInstance()->graphics_object().line(x1,y1,x2,y2);
+}
+
+void line(const DVector& p1,const DVector& p2)
+{
+    Application::GetInstance()->graphics_object().line(p1,p2);
+}
+
 
 void triangle(float x1, float y1, float x2, float y2, float x3, float y3)
 {
