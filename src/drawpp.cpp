@@ -56,6 +56,16 @@ float randomGaussian()
     return Application::GetInstance()->random.randomGaussian();
 }
 
+void rectMode(PosMode m)
+{
+    Application::GetInstance()->graphics_object().rectMode(m);
+}
+
+void ellipseMode(PosMode m)
+{
+    Application::GetInstance()->graphics_object().ellipseMode(m);
+}
+
 
 void strokeWeight(float w)
 {

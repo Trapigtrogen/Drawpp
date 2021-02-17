@@ -47,7 +47,8 @@ void box(int size);
 void box(int width, int height, int dimension);
 void sphere(int radius);
 
-
+void rectMode(PosMode m);
+void ellipseMode(PosMode m);
 void strokeWeight(float w);
 void strokeCap(CapStyle cap);
 void clear();
