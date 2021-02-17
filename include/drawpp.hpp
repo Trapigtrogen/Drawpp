@@ -2,6 +2,10 @@
 #define DPP_H
 #include <application.hpp>
 #include <keys.hpp>
+#include <image.hpp>
+#include <shader.hpp>
+#include <color.hpp>
+#include <graphics.hpp>
 
 void exit();
 
@@ -22,13 +26,15 @@ DShape createShape(DShape::ShapeType type);
 // Shapes 2D
 void arc(int x, int y, int width, int height, int start, int stop);
 void arc(int x, int y, int width, int height, int start, int stop, int mode);
-void circle(int x, int y, int radius);
-void ellipse(int x, int y, int width, int height);
+void circle(float x, float y, float radius);
+void ellipse(float x, float y, float width, float height);
 void line(int x1, int y1, int x2, int y2);
 void point(int x, int y);
 void quad(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4);
-void rect(int x, int y, int w, int h);
-void square(int x, int y, int size);
+void rect(float x, float y, float w, float h);
+void rect(float x, float y, float w, float h, float r);
+void rect(float x, float y, float w, float h, float tl, float tr, float br, float bl);
+void square(float x, float y, float size);
 void triangle(int x1, int y1, int x2, int y2, int x3, int y3);
 
 // Shapes 3D
@@ -37,6 +43,13 @@ void line(int x1, int y1, int z1, int x2, int y2, int z2);
 void box(int size);
 void box(int width, int height, int dimension);
 void sphere(int radius);
+
+
+void strokeWeight(float w);
+void clear();
+void noFill();
+void noStroke();
+void noTint();
 
 // Color
 void fill(Color col);
@@ -47,6 +60,13 @@ void fill(float gray, float alpha);
 void fill(int v1, int v2, int v3);
 void fill(int v1, int v2, int v3, float alpha);
 
+void stroke(Color rgba);
+void stroke(Color rgb, float alpha);
+void stroke(float gray);
+void stroke(float gray, float alpha);
+void stroke(float v1, float v2, float v3);
+void stroke(float v1, float v2, float v3, float alpha);
+
 void background(Color col);
 void background(int rgb);
 void background(int rgb, float alpha);
@@ -55,10 +75,20 @@ void background(float gray, float alpha);
 void background(int v1, int v2, int v3);
 void background(int v1, int v2, int v3, float alpha);
 
+void colorMode(ColorMode mode);
+void colorMode(ColorMode mode, float max);
+void colorMode(ColorMode mode, float max1, float max2, float max3);
+void colorMode(ColorMode mode, float max1, float max2, float max3, float maxA);
+
+Color color(float grey);
+Color color(float grey, float alpha);
+Color color(float v1, float v2, float v3);
+Color color(float v1, float v2, float v3, float alpha);
+
 float alpha(Color col);
-uint8_t red(Color col);
-uint8_t green(Color col);
-uint8_t blue(Color col);
+float red(Color col);
+float green(Color col);
+float blue(Color col);
 float hue(Color col);
 float saturation(Color col);
 float brightness(Color col);
@@ -78,9 +108,19 @@ Shader loadShadersFromString(const char* vertexShader, const char* fregmentShade
 Shader loadShadersDefault();
 
 // Transform
-void rotate(int rad);
-void translate(int x, int y);
-void translate(int x, int y, int z);
+void translate(float x, float y);
+void translate(float x, float y, float z);
+void translate(const DVector& t);
+
+void rotate(float angle);
+void rotateX(float angle);
+void rotateY(float angle);
+void rotateZ(float angle);
+
+void scale(float s);
+void scale(float x, float y);
+void scale(float x, float y, float z);
+void scale(const DVector& s);
 
 // Input
 extern char key;
@@ -94,10 +134,29 @@ extern int pmouseY;
 
 // Random
 void randomSeed(int seed);
-int random(int high);
-int random(int low, int high);
-float random();
-float randomf(float low, float high);
+int randomInt(int high);
+int randomInt(int low, int high);
+//float randomFloat();
+float randomFloat(float low, float high);
 float randomGaussian();
+
+// Push Pop
+
+void push();
+void pop();
+void pushMatrix();
+void popMatrix();
+void pushStyle();
+void popStyle();
+
+//Time
+long long millis();
+int second();
+int minute();
+int hour();
+int day();
+int month();
+int year();
+void timeReset();
 
 #endif

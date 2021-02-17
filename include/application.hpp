@@ -4,13 +4,13 @@
 #include <cstdint>
 #include <functional>
 #include <random.hpp>
-
 #include <image.hpp>
 #include <shader.hpp>
 #include <shape.hpp>
 #include <color.hpp>
 
 class Window;
+class DGraphics;
 
 ///Application class is the core of the program
 class Application
@@ -36,6 +36,8 @@ public:
     void setTitle(const char* title);
     void exit();
 
+    DGraphics& graphics_object();
+
     static Application* GetInstance();
 
     Random random;
@@ -43,13 +45,17 @@ public:
 private:
     bool init_application();
     void cleanup_application();
-    
-    Window* window;
-    bool quit_flag = false;
 
-    std::function<void(float)> draw_func;
-    std::function<void()> setup_func;
-    std::function<void()> cleanup_func;
+    void draw_buffer();
+    
+    Window* window = nullptr;
+    DGraphics* graphics = nullptr;
+    bool quit_flag = false;
+    bool started = false;
+
+    std::function<void(float)> draw_func = nullptr;
+    std::function<void()> setup_func = nullptr;
+    std::function<void()> cleanup_func = nullptr;
 
     static Application* instance;
 };

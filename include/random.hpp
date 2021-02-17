@@ -24,19 +24,19 @@ public:
 
 
     ///\brief Generate a int in range [0,\p high]
-    int random(int high);
+    int randomInt(int high);
 
 
     ///\brief Generate a int in range [\p low,\p high]
-    int random(int low, int high);
+    int randomInt(int low, int high);
 
 
     ///\brief Generate a float in range [0.0,1.0]
-    float random();
+    float randomFloat01();
 
 
     ///\brief Generate a float in range [\p low,\p high]
-    float randomf(float low, float high);
+    float randomFloat(float low, float high);
 
 
     ///\brief Generate a float in a gaussian distribution
@@ -56,8 +56,6 @@ private:
     //again with same parameters, no need to re-set them
     int min = 0;
     int max = 1;
-    float fmin = 0;
-    float fmax = 1;
 };
 
 #endif

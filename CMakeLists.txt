@@ -22,6 +22,8 @@ add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    src/matrix4.cpp
                                    src/vector3.cpp
                                    src/random.cpp
+                                   src/graphics.cpp
+                                   src/time.cpp
                                    src/shader.cpp
                                    src/image.cpp
                                    src/color.cpp

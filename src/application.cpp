@@ -3,6 +3,63 @@
 #include <drawpp.hpp>
 #include <window.hpp>
 #include <input.hpp>
+#include <shader.hpp>
+#include <graphics.hpp>
+#include <time.hpp>
+#include <chrono>
+
+float quad_coords[] = 
+{
+    -1.0f, -1.0f, 0.0f,
+     1.0f, -1.0f, 0.0f,
+     1.0f,  1.0f, 0.0f,
+    -1.0f, -1.0f, 0.0f,
+     1.0f,  1.0f, 0.0f,
+    -1.0f,  1.0f, 0.0f,
+};
+
+float quadtex_coords[] = 
+{
+    0.0f, 0.0f,
+    1.0f, 0.0f, 
+    1.0f, 1.0f, 
+    0.0f, 0.0f, 
+    1.0f, 1.0f, 
+    0.0f, 1.0f, 
+};
+
+const char* quad_shader_v = R"(#version 100
+precision mediump float;
+attribute vec3 pos;
+attribute vec2 texpos;
+varying vec2 texc;
+void main()
+{
+    texc = texpos;
+    gl_Position = vec4(pos,1.0);
+}
+)";
+
+const char* quad_shader_f = R"(#version 100
+precision mediump float;
+uniform sampler2D texture;
+varying vec2 texc;
+void main()
+{
+    //gl_FragColor = vec4(1.0,0,0,1.0);
+    gl_FragColor = texture2D(texture,texc);
+}
+)";
+
+Shader* shader = nullptr;
+int vertpos_attrib = 0;
+int texc_attrib = 0;
+int tex_uniform = 0;
+
+void windowclose_cb(GLFWwindow* window)
+{
+    Application::GetInstance()->exit();
+}
 
 Application::Application(int width, int height, const char* title)
 {
@@ -35,12 +92,20 @@ int Application::run(std::function<void(float)> draw,
         return 1;
     }
 
+    started = true;
+
+    std::chrono::system_clock::time_point st = std::chrono::system_clock::now();
+
     while(!quit_flag)
     {
-        glfwSwapBuffers(window->GetHandle());
         glfwPollEvents();
 
-        draw_func(1);
+        draw_func(std::chrono::duration<float>(std::chrono::system_clock::now()-st).count());
+        st = std::chrono::system_clock::now();
+
+        draw_buffer();
+
+        glfwSwapBuffers(window->GetHandle());
     }
 
     cleanup_application();
@@ -104,7 +169,7 @@ void Application::size(int width, int height)
 
 void Application::setResizable(bool state)
 {
-    if(!window)
+    if(!started)
     {
         window->properties.resizable = state;
     }
@@ -124,6 +189,11 @@ void Application::exit()
     quit_flag = true;
 }
 
+DGraphics& Application::graphics_object()
+{
+    return *graphics;
+}
+
 bool Application::init_application()
 {
     if(!window->Init())
@@ -135,7 +205,21 @@ bool Application::init_application()
     glfwSetMouseButtonCallback( window->GetHandle(),&Input::mousebtn_callback);
     glfwSetScrollCallback(      window->GetHandle(),&Input::mousewhl_callback);
     glfwSetCursorPosCallback(   window->GetHandle(),&Input::mousemov_callback);
+    glfwSetWindowCloseCallback( window->GetHandle(),&windowclose_cb);
 
+    graphics = new DGraphics(window->properties.width,window->properties.height);
+    shader = new Shader(Shader::loadShadersFromString(quad_shader_v,quad_shader_f));
+    vertpos_attrib = glGetAttribLocation(shader->getId(),"pos");
+    texc_attrib = glGetAttribLocation(shader->getId(),"texpos");
+    tex_uniform = glGetUniformLocation(shader->getId(),"texture");
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+    graphics->beginDraw();
+    
+    Time::Reset();
+    
     if(setup_func)
     {
         setup_func();
@@ -154,11 +238,43 @@ void Application::cleanup_application()
     window->Cleanup();
     
     delete window;
+    delete graphics;
 }
 
 Application* Application::GetInstance()
 {
     return instance;
+}
+
+void Application::draw_buffer()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glViewport(0,0,window->properties.width,window->properties.height);
+
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    //bind shader, texture, and draw quad with the texture
+    glUseProgram(shader->getId());
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,graphics->get_texture_id());
+    glUniform1i(tex_uniform,0);
+
+    glEnableVertexAttribArray(vertpos_attrib);
+    glEnableVertexAttribArray(texc_attrib);
+
+    glVertexAttribPointer(texc_attrib,2,GL_FLOAT,false,0, quadtex_coords);
+    glVertexAttribPointer(vertpos_attrib,3,GL_FLOAT,false,0, quad_coords);
+
+    glDrawArrays(GL_TRIANGLES,0,6);
+
+    glDisableVertexAttribArray(vertpos_attrib);
+    glDisableVertexAttribArray(texc_attrib);
+    
+    glBindTexture(GL_TEXTURE_2D,0);
+
+    graphics->beginDraw();
 }
 
 Application* Application::instance = nullptr;

@@ -8,11 +8,12 @@ void setup()
 	img = loadImage("../../tests/assets/img.jpg");
 	bg_img = loadImage("../../tests/assets/bg_img.jpg");
 
+/*
 	// DEGUB
 	for(int i = 0; i < strlen((char*)img.pixels); i++) {
 		printf("%d ", img.pixels[i]);
 	};
-
+*/
 }
 
 void draw(float) 

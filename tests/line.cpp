@@ -1,13 +1,16 @@
 #include <drawpp.hpp>
 
-void setup() {
+void setup() 
+{
 }
 
-void draw() {
-	line(30, 20, 85, 75);
+void draw(float)
+{
+	//line(30, 20, 85, 75);
 }
 
-int main() {
-    runApp();
-    return 0;
+int main()
+{
+	Application app(500, 300);
+	return app.run(draw, setup);
 }

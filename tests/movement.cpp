@@ -1,20 +1,23 @@
 #include <drawpp.hpp>
 
-void setup() {
+void setup() 
+{
 	size(200, 200);
 }
 
 int i = 0;
 
-void draw() {
+void draw(float) 
+{
 	background(255);
-	translate(i, i);
-	rotate(i);
+	//translate(i, i);
+	//rotate(i);
 	rect(0, 0, 10, 10);
 	i++;
 }
 
-int main() {
-	runApp();
-	return 0;
+int main()
+{
+	Application app(500, 300);
+	return app.run(draw, setup);
 }

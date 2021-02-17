@@ -9,19 +9,12 @@ void Random::randomSeed(int seed)
     generator.seed(seed);
 }
 
-int Random::random(int high)
+int Random::randomInt(int high)
 {
-    if(max != high || min != 0)
-    {
-        max = high;
-        min = 0;
-        uniform.param(std::uniform_int_distribution<int>::param_type(0,high));
-    }
-
-    return uniform(generator);
+    return randomInt(0,high);
 }
 
-int Random::random(int low, int high)
+int Random::randomInt(int low, int high)
 {
     if(max != high || min != low)
     {
@@ -33,29 +26,14 @@ int Random::random(int low, int high)
     return uniform(generator);
 }
 
-float Random::random()
+float Random::randomFloat01()
 {
-    if(std::abs(fmax-1.0f) > std::numeric_limits<float>::epsilon() || 
-        std::abs(fmin) > std::numeric_limits<float>::epsilon())
-    {
-        max = 1.0f;
-        min = 0.0f;
-        funiform.param(std::uniform_real_distribution<float>::param_type(0.0f,1.0f));
-    }
-
-    return funiform(generator);
+    return randomFloat(0.0f,1.0f);
 }
 
-float Random::randomf(float low, float high)
+float Random::randomFloat(float low, float high)
 {
-    if(std::abs(fmax-high) > std::numeric_limits<float>::epsilon() || 
-        std::abs(fmin-low) > std::numeric_limits<float>::epsilon())
-    {
-        max = high;
-        min = low;
-        funiform.param(std::uniform_real_distribution<float>::param_type(low,high));
-    }
-
+    funiform.param(std::uniform_real_distribution<float>::param_type(low,high));
     return funiform(generator);
 }
 

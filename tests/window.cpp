@@ -11,6 +11,7 @@ void setup()
 
 void draw(float)
 {
+    background(200,255,100);
     size(200,200);
 }
 

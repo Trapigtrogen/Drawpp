@@ -50,7 +50,7 @@ DVector& DVector::random2D(DVector& target)
 ///TODO: replace high with 2pi constant once it exists
 DVector& DVector::random2D(DVector& target, Random& gen)
 {
-    float angle = gen.random() * 6.283185307179f;
+    float angle = gen.randomFloat01() * 6.283185307179f;
 
     return target.set(fromAngle(angle));
 }
@@ -74,8 +74,8 @@ DVector& DVector::random3D(DVector& target)
 ///TODO: replace high with 2pi constant once it exists
 DVector& DVector::random3D(DVector& target, Random& gen)
 {
-    float angle = gen.randomf(0.0f,6.283185307179f);
-    float _z = gen.randomf(-1.0f, 1.0f);
+    float angle = gen.randomFloat(0.0f,6.283185307179f);
+    float _z = gen.randomFloat(-1.0f, 1.0f);
     float p = std::sqrt(1 - _z*_z);
 
     return target.set(std::cos(angle) * p, std::sin(angle) * p, _z);
