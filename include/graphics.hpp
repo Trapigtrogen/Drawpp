@@ -5,6 +5,7 @@
 #include <vector3.hpp>
 #include <matrix4.hpp>
 #include <color.hpp>
+#include <memory>
 
 class DImage;
 class Shader;
@@ -208,7 +209,7 @@ private:
     std::stack<DMatrix4> matrix_stack;
     std::stack<GraphicsProperties> property_stack;
 
-    Shader* ellipse_shader = nullptr;
+    std::unique_ptr<Shader> ellipse_shader;
 
     int ellipse_shader_offset_loc;
     int ellipse_shader_strokeWeight_loc;
@@ -219,7 +220,7 @@ private:
     int ellipse_shader_vpos_loc;
     int ellipse_shader_tpos_loc;
 
-    Shader* rect_shader = nullptr;
+    std::unique_ptr<Shader> rect_shader;
 
     int rect_shader_offset_loc;
     int rect_shader_strokeWeight_loc;
@@ -231,7 +232,7 @@ private:
     int rect_shader_vpos_loc;
     int rect_shader_tpos_loc;
 
-    Shader* triangle_shader = nullptr;
+    std::unique_ptr<Shader> triangle_shader;
 
     int triangle_shader_strokeWeight_loc;
     int triangle_shader_strokeColor_loc;
@@ -240,7 +241,7 @@ private:
     int triangle_shader_view_loc;
     int triangle_shader_vpos_loc;
 
-    Shader* line_shader = nullptr;
+    std::unique_ptr<Shader> line_shader;
 
     int line_shader_points_loc;
     int line_shader_strokeWeight_loc;

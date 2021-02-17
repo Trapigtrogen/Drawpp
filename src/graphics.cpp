@@ -88,7 +88,7 @@ DGraphics::DGraphics(int width, int height)
 
 void DGraphics::init_shaders()
 {
-    ellipse_shader = new Shader(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f));
+    ellipse_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f));
     
     ellipse_shader_offset_loc = glGetUniformLocation(ellipse_shader->getId(),"offset");
     ellipse_shader_strokeWeight_loc = glGetUniformLocation(ellipse_shader->getId(),"strokeWeight");
@@ -100,7 +100,7 @@ void DGraphics::init_shaders()
     ellipse_shader_tpos_loc = glGetAttribLocation(ellipse_shader->getId(),"texpos");
 
 
-    rect_shader = new Shader(Shader::loadShadersFromString(generic_shader_v,rect_shader_f));
+    rect_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,rect_shader_f));
     
     rect_shader_offset_loc = glGetUniformLocation(rect_shader->getId(),"offset");
     rect_shader_strokeWeight_loc = glGetUniformLocation(rect_shader->getId(),"strokeWeight");
@@ -111,7 +111,7 @@ void DGraphics::init_shaders()
     rect_shader_vpos_loc = glGetAttribLocation(rect_shader->getId(),"pos");
     rect_shader_tpos_loc = glGetAttribLocation(rect_shader->getId(),"texpos");
 
-    triangle_shader = new Shader(Shader::loadShadersFromString(triangle_shader_v,triangle_shader_f));
+    triangle_shader = std::make_unique<Shader>(Shader::loadShadersFromString(triangle_shader_v,triangle_shader_f));
 
     triangle_shader_strokeWeight_loc = glGetUniformLocation(triangle_shader->getId(),"strokeWeight");
     triangle_shader_strokeColor_loc = glGetUniformLocation(triangle_shader->getId(),"strokeColor");                                             
@@ -120,7 +120,7 @@ void DGraphics::init_shaders()
     triangle_shader_bpos_loc = glGetUniformLocation(triangle_shader->getId(),"bpos");
     triangle_shader_vpos_loc = glGetAttribLocation(triangle_shader->getId(),"pos");
 
-    line_shader = new Shader(Shader::loadShadersFromString(line_shader_v,line_shader_f));
+    line_shader = std::make_unique<Shader>(Shader::loadShadersFromString(line_shader_v,line_shader_f));
 
     line_shader_points_loc = glGetUniformLocation(line_shader->getId(),"points");
     line_shader_strokeWeight_loc = glGetUniformLocation(line_shader->getId(),"strokeWeight");
