@@ -163,6 +163,10 @@ void Application::size(int width, int height)
     {
         window->properties.width    = window->properties.width_hint;
         window->properties.height   = window->properties.height_hint;
+
+        delete graphics;
+        graphics = new DGraphics(window->properties.width,window->properties.height);
+        
         glfwSetWindowSize(window->GetHandle(),width,height);
     }
 }
