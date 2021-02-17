@@ -22,6 +22,13 @@ enum CapStyle
     ROUND = 1,
 };
 
+enum PosMode
+{
+    CENTRE = 0,
+    CORNER = 1,
+    //CORNERS,
+};
+
 struct GraphicsProperties
 {
     Color last_background_color = {0,0,0};
@@ -38,6 +45,8 @@ struct GraphicsProperties
     bool use_fill = true;
     Color fill_color = {255,255,255};
     CapStyle strokecap = CapStyle::ROUND;
+    PosMode rectmode = PosMode::CORNER;
+    PosMode ellipsemode = PosMode::CENTRE;
 };
 
 class DGraphics
@@ -154,11 +163,6 @@ public:
     void stroke(float v1, float v2, float v3, float alpha);
 
 
-    ///\brief Change stroke width
-    ///
-    ///Will enable stroke if it is disabled.
-    void strokeWeight(float w);
-
     ///\brief Clear target
     void clear();
 
@@ -267,6 +271,28 @@ public:
 
     ///\brief Set target cap style to \p cap
     void strokeCap(CapStyle cap);
+
+
+    ///\brief Change stroke width
+    ///
+    ///Will enable stroke if it is disabled.
+    void strokeWeight(float w);
+
+
+    ///\brief Set the rect mode to \p m
+    ///
+    ///When rect mode is CENTRE, x and y will be in the center of the rectangle. \n
+    ///When rect mode is CORNER, x and y will be in the top-left corner of the rectangle. \n
+    ///Default mode is CORNER.
+    void rectMode(PosMode m);
+
+
+    ///\brief Set the ellipse mode to \p m
+    ///
+    ///When ellipse mode is CENTRE, x and y will be in the center of the ellipse. \n
+    ///When ellipse mode is CORNER, x and y will be in the top-left corner of the rectangle around the ellipse. \n
+    ///Default mode is CENTRE.
+    void ellipseMode(PosMode m);
 
 
     ///\brief Translate view by \p x and \p y
@@ -445,6 +471,7 @@ private:
     int ellipse_shader_fillColor_loc;
     //int ellipse_shader_transform_loc;
     int ellipse_shader_view_loc;
+    int ellipse_shader_posmode_loc;
     int ellipse_shader_vpos_loc;
     int ellipse_shader_tpos_loc;
 
@@ -456,6 +483,7 @@ private:
     int rect_shader_fillColor_loc;
     //int rect_shader_transform_loc;
     int rect_shader_view_loc;
+    int rect_shader_posmode_loc;
     int rect_shader_radii_loc;
     int rect_shader_vpos_loc;
     int rect_shader_tpos_loc;

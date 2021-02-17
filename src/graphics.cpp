@@ -96,6 +96,7 @@ void DGraphics::init_shaders()
     ellipse_shader_fillColor_loc = glGetUniformLocation(ellipse_shader->getId(),"fillColor");
     //ellipse_shader_transform_loc = glGetUniformLocation(ellipse_shader->getId(),"transform");
     ellipse_shader_view_loc = glGetUniformLocation(ellipse_shader->getId(),"view");
+    ellipse_shader_posmode_loc = glGetUniformLocation(ellipse_shader->getId(),"posmode");
     ellipse_shader_vpos_loc = glGetAttribLocation(ellipse_shader->getId(),"pos");
     ellipse_shader_tpos_loc = glGetAttribLocation(ellipse_shader->getId(),"texpos");
 
@@ -108,6 +109,7 @@ void DGraphics::init_shaders()
     rect_shader_fillColor_loc = glGetUniformLocation(rect_shader->getId(),"fillColor");                                           
     rect_shader_radii_loc = glGetUniformLocation(rect_shader->getId(),"radii");
     rect_shader_view_loc = glGetUniformLocation(rect_shader->getId(),"view");
+    rect_shader_posmode_loc = glGetUniformLocation(rect_shader->getId(),"posmode");
     rect_shader_vpos_loc = glGetAttribLocation(rect_shader->getId(),"pos");
     rect_shader_tpos_loc = glGetAttribLocation(rect_shader->getId(),"texpos");
 
@@ -211,12 +213,6 @@ void DGraphics::stroke(float v1, float v2, float v3)
 void DGraphics::stroke(float v1, float v2, float v3, float alpha)
 {
     properties.stroke_color = get_color(v1,v2,v3,alpha);
-    properties.use_stroke = true;
-}
-
-void DGraphics::strokeWeight(float w)
-{
-    properties.stroke_weight = std::abs(w);
     properties.use_stroke = true;
 }
 
@@ -382,6 +378,22 @@ void DGraphics::strokeCap(CapStyle cap)
     properties.strokecap = cap;
 }
 
+void DGraphics::strokeWeight(float w)
+{
+    properties.stroke_weight = std::abs(w);
+    properties.use_stroke = true;
+}
+
+void DGraphics::rectMode(PosMode m)
+{
+    properties.rectmode = m;
+}
+
+void DGraphics::ellipseMode(PosMode m)
+{
+    properties.ellipsemode = m;
+}
+
 
 void DGraphics::translate(float x, float y)
 {
@@ -500,6 +512,7 @@ void DGraphics::ellipse(float x, float y, float sizex, float sizey)
                                                                     properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
     //glUniformMatrix4fv(ellipse_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(ellipse_shader_view_loc,1,GL_FALSE,view_mat.values);
+    glUniform1i(ellipse_shader_posmode_loc,properties.ellipsemode);
 
     glEnableVertexAttribArray(ellipse_shader_vpos_loc);
     glEnableVertexAttribArray(ellipse_shader_tpos_loc);
@@ -543,6 +556,7 @@ void DGraphics::rect(float x, float y, float sizex, float sizey, float tl, float
                                                                     properties.fill_color.blue()/255.0f,
                                                                     properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
     glUniformMatrix4fv(rect_shader_view_loc,1,GL_FALSE,view_mat.values);
+    glUniform1i(rect_shader_posmode_loc,properties.rectmode);
 
     glEnableVertexAttribArray(rect_shader_vpos_loc);
     glEnableVertexAttribArray(rect_shader_tpos_loc);

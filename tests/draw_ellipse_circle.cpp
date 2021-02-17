@@ -6,16 +6,16 @@ void draw(float)
     background(200,255,100);
     
     strokeWeight(1);
-    circle(100,100,100);
+    circle(150,150,100);
 
     strokeWeight(10);
-    circle(350, 100, 75);
+    circle(390, 150, 75);
 
     strokeWeight(1);
-    ellipse(100, 350, 100,400);
+    ellipse(150, 550, 100,400);
 
     strokeWeight(30);
-    ellipse(350, 350, 500, 100);
+    ellipse(600, 400, 500, 100);
 }
 
 int main() 
