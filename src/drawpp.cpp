@@ -360,11 +360,6 @@ DShape createShape(DShape::ShapeType type)
 
 //DShape createShape(DShape::ShapeType type, float[] p){}
 
-void triangle(int x1, int y1, int x2, int y2, int x3, int y3)
-{
-
-}
-
 void rect(float x, float y, float w, float h)
 {
     Application::GetInstance()->graphics_object().rect(x,y,w,h);
@@ -394,6 +389,17 @@ void ellipse(float x, float y, float width, float height)
 {
     Application::GetInstance()->graphics_object().ellipse(x,y,width,height);
 }
+
+void triangle(float x1, float y1, float x2, float y2, float x3, float y3)
+{
+    Application::GetInstance()->graphics_object().triangle(x1,y1,x2,y2,x3,y3);
+}
+
+void triangle(const DVector& p1, const DVector& p2, const DVector& p3)
+{
+    Application::GetInstance()->graphics_object().triangle(p1,p2,p3);
+}
+
 
 // Shader
 

@@ -35,7 +35,8 @@ void rect(float x, float y, float w, float h);
 void rect(float x, float y, float w, float h, float r);
 void rect(float x, float y, float w, float h, float tl, float tr, float br, float bl);
 void square(float x, float y, float size);
-void triangle(int x1, int y1, int x2, int y2, int x3, int y3);
+void triangle(float x1, float y1, float x2, float y2, float x3, float y3);
+void triangle(const DVector& p1, const DVector& p2, const DVector& p3);
 
 // Shapes 3D
 void point(int x, int y, int z);
@@ -94,7 +95,7 @@ float saturation(Color col);
 float brightness(Color col);
 
 // Lerps color. Percentage needs to be in range 0.0 - 1.0 or it will be cut to closest point
-Color lerpColor(Color from, Color to, float percentage);
+Color lerpColor(const Color& from, const Color& to, float percentage);
 
 // Image
 DImage loadImage(const std::string& fileName);

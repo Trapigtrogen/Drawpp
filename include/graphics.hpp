@@ -159,6 +159,9 @@ public:
     void rect(float x, float y, float sizex, float sizey, float tl, float tr, float br, float bl);
     void square(float x, float y, float size);
 
+    void triangle(float x1, float y1, float x2, float y2, float x3, float y3);
+    void triangle(const DVector& p1,const DVector& p2,const DVector& p3);
+
 private:
 
     ///\brief Get the texture id for this graphics object
@@ -212,6 +215,15 @@ private:
     int rect_shader_radii_loc;
     int rect_shader_vpos_loc;
     int rect_shader_tpos_loc;
+
+    Shader* triangle_shader = nullptr;
+
+    int triangle_shader_strokeWeight_loc;
+    int triangle_shader_strokeColor_loc;
+    int triangle_shader_fillColor_loc;
+    int triangle_shader_bpos_loc;
+    int triangle_shader_view_loc;
+    int triangle_shader_vpos_loc;
 
     //static unsigned int current_bound_buffer;
     //static unsigned int previous_bound_buffer;

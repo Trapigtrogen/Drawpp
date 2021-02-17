@@ -24,6 +24,13 @@ float coords_quad[] =
     0.0f, 1.0f, 
 };
 
+float triangle_verts[] = 
+{
+    0.0f, 0.0f,
+    0.0f, 0.0f,
+    0.0f, 0.0f,
+};
+
 const char* ellipse_shader_v = R"(#version 100
 precision mediump float;
 //uniform mat4 transform;
@@ -32,6 +39,7 @@ uniform vec4 offset;
 attribute vec3 pos;
 attribute vec2 texpos;
 varying vec2 texc;
+
 void main()
 {
     texc = texpos;
@@ -105,7 +113,7 @@ uniform vec4 offset;
 uniform vec4 radii;
 varying vec2 texc;
 
-float atan2(in float y, in float x)
+float atan2(float y, float x)
 {
     bool s = (abs(x) > abs(y));
     return mix(radians(180.0)/2.0 - atan(x,y), atan(y,x), float(s));
@@ -257,6 +265,50 @@ void main()
 }
 )";
 
+const char* triangle_shader_v = R"(#version 100
+precision mediump float;
+uniform mat4 view;
+attribute vec2 pos;
+varying vec2 vpos;
+
+void main()
+{
+    vpos = pos;
+    gl_Position = vec4(pos,0.0,1.0) * view;
+}
+)";
+
+const char* triangle_shader_f = R"(#version 100
+precision mediump float;
+uniform float strokeWeight;
+uniform vec4 strokeColor;
+uniform vec4 fillColor;
+uniform float bpos[6];
+varying vec2 vpos;
+
+float pointLineDist(vec2 point, vec2 l1, vec2 l2)
+{
+    vec2 cd = l2 - l1;
+    vec2 ef = vec2(-cd.y,cd.x);
+    return abs(dot(point - l1,ef)) / length(ef);
+}
+
+void main()
+{
+    if(pointLineDist(vpos.xy,vec2(bpos[0],bpos[1]),vec2(bpos[2],bpos[3])) <= strokeWeight ||
+        pointLineDist(vpos.xy,vec2(bpos[2],bpos[3]),vec2(bpos[4],bpos[5])) <= strokeWeight ||
+        pointLineDist(vpos.xy,vec2(bpos[4],bpos[5]),vec2(bpos[0],bpos[1])) <= strokeWeight )
+    {
+        gl_FragColor = strokeColor;
+    }
+    else
+    {
+        gl_FragColor = fillColor;
+    }
+
+}
+)";
+
 DGraphics::DGraphics(int width, int height)
 {
     buffer_width = static_cast<unsigned int>(width);
@@ -316,6 +368,15 @@ void DGraphics::init_shaders()
     rect_shader_view_loc = glGetUniformLocation(rect_shader->getId(),"view");
     rect_shader_vpos_loc = glGetAttribLocation(rect_shader->getId(),"pos");
     rect_shader_tpos_loc = glGetAttribLocation(rect_shader->getId(),"texpos");
+
+    triangle_shader = new Shader(Shader::loadShadersFromString(triangle_shader_v,triangle_shader_f));
+
+    triangle_shader_strokeWeight_loc = glGetUniformLocation(triangle_shader->getId(),"strokeWeight");
+    triangle_shader_strokeColor_loc = glGetUniformLocation(triangle_shader->getId(),"strokeColor");                                             
+    triangle_shader_fillColor_loc = glGetUniformLocation(triangle_shader->getId(),"fillColor");
+    triangle_shader_view_loc = glGetUniformLocation(triangle_shader->getId(),"view");
+    triangle_shader_bpos_loc = glGetUniformLocation(triangle_shader->getId(),"bpos");
+    triangle_shader_vpos_loc = glGetAttribLocation(triangle_shader->getId(),"pos");
 }
 
 void DGraphics::beginDraw()
@@ -742,6 +803,42 @@ void DGraphics::square(float x, float y, float size)
     rect(x,y,size,size);
 }
 
+void DGraphics::triangle(float x1, float y1, float x2, float y2, float x3, float y3)
+{
+    triangle_verts[0] = x1;
+    triangle_verts[1] = -y1;
+    triangle_verts[2] = x2;
+    triangle_verts[3] = -y2;
+    triangle_verts[4] = x3;
+    triangle_verts[5] = -y3;
+
+    glUseProgram(triangle_shader->getId());
+    glUniform1f(triangle_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
+    glUniform1fv(triangle_shader_bpos_loc,6,triangle_verts);
+    glUniform4f(triangle_shader_strokeColor_loc,properties.stroke_color.red()/255.0f,
+                                                                    properties.stroke_color.green()/255.0f,
+                                                                    properties.stroke_color.blue()/255.0f,
+                                                                    properties.stroke_color.alpha()/255.0f);
+    glUniform4f(triangle_shader_fillColor_loc,properties.fill_color.red()/255.0f,
+                                                                    properties.fill_color.green()/255.0f,
+                                                                    properties.fill_color.blue()/255.0f,
+                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniformMatrix4fv(triangle_shader_view_loc,1,GL_FALSE,view_mat.values);
+
+    glEnableVertexAttribArray(triangle_shader_vpos_loc);
+
+
+    glVertexAttribPointer(triangle_shader_vpos_loc,2,GL_FLOAT,false,0, triangle_verts);
+
+    glDrawArrays(GL_TRIANGLES,0,3);
+
+    glDisableVertexAttribArray(triangle_shader_vpos_loc);
+}
+
+void DGraphics::triangle(const DVector& p1,const DVector& p2,const DVector& p3)
+{
+    triangle(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y);
+}
 
 Color DGraphics::get_rgba(float r, float g, float b, float a)
 {
