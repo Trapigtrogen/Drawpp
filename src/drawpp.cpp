@@ -29,26 +29,26 @@ void randomSeed(int seed)
     Application::GetInstance()->random.randomSeed(seed);
 }
 
-int random(int high)
+int randomInt(int high)
 {
-    return Application::GetInstance()->random.random(high);
+    return Application::GetInstance()->random.randomInt(high);
 }
 
-int random(int low, int high)
+int randomInt(int low, int high)
 {
-    return Application::GetInstance()->random.random(low,high);
+    return Application::GetInstance()->random.randomInt(low,high);
 }
 
 /*
-float random()
+float randomFloat()
 {
-    return Application::GetInstance()->random.random();
+    return Application::GetInstance()->random.randomFloat();
 }
 */
 
-float randomf(float low, float high)
+float randomFloat(float low, float high)
 {
-    return Application::GetInstance()->random.randomf(low,high);
+    return Application::GetInstance()->random.randomFloat(low,high);
 }
 
 float randomGaussian()
