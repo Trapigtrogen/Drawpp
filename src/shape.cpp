@@ -232,7 +232,7 @@ void DShape::loadSVG(std::string filename)
 	// Empty image should not be loaded
 	if(image->shapes == nullptr) 
 	{
-		dbg::error("Image is empty. Loading has been cancelled"); 
+		dbg::error("Image is found but it's empty. Loading has been cancelled"); 
 		nsvgDelete(image);
 		image = nullptr;
 		return;
