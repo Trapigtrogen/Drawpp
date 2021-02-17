@@ -405,6 +405,16 @@ void line(const DVector& p1,const DVector& p2)
     Application::GetInstance()->graphics_object().line(p1,p2);
 }
 
+void point(float x, float y)
+{
+    Application::GetInstance()->graphics_object().point(x,y);
+}
+
+void point(const DVector& p)
+{
+    Application::GetInstance()->graphics_object().point(p);
+}
+
 
 void triangle(float x1, float y1, float x2, float y2, float x3, float y3)
 {

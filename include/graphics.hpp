@@ -174,6 +174,9 @@ public:
     void line(float x1, float y1, float x2, float y2);
     void line(const DVector& p1,const DVector& p2);
 
+    void point(float x, float y);
+    void point(const DVector& p);
+
 private:
 
     ///\brief Get the texture id for this graphics object

@@ -991,6 +991,17 @@ void DGraphics::line(const DVector& p1,const DVector& p2)
     line(p1.x,p1.y,p2.x,p2.y);
 }
 
+void DGraphics::point(float x, float y)
+{
+    line(x,y,x,y);
+}
+
+void DGraphics::point(const DVector& p)
+{
+    line(p,p);
+}
+
+
 
 Color DGraphics::get_rgba(float r, float g, float b, float a)
 {
