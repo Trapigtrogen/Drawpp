@@ -6,22 +6,22 @@
 
 const float primitive_square[] = 
 {
-    0.0f, -1.0f, 0.0f,
-    1.0f, -1.0f, 0.0f,
-    1.0f,  0.0f, 0.0f,
-    0.0f, -1.0f, 0.0f,
-    1.0f,  0.0f, 0.0f,
-    0.0f,  0.0f, 0.0f,
+    0.0f, -1.0f,
+    1.0f, -1.0f,
+    1.0f,  0.0f,
+    0.0f, -1.0f,
+    1.0f,  0.0f,
+    0.0f,  0.0f,
 };
 
 const float primitive_square_line[] = 
 {
-    -0.5f,-0.5f,  0.0f,
-    0.5f, -0.5f, 0.0f,
-    0.5f,  0.5f, 0.0f,
-    -0.5f,-0.5f,  0.0f,
-    0.5f,  0.5f, 0.0f,
-    -0.5f, 0.5f,  0.0f,
+    -0.5f,-0.5f,
+    0.5f, -0.5f,
+    0.5f,  0.5f,
+    -0.5f,-0.5f,
+    0.5f,  0.5f,
+    -0.5f, 0.5f,
 };
 
 float coords_quad[] = 
@@ -46,7 +46,7 @@ precision mediump float;
 //uniform mat4 transform;
 uniform mat4 view;
 uniform vec4 offset;
-attribute vec3 pos;
+attribute vec2 pos;
 attribute vec2 texpos;
 varying vec2 texc;
 
@@ -61,7 +61,7 @@ void main()
     transf[1][1] = transf[1][1] + offset.w;
     mat4 mv = transf * view;
 
-    gl_Position = vec4(pos,1.0) * mv;
+    gl_Position = vec4(pos,0.0,1.0) * mv;
 }
 )";
 
@@ -325,7 +325,7 @@ uniform mat4 view;
 uniform vec4 points;
 uniform float strokeWeight;
 uniform int captype;
-attribute vec3 pos;
+attribute vec2 pos;
 attribute vec2 texpos;
 varying vec2 texc;
 varying vec2 size;
@@ -369,7 +369,7 @@ void main()
     texc = texpos;
     size = vec2(width,height);
 
-    gl_Position = vec4(pos,1.0) * mv;
+    gl_Position = vec4(pos,0.0,1.0) * mv;
 }
 )";
 
@@ -868,7 +868,7 @@ void DGraphics::ellipse(float x, float y, float sizex, float sizey)
     glEnableVertexAttribArray(ellipse_shader_tpos_loc);
 
     glVertexAttribPointer(ellipse_shader_tpos_loc,2,GL_FLOAT,false,0, coords_quad);
-    glVertexAttribPointer(ellipse_shader_vpos_loc,3,GL_FLOAT,false,0, primitive_square);
+    glVertexAttribPointer(ellipse_shader_vpos_loc,2,GL_FLOAT,false,0, primitive_square);
 
     glDrawArrays(GL_TRIANGLES,0,6);
 
@@ -911,7 +911,7 @@ void DGraphics::rect(float x, float y, float sizex, float sizey, float tl, float
     glEnableVertexAttribArray(rect_shader_tpos_loc);
 
     glVertexAttribPointer(rect_shader_tpos_loc,2,GL_FLOAT,false,0, coords_quad);
-    glVertexAttribPointer(rect_shader_vpos_loc,3,GL_FLOAT,false,0, primitive_square);
+    glVertexAttribPointer(rect_shader_vpos_loc,2,GL_FLOAT,false,0, primitive_square);
 
     glDrawArrays(GL_TRIANGLES,0,6);
 
@@ -978,7 +978,7 @@ void DGraphics::line(float x1, float y1, float x2, float y2)
 
 
     glVertexAttribPointer(line_shader_tpos_loc,2,GL_FLOAT,false,0, coords_quad);
-    glVertexAttribPointer(line_shader_vpos_loc,3,GL_FLOAT,false,0, primitive_square_line);
+    glVertexAttribPointer(line_shader_vpos_loc,2,GL_FLOAT,false,0, primitive_square_line);
 
     glDrawArrays(GL_TRIANGLES,0,6);
 
