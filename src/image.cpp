@@ -12,24 +12,25 @@ DImage::~DImage()
 	if(m_texture != -1) glDeleteTextures(1, &m_texture);
 }
 
-DImage::DImage()
+DImage::DImage() 
 {
 	pixels = new unsigned char[0];
 }
 
-DImage::DImage(unsigned char* _pixels, GLuint _texture)
+DImage::DImage(unsigned char* _pixels, GLuint _texture) 
 {
 	pixels = _pixels;
 	m_texture = _texture;
 }
 
-DImage::DImage(const DImage& other)
+DImage::DImage(const DImage& other) 
 {
-	pixels = new unsigned char[other.width*other.height];
-	std::copy(other.pixels, other.pixels + other.width*other.height, pixels);
+	pixels = new unsigned char[other.width * other.height * other.channels];
+	std::copy(other.pixels, other.pixels + other.width * other.height * other.channels, pixels);
 	m_texture = other.m_texture;
 	height = other.height;
 	width = other.width;
+	channels = other.channels;
 }
 
 DImage::DImage(DImage&& other)
@@ -38,14 +39,16 @@ DImage::DImage(DImage&& other)
 	m_texture = other.m_texture;
 	height = other.height;
 	width = other.width;
+	channels = other.channels;
 
 	other.pixels = nullptr;
 	other.m_texture = -1;
 	other.height = 0;
 	other.width = 0;
+	other.channels = 0;
 }
 
-DImage& DImage::operator=(DImage& other)
+DImage& DImage::operator=(DImage& other) 
 {
 	if(this != &other) 
 	{
@@ -55,12 +58,13 @@ DImage& DImage::operator=(DImage& other)
 		m_texture = other.m_texture;
 		height = other.height;
 		width = other.width;
+		channels = other.channels;
 	}
 
 	return *this;
 }
 
-DImage& DImage::operator=(DImage&& other)
+DImage& DImage::operator=(DImage&& other) 
 {
 	if(this != &other) 
 	{
@@ -70,17 +74,19 @@ DImage& DImage::operator=(DImage&& other)
 		m_texture = other.m_texture;
 		height = other.height;
 		width = other.width;
+		channels = other.channels;
 
 		other.pixels = nullptr;
 		other.m_texture = -1;
 		other.height = 0;
 		other.width = 0;
+		other.channels = 0;
 	}
 
 	return *this;
 }
 
-void DImage::bind(unsigned int unit)
+void DImage::bind(unsigned int unit) 
 {
 	assert(unit >= 0 && unit <= 31);
 
@@ -88,11 +94,13 @@ void DImage::bind(unsigned int unit)
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 }
 
-DImage DImage::loadImage(const std::string& fileName)
+DImage DImage::loadImage(const std::string& fileName) 
 {
-	int width, height, numComponents;
-	unsigned char* pixels = stbi_load(fileName.c_str(), &width, &height, &numComponents, 4);
-	if(pixels == NULL) 
+	stbi_set_flip_vertically_on_load(1);
+
+	int width, height, channels;
+	unsigned char* pixels = stbi_load(fileName.c_str(), &width, &height, &channels, 4);
+	if(pixels == NULL)
 		dbg::error(("Image data not found: " + fileName).c_str());
 
 	GLuint m_texture;
@@ -107,14 +115,17 @@ DImage DImage::loadImage(const std::string& fileName)
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
-	stbi_set_flip_vertically_on_load(1);
+	DImage tmpImg(pixels, m_texture);
+	tmpImg.height = height;
+	tmpImg.width = width;
+	tmpImg.channels = channels;
 
-	return DImage(pixels, m_texture);
-
+	return tmpImg;
 }
 
-void DImage::drawImage(int x, int y, unsigned int w, unsigned int h) {
-	bind(m_texture-1);
+void DImage::drawImage(int x, int y, unsigned int w, unsigned int h) 
+{
+	bind(m_texture - 1);
 	// Debug todo: Draw image
 }
 
@@ -123,7 +134,7 @@ void DImage::background(DImage* image)
 
 }
 
-void DImage::imageMode(ImgMode mode)
+void DImage::imageMode(ImgMode mode) 
 {
 
 }
