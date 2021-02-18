@@ -34,7 +34,7 @@ public:
 
 	void background(DImage* image);
 
-	void bind(unsigned int unit);
+	void bind(unsigned int unit) const;
 
 	unsigned char* pixels = nullptr;
 	unsigned int width = 0;

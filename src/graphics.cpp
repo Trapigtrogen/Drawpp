@@ -3,6 +3,7 @@
 #include <shader.hpp>
 #include <glad/glad.h>
 #include <debug.hpp>
+#include <image.hpp>
 
 const float primitive_square[] = 
 {
@@ -49,6 +50,7 @@ float triangle_verts[] =
 #include <shaders/triangle_frag.ipp>
 #include <shaders/line_vert.ipp>
 #include <shaders/line_frag.ipp>
+#include <shaders/image_frag.ipp>
 
 
 DGraphics::DGraphics(int width, int height)
@@ -131,6 +133,15 @@ void DGraphics::init_shaders()
     line_shader_cap_loc = glGetUniformLocation(line_shader->getId(),"captype");
     line_shader_tpos_loc = glGetAttribLocation(line_shader->getId(),"texpos");
     line_shader_vpos_loc = glGetAttribLocation(line_shader->getId(),"pos");
+
+    image_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,image_shader_f));
+ 
+    image_shader_offset_loc = glGetUniformLocation(image_shader->getId(),"offset");
+    image_shader_posmode_loc = glGetUniformLocation(image_shader->getId(),"posmode");
+    image_shader_view_loc = glGetUniformLocation(image_shader->getId(),"view");
+    image_shader_tex_loc = glGetUniformLocation(image_shader->getId(),"tex");
+    image_shader_tpos_loc = glGetAttribLocation(image_shader->getId(),"texpos");
+    image_shader_vpos_loc = glGetAttribLocation(image_shader->getId(),"pos");
 }
 
 void DGraphics::beginDraw()
@@ -253,7 +264,6 @@ void DGraphics::background(float gray, float alpha)
     background(color(gray,alpha));
 }
 
-
 void DGraphics::background(float v1, float v2, float v3)
 {
     background(get_color(v1,v2,v3,properties.color_maxa));
@@ -264,7 +274,13 @@ void DGraphics::background(float v1, float v2, float v3, float alpha)
     background(get_color(v1,v2,v3,alpha));
 }
 
-
+void DGraphics::background(const DImage& img)
+{
+    PosMode imgm = properties.imagemode;
+    properties.imagemode = PosMode::CORNER;
+    image(img,0,0,buffer_width,buffer_height);
+    properties.imagemode = imgm;
+}
 
 void DGraphics::colorMode(ColorMode mode)
 {
@@ -652,7 +668,33 @@ void DGraphics::point(const DVector& p)
     line(p,p);
 }
 
+void DGraphics::image(const DImage& img, float x, float y)
+{
+    image(img,x,y,img.width,img.height);
+}
 
+void DGraphics::image(const DImage& img, float x, float y, float w, float h)
+{
+    glUseProgram(image_shader->getId());
+    glUniform4f(image_shader_offset_loc,x,y,w,h);
+   
+    glUniformMatrix4fv(image_shader_view_loc,1,GL_FALSE,view_mat.values);
+    glUniform1i(image_shader_posmode_loc,properties.imagemode);
+
+    img.bind(0);
+    glUniform1i(image_shader_tex_loc,0);
+
+    glEnableVertexAttribArray(image_shader_vpos_loc);
+    glEnableVertexAttribArray(image_shader_tpos_loc);
+
+    glVertexAttribPointer(image_shader_tpos_loc,2,GL_FLOAT,false,0, coords_quad);
+    glVertexAttribPointer(image_shader_vpos_loc,2,GL_FLOAT,false,0, primitive_square);
+
+    glDrawArrays(GL_TRIANGLES,0,6);
+
+    glDisableVertexAttribArray(image_shader_vpos_loc);
+    glDisableVertexAttribArray(image_shader_tpos_loc);
+}
 
 Color DGraphics::get_rgba(float r, float g, float b, float a)
 {

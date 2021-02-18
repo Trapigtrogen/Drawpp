@@ -331,19 +331,21 @@ DImage loadImage(const std::string& fileName)
     return DImage::loadImage(fileName);
 }
 
-void image(DImage image, int x, int y) 
+void image(const DImage& image, float x, float y)
 {
-    image.drawImage(x, y, image.width, image.height);
+    Application::GetInstance()->graphics_object().image(image,x,y);
 }
 
-void image(DImage image, int x, int y, int width, int height) {
-    image.drawImage(x, y, width, height);
+void image(const DImage& image, float x, float y, float width, float height)
+{
+    Application::GetInstance()->graphics_object().image(image,x,y,width,height);
 }
 
-void background(DImage image) 
+void background(const DImage& image)
 {
-    // DEBUG TODO: Set background to image.pixels
+    Application::GetInstance()->graphics_object().background(image);
 }
+
 
 
 // Shapes

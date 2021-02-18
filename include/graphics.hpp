@@ -47,6 +47,7 @@ struct GraphicsProperties
     CapStyle strokecap = CapStyle::ROUND;
     PosMode rectmode = PosMode::CORNER;
     PosMode ellipsemode = PosMode::CENTRE;
+    PosMode imagemode = PosMode::CORNER;
 };
 
 class DGraphics
@@ -117,8 +118,8 @@ public:
     void background(float gray, float alpha);
 
 
-    //void background(const Image* image)
-    //void background(const Image& image)
+    ///\brief Fill target with \p image
+    void background(const DImage& img);
 
 
     ///\brief Fill target with color
@@ -419,6 +420,11 @@ public:
     ///Target cap style must be ROUND for the point to be visible.
     void point(const DVector& p);
 
+
+
+    void image(const DImage& img, float x, float y);
+    void image(const DImage& img, float x, float y, float w, float h);
+
 private:
 
     //Get the texture id for this graphics object
@@ -506,6 +512,15 @@ private:
     int line_shader_cap_loc;
     int line_shader_vpos_loc;
     int line_shader_tpos_loc;
+
+    //Shader used to draw images
+    std::unique_ptr<Shader> image_shader;
+    int image_shader_offset_loc;
+    int image_shader_posmode_loc;
+    int image_shader_tex_loc;
+    int image_shader_view_loc;
+    int image_shader_vpos_loc;
+    int image_shader_tpos_loc;
 
     //static unsigned int current_bound_buffer;
     //static unsigned int previous_bound_buffer;

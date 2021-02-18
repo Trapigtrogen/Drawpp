@@ -103,9 +103,9 @@ Color lerpColor(const Color& from, const Color& to, float percentage);
 
 // Image
 DImage loadImage(const std::string& fileName);
-void image(DImage image, int x, int y);
-void image(DImage image, int x, int y, int width, int height);
-void background(DImage image);
+void image(const DImage& image, float x, float y);
+void image(const DImage& image, float x, float y, float width, float height);
+void background(const DImage& image);
 
 // Shader
 Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader);
