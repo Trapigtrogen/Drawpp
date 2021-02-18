@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <drawpp.hpp>
 
-DImage* imm;
-
 void setup()
 {
     size(500,500);

@@ -66,6 +66,10 @@ void ellipseMode(PosMode m)
     Application::GetInstance()->graphics_object().ellipseMode(m);
 }
 
+void imageMode(PosMode m)
+{
+    Application::GetInstance()->graphics_object().imageMode(m);
+}
 
 void strokeWeight(float w)
 {

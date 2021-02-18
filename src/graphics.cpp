@@ -410,6 +410,10 @@ void DGraphics::ellipseMode(PosMode m)
     properties.ellipsemode = m;
 }
 
+void DGraphics::imageMode(PosMode m)
+{
+    properties.imagemode = m;
+}
 
 void DGraphics::translate(float x, float y)
 {

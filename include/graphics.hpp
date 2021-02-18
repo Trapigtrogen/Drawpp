@@ -296,6 +296,14 @@ public:
     void ellipseMode(PosMode m);
 
 
+    ///\brief Set the image mode to \p m
+    ///
+    ///When image mode is CENTRE, x and y will be in the center of the image. \n
+    ///When image mode is CORNER, x and y will be in the top-left corner of the image. \n
+    ///Default mode is CORNER.
+    void imageMode(PosMode m);
+
+
     ///\brief Translate view by \p x and \p y
     void translate(float x, float y);
 
@@ -415,14 +423,18 @@ public:
     ///Target cap style must be ROUND for the point to be visible.
     void point(float x, float y);
 
+
     ///\brief Draw a point at \p p
     ///
     ///Target cap style must be ROUND for the point to be visible.
     void point(const DVector& p);
 
 
-
+    ///\brief Draw image \p img at ( \p x, \p y)
     void image(const DImage& img, float x, float y);
+
+
+    ///\brief Draw image \p img at ( \p x, \p y), resized to ( \p w, \p h)
     void image(const DImage& img, float x, float y, float w, float h);
 
 private:
