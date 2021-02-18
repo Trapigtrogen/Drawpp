@@ -38,6 +38,7 @@ DImage::DImage(const DImage& other)
 		std::copy(other.pixels, other.pixels + other.width * other.height * other.channels, pixels);
 	}
 
+	glDeleteTextures(1, &m_texture);
 	m_texture = generateTexture(width, height, pixels);
 }
 
@@ -71,6 +72,7 @@ DImage& DImage::operator=(DImage& other)
 			std::copy(other.pixels, other.pixels + other.width * other.height * other.channels, pixels);
 		}
 
+		glDeleteTextures(1, &m_texture);
 		m_texture = generateTexture(width, height, pixels);
 	}
 
