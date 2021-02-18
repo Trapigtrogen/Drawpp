@@ -15,7 +15,6 @@ void setup()
     printf("Loading empty image to shape4...\n");
     shape4 = loadShape("assets/empty.svg"); 
 
-    // DEBUG: Loading this specific SVG crashes on Linux 
     // Normal image containing 1 element
     
     //printf("Loading image (1 element) to shape1...\n");
