@@ -8,7 +8,7 @@ void setup()
 {
 	img = loadImage("../../tests/assets/img.jpg");
 	bg_img = loadImage("../../tests/assets/bg_img.jpg");
-	//emptyImg = loadImage("non-existing imagefile"); // DEBUG: Still crashing the probram
+	emptyImg = loadImage("non-existing imagefile");
 
 /*
 	// DEGUB
