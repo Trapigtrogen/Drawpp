@@ -36,6 +36,18 @@ if (MSVC)
     add_dependencies(test_draw_triangle ${PROJECT_NAME})
     add_dependencies(test_draw_rect_square ${PROJECT_NAME})
     add_dependencies(test_draw_line_point ${PROJECT_NAME})
+
+    set_property(TARGET test_window
+                        test_textures
+                        test_shape
+                        test_line
+                        test_background
+                        test_input
+                        test_movement
+                        test_multiobjectmovement 
+                 PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")
+else ()
+    file(COPY "${CMAKE_SOURCE_DIR}/tests/assets" DESTINATION "${CMAKE_BINARY_DIR}/bin/tests")
 endif (MSVC)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/tests)

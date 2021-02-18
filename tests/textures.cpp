@@ -5,8 +5,8 @@ DImage bg_img;
 
 void setup() 
 {
-	img = loadImage("../../tests/assets/img.jpg");
-	bg_img = loadImage("../../tests/assets/bg_img.jpg");
+	img = loadImage("assets/img.jpg");
+	bg_img = loadImage("assets/bg_img.jpg");
 
 /*
 	// DEGUB

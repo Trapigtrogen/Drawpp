@@ -9,12 +9,12 @@ void Random::randomSeed(int seed)
     generator.seed(seed);
 }
 
-int Random::random(int high)
+int Random::randomInt(int high)
 {
-    return random(0,high);
+    return randomInt(0,high);
 }
 
-int Random::random(int low, int high)
+int Random::randomInt(int low, int high)
 {
     if(max != high || min != low)
     {
@@ -26,12 +26,12 @@ int Random::random(int low, int high)
     return uniform(generator);
 }
 
-float Random::random()
+float Random::randomFloat01()
 {
-    return randomf(0.0f,1.0f);
+    return randomFloat(0.0f,1.0f);
 }
 
-float Random::randomf(float low, float high)
+float Random::randomFloat(float low, float high)
 {
     funiform.param(std::uniform_real_distribution<float>::param_type(low,high));
     return funiform(generator);

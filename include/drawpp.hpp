@@ -139,10 +139,10 @@ extern int pmouseY;
 
 // Random
 void randomSeed(int seed);
-int random(int high);
-int random(int low, int high);
-//float random();
-float randomf(float low, float high);
+int randomInt(int high);
+int randomInt(int low, int high);
+//float randomFloat();
+float randomFloat(float low, float high);
 float randomGaussian();
 
 // Push Pop
