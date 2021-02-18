@@ -6,7 +6,7 @@ DImage bg_img;
 void setup() 
 {
 	img = loadImage("../../tests/assets/img.jpg");
-	bg_img = loadImage("../../tests/assets/bg_img.jpg");
+	bg_img = loadImage("/tests/assets/bg_img.jpg");
 
 /*
 	// DEGUB

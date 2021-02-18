@@ -35,6 +35,7 @@ public:
 	void background(DImage* image);
 
 	void bind(unsigned int unit);
+	static GLuint generateTexture(int w, int h, unsigned char* pixels);
 
 	unsigned char* pixels = nullptr;
 	int width = 0;
@@ -43,7 +44,7 @@ public:
 
 private:
 	GLuint m_texture = 0;
-	DImage(unsigned char* _pixels, GLuint _texture);
+	DImage(unsigned char* _pixels, GLuint _texture, int w, int h, int c);
 };
 
 #endif
