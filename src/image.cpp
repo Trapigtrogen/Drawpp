@@ -25,8 +25,8 @@ DImage::DImage(unsigned char* _pixels, GLuint _texture)
 
 DImage::DImage(const DImage& other)
 {
-	pixels = new unsigned char[strlen((char*)other.pixels)];
-	std::copy(other.pixels, other.pixels + strlen((char*)other.pixels), pixels);
+	pixels = new unsigned char[other.width*other.height];
+	std::copy(other.pixels, other.pixels + other.width*other.height, pixels);
 	m_texture = other.m_texture;
 	height = other.height;
 	width = other.width;
