@@ -18,11 +18,13 @@ DShape::~DShape()
 
 DShape::DShape()
 {
+	//printf("constructor\n");
 	name = (char*)"Shape";
 }
 
 DShape::DShape(const DShape& other)
 {
+	//printf("Copy constructor\n");
 	visible = other.visible;
 	parent = other.parent;
 	image = other.image;
@@ -36,6 +38,7 @@ DShape::DShape(const DShape& other)
 
 DShape::DShape(DShape&& other)
 {
+	//printf("Move constructor\n");
 	visible = other.visible;
 	parent = other.parent;
 	image = other.image;
@@ -49,16 +52,19 @@ DShape::DShape(DShape&& other)
 	other.parent = nullptr;
 	other.children.clear();
 	other.image = nullptr;
-	other.name = nullptr;
+	other.name = "";
 }
 
 DShape& DShape::operator=(DShape& other)
 {
+	//printf("Copy operator\n");
 	if(this != &other) 
-	{
-		for(auto& it : children) {
+	{		
+		// Abandon old children if any
+		for(auto& it : children) 
+		{
 			it->removeParent();
-			it->children.clear();
+			//it->children.clear(); // DEBUG: Brain fart?
 		}
 		children.clear();
 
@@ -66,6 +72,7 @@ DShape& DShape::operator=(DShape& other)
 		parent = other.parent;
 		image = other.image;
 		name = other.name;
+		
 		for(auto& it : other.children) 
 		{
 			addChild(it);
@@ -77,11 +84,14 @@ DShape& DShape::operator=(DShape& other)
 
 DShape& DShape::operator=(DShape&& other) 
 {
+	//printf("Move operator\n");
 	if(this != &other)
 	{
-		for(auto& it : children) {
+		// Abandon old children if any
+		for(auto& it : children) 
+		{
 			it->removeParent();
-			it->children.clear();
+			//it->children.clear(); // DEBUG: Brain fart?
 		}
 		children.clear();
 
@@ -89,7 +99,9 @@ DShape& DShape::operator=(DShape&& other)
 		parent = other.parent;
 		image = other.image;
 		name = other.name;
-		for(auto& it : other.children) {
+
+		for(auto& it : other.children) 
+		{
 			addChild(it);
 		}
 
@@ -97,7 +109,7 @@ DShape& DShape::operator=(DShape&& other)
 		other.parent = nullptr;
 		other.children.clear();
 		other.image = nullptr;
-		other.name = nullptr;
+		other.name = "";
 	}
 
 	return *this;
@@ -107,7 +119,8 @@ DShape& DShape::operator=(DShape* other)
 {
 	if(this != other) 
 	{
-		for(auto& it : children) {
+		for(auto& it : children)
+		{
 			it->removeParent();
 			it->children.clear();
 		}
@@ -237,6 +250,8 @@ void DShape::loadSVG(std::string filename)
 		addChild(childShape); // Create parent-child link
 	}
 
+	printf("Children created\n");
+	
 	// Clear dublicate data
 	image = nullptr;
 
