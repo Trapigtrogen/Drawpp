@@ -1,10 +1,10 @@
-static const char* triangle_shader_f = R"(
+static const char* quad_shader_f = R"(
     #version 100
     precision mediump float;
     uniform float strokeWeight;
     uniform vec4 strokeColor;
     uniform vec4 fillColor;
-    uniform float bpos[6];
+    uniform float bpos[12];
     varying vec2 vpos;
 
     float pointLineDist(vec2 point, vec2 l1, vec2 l2)
@@ -18,7 +18,9 @@ static const char* triangle_shader_f = R"(
     {
         if(pointLineDist(vpos.xy,vec2(bpos[0],bpos[1]),vec2(bpos[2],bpos[3])) <= strokeWeight ||
             pointLineDist(vpos.xy,vec2(bpos[2],bpos[3]),vec2(bpos[4],bpos[5])) <= strokeWeight ||
-            pointLineDist(vpos.xy,vec2(bpos[4],bpos[5]),vec2(bpos[0],bpos[1])) <= strokeWeight )
+
+            pointLineDist(vpos.xy,vec2(bpos[0],bpos[1]),vec2(bpos[10],bpos[11])) <= strokeWeight ||
+            pointLineDist(vpos.xy,vec2(bpos[4],bpos[5]),vec2(bpos[10],bpos[11])) <= strokeWeight )
         {
             gl_FragColor = strokeColor;
         }

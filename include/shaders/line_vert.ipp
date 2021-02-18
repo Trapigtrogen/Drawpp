@@ -1,4 +1,4 @@
-const char* line_shader_v = R"(
+static const char* line_shader_v = R"(
     #version 100
     precision mediump float;
     uniform mat4 view;

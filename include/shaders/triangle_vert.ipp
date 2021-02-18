@@ -1,4 +1,4 @@
-const char* triangle_shader_v = R"(
+static const char* triangle_shader_v = R"(
     #version 100
     precision mediump float;
     uniform mat4 view;

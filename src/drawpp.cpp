@@ -431,6 +431,16 @@ void point(const DVector& p)
     Application::GetInstance()->graphics_object().point(p);
 }
 
+void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+{
+    Application::GetInstance()->graphics_object().quad(x1,y1,x2,y2,x3,y3,x4,y4);
+}
+
+void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4)
+{
+    Application::GetInstance()->graphics_object().quad(p1,p2,p3,p4);
+}
+
 
 void triangle(float x1, float y1, float x2, float y2, float x3, float y3)
 {

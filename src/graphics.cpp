@@ -42,6 +42,16 @@ float triangle_verts[] =
     0.0f, 0.0f,
 };
 
+float quad_verts[] = 
+{
+    0.0f, 0.0f,
+    0.0f, 0.0f,
+    0.0f, 0.0f,
+    0.0f, 0.0f,
+    0.0f, 0.0f,
+    0.0f, 0.0f,
+};
+
 
 #include <shaders/generic_vert.ipp>
 #include <shaders/ellipse_frag.ipp>
@@ -51,6 +61,7 @@ float triangle_verts[] =
 #include <shaders/line_vert.ipp>
 #include <shaders/line_frag.ipp>
 #include <shaders/image_frag.ipp>
+#include <shaders/quad_frag.ipp>
 
 
 DGraphics::DGraphics(int width, int height)
@@ -142,6 +153,15 @@ void DGraphics::init_shaders()
     image_shader_tex_loc = glGetUniformLocation(image_shader->getId(),"tex");
     image_shader_tpos_loc = glGetAttribLocation(image_shader->getId(),"texpos");
     image_shader_vpos_loc = glGetAttribLocation(image_shader->getId(),"pos");
+
+    quad_shader = std::make_unique<Shader>(Shader::loadShadersFromString(triangle_shader_v,quad_shader_f));
+
+    quad_shader_strokeWeight_loc = glGetUniformLocation(quad_shader->getId(),"strokeWeight");
+    quad_shader_strokeColor_loc = glGetUniformLocation(quad_shader->getId(),"strokeColor");                                             
+    quad_shader_fillColor_loc = glGetUniformLocation(quad_shader->getId(),"fillColor");
+    quad_shader_view_loc = glGetUniformLocation(quad_shader->getId(),"view");
+    quad_shader_bpos_loc = glGetUniformLocation(quad_shader->getId(),"bpos");
+    quad_shader_vpos_loc = glGetAttribLocation(quad_shader->getId(),"pos");
 }
 
 void DGraphics::beginDraw()
@@ -699,6 +719,50 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
     glDisableVertexAttribArray(image_shader_vpos_loc);
     glDisableVertexAttribArray(image_shader_tpos_loc);
 }
+
+void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+{
+    quad_verts[0] = x1;
+    quad_verts[1] = -y1;
+    quad_verts[2] = x2;
+    quad_verts[3] = -y2;
+    quad_verts[4] = x3;
+    quad_verts[5] = -y3;
+
+    quad_verts[6]  = x1;
+    quad_verts[7]  = -y1;
+    quad_verts[8]  = x3;
+    quad_verts[9]  = -y3;
+    quad_verts[10] = x4;
+    quad_verts[11] = -y4;
+
+    glUseProgram(quad_shader->getId());
+    glUniform1f(quad_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
+    glUniform1fv(quad_shader_bpos_loc,12,quad_verts);
+    glUniform4f(quad_shader_strokeColor_loc,properties.stroke_color.red()/255.0f,
+                                                                    properties.stroke_color.green()/255.0f,
+                                                                    properties.stroke_color.blue()/255.0f,
+                                                                    properties.stroke_color.alpha()/255.0f);
+    glUniform4f(quad_shader_fillColor_loc,properties.fill_color.red()/255.0f,
+                                                                    properties.fill_color.green()/255.0f,
+                                                                    properties.fill_color.blue()/255.0f,
+                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniformMatrix4fv(quad_shader_view_loc,1,GL_FALSE,view_mat.values);
+
+    glEnableVertexAttribArray(quad_shader_vpos_loc);
+
+    glVertexAttribPointer(quad_shader_vpos_loc,2,GL_FLOAT,false,0, quad_verts);
+
+    glDrawArrays(GL_TRIANGLES,0,6);
+
+    glDisableVertexAttribArray(quad_shader_vpos_loc);
+}
+
+void DGraphics::quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4)
+{
+    quad(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
+}
+
 
 Color DGraphics::get_rgba(float r, float g, float b, float a)
 {

@@ -1,4 +1,4 @@
-const char* line_shader_f = R"(
+static const char* line_shader_f = R"(
     #version 100
     precision mediump float;
     uniform float strokeWeight;

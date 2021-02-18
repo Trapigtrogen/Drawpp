@@ -1,4 +1,4 @@
-const char* image_shader_f = R"(
+static const char* image_shader_f = R"(
     #version 100
     precision mediump float;
     uniform sampler2D tex;

@@ -437,6 +437,10 @@ public:
     ///\brief Draw image \p img at ( \p x, \p y), resized to ( \p w, \p h)
     void image(const DImage& img, float x, float y, float w, float h);
 
+
+    void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
+    void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4);
+
 private:
 
     //Get the texture id for this graphics object
@@ -533,6 +537,15 @@ private:
     int image_shader_view_loc;
     int image_shader_vpos_loc;
     int image_shader_tpos_loc;
+
+    //Shader used to draw triangles
+    std::unique_ptr<Shader> quad_shader;
+    int quad_shader_strokeWeight_loc;
+    int quad_shader_strokeColor_loc;
+    int quad_shader_fillColor_loc;
+    int quad_shader_bpos_loc;
+    int quad_shader_view_loc;
+    int quad_shader_vpos_loc;
 
     //static unsigned int current_bound_buffer;
     //static unsigned int previous_bound_buffer;

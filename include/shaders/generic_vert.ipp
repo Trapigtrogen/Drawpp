@@ -1,4 +1,4 @@
-const char* generic_shader_v = R"(
+static const char* generic_shader_v = R"(
     #version 100
     precision mediump float;
     //uniform mat4 transform;
