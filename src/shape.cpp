@@ -9,7 +9,6 @@
 
 DShape::~DShape()
 {
-	delete[] data;
 	for(auto& it : children) 
 	{
 		it->removeParent();
@@ -19,15 +18,11 @@ DShape::~DShape()
 
 DShape::DShape()
 {
-	data = new unsigned char[0];
 	name = (char*)"Shape";
 }
 
 DShape::DShape(const DShape& other)
 {
-	delete[] data;
-	data = new unsigned char[strlen((char*)other.data)];
-	std::copy(other.data, other.data + strlen((char*)other.data), data);
 	visible = other.visible;
 	parent = other.parent;
 	image = other.image;
@@ -41,7 +36,6 @@ DShape::DShape(const DShape& other)
 
 DShape::DShape(DShape&& other)
 {
-	data = other.data;
 	visible = other.visible;
 	parent = other.parent;
 	image = other.image;
@@ -51,7 +45,6 @@ DShape::DShape(DShape&& other)
 		addChild(it);
 	}
 
-	other.data = nullptr;
 	other.visible = 0;
 	other.parent = nullptr;
 	other.children.clear();
@@ -63,14 +56,12 @@ DShape& DShape::operator=(DShape& other)
 {
 	if(this != &other) 
 	{
-		delete[] data;
 		for(auto& it : children) {
 			it->removeParent();
 			it->children.clear();
 		}
 		children.clear();
 
-		data = other.data;
 		visible = other.visible;
 		parent = other.parent;
 		image = other.image;
@@ -88,14 +79,12 @@ DShape& DShape::operator=(DShape&& other)
 {
 	if(this != &other)
 	{
-		delete[] data;
 		for(auto& it : children) {
 			it->removeParent();
 			it->children.clear();
 		}
 		children.clear();
 
-		data = other.data;
 		visible = other.visible;
 		parent = other.parent;
 		image = other.image;
@@ -104,7 +93,6 @@ DShape& DShape::operator=(DShape&& other)
 			addChild(it);
 		}
 
-		other.data = nullptr;
 		other.visible = 0;
 		other.parent = nullptr;
 		other.children.clear();
@@ -119,14 +107,12 @@ DShape& DShape::operator=(DShape* other)
 {
 	if(this != other) 
 	{
-		delete[] data;
 		for(auto& it : children) {
 			it->removeParent();
 			it->children.clear();
 		}
 		children.clear();
 
-		data = other->data;
 		visible = other->visible;
 		parent = other->parent;
 		image = other->image;

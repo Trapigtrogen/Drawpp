@@ -13,15 +13,15 @@ void setup()
 
     // Empty images are not allowed and system should revert the load after loading svg with no elements
     printf("Loading empty image to shape4...\n");
-    shape4 = loadShape("../../tests/assets/empty.svg"); 
+    shape4 = loadShape("/home/trapie/Projects/graphics-library/tests/assets/empty.svg"); 
 
     // Normal image containing 1 element
     printf("Loading image (1 element) to shape1...\n");
-    shape1 = loadShape("../../tests/assets/archlinux-logo-black.svg");
+    shape1 = loadShape("/home/trapie/Projects/graphics-library/tests/assets/tests/archlinux-logo-black.svg");
 
     // Normal image containing 2 elements with names/ids
     printf("Loading image (multiple elements) to shape3...\n\n");
-    shape3 = loadShape("../../tests/assets/starstripe.svg");
+    shape3 = loadShape("/home/trapie/Projects/graphics-library/tests/assets/starstripe.svg");
 
     // Naming
     shape1.name = "shape1";

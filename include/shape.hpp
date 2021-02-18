@@ -48,8 +48,6 @@ public:
 	void setVisible(bool visibility) { visible = visibility; };
 	bool isVisible() { return visible; };
 
-	unsigned char* data = nullptr; // DEBUG: Possibly not needed
-
 	// Drawable objects are in image->shapes. If image == NULL go through children's images
 	struct NSVGimage* image;
 
