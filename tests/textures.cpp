@@ -23,7 +23,7 @@ void draw(float)
 {
 	//background(bg_img);
 	//imageMode(CORNER);
-	image(img, 0, 0);
+	//image(img, 0, 0);
 	//image(bg_img, 0, 0);
 }
 
