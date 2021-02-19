@@ -5,16 +5,16 @@ DImage bg_img;
 
 void setup() 
 {
-	img = loadImage("D:/Projects/CPP/graphics-library/tests/assets/img.jpg");
-	bg_img = loadImage("D:/Projects/CPP/graphics-library/tests/assets/bg_img.jpg");
+	img = loadImage("assets/img.jpg");
+	bg_img = loadImage("assets/bg_img.jpg");
 
+/*
 	// DEGUB
-	/*
-	for(int i = 0; i < strlen((char*)img.pixels); i++) {
+	for(int i = 0; i < img.height*img.width*img.channels; i++) 
+	{
 		printf("%d ", img.pixels[i]);
 	};
-	*/
-
+*/
 }
 
 void draw(float) 
