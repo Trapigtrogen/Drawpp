@@ -40,22 +40,25 @@ private:
 
     GLuint id;
 
-    const char* defaultVertexSource = "#version 330 core\n"
-        "layout (location = 0) in vec4 vert;\n"
-        "uniform mat4 projection;\n"
-        "uniform mat4 view;\n"
-        "uniform mat4 model;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_Position = projection * view * model * vert;\n"
-        "}\0";
+    const char* defaultVertexSource = R"(
+        #version 100 core
+        attribute vec4 vert;
+        uniform mat4 projection;
+        uniform mat4 view;
+        uniform mat4 model;
+        void main()
+        {
+           gl_Position = projection * view * model * vert;
+        }
+        )";
 
-    const char* defaultFragmentSource = "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "void main()\n"
-        "{\n"
-        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        "}\0";
+    const char* defaultFragmentSource = R"(
+        #version 100 core
+        void main()
+        {
+           gl_FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+        }
+        )";
 };
 
 #endif
