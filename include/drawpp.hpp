@@ -6,6 +6,7 @@
 #include <shader.hpp>
 #include <color.hpp>
 #include <graphics.hpp>
+#include <shape.hpp>
 
 void exit();
 
