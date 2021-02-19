@@ -763,6 +763,10 @@ void DGraphics::quad(const DVector& p1, const DVector& p2, const DVector& p3, co
     quad(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
 }
 
+GraphicsProperties DGraphics::getStyle()
+{
+    return properties;
+}
 
 Color DGraphics::get_rgba(float r, float g, float b, float a)
 {

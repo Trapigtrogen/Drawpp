@@ -441,6 +441,8 @@ public:
     void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
     void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4);
 
+    GraphicsProperties getStyle();
+
 private:
 
     //Get the texture id for this graphics object
