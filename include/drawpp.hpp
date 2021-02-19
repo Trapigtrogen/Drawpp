@@ -135,6 +135,8 @@ extern int mouseX;
 extern int mouseY;
 extern int pmouseX;
 extern int pmouseY;
+extern int pfmouseX;
+extern int pfmouseY;
 
 // Random
 void randomSeed(int seed);

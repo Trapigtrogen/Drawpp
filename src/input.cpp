@@ -13,6 +13,8 @@ int mouseX = 0;
 int mouseY = 0;
 int pmouseX = 0;
 int pmouseY = 0;
+int pfmouseX = 0;
+int pfmouseY = 0;
 
 void Input::keyboard_callback(GLFWwindow* window, int keyc, int scancode, int action, int mods)
 {
@@ -113,6 +115,12 @@ void Input::mousemov_callback(GLFWwindow* window,double xpos,double ypos)
     {
         mouseMoved_func();
     }
+}
+
+void Input::setPrevMouse()
+{
+    pfmouseX = mouseX;
+    pfmouseY = mouseY;
 }
 
 std::function<void()> Input::keyPressed_func = nullptr;
