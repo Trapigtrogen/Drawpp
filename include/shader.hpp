@@ -21,14 +21,11 @@ public:
 
     Shader& operator=(Shader&& other);
 
-	int getId() { return id; }
+	int getId() const { return id; }
 
     static Shader loadShadersFromFile(const char* vsFile, const char* fsFile);
     static Shader loadShadersFromString(const char* vsStr, const char* fsStr);
     static Shader loadShadersDefault();
-
-    GLuint vertexShader;
-    GLuint fragmentShader;
 
     std::string shaderVSrc;
     std::string shaderFSrc;
@@ -38,7 +35,7 @@ private:
     GLuint compileShader(unsigned int shader_type, const char* shader_source);
     void createShaderProgram();
 
-    GLuint id;
+    GLuint id = 0;
 
     const char* defaultVertexSource = R"(
         #version 100 core
