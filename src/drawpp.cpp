@@ -216,6 +216,12 @@ void background(Color col)
     Application::GetInstance()->graphics_object().background(col.red(), col.green(), col.blue(), col.alpha());
 }
 
+void background(const char* hexCol) 
+{
+    Color col = Color::HEX2RGB((char*)hexCol);
+    Application::GetInstance()->graphics_object().background(col);
+}
+
 void background(int rgb)
 {
     Application::GetInstance()->graphics_object().background(Color(rgb));

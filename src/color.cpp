@@ -50,6 +50,18 @@ Color::Color(unsigned int c)
     RGB2HSB(redVal,greenVal,blueVal);
 }
 
+Color::Color(std::string hexCol) 
+{
+	Color temp = HEX2RGB((char*)hexCol.c_str());
+	redVal = temp.red();
+	greenVal = temp.green();
+	blueVal = temp.blue();
+	alphaVal = temp.alpha();
+	hueVal = temp.hue();
+	saturationVal = temp.saturation();
+	brightnessVal = temp.brightness();
+}
+
 Color& Color::operator=(const Color& other) 
 {
 	if(this != &other)
@@ -176,4 +188,58 @@ void Color::HSB2RGB(float h, float s, float b)
 	redVal = red;
 	greenVal = green;
 	blueVal = blue;
+}
+
+Color Color::HEX2RGB(char* hexCol) 
+{
+	int r, g, b;
+	int a = 255;
+
+	// Is right format
+	if(hexCol[0] == '#')
+	{
+		// remove '#' from color string
+		char* hexNum = hexCol + 1;
+
+		switch(strlen(hexNum)) 
+		{
+			// Full hex with alpha
+			case 8: 
+				sscanf(hexNum, "%02x%02x%02x%02x", &r, &g, &b, &a);
+				return Color(r, g, b, a);
+			break;
+
+			// Full hex without alpha
+			case 6: 
+				sscanf(hexNum, "%02x%02x%02x", &r, &g, &b);
+				return Color(r, g, b, a);
+			break;
+
+			// Compact hex with alpha
+			case 4: 
+				sscanf(hexNum, "%01x%01x%01x%01x", &r, &g, &b, &a);
+				r *= 10;
+				g *= 10;
+				b *= 10;
+				a *= 10;
+				return Color(r, g, b, a);
+			break;
+
+			// Compact hex without alpha
+			case 3: 
+				sscanf(hexNum, "%01x%01x%01x", &r, &g, &b);
+				r *= 10;
+				g *= 10;
+				b *= 10;
+				return Color(r, g, b, a);
+			break;
+
+			// Invalid
+			default:
+			break;
+		}
+	}
+
+	dbg::error("Not a hex color. Should be \"#RRGGBB\", \"#RRGGBBAA\" or compact variant of either");
+	return Color(0);
 }

@@ -62,6 +62,7 @@ void noTint();
 void fill(Color col);
 void fill(int rgb);
 void fill(int rgb, float alpha);
+void fill(std::string hexCol);
 void fill(float gray);
 void fill(float gray, float alpha);
 void fill(int v1, int v2, int v3);
@@ -69,12 +70,14 @@ void fill(int v1, int v2, int v3, float alpha);
 
 void stroke(Color rgba);
 void stroke(Color rgb, float alpha);
+void stroke(std::string hexCol);
 void stroke(float gray);
 void stroke(float gray, float alpha);
 void stroke(float v1, float v2, float v3);
 void stroke(float v1, float v2, float v3, float alpha);
 
 void background(Color col);
+void background(const char* hexCol);
 void background(int rgb);
 void background(int rgb, float alpha);
 void background(float gray);

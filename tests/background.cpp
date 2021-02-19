@@ -23,20 +23,26 @@ void setup()
 	Color lerpedColor = lerpColor(RGBCol, colori, 0.5);
 	printf("lerped RGB: %f, %f, %f\n", red(lerpedColor), green(lerpedColor), blue(lerpedColor));
 
+	colorMode(RGB);
 
-	background(255, 255, 255);
+	//background(255, 100, 100);
 	//background(51); // RGB
 	//background(51.0f); // Grayscale
 
+	Color hexCol("#00FAB5");
+	background(hexCol); // full hex color used from object
+	//background("#1f5"); // compact hex color
+
+	// Invalid hex colors i.e. "#GGG" give random results but won't break the program
+
 	// Not implemented
-	//background("#AABBCC"); // Should hex code be like this
-	//background("blue"); // color name
+	//background("blue"); // color by name
 }
 
 
 void draw(float) 
 {
-
+	//background(randomInt(255),randomInt(255),randomInt(255));
 }
 
 int main() 
