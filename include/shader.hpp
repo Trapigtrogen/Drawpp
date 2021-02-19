@@ -38,7 +38,7 @@ private:
     GLuint id = 0;
 
     const char* defaultVertexSource = R"(
-        #version 100 core
+        #version 100
         attribute vec4 vert;
         uniform mat4 projection;
         uniform mat4 view;
@@ -50,10 +50,10 @@ private:
         )";
 
     const char* defaultFragmentSource = R"(
-        #version 100 core
+        #version 100
         void main()
         {
-           gl_FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+           gl_FragColor = vec4(1.0, 0.5, 0.2, 1.0);
         }
         )";
 };
