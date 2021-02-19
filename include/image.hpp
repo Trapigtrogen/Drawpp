@@ -37,12 +37,14 @@ public:
 	void bind(unsigned int unit);
 
 	unsigned char* pixels = nullptr;
-	unsigned int width = 0;
-	unsigned int height = 0;
+	int width = 0;
+	int height = 0;
+	int channels = 0;
 
 private:
 	GLuint m_texture = 0;
-	DImage(unsigned char* _pixels, GLuint _texture);
+	DImage(unsigned char* _pixels, GLuint _texture, int w, int h, int c);
+	static GLuint generateTexture(int w, int h, unsigned char* pixels);
 };
 
 #endif

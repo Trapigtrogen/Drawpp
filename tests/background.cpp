@@ -20,8 +20,8 @@ void setup()
 	printf("HSB: %f, %f, %f\n\n", hue(HSBCol), saturation(HSBCol), brightness(HSBCol));
 
 	// Lerp color
-	Color lerpedColor = lerpColor(RGBCol, colori, 0.5);
-	printf("lerped RGB: %i, %i, %i\n", red(lerpedColor), green(lerpedColor), blue(lerpedColor));
+	//Color lerpedColor = lerpColor(RGBCol, colori, 0.5);
+	//printf("lerped RGB: %i, %i, %i\n", red(lerpedColor), green(lerpedColor), blue(lerpedColor));
 
 
 	background(255, 255, 255);
