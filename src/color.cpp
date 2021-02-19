@@ -1,5 +1,6 @@
 #include <color.hpp>
 #include <application.hpp>
+#include <graphics.hpp>
 
 Color::Color() 
 {
@@ -14,23 +15,30 @@ Color::Color()
 
 Color::Color(float v1, float v2, float v3, float a)
 {
-	//if(Application::GetInstance()->graphics.ColorMode == RGB) // DEBUG TODO: RGB/HSB Mode change
-	int mode = 0; // DEBUG TEMP
-	if(mode == 0)
+	// Use RGB mode when the graphics do not exist yet
+	// This is to prevent crashing
+	if(!Application::GetInstance()->graphicsExists())
 	{
 		redVal = v1;
 		greenVal = v2;
 		blueVal = v3;
 		RGB2HSB(v1, v2, v3);
 	}
-	else 
+	else if(Application::GetInstance()->graphics_object().getStyle().colormode == RGB)
+	{
+		redVal = v1;
+		greenVal = v2;
+		blueVal = v3;
+		RGB2HSB(v1, v2, v3);
+	}
+	else
 	{
 		hueVal = v1;
 		saturationVal = v2;
 		brightnessVal = v3;
 		HSB2RGB(v1, v2, v3);
 	}
-		alphaVal = a;
+	alphaVal = a;
 }
 
 Color::Color(unsigned int c)

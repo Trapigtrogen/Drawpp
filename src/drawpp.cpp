@@ -211,14 +211,14 @@ void stroke(float v1, float v2, float v3, float alpha)
 }
 
 
-void background(Color col) {
-    // DEBUG TODO: RGB/HSB Modes
+void background(Color col) 
+{
     Application::GetInstance()->graphics_object().background(col.red(), col.green(), col.blue(), col.alpha());
 }
 
 void background(int rgb)
 {
-    Application::GetInstance()->graphics_object().background(rgb);
+    Application::GetInstance()->graphics_object().background(Color(rgb));
 }
 
 void background(int rgb, float alpha)

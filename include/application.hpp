@@ -37,6 +37,7 @@ public:
     void exit();
 
     DGraphics& graphics_object();
+    bool graphicsExists();
 
     static Application* GetInstance();
 
