@@ -3,12 +3,7 @@
 #include <debug.hpp>
 
 // Use default
-Shader::Shader()
-{
-    shaderVSrc = defaultVertexSource;
-    shaderFSrc = defaultFragmentSource;
-    createShaderProgram();
-}
+Shader::Shader() = default;
 
 Shader::Shader(const Shader& other)
 {
