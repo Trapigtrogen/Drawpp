@@ -32,7 +32,7 @@ set_target_properties(${LIBNAME} PROPERTIES
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 
 if(MSVC)
-    target_compile_options(${LIBNAME} PRIVATE /W4 /WX)
+    target_compile_options(${LIBNAME} PRIVATE /W4)
 else()
     target_compile_options(${LIBNAME} PRIVATE -Wall -Wextra -pedantic -Werror)
 endif()
