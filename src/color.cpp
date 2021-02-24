@@ -1,5 +1,7 @@
 #include <color.hpp>
 #include <application.hpp>
+#include <debug.hpp>
+#include <algorithm>
 
 Color::Color() 
 {

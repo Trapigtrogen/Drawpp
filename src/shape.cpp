@@ -1,11 +1,16 @@
 #include <shape.hpp>
 #include <debug.hpp>
+#include <algorithm>
+
+#pragma warning(push,1)
 
 #define NANOSVG_ALL_COLOR_KEYWORDS	// Include full list of color keywords.
 #define NANOSVG_IMPLEMENTATION		// Expands implementation
 #include "nanosvg.h"
 #define NANOSVGRAST_IMPLEMENTATION
 #include "nanosvgrast.h"
+
+#pragma warning(pop)
 
 DShape::~DShape()
 {

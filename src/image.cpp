@@ -1,10 +1,16 @@
 #include <image.hpp>
+#include <debug.hpp>
 #include <cassert>
+#include <glad/glad.h>
+
+#pragma warning(push,1)
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
+
+#pragma warning(pop)
 
 DImage::~DImage() 
 {
@@ -17,7 +23,7 @@ DImage::DImage()
 	pixels = new unsigned char[0];
 }
 
-DImage::DImage(unsigned char* _pixels, GLuint _texture) 
+DImage::DImage(unsigned char* _pixels, unsigned int _texture)
 {
 	pixels = _pixels;
 	m_texture = _texture;

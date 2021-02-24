@@ -2,8 +2,6 @@
 #define DPP_COLOR_H
 
 #include <string>
-#include <debug.hpp>
-#include <algorithm>
 
 /// Color API
 class Color 

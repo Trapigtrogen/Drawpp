@@ -2,11 +2,6 @@
 #define DPP_SHADER_H
 
 #include <string>
-#include <debug.hpp>
-#include <glad/glad.h>
-
-#include <iostream> 
-#include <fstream> 
 
 /// Shader class loads the OpenGL shaders
 class Shader
@@ -27,18 +22,18 @@ public:
     static Shader loadShadersFromString(const char* vsStr, const char* fsStr);
     static Shader loadShadersDefault();
 
-    GLuint vertexShader;
-    GLuint fragmentShader;
+    unsigned int vertexShader;
+    unsigned int fragmentShader;
 
     std::string shaderVSrc;
     std::string shaderFSrc;
 
 private:
     std::string readShaderFile(const char* filename);
-    GLuint compileShader(unsigned int shader_type, const char* shader_source);
+    unsigned int compileShader(unsigned int shader_type, const char* shader_source);
     void createShaderProgram();
 
-    GLuint id;
+    unsigned int id;
 
     const char* defaultVertexSource = "#version 330 core\n"
         "layout (location = 0) in vec4 vert;\n"

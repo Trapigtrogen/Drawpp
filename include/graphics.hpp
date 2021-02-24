@@ -2,13 +2,13 @@
 #define DPP_GRAPHICS_H
 
 #include <stack>
-#include <vector3.hpp>
 #include <matrix4.hpp>
 #include <color.hpp>
 #include <memory>
 
 class DImage;
 class Shader;
+class DVector;
 
 enum ColorMode
 {
