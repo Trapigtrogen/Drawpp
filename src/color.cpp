@@ -1,6 +1,7 @@
 #include <color.hpp>
 #include <application.hpp>
 #include <graphics.hpp>
+#include <sstream>
 
 Color::Color() 
 {
@@ -254,11 +255,70 @@ Color Color::HEX2RGB(char* hexCol)
 	return Color(0);
 }
 
-std::string Color::hex(Color col)
+std::string Color::hex(Color col, int num)
 {
-	std::string str = "";
+	uint8_t r = col.red();
+	uint8_t g = col.green();
+	uint8_t b = col.blue();
+	uint8_t a = col.alpha();
+	char buffer[33]; // temp buffer
+	std::string result = "#"; // final result
 
-	return str;
+
+	printf("Debug originals : %i, %i, %i, %i\n", r, g, b, a);
+
+	switch(num)
+	{
+		case 3: // Shrink values to fit compact mode
+		_itoa_s(r, buffer, 16);
+		result += buffer[0];		
+		_itoa_s(g, buffer, 16);
+		result += buffer[0];
+		_itoa_s(b, buffer, 16);
+		result += buffer[0];
+		break;
+
+		case 4: // Shrink values to fit compact mode
+		_itoa_s(r, buffer, 16);
+		result += buffer[0];
+		_itoa_s(g, buffer, 16);
+		result += buffer[0];
+		_itoa_s(b, buffer, 16);
+		result += buffer[0];
+		_itoa_s(a, buffer, 16);
+		result += buffer[0];
+		break;
+
+		case 6:
+		_itoa_s(r, buffer, 16);
+		result += buffer;
+		_itoa_s(g, buffer, 16);
+		result += buffer;
+		_itoa_s(b, buffer, 16);
+		result += buffer;
+		break;
+
+		case 8:
+		_itoa_s(r, buffer, 16);
+		result += buffer;
+		_itoa_s(g, buffer, 16);
+		result += buffer;
+		_itoa_s(b, buffer, 16);
+		result += buffer;
+		_itoa_s(a, buffer, 16);
+		result += buffer;
+		break;
+
+		default:
+		dbg::error("Invalid number");
+		break;
+	}
+
+	_itoa_s(col.red(), buffer, 16);
+
+	// Convert to upper case for fanciness points
+	std::transform(result.begin(), result.end(), result.begin(), [] (unsigned char c) { return std::toupper(c); });
+	return  result;
 }
 
 int Color::correctValue(int value, int min, int max)

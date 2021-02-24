@@ -333,6 +333,16 @@ Color lerpColor(const Color &from, const Color& to, float percentage)
     return Color::lerpColor(from, to, percentage);
 }
 
+std::string hex(Color col)
+{
+    return Color::hex(col, 8);
+}
+
+std::string hex(Color col, int num) 
+{
+    return Color::hex(col, num);
+}
+
 
 // Image
 

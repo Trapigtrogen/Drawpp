@@ -105,6 +105,8 @@ float brightness(Color col);
 
 // Lerps color. Percentage needs to be in range 0.0 - 1.0 or it will be cut to closest point
 Color lerpColor(const Color& from, const Color& to, float percentage);
+std::string hex(Color col);
+std::string hex(Color col, int num);
 
 // Image
 DImage loadImage(const std::string& fileName);

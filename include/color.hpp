@@ -31,7 +31,7 @@ public:
 
     static Color lerpColor(const Color& from, const Color& to, float percentage);
     static Color HEX2RGB(char* hexCol);
-    static std::string hex(Color col);
+    static std::string hex(Color col, int num);
 
 private:
     uint8_t alphaVal;

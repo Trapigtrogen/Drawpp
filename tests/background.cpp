@@ -22,6 +22,7 @@ void setup()
 	// Lerp color
 	Color lerpedColor = lerpColor(RGBCol, colori, 0.5);
 	printf("lerped RGB: %f, %f, %f\n", red(lerpedColor), green(lerpedColor), blue(lerpedColor));
+	printf("Hex: %s\n", hex(lerpedColor, 8).c_str());
 
 	colorMode(RGB);
 
