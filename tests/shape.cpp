@@ -1,4 +1,5 @@
 #include <drawpp.hpp>
+#include <iostream>
 
 DShape shape1; // 1 element image
 DShape shape2; // no image. child of 1

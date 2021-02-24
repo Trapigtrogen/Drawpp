@@ -1,6 +1,7 @@
 #include <image.hpp>
 #include <debug.hpp>
 #include <cassert>
+#include <glad/glad.h>
 
 #pragma warning(push,1)
 
@@ -22,7 +23,7 @@ DImage::DImage()
 	pixels = new unsigned char[0];
 }
 
-DImage::DImage(unsigned char* _pixels, GLuint _texture)
+DImage::DImage(unsigned char* _pixels, unsigned int _texture)
 {
 	pixels = _pixels;
 	m_texture = _texture;

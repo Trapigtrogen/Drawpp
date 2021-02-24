@@ -1,9 +1,7 @@
 #ifndef DPP_WINDOW_H
 #define DPP_WINDOW_H
 
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
+struct GLFWwindow;
 
 class Window
 {

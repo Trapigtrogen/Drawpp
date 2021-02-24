@@ -138,7 +138,7 @@ void fill(int rgb)
 
 void fill(int rgb, float alpha)
 {
-    Application::GetInstance()->graphics_object().fill(rgb);
+    Application::GetInstance()->graphics_object().fill(rgb,alpha);
 }
 
 void fill(float gray)

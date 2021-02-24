@@ -1,5 +1,6 @@
 #include <shape.hpp>
 #include <debug.hpp>
+#include <algorithm>
 
 #pragma warning(push,1)
 

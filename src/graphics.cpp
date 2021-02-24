@@ -3,6 +3,7 @@
 #include <shader.hpp>
 #include <glad/glad.h>
 #include <debug.hpp>
+#include <vector3.hpp>
 
 const float primitive_square[] = 
 {
