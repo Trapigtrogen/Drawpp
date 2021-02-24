@@ -25,15 +25,15 @@ void setup()
 
 	colorMode(RGB);
 
-	//background(255, 100, 100);
-	//background(51); // RGB
-	//background(51.0f); // Grayscale
+	background(255, 100, 100);
+	background(51); // RGB
+	background(51.0f); // Grayscale
 
+	// Hex not case sensitive
 	Color hexCol("#00FAB5");
 	background(hexCol); // full hex color used from object
-	//background("#1f5"); // compact hex color
-
-	// Invalid hex colors i.e. "#GGG" give random results but won't break the program
+	background("#1f5"); // compact hex color
+	// Invalid hex colors i.e. "#RAY" give random results (usually white) but won't break the program
 
 	// Not implemented
 	//background("blue"); // color by name
@@ -42,7 +42,7 @@ void setup()
 
 void draw(float) 
 {
-	//background(randomInt(255),randomInt(255),randomInt(255));
+	background(randomInt(255),randomInt(255),randomInt(255));
 }
 
 int main() 

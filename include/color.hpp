@@ -31,6 +31,7 @@ public:
 
     static Color lerpColor(const Color& from, const Color& to, float percentage);
     static Color HEX2RGB(char* hexCol);
+    static std::string hex(Color col);
 
 private:
     uint8_t alphaVal;
@@ -43,6 +44,8 @@ private:
 
     void RGB2HSB(uint8_t r, uint8_t g, uint8_t b);
     void HSB2RGB(float h, float s, float b);
+
+    static int correctValue(int value, int min, int max);
 };
 
 #endif

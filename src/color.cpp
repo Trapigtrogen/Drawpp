@@ -192,6 +192,7 @@ void Color::HSB2RGB(float h, float s, float b)
 
 Color Color::HEX2RGB(char* hexCol) 
 {
+	bool valid = false;
 	int r, g, b;
 	int a = 255;
 
@@ -206,13 +207,13 @@ Color Color::HEX2RGB(char* hexCol)
 			// Full hex with alpha
 			case 8: 
 				sscanf(hexNum, "%02x%02x%02x%02x", &r, &g, &b, &a);
-				return Color(r, g, b, a);
+				valid = true;
 			break;
 
 			// Full hex without alpha
 			case 6: 
 				sscanf(hexNum, "%02x%02x%02x", &r, &g, &b);
-				return Color(r, g, b, a);
+				valid = true;
 			break;
 
 			// Compact hex with alpha
@@ -222,7 +223,7 @@ Color Color::HEX2RGB(char* hexCol)
 				g *= 10;
 				b *= 10;
 				a *= 10;
-				return Color(r, g, b, a);
+				valid = true;
 			break;
 
 			// Compact hex without alpha
@@ -231,7 +232,7 @@ Color Color::HEX2RGB(char* hexCol)
 				r *= 10;
 				g *= 10;
 				b *= 10;
-				return Color(r, g, b, a);
+				valid = true;
 			break;
 
 			// Invalid
@@ -240,6 +241,29 @@ Color Color::HEX2RGB(char* hexCol)
 		}
 	}
 
+	if(valid)
+	{
+		r = correctValue(r, 0, 255);
+		g = correctValue(g, 0, 255);
+		b = correctValue(b, 0, 255);
+		a = correctValue(a, 0, 255);
+		return Color(r, g, b, a);
+	}
+
 	dbg::error("Not a hex color. Should be \"#RRGGBB\", \"#RRGGBBAA\" or compact variant of either");
 	return Color(0);
+}
+
+std::string Color::hex(Color col)
+{
+	std::string str = "";
+
+	return str;
+}
+
+int Color::correctValue(int value, int min, int max)
+{
+	if(value < min) value = min;
+	if(value > max) value = max;
+	return value;
 }
