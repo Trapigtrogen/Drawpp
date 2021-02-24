@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(OpenGLGraphicsLibrary)
@@ -30,6 +30,12 @@ add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    src/shape.cpp)
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
+
+if(MSVC)
+    target_compile_options(${LIBNAME} PRIVATE /W4 /WX)
+else()
+    target_compile_options(${LIBNAME} PRIVATE -Wall -Wextra -pedantic -Werror)
+endif()
 
 include_directories(include)
 include_directories(external/glad/include)
