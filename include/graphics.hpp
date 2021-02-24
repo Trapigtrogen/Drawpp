@@ -8,7 +8,7 @@
 
 class DImage;
 class Shader;
-class DVector;
+struct DVector;
 
 enum ColorMode
 {

@@ -190,12 +190,12 @@ DShape* DShape::getChild(int idx)
 	return *it;
 }
 
-DShape* DShape::getChild(std::string name)
+DShape* DShape::getChild(std::string _name)
 {
 	
 	for(std::vector<DShape*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
-		if((*it)->name == name){ return *it; }
+		if((*it)->name == _name){ return *it; }
 	}
 	dbg::error("No child found with given name");
 	return nullptr;

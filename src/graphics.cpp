@@ -350,7 +350,7 @@ Color DGraphics::color(float grey, float alpha)
 
 Color DGraphics::color(float v1, float v2, float v3)
 {
-    return get_color(v1,v3,v3,properties.color_maxa);
+    return get_color(v1,v2,v3,properties.color_maxa);
 }
 
 Color DGraphics::color(float v1, float v2, float v3, float alpha)
