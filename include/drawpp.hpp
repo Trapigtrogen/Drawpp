@@ -61,12 +61,11 @@ void noTint();
 
 // Color
 void fill(Color col);
-void fill(int rgb);
-void fill(int rgb, float alpha);
+void fill(Color rgb, float alpha);
 void fill(float gray);
 void fill(float gray, float alpha);
-void fill(int v1, int v2, int v3);
-void fill(int v1, int v2, int v3, float alpha);
+void fill(float v1, float v2, float v3);
+void fill(float v1, float v2, float v3, float alpha);
 
 void stroke(Color rgba);
 void stroke(Color rgb, float alpha);
@@ -76,12 +75,11 @@ void stroke(float v1, float v2, float v3);
 void stroke(float v1, float v2, float v3, float alpha);
 
 void background(Color col);
-void background(int rgb);
-void background(int rgb, float alpha);
+void background(Color rgb, float alpha);
 void background(float gray);
 void background(float gray, float alpha);
-void background(int v1, int v2, int v3);
-void background(int v1, int v2, int v3, float alpha);
+void background(float v1, float v2, float v3);
+void background(float v1, float v2, float v3, float alpha);
 
 void colorMode(ColorMode mode);
 void colorMode(ColorMode mode, float max);

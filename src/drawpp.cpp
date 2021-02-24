@@ -147,15 +147,10 @@ void timeReset()
 void fill(Color col) 
 {
     // DEBUG TODO: RGB/HSB Modes
-    Application::GetInstance()->graphics_object().fill(col.red(), col.green(), col.blue(), col.alpha());
+    Application::GetInstance()->graphics_object().fill(col);
 }
 
-void fill(int rgb)
-{
-    Application::GetInstance()->graphics_object().fill(rgb);
-}
-
-void fill(int rgb, float alpha)
+void fill(Color rgb, float alpha)
 {
     Application::GetInstance()->graphics_object().fill(rgb,alpha);
 }
@@ -170,12 +165,12 @@ void fill(float gray, float alpha)
     Application::GetInstance()->graphics_object().fill(gray, alpha);
 }
 
-void fill(int v1, int v2, int v3)
+void fill(float v1, float v2, float v3)
 {
     Application::GetInstance()->graphics_object().fill(v1, v2, v3);
 }
 
-void fill(int v1, int v2, int v3, float alpha)
+void fill(float v1, float v2, float v3, float alpha)
 {
     Application::GetInstance()->graphics_object().fill(v1, v2, v3, alpha);
 }
@@ -213,15 +208,10 @@ void stroke(float v1, float v2, float v3, float alpha)
 
 void background(Color col) {
     // DEBUG TODO: RGB/HSB Modes
-    Application::GetInstance()->graphics_object().background(col.red(), col.green(), col.blue(), col.alpha());
+    Application::GetInstance()->graphics_object().background(col);
 }
 
-void background(int rgb)
-{
-    Application::GetInstance()->graphics_object().background(rgb);
-}
-
-void background(int rgb, float alpha)
+void background(Color rgb, float alpha)
 {
     Application::GetInstance()->graphics_object().background(rgb, alpha);
 }
@@ -236,12 +226,12 @@ void background(float gray, float alpha)
     Application::GetInstance()->graphics_object().background(gray, alpha);
 }
 
-void background(int v1, int v2, int v3)
+void background(float v1, float v2, float v3)
 {
     Application::GetInstance()->graphics_object().background(v1, v2, v3);
 }
 
-void background(int v1, int v2, int v3, float alpha)
+void background(float v1, float v2, float v3, float alpha)
 {
     Application::GetInstance()->graphics_object().background(v1, v2, v3, alpha);
 }
