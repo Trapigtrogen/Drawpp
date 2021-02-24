@@ -732,74 +732,86 @@ void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3,
     bool b;
     bool c;
 
-
     if(sig)
     {
-        a = t_abc > 0;
+        a = t_abd > 0;
         b = t_bcd > 0;
         c = t_cad > 0;
 
     }
     else
     {
-        a = t_abc < 0;
+        a = t_abd < 0;
         b = t_bcd < 0;
         c = t_cad < 0;
     }
     
-    int sum = a + b + c;
-
-    if(sum == 2)
+    if(a + b + c == 2)
     {
-        quad_verts[0] = x1;
-        quad_verts[1] = -y1;
-        quad_verts[6] = x1;
-        quad_verts[7] = -y1;
-
         if(a && b)
         {
-            //dbg::message("convex 1");
-            quad_verts[2] = x2;
-            quad_verts[3] = -y2;
+            //convex 1
+            
+            quad_verts[0] = x2;
+            quad_verts[1] = -y2;
+            quad_verts[6] = x4;
+            quad_verts[7] = -y4;
+
+            quad_verts[2] = x1;
+            quad_verts[3] = -y1;
             quad_verts[4] = x3;
             quad_verts[5] = -y3;
 
             quad_verts[8]  = x3;
             quad_verts[9]  = -y3;
-            quad_verts[10] = x4;
-            quad_verts[11] = -y4;
+            quad_verts[10] = x1;
+            quad_verts[11] = -y1;
         }
         else if(a && c)
         {
-            //dbg::message("convex 2");
-            quad_verts[2] = x2;
-            quad_verts[3] = -y2;
+            //convex 2
+
+            quad_verts[0] = x2;
+            quad_verts[1] = -y2;
+            quad_verts[6] = x3;
+            quad_verts[7] = -y3;
+
+            quad_verts[2] = x1;
+            quad_verts[3] = -y1;
             quad_verts[4] = x4;
             quad_verts[5] = -y4;
             
             quad_verts[8]  = x4;
             quad_verts[9]  = -y4;
-            quad_verts[10] = x3;
-            quad_verts[11] = -y3;
+            quad_verts[10] = x1;
+            quad_verts[11] = -y1;
         }
         else
         {
-            quad_verts[2] = x4;
-            quad_verts[3] = -y4;
+            //convex 3
+
+            quad_verts[0] = x4;
+            quad_verts[1] = -y4;
+            quad_verts[6] = x3;
+            quad_verts[7] = -y3;
+
+            quad_verts[2] = x1;
+            quad_verts[3] = -y1;
             quad_verts[4] = x2;
             quad_verts[5] = -y2;
             
-            quad_verts[8]  = x2;
-            quad_verts[9]  = -y2;
-            quad_verts[10] = x3;
-            quad_verts[11] = -y3;
+            quad_verts[8]  = x1;
+            quad_verts[9]  = -y1;
+            quad_verts[10] = x2;
+            quad_verts[11] = -y2;
         }
     }
     else
     {
         if((a && b && c) || (!a && !b && c))
         {
-            //dbg::message("concave 1");
+            //concave 1
+
             quad_verts[0] = x1;
             quad_verts[1] = -y1;
             quad_verts[2] = x4;
@@ -816,7 +828,8 @@ void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3,
         }
         else if(a || b)
         {
-            //dbg::message("concave 2");
+            //concave 2
+
             quad_verts[0] = x2;
             quad_verts[1] = -y2;
             quad_verts[2] = x3;
