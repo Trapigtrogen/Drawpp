@@ -56,7 +56,7 @@ int vertpos_attrib = 0;
 int texc_attrib = 0;
 int tex_uniform = 0;
 
-void windowclose_cb(GLFWwindow* window)
+void windowclose_cb(GLFWwindow*)
 {
     Application::GetInstance()->exit();
 }

@@ -1,4 +1,5 @@
 #include <shader.hpp>
+#include <debug.hpp>
 #include <vector>
 
 // Use default

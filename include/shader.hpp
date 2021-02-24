@@ -2,7 +2,6 @@
 #define DPP_SHADER_H
 
 #include <string>
-#include <debug.hpp>
 #include <glad/glad.h>
 
 #include <iostream> 

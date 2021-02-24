@@ -14,7 +14,7 @@ int mouseY = 0;
 int pmouseX = 0;
 int pmouseY = 0;
 
-void Input::keyboard_callback(GLFWwindow* window, int keyc, int scancode, int action, int mods)
+void Input::keyboard_callback(GLFWwindow*, int keyc, int scancode, int action, int mods)
 {
     if((unsigned)keyc > 0x80)
     {
@@ -54,7 +54,7 @@ void Input::keyboard_callback(GLFWwindow* window, int keyc, int scancode, int ac
     }
 }
 
-void Input::mousebtn_callback(GLFWwindow* window,int button, int action, int mods)
+void Input::mousebtn_callback(GLFWwindow*,int button, int action, int mods)
 {
     mouseButton = button + KeyID::LEFT;
 
@@ -89,7 +89,7 @@ void Input::mousebtn_callback(GLFWwindow* window,int button, int action, int mod
     }
 }
 
-void Input::mousewhl_callback(GLFWwindow* window,double xoffset, double yoffset)
+void Input::mousewhl_callback(GLFWwindow*,double xoffset, double yoffset)
 {
     if(mouseWheel_func)
     {
@@ -97,7 +97,7 @@ void Input::mousewhl_callback(GLFWwindow* window,double xoffset, double yoffset)
     }
 }
 
-void Input::mousemov_callback(GLFWwindow* window,double xpos,double ypos)
+void Input::mousemov_callback(GLFWwindow*,double xpos,double ypos)
 {
     pmouseX = mouseX;
     pmouseY = mouseY;
