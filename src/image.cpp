@@ -101,8 +101,11 @@ DImage& DImage::operator=(DImage&& other)
 	return *this;
 }
 
-void DImage::bind(unsigned int unit) 
+void DImage::bind(unsigned int unit) const
 {
+    //TODO:
+    //unit max count is obtained from glGet using GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+    //change this accordingly, and don't call glGet every time image is bound
 	assert(unit >= 0 && unit <= 31);
 
 	glActiveTexture(GL_TEXTURE0 + unit);

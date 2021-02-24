@@ -163,6 +163,10 @@ void Application::size(int width, int height)
     {
         window->properties.width    = window->properties.width_hint;
         window->properties.height   = window->properties.height_hint;
+
+        delete graphics;
+        graphics = new DGraphics(window->properties.width,window->properties.height);
+        
         glfwSetWindowSize(window->GetHandle(),width,height);
     }
 }
@@ -192,6 +196,12 @@ void Application::exit()
 DGraphics& Application::graphics_object()
 {
     return *graphics;
+}
+
+bool Application::graphicsExists()
+{
+    if(graphics != nullptr) return true;
+    return false;
 }
 
 bool Application::init_application()

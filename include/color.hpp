@@ -13,6 +13,8 @@ public:
     // values 1,2,3 are rgb/hsb depending on mode
     Color(float v1, float v2, float v3, float a = 255);
     Color(unsigned int);
+    //Hex color
+    Color(std::string hexCol);
     Color(const Color&) = default;
 
     Color& operator=(const Color& other);
@@ -28,6 +30,8 @@ public:
     float brightness() const { return brightnessVal; };
 
     static Color lerpColor(const Color& from, const Color& to, float percentage);
+    static Color HEX2RGB(char* hexCol);
+    static std::string hex(Color col, int num);
 
 private:
     uint8_t alphaVal;
@@ -40,6 +44,8 @@ private:
 
     void RGB2HSB(uint8_t r, uint8_t g, uint8_t b);
     void HSB2RGB(float h, float s, float b);
+
+    static int correctValue(int value, int min, int max);
 };
 
 #endif

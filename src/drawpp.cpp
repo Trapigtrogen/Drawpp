@@ -56,10 +56,29 @@ float randomGaussian()
     return Application::GetInstance()->random.randomGaussian();
 }
 
+void rectMode(PosMode m)
+{
+    Application::GetInstance()->graphics_object().rectMode(m);
+}
+
+void ellipseMode(PosMode m)
+{
+    Application::GetInstance()->graphics_object().ellipseMode(m);
+}
+
+void imageMode(PosMode m)
+{
+    Application::GetInstance()->graphics_object().imageMode(m);
+}
 
 void strokeWeight(float w)
 {
     Application::GetInstance()->graphics_object().strokeWeight(w);
+}
+
+void strokeCap(CapStyle cap)
+{
+    Application::GetInstance()->graphics_object().strokeCap(cap);
 }
 
 void clear()
@@ -192,14 +211,20 @@ void stroke(float v1, float v2, float v3, float alpha)
 }
 
 
-void background(Color col) {
-    // DEBUG TODO: RGB/HSB Modes
+void background(Color col) 
+{
     Application::GetInstance()->graphics_object().background(col.red(), col.green(), col.blue(), col.alpha());
+}
+
+void background(const char* hexCol) 
+{
+    Color col = Color::HEX2RGB((char*)hexCol);
+    Application::GetInstance()->graphics_object().background(col);
 }
 
 void background(int rgb)
 {
-    Application::GetInstance()->graphics_object().background(rgb);
+    Application::GetInstance()->graphics_object().background(Color(rgb));
 }
 
 void background(int rgb, float alpha)
@@ -308,6 +333,16 @@ Color lerpColor(const Color &from, const Color& to, float percentage)
     return Color::lerpColor(from, to, percentage);
 }
 
+std::string hex(Color col)
+{
+    return Color::hex(col, 8);
+}
+
+std::string hex(Color col, int num) 
+{
+    return Color::hex(col, num);
+}
+
 
 // Image
 
@@ -316,19 +351,21 @@ DImage loadImage(const std::string& fileName)
     return DImage::loadImage(fileName);
 }
 
-void image(DImage image, int x, int y) 
+void image(const DImage& image, float x, float y)
 {
-    image.drawImage(x, y, image.width, image.height);
+    Application::GetInstance()->graphics_object().image(image,x,y);
 }
 
-void image(DImage image, int x, int y, int width, int height) {
-    image.drawImage(x, y, width, height);
+void image(const DImage& image, float x, float y, float width, float height)
+{
+    Application::GetInstance()->graphics_object().image(image,x,y,width,height);
 }
 
-void background(DImage image) 
+void background(const DImage& image)
 {
-    // DEBUG TODO: Set background to image.pixels
+    Application::GetInstance()->graphics_object().background(image);
 }
+
 
 
 // Shapes
@@ -360,11 +397,6 @@ DShape createShape(DShape::ShapeType type)
 
 //DShape createShape(DShape::ShapeType type, float[] p){}
 
-void triangle(int x1, int y1, int x2, int y2, int x3, int y3)
-{
-
-}
-
 void rect(float x, float y, float w, float h)
 {
     Application::GetInstance()->graphics_object().rect(x,y,w,h);
@@ -394,6 +426,48 @@ void ellipse(float x, float y, float width, float height)
 {
     Application::GetInstance()->graphics_object().ellipse(x,y,width,height);
 }
+
+void line(float x1, float y1, float x2, float y2)
+{
+    Application::GetInstance()->graphics_object().line(x1,y1,x2,y2);
+}
+
+void line(const DVector& p1,const DVector& p2)
+{
+    Application::GetInstance()->graphics_object().line(p1,p2);
+}
+
+void point(float x, float y)
+{
+    Application::GetInstance()->graphics_object().point(x,y);
+}
+
+void point(const DVector& p)
+{
+    Application::GetInstance()->graphics_object().point(p);
+}
+
+void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+{
+    Application::GetInstance()->graphics_object().quad(x1,y1,x2,y2,x3,y3,x4,y4);
+}
+
+void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4)
+{
+    Application::GetInstance()->graphics_object().quad(p1,p2,p3,p4);
+}
+
+
+void triangle(float x1, float y1, float x2, float y2, float x3, float y3)
+{
+    Application::GetInstance()->graphics_object().triangle(x1,y1,x2,y2,x3,y3);
+}
+
+void triangle(const DVector& p1, const DVector& p2, const DVector& p3)
+{
+    Application::GetInstance()->graphics_object().triangle(p1,p2,p3);
+}
+
 
 // Shader
 
