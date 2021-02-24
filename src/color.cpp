@@ -14,7 +14,7 @@ Color::Color()
 	brightnessVal = 100;
 }
 
-Color::Color(float v1, float v2, float v3, float a)
+Color::Color(float v1, float v2, float v3, float alpha)
 {
 	// Use RGB mode when the graphics do not exist yet
 	// This is to prevent crashing
@@ -39,7 +39,7 @@ Color::Color(float v1, float v2, float v3, float a)
 		brightnessVal = v3;
 		HSB2RGB(v1, v2, v3);
 	}
-	alphaVal = a;
+	alphaVal = alpha;
 }
 
 Color::Color(unsigned int c)
