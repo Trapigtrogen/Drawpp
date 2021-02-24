@@ -264,9 +264,6 @@ std::string Color::hex(Color col, int num)
 	char buffer[33]; // temp buffer
 	std::string result = "#"; // final result
 
-
-	printf("Debug originals : %i, %i, %i, %i\n", r, g, b, a);
-
 	switch(num)
 	{
 		case 3: // Shrink values to fit compact mode
