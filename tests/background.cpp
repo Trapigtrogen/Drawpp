@@ -23,7 +23,10 @@ void setup()
 	Color lerpedColor = lerpColor(RGBCol, colori, 0.5);
 	printf("lerped RGB: %f, %f, %f\n", red(lerpedColor), green(lerpedColor), blue(lerpedColor));
 	// Print as HEX
-	printf("HEX: %s\n", hex(lerpedColor).c_str());
+	printf("HEX: %s\n", hex(lerpedColor, 3).c_str());
+	printf("HEX: %s\n", hex(lerpedColor, 4).c_str());
+	printf("HEX: %s\n", hex(lerpedColor, 6).c_str());
+	printf("HEX: %s\n", hex(lerpedColor, 8).c_str());
 
 	colorMode(RGB);
 
@@ -34,7 +37,11 @@ void setup()
 	// Hex not case sensitive
 	Color hexCol("#00FAB5");
 	background(hexCol); // full hex color used from object
+	
 	background("#1f5"); // compact hex color
+	background("#10f050"); // full hex color
+	background("#1f5f"); // compact hex color with alpha
+	background("#10f050ff"); // full hex color with alpha
 	// Invalid hex colors i.e. "#RAY" give random results (usually white) but won't break the program
 
 	// Not implemented
