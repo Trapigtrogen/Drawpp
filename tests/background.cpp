@@ -37,7 +37,11 @@ void setup()
 	// Hex not case sensitive
 	Color hexCol("#00FAB5");
 	background(hexCol); // full hex color used from object
+	
 	background("#1f5"); // compact hex color
+	background("#10f050"); // full hex color
+	background("#1f5f"); // compact hex color with alpha
+	background("#10f050ff"); // full hex color with alpha
 	// Invalid hex colors i.e. "#RAY" give random results (usually white) but won't break the program
 
 	// Not implemented

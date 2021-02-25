@@ -1,6 +1,7 @@
 #include <color.hpp>
 #include <application.hpp>
 #include <graphics.hpp>
+#include <cstring>
 
 Color::Color() 
 {
@@ -190,7 +191,7 @@ void Color::HSB2RGB(float h, float s, float b)
 	blueVal = blue;
 }
 
-Color Color::HEX2RGB(char* hexCol) 
+Color Color::HEX2RGB(std::string hexCol) 
 {
 	bool valid = false;
 	int r, g, b;
@@ -200,25 +201,27 @@ Color Color::HEX2RGB(char* hexCol)
 	if(hexCol[0] == '#')
 	{
 		// remove '#' from color string
-		char* hexNum = hexCol + 1;
+		hexCol.erase(0, 1);
+		char* hexNum = new char;
+		strcpy(hexNum, hexCol.c_str());
 
-		switch(strlen(hexNum)) 
+		switch(hexCol.size())
 		{
 			// Full hex with alpha
-			case 8: 
-				sscanf_s(hexNum, "%02x%02x%02x%02x", &r, &g, &b, &a);
+			case 8:
+				sscanf(hexNum, "%02x%02x%02x%02x", &r, &g, &b, &a);
 				valid = true;
 			break;
 
 			// Full hex without alpha
 			case 6: 
-				sscanf_s(hexNum, "%02x%02x%02x", &r, &g, &b);
+				sscanf(hexNum, "%02x%02x%02x", &r, &g, &b);
 				valid = true;
 			break;
 
 			// Compact hex with alpha
 			case 4: 
-				sscanf_s(hexNum, "%01x%01x%01x%01x", &r, &g, &b, &a);
+				sscanf(hexNum, "%01x%01x%01x%01x", &r, &g, &b, &a);
 				r *= 10;
 				g *= 10;
 				b *= 10;
@@ -228,7 +231,7 @@ Color Color::HEX2RGB(char* hexCol)
 
 			// Compact hex without alpha
 			case 3: 
-				sscanf_s(hexNum, "%01x%01x%01x", &r, &g, &b);
+				sscanf(hexNum, "%01x%01x%01x", &r, &g, &b);
 				r *= 10;
 				g *= 10;
 				b *= 10;
