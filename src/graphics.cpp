@@ -1008,7 +1008,12 @@ Color DGraphics::get_hsba(float h, float s, float b, float a)
     reinterpret_cast<uint8_t*>(&rc)[1] = r;
     reinterpret_cast<uint8_t*>(&rc)[2] = g;
     reinterpret_cast<uint8_t*>(&rc)[3] = bb;
-    rc.RGB2HSB(r,g,bb);
+
+    //rc.RGB2HSB(r,g,bb);
+    float* hsb = reinterpret_cast<float*>(reinterpret_cast<uint8_t*>(&rc)+4);
+    hsb[0] = hv * 360;
+    hsb[1] = sv * 100;
+    hsb[2] = bv * 100;
 
     return rc;
 
