@@ -62,6 +62,7 @@ void noTint();
 // Color
 void fill(Color col);
 void fill(Color rgb, float alpha);
+void fill(std::string hexCol);
 void fill(float gray);
 void fill(float gray, float alpha);
 void fill(float v1, float v2, float v3);
@@ -69,6 +70,7 @@ void fill(float v1, float v2, float v3, float alpha);
 
 void stroke(Color rgba);
 void stroke(Color rgb, float alpha);
+void stroke(std::string hexCol);
 void stroke(float gray);
 void stroke(float gray, float alpha);
 void stroke(float v1, float v2, float v3);
@@ -76,6 +78,7 @@ void stroke(float v1, float v2, float v3, float alpha);
 
 void background(Color col);
 void background(Color rgb, float alpha);
+void background(const char* hexCol);
 void background(float gray);
 void background(float gray, float alpha);
 void background(float v1, float v2, float v3);
@@ -101,6 +104,8 @@ float brightness(Color col);
 
 // Lerps color. Percentage needs to be in range 0.0 - 1.0 or it will be cut to closest point
 Color lerpColor(const Color& from, const Color& to, float percentage);
+std::string hex(Color col);
+std::string hex(Color col, int num);
 
 // Image
 DImage loadImage(const std::string& fileName);

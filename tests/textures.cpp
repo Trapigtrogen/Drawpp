@@ -1,12 +1,14 @@
 #include <drawpp.hpp>
 
 DImage img;
+DImage emptyImg;
 DImage bg_img;
 
 void setup() 
 {
 	img = loadImage("assets/img.jpg");
 	bg_img = loadImage("assets/bg_img.jpg");
+	emptyImg = loadImage("non-existing imagefile");
 
 /*
 	// DEGUB
@@ -21,7 +23,7 @@ void draw(float)
 {
 	//background(bg_img);
 	//imageMode(CORNER);
-	image(img, 0, 0);
+	//image(img, 0, 0);
 	//image(bg_img, 0, 0);
 }
 

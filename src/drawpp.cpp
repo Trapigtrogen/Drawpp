@@ -211,6 +211,12 @@ void background(Color col) {
     Application::GetInstance()->graphics_object().background(col);
 }
 
+void background(const char* hexCol) 
+{
+    Color col = Color::HEX2RGB((char*)hexCol);
+    Application::GetInstance()->graphics_object().background(col);
+}
+
 void background(Color rgb, float alpha)
 {
     Application::GetInstance()->graphics_object().background(rgb, alpha);
@@ -315,6 +321,16 @@ float brightness(Color col)
 Color lerpColor(const Color &from, const Color& to, float percentage)
 {
     return Color::lerpColor(from, to, percentage);
+}
+
+std::string hex(Color col)
+{
+    return Color::hex(col, 8);
+}
+
+std::string hex(Color col, int num) 
+{
+    return Color::hex(col, num);
 }
 
 

@@ -202,6 +202,12 @@ DGraphics& Application::graphics_object()
     return *graphics;
 }
 
+bool Application::graphicsExists()
+{
+    if(graphics != nullptr) return true;
+    return false;
+}
+
 bool Application::init_application()
 {
     if(!window->Init())
