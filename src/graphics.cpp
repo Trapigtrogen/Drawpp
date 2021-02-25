@@ -7,6 +7,8 @@
 #include <vector3.hpp>
 #include <cstring>
 
+#include "stb_image_write.h"
+
 const float primitive_square[] = 
 {
     0.0f, -1.0f,
@@ -349,8 +351,8 @@ Color DGraphics::color(float grey, float alpha)
     // Color uses main target colormode
     // Gotta do this to use local colormode
     Color r;
-    std::memset(&r,v,3);
-    reinterpret_cast<uint8_t*>(&r)[3] = a;
+    std::memset(&r+1,v,3);
+    reinterpret_cast<uint8_t*>(&r)[0] = a;
     r.RGB2HSB(v,v,v);
 
     return r;
@@ -883,6 +885,53 @@ void DGraphics::quad(const DVector& p1, const DVector& p2, const DVector& p3, co
     quad(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
 }
 
+bool DGraphics::save(const std::string& filename, ImageFormat format) const
+{
+    if(buffer_id == -1 || buffer_height == 0 || buffer_width == 0) return false;
+
+    unsigned char* data = new unsigned char[buffer_width*buffer_height*3];
+    glBindTexture(GL_TEXTURE_2D,texture_id);
+
+    glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_UNSIGNED_BYTE,data);
+
+    int result = 0;
+
+    stbi_flip_vertically_on_write(1);
+
+    switch (format)
+    {
+        case ImageFormat::PNG:
+        {
+            std::string name = filename + ".png";
+            result = stbi_write_png(name.data(),buffer_width,buffer_height,3,data,buffer_width*3);
+            break;
+        }
+        case ImageFormat::JPG:
+        {
+            std::string name = filename + ".jpg";
+            result = stbi_write_jpg(name.data(),buffer_width,buffer_height,3,data,100);
+            break;
+        }
+        case ImageFormat::TGA:
+        {
+            std::string name = filename + ".tga";
+            result = stbi_write_tga(name.data(),buffer_width,buffer_height,3,data);
+            break;
+        }
+        case ImageFormat::BMP:
+        {
+            std::string name = filename + ".bmp";
+            result = stbi_write_bmp(name.data(),buffer_width,buffer_height,3,data);
+            break;
+        }
+    }
+
+    delete[] data;
+
+    return result == 1;
+}
+
+
 GraphicsProperties DGraphics::getStyle()
 {
     return properties;
@@ -901,10 +950,10 @@ Color DGraphics::get_rgba(float r, float g, float b, float a)
     uint8_t av = (a / properties.color_maxa)*255;
 
     Color rc;
-    reinterpret_cast<uint8_t*>(&rc)[0] = rv;
-    reinterpret_cast<uint8_t*>(&rc)[1] = gv;
-    reinterpret_cast<uint8_t*>(&rc)[2] = bv;
-    reinterpret_cast<uint8_t*>(&rc)[3] = av;
+    reinterpret_cast<uint8_t*>(&rc)[0] = av;
+    reinterpret_cast<uint8_t*>(&rc)[1] = rv;
+    reinterpret_cast<uint8_t*>(&rc)[2] = gv;
+    reinterpret_cast<uint8_t*>(&rc)[3] = bv;
     rc.RGB2HSB(rv,gv,bv);
 
     return rc;
@@ -955,10 +1004,10 @@ Color DGraphics::get_hsba(float h, float s, float b, float a)
     uint8_t aa = av * 255;
 
     Color rc;
-    reinterpret_cast<uint8_t*>(&rc)[0] = r;
-    reinterpret_cast<uint8_t*>(&rc)[1] = g;
-    reinterpret_cast<uint8_t*>(&rc)[2] = bb;
-    reinterpret_cast<uint8_t*>(&rc)[3] = aa;
+    reinterpret_cast<uint8_t*>(&rc)[0] = aa;
+    reinterpret_cast<uint8_t*>(&rc)[1] = r;
+    reinterpret_cast<uint8_t*>(&rc)[2] = g;
+    reinterpret_cast<uint8_t*>(&rc)[3] = bb;
     rc.RGB2HSB(r,g,bb);
 
     return rc;

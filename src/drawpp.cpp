@@ -566,3 +566,8 @@ void popStyle()
 {
     Application::GetInstance()->graphics_object().popStyle();
 }
+
+bool save(const std::string& filename, ImageFormat format)
+{
+    return Application::GetInstance()->graphics_object().save(filename,format);
+}

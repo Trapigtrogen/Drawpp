@@ -170,4 +170,7 @@ int month();
 int year();
 void timeReset();
 
+// Save screenshot
+bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG);
+
 #endif

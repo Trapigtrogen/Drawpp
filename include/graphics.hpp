@@ -2,6 +2,7 @@
 #define DPP_GRAPHICS_H
 
 #include <stack>
+#include <string>
 #include <matrix4.hpp>
 #include <color.hpp>
 #include <memory>
@@ -27,6 +28,14 @@ enum PosMode
     CENTRE = 0,
     CORNER = 1,
     //CORNERS,
+};
+
+enum ImageFormat
+{
+    PNG,
+    JPG,
+    TGA,
+    BMP,
 };
 
 struct GraphicsProperties
@@ -440,6 +449,12 @@ public:
 
     ///\brief Draw a quad from points \p p1, \p p2, \p p3 and \p p4
     void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4);
+
+    ///\brief Save target pixels to a file as an image
+    ///
+    ///\p filename should not include the extenstion, as it will be added according to \p format.
+    ///\return success
+    bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG) const;
 
     GraphicsProperties getStyle();
 

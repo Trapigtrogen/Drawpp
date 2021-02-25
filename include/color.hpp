@@ -6,6 +6,7 @@
 /// Color API
 class Color 
 {
+    friend class DGraphics;
 public:
     ///\brief Create an empty Color object
     ///
