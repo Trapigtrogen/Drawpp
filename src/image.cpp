@@ -14,14 +14,11 @@
 
 DImage::~DImage() 
 {
-	if(pixels != nullptr) stbi_image_free(pixels);
-	if(m_texture != -1) glDeleteTextures(1, &m_texture);
+	if(pixels != nullptr) free(pixels);
+	if(m_texture != 0) glDeleteTextures(1, &m_texture);
 }
 
-DImage::DImage() 
-{
-	pixels = new unsigned char[0];
-}
+DImage::DImage() = default;
 
 DImage::DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c)
 {
@@ -40,7 +37,7 @@ DImage::DImage(const DImage& other)
 
 	if(other.pixels != nullptr) 
 	{
-		pixels = new unsigned char[other.width * other.height * other.channels];
+		pixels = (unsigned char*) malloc(other.width * other.height * other.channels);
 		std::copy(other.pixels, other.pixels + other.width * other.height * other.channels, pixels);
 	}
 
@@ -57,7 +54,7 @@ DImage::DImage(DImage&& other)
 	channels = other.channels;
 
 	other.pixels = nullptr;
-	other.m_texture = -1;
+	other.m_texture = 0;
 	other.height = 0;
 	other.width = 0;
 	other.channels = 0;
@@ -71,10 +68,11 @@ DImage& DImage::operator=(DImage& other)
 		width = other.width;
 		channels = other.channels;
 
-		delete[] pixels; // Remove old pixels and copy new ones
+		free(pixels); // Remove old pixels and copy new ones
+        pixels = nullptr;
 		if(other.pixels != nullptr) 
 		{
-			pixels = new unsigned char[other.width * other.height * other.channels];
+			pixels = (unsigned char*) malloc(other.width * other.height * other.channels);
 			std::copy(other.pixels, other.pixels + other.width * other.height * other.channels, pixels);
 		}
 
@@ -89,7 +87,7 @@ DImage& DImage::operator=(DImage&& other)
 {
 	if(this != &other) 
 	{
-		delete[] pixels;
+		free(pixels);
 
 		pixels = other.pixels;
 		m_texture = other.m_texture;
@@ -98,7 +96,7 @@ DImage& DImage::operator=(DImage&& other)
 		channels = other.channels;
 
 		other.pixels = nullptr;
-		other.m_texture = -1;
+		other.m_texture = 0;
 		other.height = 0;
 		other.width = 0;
 		other.channels = 0;
@@ -124,6 +122,7 @@ DImage DImage::loadImage(const std::string& fileName)
 
 	int width, height, channels;
 	unsigned char* pixels = stbi_load(fileName.c_str(), &width, &height, &channels, 4);
+    channels = 4;
 	if(pixels == NULL)
 		dbg::error(("Image data not found: " + fileName).c_str());
 

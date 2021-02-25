@@ -6,6 +6,7 @@
 ///  DImage is an object that textures can be loaded to from image or pixel set
 class DImage
 {
+    friend class DGraphics;
 public:
 	DImage();
 	~DImage();
