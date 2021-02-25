@@ -1,7 +1,6 @@
 #include <color.hpp>
 #include <application.hpp>
 #include <graphics.hpp>
-#include <sstream>
 
 Color::Color() 
 {
@@ -14,7 +13,7 @@ Color::Color()
 	brightnessVal = 100;
 }
 
-Color::Color(float v1, float v2, float v3, float a)
+Color::Color(float v1, float v2, float v3, float alpha)
 {
 	// Use RGB mode when the graphics do not exist yet
 	// This is to prevent crashing
@@ -39,7 +38,7 @@ Color::Color(float v1, float v2, float v3, float a)
 		brightnessVal = v3;
 		HSB2RGB(v1, v2, v3);
 	}
-	alphaVal = a;
+	alphaVal = alpha;
 }
 
 Color::Color(unsigned int c)
@@ -207,19 +206,19 @@ Color Color::HEX2RGB(char* hexCol)
 		{
 			// Full hex with alpha
 			case 8: 
-				sscanf(hexNum, "%02x%02x%02x%02x", &r, &g, &b, &a);
+				sscanf_s(hexNum, "%02x%02x%02x%02x", &r, &g, &b, &a);
 				valid = true;
 			break;
 
 			// Full hex without alpha
 			case 6: 
-				sscanf(hexNum, "%02x%02x%02x", &r, &g, &b);
+				sscanf_s(hexNum, "%02x%02x%02x", &r, &g, &b);
 				valid = true;
 			break;
 
 			// Compact hex with alpha
 			case 4: 
-				sscanf(hexNum, "%01x%01x%01x%01x", &r, &g, &b, &a);
+				sscanf_s(hexNum, "%01x%01x%01x%01x", &r, &g, &b, &a);
 				r *= 10;
 				g *= 10;
 				b *= 10;
@@ -229,7 +228,7 @@ Color Color::HEX2RGB(char* hexCol)
 
 			// Compact hex without alpha
 			case 3: 
-				sscanf(hexNum, "%01x%01x%01x", &r, &g, &b);
+				sscanf_s(hexNum, "%01x%01x%01x", &r, &g, &b);
 				r *= 10;
 				g *= 10;
 				b *= 10;
@@ -261,57 +260,42 @@ std::string Color::hex(Color col, int num)
 	uint8_t g = col.green();
 	uint8_t b = col.blue();
 	uint8_t a = col.alpha();
-	char buffer[33]; // temp buffer
+
+	std::string tempstr = "";
 	std::string result = "#"; // final result
 
 	switch(num)
 	{
 		case 3: // Shrink values to fit compact mode
-		_itoa_s(r, buffer, 16);
-		result += buffer[0];		
-		_itoa_s(g, buffer, 16);
-		result += buffer[0];
-		_itoa_s(b, buffer, 16);
-		result += buffer[0];
+		result += DItoa(r, 16)[0];
+		result += DItoa(g, 16)[0];
+		result += DItoa(b, 16)[0];
 		break;
 
 		case 4: // Shrink values to fit compact mode
-		_itoa_s(r, buffer, 16);
-		result += buffer[0];
-		_itoa_s(g, buffer, 16);
-		result += buffer[0];
-		_itoa_s(b, buffer, 16);
-		result += buffer[0];
-		_itoa_s(a, buffer, 16);
-		result += buffer[0];
+		result += DItoa(r, 16)[0];
+		result += DItoa(g, 16)[0];
+		result += DItoa(b, 16)[0];
+		result += DItoa(a, 16)[0];
 		break;
 
 		case 6:
-		_itoa_s(r, buffer, 16);
-		result += buffer;
-		_itoa_s(g, buffer, 16);
-		result += buffer;
-		_itoa_s(b, buffer, 16);
-		result += buffer;
+		result += DItoa(r, 16);
+		result += DItoa(g, 16);
+		result += DItoa(b, 16);
 		break;
 
 		case 8:
-		_itoa_s(r, buffer, 16);
-		result += buffer;
-		_itoa_s(g, buffer, 16);
-		result += buffer;
-		_itoa_s(b, buffer, 16);
-		result += buffer;
-		_itoa_s(a, buffer, 16);
-		result += buffer;
+		result += DItoa(r, 16);
+		result += DItoa(g, 16);
+		result += DItoa(b, 16);
+		result += DItoa(a, 16);
 		break;
 
 		default:
 		dbg::error("Invalid number");
 		break;
 	}
-
-	_itoa_s(col.red(), buffer, 16);
 
 	// Convert to upper case for fanciness points
 	std::transform(result.begin(), result.end(), result.begin(), [] (unsigned char c) { return std::toupper(c); });
@@ -323,4 +307,16 @@ int Color::correctValue(int value, int min, int max)
 	if(value < min) value = min;
 	if(value > max) value = max;
 	return value;
+}
+
+char* Color::DItoa(int val, int base)
+{
+	static char buf[32] = {0};
+
+	int i = 30;
+	for(; val && i; --i, val /= base)
+
+		buf[i] = "0123456789abcdef"[val % base];
+
+	return &buf[i + 1];
 }

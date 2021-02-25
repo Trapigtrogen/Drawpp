@@ -45,6 +45,7 @@ private:
     void RGB2HSB(uint8_t r, uint8_t g, uint8_t b);
     void HSB2RGB(float h, float s, float b);
 
+    static char* DItoa(int val, int base);
     static int correctValue(int value, int min, int max);
 };
 
