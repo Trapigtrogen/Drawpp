@@ -103,6 +103,19 @@ DGraphics::DGraphics(int width, int height)
     init_shaders();
 }
 
+DGraphics::~DGraphics()
+{
+    if(buffer_id != -1)
+    {
+        glDeleteFramebuffers(1,&buffer_id);
+    }
+
+    if(texture_id != 0)
+    {
+        glDeleteTextures(1,&texture_id);
+    }
+}
+
 void DGraphics::init_shaders()
 {
     ellipse_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f));
@@ -1036,6 +1049,3 @@ unsigned int DGraphics::get_texture_id()
 {
     return texture_id;
 }
-
-//unsigned int DGraphics::current_bound_buffer = 0;
-//unsigned int DGraphics::previous_bound_buffer = 0;

@@ -64,6 +64,8 @@ class DGraphics
     friend class Application;
 public:
 
+    ~DGraphics();
+
     ///\brief Create a DGraphics object with a \p width by \p height frame
     DGraphics(int width, int height);
 
@@ -494,13 +496,12 @@ private:
     std::stack<GraphicsProperties> property_stack;
 
     //Target framebuffer info
-    unsigned int render_id = -1;
     unsigned int buffer_id = -1;
-    unsigned int texture_id = -1;
+    unsigned int texture_id = 0;
     unsigned int buffer_width = 0;
     unsigned int buffer_height = 0;
-    int type;
-    int format;
+    int type = -1;
+    int format = -1;
 
     //Shader used to draw ellipses
     std::unique_ptr<Shader> ellipse_shader;
@@ -563,9 +564,6 @@ private:
     int quad_shader_bpos_loc;
     int quad_shader_view_loc;
     int quad_shader_vpos_loc;
-
-    //static unsigned int current_bound_buffer;
-    //static unsigned int previous_bound_buffer;
 };
 
 #endif
