@@ -150,9 +150,9 @@ void DImage::imageMode(ImgMode mode)
 
 }
 
-GLuint DImage::generateTexture(int width, int height, unsigned char* pixels)
+unsigned int DImage::generateTexture(int width, int height, unsigned char* pixels)
 {
-	GLuint m_texture;
+	unsigned int m_texture;
 	glGenTextures(1, &m_texture);
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 

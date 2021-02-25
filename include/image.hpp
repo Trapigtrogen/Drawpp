@@ -41,7 +41,7 @@ public:
 private:
 	unsigned int m_texture = 0;
 	DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c);
-	static GLuint generateTexture(int w, int h, unsigned char* pixels);
+	static unsigned int generateTexture(int w, int h, unsigned char* pixels);
 };
 
 #endif
