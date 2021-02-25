@@ -42,12 +42,15 @@ include_directories(external/glad/include)
 include_directories(external/glfw/include)
 include_directories(external/stb)
 include_directories(external/nanosvg)
+include_directories(external/freetype/include)
 
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
 option(GLFW_BUILD_DOCS OFF)
 add_subdirectory(external/glfw)
+add_subdirectory(external/freetype)
 target_link_libraries(${LIBNAME} glfw)
+target_link_libraries(${LIBNAME} freetype)
 
 if (MSVC)
     add_custom_target(${PROJECT_NAME} ALL
