@@ -5,6 +5,7 @@
 #include <debug.hpp>
 #include <image.hpp>
 #include <vector3.hpp>
+#include <cstring>
 
 const float primitive_square[] = 
 {
@@ -345,7 +346,14 @@ Color DGraphics::color(float grey, float alpha)
     uint8_t v = (grey / properties.color_max1) * 255;
     uint8_t a = (alpha / properties.color_maxa) * 255;
 
-    return Color(v,v,v,a);
+    // Color uses main target colormode
+    // Gotta do this to use local colormode
+    Color r;
+    std::memset(&r,v,3);
+    reinterpret_cast<uint8_t*>(&r)[3] = a;
+    r.RGB2HSB(v,v,v);
+
+    return r;
 }
 
 Color DGraphics::color(float v1, float v2, float v3)
@@ -892,7 +900,16 @@ Color DGraphics::get_rgba(float r, float g, float b, float a)
     uint8_t bv = (b / properties.color_max3)*255;
     uint8_t av = (a / properties.color_maxa)*255;
 
-    return Color(rv,gv,bv,av);
+    Color rc;
+    reinterpret_cast<uint8_t*>(&rc)[0] = rv;
+    reinterpret_cast<uint8_t*>(&rc)[1] = gv;
+    reinterpret_cast<uint8_t*>(&rc)[2] = bv;
+    reinterpret_cast<uint8_t*>(&rc)[3] = av;
+    rc.RGB2HSB(rv,gv,bv);
+
+    return rc;
+
+    //return Color(rv,gv,bv,av);
 }
 
 Color DGraphics::get_hsba(float h, float s, float b, float a)
@@ -937,7 +954,16 @@ Color DGraphics::get_hsba(float h, float s, float b, float a)
     uint8_t bb = (1 - sv + sv * tb) * bv * 255;
     uint8_t aa = av * 255;
 
-    return Color(r,g,bb,aa);
+    Color rc;
+    reinterpret_cast<uint8_t*>(&rc)[0] = r;
+    reinterpret_cast<uint8_t*>(&rc)[1] = g;
+    reinterpret_cast<uint8_t*>(&rc)[2] = bb;
+    reinterpret_cast<uint8_t*>(&rc)[3] = aa;
+    rc.RGB2HSB(r,g,bb);
+
+    return rc;
+
+    //return Color(r,g,bb,aa);
 }
 
 Color DGraphics::get_color(float v1, float v2, float v3, float a)
