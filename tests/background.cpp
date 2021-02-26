@@ -6,33 +6,29 @@ void setup()
 	Color colori(10, 0, 0); // Cannot do this in Processing but no point in artificially removing
 
 	Color procCol = Color(0, 250, 181); // Processing style creating
-	Color RGBCol = procCol; // Moving to another
+	Color RGBCol = procCol; // Copying to another
 
 	printf("\nRGB mode:\n");
 	printf("RGB: %f, %f, %f\n", red(RGBCol), green(RGBCol), blue(RGBCol));
 	printf("HSB: %f, %f, %f\n", hue(RGBCol), saturation(RGBCol), brightness(RGBCol));
 
-
 	colorMode(HSB);
-	Color HSBCol(163.4, 100, 250); // Same colour as RGB but in HSB values
+	Color HSBCol(163.4, 100, 250); // Same color as RGB but in HSB values
 	printf("\nHSB mode:\n");
 	printf("RGB: %f, %f, %f\n", red(HSBCol), green(HSBCol), blue(HSBCol));
 	printf("HSB: %f, %f, %f\n\n", hue(HSBCol), saturation(HSBCol), brightness(HSBCol));
 
+
 	// Lerp color
 	Color lerpedColor = lerpColor(RGBCol, colori, 0.5);
 	printf("lerped RGB: %f, %f, %f\n", red(lerpedColor), green(lerpedColor), blue(lerpedColor));
-	// Print as HEX
-	printf("HEX: %s\n", hex(lerpedColor, 3).c_str());
-	printf("HEX: %s\n", hex(lerpedColor, 4).c_str());
-	printf("HEX: %s\n", hex(lerpedColor, 6).c_str());
-	printf("HEX: %s\n", hex(lerpedColor, 8).c_str());
 
 	colorMode(RGB);
 
 	background(255, 100, 100);
 	background(51); // RGB
 	background(51.0f); // Grayscale
+
 
 	// Hex not case sensitive
 	Color hexCol("#00FAB5");
@@ -46,6 +42,14 @@ void setup()
 
 	// Not implemented
 	//background("blue"); // color by name
+
+	// Print Color as HEX
+	Color hextest(250, 0,181);
+	printf("\n\nHex values from %f, %f, %f:\n", hextest.red(), hextest.green(), hextest.blue());
+	printf("HEX3: %s\n", hex(hextest, 3).c_str());
+	printf("HEX4: %s\n", hex(hextest, 4).c_str());
+	printf("HEX6: %s\n", hex(hextest, 6).c_str());
+	printf("HEX8: %s\n", hex(hextest, 8).c_str());
 }
 
 

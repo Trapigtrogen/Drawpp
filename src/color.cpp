@@ -96,7 +96,7 @@ Color Color::lerpColor(const Color& from, const Color& to, float percentage)
 	uint8_t lerpBlue = from.blueVal + percentage * (to.blueVal - from.blueVal);
     uint8_t lerpAlpha = from.alphaVal + percentage * (to.alphaVal - from.alphaVal);
 
-	return Color(lerpRed,lerpGreen,lerpBlue,lerpAlpha);
+	return Color(lerpRed, lerpGreen, lerpBlue, lerpAlpha);
 }
 
 void Color::RGB2HSB(uint8_t r, uint8_t g, uint8_t b)
@@ -259,12 +259,11 @@ Color Color::HEX2RGB(std::string hexCol)
 
 std::string Color::hex(Color col, int num)
 {
-	uint8_t r = col.red();
-	uint8_t g = col.green();
-	uint8_t b = col.blue();
-	uint8_t a = col.alpha();
+	uint8_t r = col.redVal;
+	uint8_t g = col.greenVal;
+	uint8_t b = col.blueVal;
+	uint8_t a = col.alphaVal;
 
-	std::string tempstr = "";
 	std::string result = "#"; // final result
 
 	switch(num)
@@ -316,10 +315,16 @@ char* Color::DItoa(int val, int base)
 {
 	static char buf[32] = {0};
 
+	if(val == 0) // if value is 0 no need to do any work
+	{ 
+		static char result[3] = "00";
+		return result;
+	}
+
 	int i = 30;
 	for(; val && i; --i, val /= base)
-
+	{
 		buf[i] = "0123456789abcdef"[val % base];
-
+	}
 	return &buf[i + 1];
 }
