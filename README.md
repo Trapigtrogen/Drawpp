@@ -3,13 +3,13 @@ Processing style graphic library for c++ using OpenGL. Support for Windows and L
 # Features
 * Draw lines and shapes
 * Render Image as texture
-* Vector graphics
-* Load SVG as shapes
+* Shape class with GameObject like parent-child hierarcy
 * Color API
 * Random API
-* 
+
 ### Upcoming
-*
+* Load SVG files as shapes
+  * Vector graphics
 
 # Building
 Clone with `git clone git@gitlab.com:Trapigtrogen/graphics-library.git --recursive` to get the dependensies also\
