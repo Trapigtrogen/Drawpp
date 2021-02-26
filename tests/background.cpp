@@ -22,11 +22,6 @@ void setup()
 	// Lerp color
 	Color lerpedColor = lerpColor(RGBCol, colori, 0.5);
 	printf("lerped RGB: %f, %f, %f\n", red(lerpedColor), green(lerpedColor), blue(lerpedColor));
-	// Print as HEX
-	printf("HEX: %s\n", hex(lerpedColor, 3).c_str());
-	printf("HEX: %s\n", hex(lerpedColor, 4).c_str());
-	printf("HEX: %s\n", hex(lerpedColor, 6).c_str());
-	printf("HEX: %s\n", hex(lerpedColor, 8).c_str());
 
 	colorMode(RGB);
 
@@ -46,6 +41,14 @@ void setup()
 
 	// Not implemented
 	//background("blue"); // color by name
+
+	// Print as HEX
+	Color hextest(250, 0,181);
+	printf("\n\nHex values from %f, %f, %f:\n", hextest.red(), hextest.green(), hextest.blue());
+	printf("HEX3: %s\n", hex(hextest, 3).c_str());
+	printf("HEX4: %s\n", hex(hextest, 4).c_str());
+	printf("HEX6: %s\n", hex(hextest, 6).c_str());
+	printf("HEX8: %s\n", hex(hextest, 8).c_str());
 }
 
 
