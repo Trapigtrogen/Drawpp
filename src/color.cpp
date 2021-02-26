@@ -96,7 +96,7 @@ Color Color::lerpColor(const Color& from, const Color& to, float percentage)
 	uint8_t lerpBlue = from.blueVal + percentage * (to.blueVal - from.blueVal);
     uint8_t lerpAlpha = from.alphaVal + percentage * (to.alphaVal - from.alphaVal);
 
-	return Color(lerpRed,lerpGreen,lerpBlue,lerpAlpha);
+	return Color(lerpRed, lerpGreen, lerpBlue, lerpAlpha);
 }
 
 void Color::RGB2HSB(uint8_t r, uint8_t g, uint8_t b)
@@ -259,10 +259,10 @@ Color Color::HEX2RGB(std::string hexCol)
 
 std::string Color::hex(Color col, int num)
 {
-	uint8_t r = col.red();
-	uint8_t g = col.green();
-	uint8_t b = col.blue();
-	uint8_t a = col.alpha();
+	uint8_t r = col.redVal;
+	uint8_t g = col.greenVal;
+	uint8_t b = col.blueVal;
+	uint8_t a = col.alphaVal;
 
 	std::string result = "#"; // final result
 
