@@ -27,7 +27,8 @@ add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    src/shader.cpp
                                    src/image.cpp
                                    src/color.cpp
-                                   src/shape.cpp)
+                                   src/shape.cpp
+                                   src/font.cpp)
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 
@@ -54,7 +55,7 @@ target_link_libraries(${LIBNAME} freetype)
 
 if (MSVC)
     add_custom_target(${PROJECT_NAME} ALL
-                        COMMAND lib.exe /OUT:${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.lib $<TARGET_FILE:glfw> $<TARGET_FILE:${PROJECT_NAME}_tmp>
+                        COMMAND lib.exe /OUT:${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.lib $<TARGET_FILE:glfw> $<TARGET_FILE:freetype> $<TARGET_FILE:${PROJECT_NAME}_tmp>
                         DEPENDS glfw ${LIBNAME}
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     set(LIB_PATH ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.lib)

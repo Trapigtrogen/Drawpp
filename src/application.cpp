@@ -6,6 +6,7 @@
 #include <shader.hpp>
 #include <graphics.hpp>
 #include <time.hpp>
+#include <font.hpp>
 #include <chrono>
 
 #define GLFW_INCLUDE_NONE
@@ -229,6 +230,8 @@ bool Application::init_application()
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    
+    DFont::init_lib();
 
     graphics->beginDraw();
     

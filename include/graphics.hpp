@@ -5,6 +5,7 @@
 #include <string>
 #include <matrix4.hpp>
 #include <color.hpp>
+#include <font.hpp>
 #include <memory>
 
 class DImage;
@@ -57,6 +58,7 @@ struct GraphicsProperties
     PosMode rectmode = PosMode::CORNER;
     PosMode ellipsemode = PosMode::CENTRE;
     PosMode imagemode = PosMode::CORNER;
+    DFont font;
 };
 
 class DGraphics
@@ -277,6 +279,10 @@ public:
     void noTint();
 
 
+    ///\brief Set the font which will be used for drawing text
+    void textFont(DFont& font);
+
+
     ///\brief Set target cap style to \p cap
     void strokeCap(CapStyle cap);
 
@@ -458,6 +464,10 @@ public:
     ///\return success
     bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG) const;
 
+
+    void text(const std::string& txt, float x, float y);
+    void text(const std::wstring& txt, float x, float y);
+
     GraphicsProperties getStyle();
 
 private:
@@ -564,6 +574,15 @@ private:
     int quad_shader_bpos_loc;
     int quad_shader_view_loc;
     int quad_shader_vpos_loc;
+
+    std::unique_ptr<Shader> text_shader;
+    int text_shader_offset_loc;
+    int text_shader_texture_loc;
+    int text_shader_posmode_loc;
+    int text_shader_fillColor_loc;
+    int text_shader_view_loc;
+    int text_shader_vpos_loc;
+    int text_shader_tpos_loc;
 };
 
 #endif
