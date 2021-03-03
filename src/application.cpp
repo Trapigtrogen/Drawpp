@@ -198,6 +198,16 @@ DGraphics& Application::graphics_object()
     return *graphics;
 }
 
+int Application::getWidth()
+{
+    return window->properties.width;
+}
+
+int Application::getHeight()
+{
+    return window->properties.height;
+}
+
 bool Application::graphicsExists()
 {
     if(graphics != nullptr) return true;
