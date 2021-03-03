@@ -9,6 +9,7 @@ struct _DFont_impl
 {
     struct Char
     {
+        bool valid = false;
         float tx_pos_x;
         float tx_pos_y;
         float tx_width;
@@ -21,14 +22,34 @@ struct _DFont_impl
         float advance_y;
     };
 
+    struct FontProperties
+    {
+        float char_height = 0;
+        float char_width = 0;
+        float row_spacing = 0;
+        float char_spacing = 0;
+        int loaded_chars = 0;
+        int current_column = 0;
+        int current_row = 0;
+        int chars_per_row = 0;
+        uint8_t* bitmap = nullptr;
+    };
+
     _DFont_impl(unsigned int,std::unordered_map<wchar_t,Char>&&);
     _DFont_impl(const _DFont_impl&) = delete;
+    ~_DFont_impl();
  
-    static std::tuple<unsigned int,std::unordered_map<wchar_t,Char>> load_font_texture(void* face, unsigned int size);
+    static std::tuple<unsigned int,FontProperties,std::unordered_map<wchar_t,Char>> load_font_texture(void* face, unsigned int size);
     static void init_lib();
+
+    void load_additional_char(wchar_t c);
     
     unsigned int texture_id = 0;
     std::unordered_map<wchar_t,Char> chars;
+    FontProperties properties; 
+
+    void* font_face;
+    void* font_data;
 
     static void* lib_ptr;
 };
@@ -47,7 +68,7 @@ public:
     DFont& operator=(const DFont&) = default;
     DFont& operator=(DFont&&) = default;
 
-    static DFont load(const std::string& filename, int size);
+    static DFont load(const std::string& filename, int size, float row_spacing = 0.0f, float char_spacing = 0.0f);
 
     bool valid() const;
 

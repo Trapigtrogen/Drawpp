@@ -386,7 +386,7 @@ Color DGraphics::color(float grey, float alpha)
     // Color uses main target colormode
     // Gotta do this to use local colormode
     Color r;
-    std::memset(&r+1,v,3);
+    std::memset(reinterpret_cast<uint8_t*>(&r)+1,v,3);
     reinterpret_cast<uint8_t*>(&r)[0] = a;
     r.RGB2HSB(v,v,v);
 
@@ -984,6 +984,11 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
         return;
     }
 
+    if(!txt.size())
+    {
+        return;
+    }
+
     txt_vert_buffer.clear();
     txt_texc_buffer.clear();
 
@@ -992,21 +997,81 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
     //Use space as a 'missing character'
     auto& _c = chars[L' '];
 
+    float height = -properties.font.impl->properties.char_height;
+    float row_s = properties.font.impl->properties.row_spacing;
+    float char_s = properties.font.impl->properties.char_spacing;
+
+    const auto* first = &_c;
+
+    auto f = chars.find(txt[0]);
+
+    if(f != chars.end())
+    {
+        first = &f->second;
+    }
+
+    //align such that origin is the top-left corner of the 1st characater
+    float xloc = x - first->bearing_x;
+    float yloc = y + height;
+
     for(unsigned i = 0; i < txt.length(); ++i)
     {   
-        auto& c = _c;
+        const auto* c = &_c;
 
-        auto f = chars.find(txt[i]);
-
-        if(f != chars.end())
+        if(txt[i] == '\n')
         {
-            c = f->second;
+            ++i;
+
+            if(i >= txt.length())
+            {
+                break;
+            }
+
+            f = chars.find(txt[i]);
+
+            if(f != chars.end())
+            {
+                c = &f->second;
+            }
+            else
+            {
+                c = &_c;
+            }
+
+            xloc = x - c->bearing_x;
+            yloc += height - row_s;
+        }
+        else
+        {
+            f = chars.find(txt[i]);
+
+            if(f != chars.end())
+            {
+                if(f->second.valid)
+                {
+                    c = &f->second;
+                }
+            }
+            else
+            {
+                properties.font.impl->load_additional_char(txt[i]);
+
+                auto& nc = chars[txt[i]];
+
+                if(nc.valid)
+                {
+                    c = &nc;
+                }
+            }
         }
 
-        float x1 = x + c.bearing_x;
-        float y1 = y - c.bearing_y;
-        float x2 = x + c.bearing_x + c.width;
-        float y2 = y - c.bearing_y + c.height;
+        
+
+        //calculate vertex positions from character metrics
+        float x1 = xloc + c->bearing_x;
+        float y1 = yloc - c->bearing_y;
+        float x2 = xloc + c->bearing_x + c->width;
+        float y2 = yloc - c->bearing_y - c->height;
 
         txt_vert_buffer.insert(txt_vert_buffer.end(),
         {
@@ -1019,10 +1084,11 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
             x1, y1,
         });
 
-        float tx1 = c.tx_pos_x;
-        float ty1 = c.tx_pos_y;
-        float tx2 = c.tx_pos_x + c.tx_width;
-        float ty2 = c.tx_pos_y + c.tx_height;
+        //calculate texture coordinates from character metrics
+        float tx1 = c->tx_pos_x;
+        float ty1 = c->tx_pos_y;
+        float tx2 = c->tx_pos_x + c->tx_width;
+        float ty2 = c->tx_pos_y + c->tx_height;
 
         txt_texc_buffer.insert(txt_texc_buffer.end(),
         {
@@ -1035,7 +1101,8 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
             tx1,ty1,
         });
 
-        x += c.advance_x/64.0f;
+        //move cursor
+        xloc += c->advance_x/64.0f + char_s;
     }
 
     glUseProgram(text_shader->getId());
@@ -1061,6 +1128,8 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
 
     glDisableVertexAttribArray(rect_shader_vpos_loc);
     glDisableVertexAttribArray(rect_shader_tpos_loc);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 GraphicsProperties DGraphics::getStyle()

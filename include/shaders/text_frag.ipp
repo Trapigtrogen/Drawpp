@@ -8,6 +8,7 @@ static const char* text_shader_f = R"(
 
     void main()
     {
-        gl_FragColor = vec4(texture2D(texture,texc));
+        //gl_FragColor = vec4(texture2D(texture,texc));
+        gl_FragColor = vec4(fillColor.xyz,fillColor.w*texture2D(texture,texc).x);
     }
 )";
