@@ -10,16 +10,19 @@ public:
 	/// Can be used for example when screen size changes
 	void initNoise();
 
+	///\brief Resize noise map to match window size
+	void resize();
+
 	~Noise() = default;
 
 	///\brief Set noise seed manually
 	void noiseSeed(int seed);
 
 	///\brief Get 1D noise value from given coordinate
-	float pNoise(int x);
+	float pNoise(unsigned int x);
 
 	///\brief Get 2D noise value from given coordinate
-	float pNoise(int x, int y);
+	float pNoise(unsigned int x, unsigned int y);
 
 	///\brief Set the amount of layers of noise
 	/// Default is 8
@@ -27,7 +30,7 @@ public:
 
 	///\brief Set the cap between layers
 	/// Default is 0.5 which means halving every frame
-	void setFalloff(int foff) { falloff = foff; }
+	void setFalloff(float foff) { falloff = foff; }
 
 private:
 	int nOctaves = 8;
@@ -37,15 +40,16 @@ private:
 	int outputHeight = 0;
 
 	float* noiseSeed1D = nullptr;
-	float* PerlinNoise1D = nullptr;
+	float* perlinNoise1D = nullptr;
 
 	float* noiseSeed2D = nullptr;
-	float* PerlinNoise2D = nullptr;
+	float* perlinNoise2D = nullptr;
+
 
 	void randomSeed1D();
 	void randomSeed2D();
 
-	void createPerlin1D(int nCount, float fBias);
-	void createPerlin2D(int nWidth, int nHeight, float fBias);
+	void createPerlin1D(int nCount, float scale);
+	void createPerlin2D(int nWidth, int nHeight, float scale);
 };
 #endif

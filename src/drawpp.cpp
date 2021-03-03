@@ -61,12 +61,12 @@ float randomGaussian()
 
 float noise(int x)
 {
-    Application::GetInstance()->noise.pNoise(x);
+    return Application::GetInstance()->noise.pNoise(x);
 }
 
 float noise(int x, int y)
 {
-    Application::GetInstance()->noise.pNoise(x, y);
+    return Application::GetInstance()->noise.pNoise(x, y);
 }
 
 void noiseSeed(int seed)

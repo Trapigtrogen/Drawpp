@@ -10,18 +10,22 @@ Noise::Noise()
 
 void Noise::initNoise()
 {
-	outputWidth = Application::GetInstance()->getWidth();
-	outputHeight = Application::GetInstance()->getHeight();
-
 	delete[] noiseSeed1D;
 	noiseSeed1D = new float[outputWidth];
-	delete[] PerlinNoise1D;
-	PerlinNoise1D = new float[outputWidth];
+	delete[] perlinNoise1D;
+	perlinNoise1D = new float[outputWidth];
 
 	delete[] noiseSeed2D;
 	noiseSeed2D = new float[outputWidth * outputHeight];
-	delete[] PerlinNoise2D;
-	PerlinNoise2D = new float[outputWidth * outputHeight];
+	delete[] perlinNoise2D;
+	perlinNoise2D = new float[outputWidth * outputHeight];
+}
+
+void Noise::resize() 
+{
+	outputWidth = Application::GetInstance()->getWidth();
+	outputHeight = Application::GetInstance()->getHeight();
+	initNoise();
 }
 
 void Noise::noiseSeed(int seed)
@@ -51,7 +55,28 @@ void Noise::randomSeed2D()
 	}
 }
 
-void Noise::createPerlin1D(int nCount, float fBias)
+float Noise::pNoise(unsigned int x)
+{
+	// if random
+	randomSeed1D();
+	createPerlin1D(outputWidth, 1);
+
+	if(x > outputWidth) x = outputWidth;
+	return perlinNoise1D[x];
+}
+
+float Noise::pNoise(unsigned int x, unsigned int y)
+{
+	// if random
+	randomSeed2D();
+	createPerlin2D(outputWidth, outputHeight, 1);
+
+	if(x > outputWidth) x = outputWidth;
+	if(y > outputHeight) y = outputHeight;
+	return perlinNoise1D[y * outputWidth + x];
+}
+
+void Noise::createPerlin1D(int nCount, float scale)
 {
 	for(int x = 0; x < nCount; x++) 
 	{
@@ -71,15 +96,15 @@ void Noise::createPerlin1D(int nCount, float fBias)
 
 			fScaleAcc += fScale;
 			fNoise += fSample * fScale;
-			fScale = fScale / fBias;
+			fScale = fScale / scale;
 		}
 
 		// Scale to seed range
-		PerlinNoise1D[x] = fNoise / fScaleAcc;
+		perlinNoise1D[x] = fNoise / fScaleAcc;
 	}
 }
 
-void Noise::createPerlin2D(int nWidth, int nHeight, float fBias)
+void Noise::createPerlin2D(int nWidth, int nHeight, float scale)
 {
 	for(int x = 0; x < nWidth; x++) 	
 	{
@@ -106,11 +131,11 @@ void Noise::createPerlin2D(int nWidth, int nHeight, float fBias)
 
 				fScaleAcc += fScale;
 				fNoise += (fBlendY * (fSampleB - fSampleT) + fSampleT) * fScale;
-				fScale = fScale / fBias;
+				fScale = fScale / scale;
 			}
 
 			// Scale to seed range
-			PerlinNoise2D[y * nWidth + x] = fNoise / fScaleAcc;
+			perlinNoise2D[y * nWidth + x] = fNoise / fScaleAcc;
 		}
 	}
 }

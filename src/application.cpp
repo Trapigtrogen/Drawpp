@@ -109,6 +109,7 @@ int Application::run(std::function<void(float)> draw,
     }
 
     cleanup_application();
+    noise.resize();
 
     return 0;
 }
@@ -169,6 +170,7 @@ void Application::size(int width, int height)
         
         glfwSetWindowSize(window->GetHandle(),width,height);
     }
+    noise.resize();
 }
 
 void Application::setResizable(bool state)
@@ -200,12 +202,18 @@ DGraphics& Application::graphics_object()
 
 int Application::getWidth()
 {
-    return window->properties.width;
+    if(window) 
+    {
+        return window->properties.width;
+    }
 }
 
 int Application::getHeight()
 {
-    return window->properties.height;
+    if(window)   
+    {
+        return window->properties.height;
+    }
 }
 
 bool Application::graphicsExists()
