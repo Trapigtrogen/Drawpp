@@ -87,6 +87,8 @@ int Application::run(std::function<void(float)> draw,
     setup_func = setup;
     cleanup_func = cleanup;
 
+    noise.resize();
+
     if(!init_application())
     {
         return 1;
@@ -109,7 +111,6 @@ int Application::run(std::function<void(float)> draw,
     }
 
     cleanup_application();
-    noise.resize();
 
     return 0;
 }

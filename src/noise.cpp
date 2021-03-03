@@ -12,13 +12,19 @@ void Noise::initNoise()
 {
 	delete[] noiseSeed1D;
 	noiseSeed1D = new float[outputWidth];
+	randomSeed1D();
+
 	delete[] perlinNoise1D;
 	perlinNoise1D = new float[outputWidth];
+	createPerlin1D(outputWidth, 1);
 
 	delete[] noiseSeed2D;
-	noiseSeed2D = new float[outputWidth * outputHeight];
+	noiseSeed2D = new float[(outputWidth * outputHeight)];
+	randomSeed2D();
+
 	delete[] perlinNoise2D;
-	perlinNoise2D = new float[outputWidth * outputHeight];
+	perlinNoise2D = new float[(outputWidth * outputHeight)];
+	createPerlin2D(outputWidth, outputHeight, 1);
 }
 
 void Noise::resize() 
@@ -47,7 +53,7 @@ void Noise::randomSeed1D()
 void Noise::randomSeed2D()
 {
 	delete[] noiseSeed2D;
-	noiseSeed2D = new float[outputWidth* outputHeight];
+	noiseSeed2D = new float[(outputWidth* outputHeight)];
 
 	for(int i = 0; i < outputWidth * outputHeight; i++) 
 	{
@@ -57,20 +63,12 @@ void Noise::randomSeed2D()
 
 float Noise::pNoise(unsigned int x)
 {
-	// if random
-	randomSeed1D();
-	createPerlin1D(outputWidth, 1);
-
 	if(x > outputWidth) x = outputWidth;
 	return perlinNoise1D[x];
 }
 
 float Noise::pNoise(unsigned int x, unsigned int y)
 {
-	// if random
-	randomSeed2D();
-	createPerlin2D(outputWidth, outputHeight, 1);
-
 	if(x > outputWidth) x = outputWidth;
 	if(y > outputHeight) y = outputHeight;
 	return perlinNoise1D[y * outputWidth + x];

@@ -36,8 +36,8 @@ private:
 	int nOctaves = 8;
 	float falloff = 0.5;
 
-	int outputWidth = 0;
-	int outputHeight = 0;
+	int outputWidth = 256;
+	int outputHeight = 256;
 
 	float* noiseSeed1D = nullptr;
 	float* perlinNoise1D = nullptr;
