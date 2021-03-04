@@ -128,22 +128,6 @@ DImage DImage::loadImage(const std::string& fileName)
 	return tmpImg;
 }
 
-void DImage::drawImage(int x, int y, unsigned int w, unsigned int h) 
-{
-	bind(m_texture - 1);
-	// Debug todo: Draw image
-}
-
-void DImage::background(DImage* image) 
-{
-
-}
-
-void DImage::imageMode(ImgMode mode) 
-{
-
-}
-
 GLuint DImage::generateTexture(int width, int height, unsigned char* pixels)
 {
 	GLuint m_texture;

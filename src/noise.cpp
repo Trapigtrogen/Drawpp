@@ -29,10 +29,10 @@ void Noise::initNoise()
 	createPerlin2D(outputWidth, outputHeight, scale);
 }
 
-void Noise::resize() 
+void Noise::resize(int width, int height) 
 {
-	outputWidth = Application::GetInstance()->getWidth();
-	outputHeight = Application::GetInstance()->getHeight();
+	outputWidth = width;
+	outputHeight = height;
 	initNoise();
 }
 

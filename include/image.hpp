@@ -5,6 +5,8 @@
 
 #include <string>
 #include <debug.hpp>
+#include <noise.hpp>
+
 
 ///  DImage is an object that textures can be loaded to from image or pixel set
 class DImage
@@ -27,12 +29,6 @@ public:
 	};
 
 	static DImage loadImage(const std::string& fileName);
-
-	void imageMode(ImgMode mode);
-
-	void drawImage(int x, int y, unsigned int w, unsigned int h);
-
-	void background(DImage* image);
 
 	void bind(unsigned int unit) const;
 

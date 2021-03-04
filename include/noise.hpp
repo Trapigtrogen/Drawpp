@@ -11,7 +11,7 @@ public:
 	void initNoise();
 
 	///\brief Resize noise map to match window size
-	void resize();
+	void resize(int width, int height);
 
 	~Noise() = default;
 
@@ -42,20 +42,22 @@ public:
 	/// Lower value means stronger curve and higher make it smoother
 	void setScale(float _scale) { scale = _scale; }
 
+	int width() { return outputWidth; }
+	int height() { return outputHeight; }
+
+	float* perlinNoise2D = nullptr;
+
 private:
 	int nOctaves = 8;
 	float falloff = 0.5;
 	float scale = 1.3f;
 
-	int outputWidth = 256;
-	int outputHeight = 256;
+	int outputWidth = 512;
+	int outputHeight = 512;
 
 	float* noiseSeed1D = nullptr;
-	float* perlinNoise1D = nullptr;
-
 	float* noiseSeed2D = nullptr;
-	float* perlinNoise2D = nullptr;
-
+	float* perlinNoise1D = nullptr;
 
 	void randomSeed1D();
 	void randomSeed2D();

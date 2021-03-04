@@ -87,8 +87,6 @@ int Application::run(std::function<void(float)> draw,
     setup_func = setup;
     cleanup_func = cleanup;
 
-    noise.resize();
-
     if(!init_application())
     {
         return 1;
@@ -165,7 +163,6 @@ void Application::size(int width, int height)
     {
         window->properties.width    = window->properties.width_hint;
         window->properties.height   = window->properties.height_hint;
-        noise.resize();
 
         delete graphics;
         graphics = new DGraphics(window->properties.width,window->properties.height);

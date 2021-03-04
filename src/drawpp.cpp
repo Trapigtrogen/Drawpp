@@ -90,6 +90,11 @@ void noiseDetails(int lod, float falloff)
     Application::GetInstance()->noise.setFalloff(falloff);
 }
 
+void noiseMapSize(int width, int heigth) 
+{
+    Application::GetInstance()->noise.resize(width, heigth);
+}
+
 
 
 void rectMode(PosMode m)

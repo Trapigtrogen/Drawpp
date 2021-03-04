@@ -6,7 +6,6 @@ int width = 1000;
 int octaves = 8;
 int seed = 1;
 float nscale = 1.3f;
-DImage img;
 
 void setup()
 {
@@ -17,6 +16,8 @@ void setup()
 
 void draw(float)
 {
+    printf("Octaves: %i, Seed: %i, Scale: %f\n", octaves, seed, nscale);
+
     background(0, 0, 0);
     for(int x = 0; x < width; x++)
     {
@@ -26,9 +27,9 @@ void draw(float)
             fill(col);
             //rect(x*5, y*5, 5, 5); // pixel like
             circle(x*5, y*5, 5); // Smoother
+            
         }
     }
-    printf("Octaves: %i, Seed: %i, Scale: %f\n", octaves, seed, nscale);
 }
 
 void keyPressed()
