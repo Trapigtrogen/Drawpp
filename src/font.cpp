@@ -8,10 +8,15 @@
 #include <string>
 #include <tuple>
 
-static const std::wstring default_charset = L" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ1234567890!\"@#$%&/{([)]=}?\\+^'*-_.:,;<>|\u00B6";
+static const std::wstring default_charset = L" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXy\
+YzZ1234567890!\"@#$%&/{([)]=}?\\+^'*-_.:,;<>|";
 
-std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_DFont_impl::Char>> _DFont_impl::load_font_texture(void* _face, float size)
+std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_DFont_impl::Char>> 
+    _DFont_impl::load_font_texture(void* _face, float size, const std::wstring& _charset)
 {
+    std::wstring charset = _charset;
+    charset.insert(charset.begin(),L'\0');
+
     FT_Face face = reinterpret_cast<FT_Face>(_face);
 
     int err = FT_Set_Char_Size(face,0,64*size,0,0);
@@ -24,20 +29,19 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&gl_mx_s);
 
     int c_width = (face->bbox.xMax - face->bbox.xMin)*(size / float(face->units_per_EM));
-    int width = default_charset.length() * c_width;
+    int width = charset.length() * c_width;
     int c_height = (face->bbox.yMax - face->bbox.yMin)*(size / float(face->units_per_EM))+1;
     int height = c_height;
     float c_height2 = c_height / 2.0f;
     float c_width2 = c_width / 2.0f;
 
-
     int chars_per_row = gl_mx_s / c_width;
-    int lel = default_charset.length();
+    int lel = charset.length();
 
-    if(chars_per_row < default_charset.length())
+    if(chars_per_row < charset.length())
     {
         width = chars_per_row * c_width;
-        height = ((default_charset.length() / chars_per_row) + (1 && (default_charset.length() % chars_per_row)))*c_height;
+        height = ((charset.length() / chars_per_row) + (1 && (charset.length() % chars_per_row)))*c_height;
     }
 
     uint8_t* bitmap = new uint8_t[width*height]();
@@ -50,30 +54,10 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
     int cur_row = 0;
     int cur_col = 0;
 
-    for(int i = 0; i < default_charset.length(); ++i,++cur_col)
+    for(int i = 0; i < charset.length(); ++i,++cur_col)
     {
-        wchar_t c = default_charset[i];
+        wchar_t c = charset[i];
         int glyph_index = FT_Get_Char_Index(face,c);
-
-        /*err = FT_Load_Glyph(face,glyph_index,FT_LOAD_DEFAULT);
-        if(err)
-        {
-            dbg::error("Failed to load font at 'load_glyph'\n\terror: ",err);
-            data[c].valid = false;
-            ++missing_chars;
-            --cur_col;
-            continue;
-        }
-        
-        err = FT_Render_Glyph(face->glyph,FT_RENDER_MODE_NORMAL);
-        if(err)
-        {
-            dbg::error("Failed to load font at 'render_glyph'\n\terror: ",err);
-            data[c].valid = false;
-            ++missing_chars;
-            --cur_col;
-            continue;
-        }*/
 
         if(FT_Load_Glyph(face,glyph_index,FT_LOAD_DEFAULT) || 
             FT_Render_Glyph(face->glyph,FT_RENDER_MODE_NORMAL))
@@ -121,7 +105,7 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
     //this should only happen if freetype messes up
     if(missing_chars)
     {
-        missing_chars += chars_per_row - (default_charset.length() % chars_per_row);
+        missing_chars += chars_per_row - (charset.length() % chars_per_row);
         int rows = missing_chars/chars_per_row;
 
         height -= rows*c_height;
@@ -349,6 +333,11 @@ void _DFont_impl::load_additional_char(wchar_t c)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void _DFont_impl::load_all_chars()
+{
+    //load all available characters in a font
+}
+
 void _DFont_impl::init_lib()
 {
     if(lib_ptr == nullptr)
@@ -362,26 +351,39 @@ void _DFont_impl::init_lib()
     }
 }
 
-DFont DFont::load(const std::string& fname, float size, float row_spacing, float char_spacing)
+DFont DFont::load(const std::string& filename, float size, float row_spacing, float char_spacing)
 {
-    if(size <= 0) return DFont();
+    FontOptions opt;
+    opt.size = size;
+    opt.char_spacing = char_spacing;
+    opt.row_spacing = row_spacing;
+    opt.charset = default_charset;
+    opt.load_all = false;
+    
+    return load(filename,opt);
+}
 
-    FILE* f = std::fopen(fname.data(),"rb");
+DFont DFont::load(const std::string& filename, const FontOptions& options)
+{
+    if(options.size <= 0) return DFont();
+
+    FILE* f = std::fopen(filename.data(),"rb");
 
     if(f == nullptr)
     {
-        dbg::error("Failed to load font file: ", fname);
+        dbg::error("Failed to load font file: ", filename);
         return DFont();
     }
 
     fseek(f,0,SEEK_END);
-    size_t l = ftell(f);
+    unsigned int l = ftell(f);
     fseek(f,0,SEEK_SET);
 
     unsigned char* data = new unsigned char[l+1];
     data[l] = 0;
 
     fread(data,1,l,f);
+    fclose(f);
 
     FT_Face face;
 
@@ -389,19 +391,24 @@ DFont DFont::load(const std::string& fname, float size, float row_spacing, float
 
     if(err)
     {
-        dbg::error("Failed to loaf font data '", fname, "', error: ", err);
+        dbg::error("Failed to loaf font data '", filename, "', error: ", err);
+        return DFont();
+    }
+
+    if(data == nullptr)
+    {
         return DFont();
     }
 
     std::tuple<unsigned int,_DFont_impl::FontProperties, std::unordered_map<wchar_t, _DFont_impl::Char>> r = 
-        _DFont_impl::load_font_texture(face,size);
-
+        _DFont_impl::load_font_texture(face,options.size,options.charset);
+    
     unsigned int t = std::get<0>(r);
     std::unordered_map<wchar_t, _DFont_impl::Char>& m = std::get<2>(r);
 
     if(!t)
     {
-        dbg::error("Failed to load font texture'", fname, "'");
+        dbg::error("Failed to load font texture'", filename, "'");
         return DFont();
     }
 
@@ -409,10 +416,15 @@ DFont DFont::load(const std::string& fname, float size, float row_spacing, float
     result.impl = std::shared_ptr<_DFont_impl>(new _DFont_impl(t,std::move(m)));
 
     result.impl->properties = std::get<1>(r);
-    result.impl->properties.row_spacing = row_spacing;
-    result.impl->properties.char_spacing = char_spacing;
+    result.impl->properties.row_spacing = options.row_spacing;
+    result.impl->properties.char_spacing = options.char_spacing;
     result.impl->font_data = data;
     result.impl->font_face = face;
+
+    if(options.load_all)
+    {
+        result.impl->load_all_chars();
+    }
 
     return result;
 }
@@ -420,6 +432,11 @@ DFont DFont::load(const std::string& fname, float size, float row_spacing, float
 void DFont::init_lib()
 {
     _DFont_impl::init_lib();
+}
+
+void DFont::ClearCharset(const std::wstring& new_charset)
+{
+    //basically, just replace the impl with a new one with new charset
 }
 
 bool DFont::valid() const

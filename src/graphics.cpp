@@ -995,14 +995,14 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
 
     auto& chars = properties.font.impl->chars;
 
-    //Use space as a 'missing character'
-    auto& _c = chars[L' '];
-
     float height = -properties.font.impl->properties.char_height;
     float row_s = properties.font.impl->properties.row_spacing;
     float char_s = properties.font.impl->properties.char_spacing;
 
-    const auto* first = &_c;
+    //Assume 'missing character' to always be present
+    auto* _c = &(chars[L'\0']);
+
+    const auto* first = _c;
 
     auto f = chars.find(txt[0]);
 
@@ -1017,53 +1017,47 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
 
     for(unsigned i = 0; i < txt.length(); ++i)
     {   
-        const auto* c = &_c;
+        const auto* c = _c;
+
+        bool nl = false;
 
         if(txt[i] == '\n')
         {
+            nl = true;
+
             ++i;
 
             if(i >= txt.length())
             {
                 break;
             }
+        }
+        
+        f = chars.find(txt[i]);
 
-            f = chars.find(txt[i]);
-
-            if(f != chars.end())
+        if(f != chars.end())
+        {
+            if(f->second.valid)
             {
                 c = &f->second;
             }
-            else
-            {
-                c = &_c;
-            }
-
-            xloc = x - c->bearing_x;
-            yloc += height - row_s;
         }
         else
         {
-            f = chars.find(txt[i]);
+            properties.font.impl->load_additional_char(txt[i]);
 
-            if(f != chars.end())
+            auto& nc = chars[txt[i]];
+
+            if(nc.valid)
             {
-                if(f->second.valid)
-                {
-                    c = &f->second;
-                }
+                c = &nc;
             }
-            else
-            {
-                properties.font.impl->load_additional_char(txt[i]);
-
-                auto& nc = chars[txt[i]];
-
-                if(nc.valid)
-                {
-                    c = &nc;
-                }
-            }
+        }
+        
+        if(nl)
+        {
+            xloc = x - c->bearing_x;
+            yloc += height - row_s;
         }
 
         //calculate vertex positions from character metrics
