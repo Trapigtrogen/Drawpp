@@ -8,9 +8,7 @@
 #include <string>
 #include <tuple>
 
-const std::wstring dpp_chars = L" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ1234567890!\"@#$%&/{([)]=}?\\+^'*-_.:,;<>|";
-//const std::wstring dpp_chars = L" tesxoinrv";
-
+static const std::wstring default_charset = L" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ1234567890!\"@#$%&/{([)]=}?\\+^'*-_.:,;<>|\u00B6";
 
 std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_DFont_impl::Char>> _DFont_impl::load_font_texture(void* _face, unsigned int size)
 {
@@ -22,11 +20,11 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
         dbg::error("Failed to load font at 'set_size'\n\terror: ",err);
     }
 
-    int gl_mx_s = 600;
-    //glGetIntegerv(GL_MAX_TEXTURE_SIZE,&gl_mx_s);
+    int gl_mx_s;// = 600;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE,&gl_mx_s);
 
     int c_width = (face->bbox.xMax - face->bbox.xMin)*(size / float(face->units_per_EM));
-    int width = dpp_chars.length() * c_width;
+    int width = default_charset.length() * c_width;
     int c_height = (face->bbox.yMax - face->bbox.yMin)*(size / float(face->units_per_EM))+1;
     int height = c_height;
     float c_height2 = c_height / 2.0f;
@@ -34,12 +32,12 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
 
 
     int chars_per_row = gl_mx_s / c_width;
-    int lel = dpp_chars.length();
+    int lel = default_charset.length();
 
-    if(chars_per_row < dpp_chars.length())
+    if(chars_per_row < default_charset.length())
     {
         width = chars_per_row * c_width;
-        height = ((dpp_chars.length() / chars_per_row) + (dpp_chars.length() % chars_per_row))*c_height;
+        height = ((default_charset.length() / chars_per_row) + (1 && (default_charset.length() % chars_per_row)))*c_height;
     }
 
     uint8_t* bitmap = new uint8_t[width*height]();
@@ -52,12 +50,12 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
     int cur_row = 0;
     int cur_col = 0;
 
-    for(int i = 0; i < dpp_chars.length(); ++i,++cur_col)
+    for(int i = 0; i < default_charset.length(); ++i,++cur_col)
     {
-        wchar_t c = dpp_chars[i];
+        wchar_t c = default_charset[i];
         int glyph_index = FT_Get_Char_Index(face,c);
 
-        err = FT_Load_Glyph(face,glyph_index,FT_LOAD_DEFAULT);
+        /*err = FT_Load_Glyph(face,glyph_index,FT_LOAD_DEFAULT);
         if(err)
         {
             dbg::error("Failed to load font at 'load_glyph'\n\terror: ",err);
@@ -75,9 +73,19 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
             ++missing_chars;
             --cur_col;
             continue;
+        }*/
+
+        if(FT_Load_Glyph(face,glyph_index,FT_LOAD_DEFAULT) || 
+            FT_Render_Glyph(face->glyph,FT_RENDER_MODE_NORMAL))
+        {
+            dbg::error("Failed to load font at 'load_and_render'");
+            data[c].valid = false;
+            ++missing_chars;
+            --cur_col;
+            continue;
         }
 
-        if(cur_col > chars_per_row)
+        if(cur_col >= chars_per_row)
         {
             cur_col = 0;
             cur_row += 1;
@@ -87,10 +95,10 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
         int base_y = (cur_row * c_height) + c_height2 - (face->glyph->bitmap.rows / 2.0f);
 
         data[c].valid = true;
-        data[c].tx_pos_x  = base_x;// / float(width);
-        data[c].tx_pos_y = base_y;// / float(c_height);
-        data[c].tx_width  = face->glyph->bitmap.width;// / float(width);
-        data[c].tx_height = face->glyph->bitmap.rows;// / float(c_height);
+        data[c].tx_pos_x  = base_x;
+        data[c].tx_pos_y = base_y;
+        data[c].tx_width  = face->glyph->bitmap.width;
+        data[c].tx_height = face->glyph->bitmap.rows;
         data[c].width     = face->glyph->bitmap.width;
         data[c].height    = face->glyph->bitmap.rows;
         data[c].bearing_x = face->glyph->bitmap_left;
@@ -108,12 +116,17 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
         }
     }
 
+    --cur_col;
+
+    //this should only happen if freetype messes up
     if(missing_chars)
     {
-        missing_chars += chars_per_row - (dpp_chars.length() % chars_per_row);
+        missing_chars += chars_per_row - (default_charset.length() % chars_per_row);
         int rows = missing_chars/chars_per_row;
 
         height -= rows*c_height;
+
+        int old_w = width;
 
         if(height == c_height)
         {
@@ -126,15 +139,27 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
         {
             dbg::error("Failed to resize font texture.");
             delete[] bitmap;
-            return std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,Char>>(0,{},std::unordered_map<wchar_t,Char>());
+            return std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,Char>>
+                (0,{},std::unordered_map<wchar_t,Char>());
         }
 
-        memcpy(tmp,bitmap,width*height);
+        if(old_w > width)
+        {
+            for(int i = 0; i < height; ++i)
+            {
+                memcpy(tmp + width * i, bitmap + old_w * i, old_w);
+            }
+        }
+        else
+        {
+            memcpy(tmp,bitmap,width*height);
+        }
 
         delete[] bitmap;
         bitmap = tmp;
     }
     
+    //divide texture coordinates to 0..1 range
     for( auto& c : data)
     {
         Char& cc = c.second;
@@ -147,11 +172,11 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
     }
 
     unsigned int t_id = 0;
+
     glGenTextures(1,&t_id);
+
     glBindTexture(GL_TEXTURE_2D,t_id);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -166,7 +191,7 @@ std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_
     prop.char_height = c_height;
     prop.char_width = c_width;
     prop.loaded_chars = loaded_valid;
-    prop.current_column = cur_col-1;
+    prop.current_column = cur_col;
     prop.current_row = cur_row;
     prop.chars_per_row = chars_per_row;
     prop.bitmap = bitmap;
@@ -195,18 +220,10 @@ void _DFont_impl::load_additional_char(wchar_t c)
 
     int glyph_index = FT_Get_Char_Index(face,c);
 
-    int err = FT_Load_Glyph(face,glyph_index,FT_LOAD_DEFAULT);
-    if(err)
+    if(FT_Load_Glyph(face,glyph_index,FT_LOAD_DEFAULT) || 
+        FT_Render_Glyph(face->glyph,FT_RENDER_MODE_NORMAL))
     {
-        dbg::error("Failed to load font at 'load_glyph'\n\terror: ",err);
-        chars[c].valid = false;
-        return;
-    }
-    
-    err = FT_Render_Glyph(face->glyph,FT_RENDER_MODE_NORMAL);
-    if(err)
-    {
-        dbg::error("Failed to load font at 'render_glyph'\n\terror: ",err);
+        dbg::error("Failed to load font at 'load_and_render_nc'");
         chars[c].valid = false;
         return;
     }
@@ -228,6 +245,7 @@ void _DFont_impl::load_additional_char(wchar_t c)
         {
             dbg::error("Failed to reallocate font bitmap for new character: '",c,'\'');
             properties.current_row -= 1;
+            properties.current_column -= 1;
             return;
         }
 
@@ -261,17 +279,20 @@ void _DFont_impl::load_additional_char(wchar_t c)
         if(!tmp)
         {
             dbg::error("Failed to reallocate font bitmap for new character: '",c,'\'');
-            properties.current_row -= 1;
+            properties.current_column -= 1;
             return;
         }
 
-        memcpy(tmp,properties.bitmap,width*height);
+        int old_width = properties.current_column * properties.char_width;
+
+        for(int i = 0; i < height; ++i)
+        {
+            memcpy(tmp + width * i, properties.bitmap + old_width * i, old_width);
+        }
 
         delete[] properties.bitmap;
 
         properties.bitmap = tmp;
-
-        float old_width = properties.current_column * properties.char_width;
 
         for(auto& c : chars)
         {
@@ -315,10 +336,9 @@ void _DFont_impl::load_additional_char(wchar_t c)
     glDeleteTextures(1,&texture_id);
 
     glGenTextures(1,&texture_id);
+
     glBindTexture(GL_TEXTURE_2D,texture_id);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -327,7 +347,6 @@ void _DFont_impl::load_additional_char(wchar_t c)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, properties.bitmap);
     
     glBindTexture(GL_TEXTURE_2D, 0);
-
 }
 
 void _DFont_impl::init_lib()
@@ -376,9 +395,6 @@ DFont DFont::load(const std::string& fname, int size, float row_spacing, float c
     }
 
     std::tuple<unsigned int,_DFont_impl::FontProperties, std::unordered_map<wchar_t, _DFont_impl::Char>> r = _DFont_impl::load_font_texture(face,size);
-
-    //don't delete data, if you wanna keep the face stored, as it's only maps the data, not copy
-    //delete[] data;
 
     unsigned int t = std::get<0>(r);
     std::unordered_map<wchar_t, _DFont_impl::Char>& m = std::get<2>(r);

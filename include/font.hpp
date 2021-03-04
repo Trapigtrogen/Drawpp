@@ -19,7 +19,7 @@ struct _DFont_impl
         float bearing_x;
         float bearing_y;
         float advance_x;
-        float advance_y;
+        float advance_y;    //unused
     };
 
     struct FontProperties
@@ -54,7 +54,6 @@ struct _DFont_impl
     static void* lib_ptr;
 };
 
-
 class DFont
 {
     friend class Application;
@@ -64,6 +63,7 @@ public:
     DFont() = default;
     DFont(const DFont&) = default;
     DFont(DFont&&) = default;
+    ~DFont() = default;
 
     DFont& operator=(const DFont&) = default;
     DFont& operator=(DFont&&) = default;

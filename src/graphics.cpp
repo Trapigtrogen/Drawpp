@@ -71,6 +71,7 @@ std::vector<float> txt_texc_buffer;
 #include <shaders/line_frag.ipp>
 #include <shaders/image_frag.ipp>
 #include <shaders/quad_frag.ipp>
+#include <shaders/text_vert.ipp>
 #include <shaders/text_frag.ipp>
 
 
@@ -192,7 +193,7 @@ void DGraphics::init_shaders()
     quad_shader_bpos_loc = glGetUniformLocation(quad_shader->getId(),"bpos");
     quad_shader_vpos_loc = glGetAttribLocation(quad_shader->getId(),"pos");
 
-    text_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,text_shader_f)));
+    text_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(text_shader_v,text_shader_f)));
 
     text_shader_offset_loc = glGetUniformLocation(text_shader->getId(),"offset");                                          
     text_shader_fillColor_loc = glGetUniformLocation(text_shader->getId(),"fillColor");
@@ -1064,8 +1065,6 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
                 }
             }
         }
-
-        
 
         //calculate vertex positions from character metrics
         float x1 = xloc + c->bearing_x;
