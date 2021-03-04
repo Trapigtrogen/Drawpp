@@ -165,13 +165,13 @@ void Application::size(int width, int height)
     {
         window->properties.width    = window->properties.width_hint;
         window->properties.height   = window->properties.height_hint;
+        noise.resize();
 
         delete graphics;
         graphics = new DGraphics(window->properties.width,window->properties.height);
         
         glfwSetWindowSize(window->GetHandle(),width,height);
     }
-    noise.resize();
 }
 
 void Application::setResizable(bool state)

@@ -1,10 +1,12 @@
 #include <noise.hpp>
 #include <debug.hpp>
-
 #include <application.hpp>
+
+#include <time.h>
 
 Noise::Noise()
 {
+	srand(time(NULL));
 	initNoise();
 }
 
@@ -16,15 +18,15 @@ void Noise::initNoise()
 
 	delete[] perlinNoise1D;
 	perlinNoise1D = new float[outputWidth];
-	createPerlin1D(outputWidth, 1);
+	createPerlin1D(outputWidth, scale);
 
 	delete[] noiseSeed2D;
-	noiseSeed2D = new float[(outputWidth * outputHeight)];
+	noiseSeed2D = new float[outputWidth * outputHeight];
 	randomSeed2D();
 
 	delete[] perlinNoise2D;
-	perlinNoise2D = new float[(outputWidth * outputHeight)];
-	createPerlin2D(outputWidth, outputHeight, 1);
+	perlinNoise2D = new float[outputWidth * outputHeight];
+	createPerlin2D(outputWidth, outputHeight, scale);
 }
 
 void Noise::resize() 
@@ -36,7 +38,11 @@ void Noise::resize()
 
 void Noise::noiseSeed(int seed)
 {
-	// DEBUG: how should do?
+	srand(seed);
+	randomSeed1D();
+	randomSeed2D();
+	createPerlin1D(outputWidth, scale);
+	createPerlin2D(outputWidth, outputHeight, scale);
 }
 
 void Noise::randomSeed1D() 
@@ -53,7 +59,7 @@ void Noise::randomSeed1D()
 void Noise::randomSeed2D()
 {
 	delete[] noiseSeed2D;
-	noiseSeed2D = new float[(outputWidth* outputHeight)];
+	noiseSeed2D = new float[outputWidth* outputHeight];
 
 	for(int i = 0; i < outputWidth * outputHeight; i++) 
 	{
@@ -63,15 +69,15 @@ void Noise::randomSeed2D()
 
 float Noise::pNoise(unsigned int x)
 {
-	if(x > outputWidth) x = outputWidth;
+	if(x > outputWidth) x -= outputWidth;
 	return perlinNoise1D[x];
 }
 
 float Noise::pNoise(unsigned int x, unsigned int y)
 {
-	if(x > outputWidth) x = outputWidth;
-	if(y > outputHeight) y = outputHeight;
-	return perlinNoise1D[y * outputWidth + x];
+	if(x > outputWidth) x -= outputWidth;
+	if(y > outputHeight) y -= outputHeight;
+	return perlinNoise2D[y * outputWidth + x];
 }
 
 void Noise::createPerlin1D(int nCount, float scale)
@@ -85,7 +91,11 @@ void Noise::createPerlin1D(int nCount, float scale)
 		for(int o = 0; o < nOctaves; o++)
 		{
 			int nPitch = nCount >> o;
-			int nSample1 = (x / nPitch) * nPitch;
+			int nSample1 = x;
+			if(nPitch != 0)
+			{
+				nSample1 = (x / nPitch) * nPitch;
+			}
 			int nSample2 = (nSample1 + nPitch) % nCount;
 
 			float fBlend = (float)(x - nSample1) / (float)nPitch;
@@ -115,8 +125,13 @@ void Noise::createPerlin2D(int nWidth, int nHeight, float scale)
 			for(int o = 0; o < nOctaves; o++) 		
 			{
 				int nPitch = nWidth >> o;
-				int nSampleX1 = (x / nPitch) * nPitch;
-				int nSampleY1 = (y / nPitch) * nPitch;
+				int nSampleX1 = x;
+				int nSampleY1 = y;
+				if(nPitch != 0) 
+				{
+					nSampleX1 = (x / nPitch) * nPitch;
+					nSampleY1 = (y / nPitch) * nPitch;
+				}
 
 				int nSampleX2 = (nSampleX1 + nPitch) % nWidth;
 				int nSampleY2 = (nSampleY1 + nPitch) % nWidth;

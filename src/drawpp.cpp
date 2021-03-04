@@ -74,6 +74,11 @@ void noiseSeed(int seed)
     Application::GetInstance()->noise.noiseSeed(seed);
 }
 
+void noiseScale(float scale)
+{
+    Application::GetInstance()->noise.setScale(scale);
+}
+
 void noiseDetails(int lod)
 {
     Application::GetInstance()->noise.setOctaves(lod);
