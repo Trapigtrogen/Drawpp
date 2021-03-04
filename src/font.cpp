@@ -10,7 +10,7 @@
 
 static const std::wstring default_charset = L" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ1234567890!\"@#$%&/{([)]=}?\\+^'*-_.:,;<>|\u00B6";
 
-std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_DFont_impl::Char>> _DFont_impl::load_font_texture(void* _face, unsigned int size)
+std::tuple<unsigned int,_DFont_impl::FontProperties,std::unordered_map<wchar_t,_DFont_impl::Char>> _DFont_impl::load_font_texture(void* _face, float size)
 {
     FT_Face face = reinterpret_cast<FT_Face>(_face);
 
@@ -362,9 +362,9 @@ void _DFont_impl::init_lib()
     }
 }
 
-DFont DFont::load(const std::string& fname, int size, float row_spacing, float char_spacing)
+DFont DFont::load(const std::string& fname, float size, float row_spacing, float char_spacing)
 {
-    if(size < 1) return DFont();
+    if(size <= 0) return DFont();
 
     FILE* f = std::fopen(fname.data(),"rb");
 
@@ -387,14 +387,14 @@ DFont DFont::load(const std::string& fname, int size, float row_spacing, float c
 
     int err = FT_New_Memory_Face(reinterpret_cast<FT_Library>(_DFont_impl::lib_ptr),data,l,0,&face);
 
-
     if(err)
     {
         dbg::error("Failed to loaf font data '", fname, "', error: ", err);
         return DFont();
     }
 
-    std::tuple<unsigned int,_DFont_impl::FontProperties, std::unordered_map<wchar_t, _DFont_impl::Char>> r = _DFont_impl::load_font_texture(face,size);
+    std::tuple<unsigned int,_DFont_impl::FontProperties, std::unordered_map<wchar_t, _DFont_impl::Char>> r = 
+        _DFont_impl::load_font_texture(face,size);
 
     unsigned int t = std::get<0>(r);
     std::unordered_map<wchar_t, _DFont_impl::Char>& m = std::get<2>(r);

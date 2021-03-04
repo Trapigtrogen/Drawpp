@@ -280,7 +280,7 @@ public:
 
 
     ///\brief Set the font which will be used for drawing text
-    void textFont(DFont& font);
+    void textFont(DFont font);
 
 
     ///\brief Set target cap style to \p cap
@@ -458,6 +458,7 @@ public:
     ///\brief Draw a quad from points \p p1, \p p2, \p p3 and \p p4
     void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4);
 
+
     ///\brief Save target pixels to a file as an image
     ///
     ///\p filename should not include the extenstion, as it will be added according to \p format.
@@ -465,8 +466,15 @@ public:
     bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG) const;
 
 
+    ///\brief Draw text at ( \p x, \p y )
+    ///
+    ///A font must be set with textFont() before drawing any text.
     void text(const std::string& txt, float x, float y);
+
+
+    ///\copydoc text(const std::string&,float,float);
     void text(const std::wstring& txt, float x, float y);
+
 
     GraphicsProperties getStyle();
 

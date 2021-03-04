@@ -7,6 +7,7 @@
 #include <color.hpp>
 #include <graphics.hpp>
 #include <shape.hpp>
+#include <font.hpp>
 
 void exit();
 
@@ -48,6 +49,15 @@ void line(int x1, int y1, int z1, int x2, int y2, int z2);
 void box(int size);
 void box(int width, int height, int dimension);
 void sphere(int radius);
+
+// Font and text
+
+DFont loadFont(const std::string& filename, int size, float row_spacing = 0.0f, float char_spacing = 0.0f);
+void textFont(DFont font);
+void text(const std::string& txt, float x, float y);
+void text(const std::string& txt, const DVector& p);
+void text(const std::wstring& txt, float x, float y);
+void text(const std::wstring& txt, const DVector& p);
 
 void rectMode(PosMode m);
 void ellipseMode(PosMode m);

@@ -39,7 +39,7 @@ struct _DFont_impl
     _DFont_impl(const _DFont_impl&) = delete;
     ~_DFont_impl();
  
-    static std::tuple<unsigned int,FontProperties,std::unordered_map<wchar_t,Char>> load_font_texture(void* face, unsigned int size);
+    static std::tuple<unsigned int,FontProperties,std::unordered_map<wchar_t,Char>> load_font_texture(void* face, float size);
     static void init_lib();
 
     void load_additional_char(wchar_t c);
@@ -68,7 +68,7 @@ public:
     DFont& operator=(const DFont&) = default;
     DFont& operator=(DFont&&) = default;
 
-    static DFont load(const std::string& filename, int size, float row_spacing = 0.0f, float char_spacing = 0.0f);
+    static DFont load(const std::string& filename, float size, float row_spacing = 0.0f, float char_spacing = 0.0f);
 
     bool valid() const;
 

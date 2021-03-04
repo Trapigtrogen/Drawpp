@@ -456,7 +456,7 @@ void DGraphics::noTint()
     properties.use_tint = false;
 }
 
-void DGraphics::textFont(DFont& font)
+void DGraphics::textFont(DFont font)
 {
     properties.font = font;
 }
@@ -1013,7 +1013,7 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
 
     //align such that origin is the top-left corner of the 1st characater
     float xloc = x - first->bearing_x;
-    float yloc = y + height;
+    float yloc = -y + height;
 
     for(unsigned i = 0; i < txt.length(); ++i)
     {   
