@@ -3,7 +3,7 @@
 #include <debug.hpp>
 #include <algorithm>
 #include <graphics.hpp>
-#include <sstream>
+#include <cstring>
 
 Color::Color() 
 {
@@ -98,7 +98,7 @@ Color Color::lerpColor(const Color& from, const Color& to, float percentage)
 	uint8_t lerpBlue = from.blueVal + percentage * (to.blueVal - from.blueVal);
     uint8_t lerpAlpha = from.alphaVal + percentage * (to.alphaVal - from.alphaVal);
 
-	return Color(lerpRed,lerpGreen,lerpBlue,lerpAlpha);
+	return Color(lerpRed, lerpGreen, lerpBlue, lerpAlpha);
 }
 
 void Color::RGB2HSB(uint8_t r, uint8_t g, uint8_t b)
@@ -193,7 +193,7 @@ void Color::HSB2RGB(float h, float s, float b)
 	blueVal = blue;
 }
 
-Color Color::HEX2RGB(char* hexCol) 
+Color Color::HEX2RGB(std::string hexCol) 
 {
 	bool valid = false;
 	int r, g, b;
@@ -203,12 +203,14 @@ Color Color::HEX2RGB(char* hexCol)
 	if(hexCol[0] == '#')
 	{
 		// remove '#' from color string
-		char* hexNum = hexCol + 1;
+		hexCol.erase(0, 1);
+		char* hexNum = new char;
+		strcpy(hexNum, hexCol.c_str());
 
-		switch(strlen(hexNum)) 
+		switch(hexCol.size())
 		{
 			// Full hex with alpha
-			case 8: 
+			case 8:
 				sscanf(hexNum, "%02x%02x%02x%02x", &r, &g, &b, &a);
 				valid = true;
 			break;
@@ -259,61 +261,45 @@ Color Color::HEX2RGB(char* hexCol)
 
 std::string Color::hex(Color col, int num)
 {
-	uint8_t r = col.red();
-	uint8_t g = col.green();
-	uint8_t b = col.blue();
-	uint8_t a = col.alpha();
-	char buffer[33]; // temp buffer
+	uint8_t r = col.redVal;
+	uint8_t g = col.greenVal;
+	uint8_t b = col.blueVal;
+	uint8_t a = col.alphaVal;
+
 	std::string result = "#"; // final result
 
 	switch(num)
 	{
 		case 3: // Shrink values to fit compact mode
-		_itoa_s(r, buffer, 16);
-		result += buffer[0];		
-		_itoa_s(g, buffer, 16);
-		result += buffer[0];
-		_itoa_s(b, buffer, 16);
-		result += buffer[0];
+		result += DItoa(r, 16)[0];
+		result += DItoa(g, 16)[0];
+		result += DItoa(b, 16)[0];
 		break;
 
 		case 4: // Shrink values to fit compact mode
-		_itoa_s(r, buffer, 16);
-		result += buffer[0];
-		_itoa_s(g, buffer, 16);
-		result += buffer[0];
-		_itoa_s(b, buffer, 16);
-		result += buffer[0];
-		_itoa_s(a, buffer, 16);
-		result += buffer[0];
+		result += DItoa(r, 16)[0];
+		result += DItoa(g, 16)[0];
+		result += DItoa(b, 16)[0];
+		result += DItoa(a, 16)[0];
 		break;
 
 		case 6:
-		_itoa_s(r, buffer, 16);
-		result += buffer;
-		_itoa_s(g, buffer, 16);
-		result += buffer;
-		_itoa_s(b, buffer, 16);
-		result += buffer;
+		result += DItoa(r, 16);
+		result += DItoa(g, 16);
+		result += DItoa(b, 16);
 		break;
 
 		case 8:
-		_itoa_s(r, buffer, 16);
-		result += buffer;
-		_itoa_s(g, buffer, 16);
-		result += buffer;
-		_itoa_s(b, buffer, 16);
-		result += buffer;
-		_itoa_s(a, buffer, 16);
-		result += buffer;
+		result += DItoa(r, 16);
+		result += DItoa(g, 16);
+		result += DItoa(b, 16);
+		result += DItoa(a, 16);
 		break;
 
 		default:
 		dbg::error("Invalid number");
 		break;
 	}
-
-	_itoa_s(col.red(), buffer, 16);
 
 	// Convert to upper case for fanciness points
 	std::transform(result.begin(), result.end(), result.begin(), [] (unsigned char c) { return std::toupper(c); });
@@ -325,4 +311,22 @@ int Color::correctValue(int value, int min, int max)
 	if(value < min) value = min;
 	if(value > max) value = max;
 	return value;
+}
+
+char* Color::DItoa(int val, int base)
+{
+	static char buf[32] = {0};
+
+	if(val == 0) // if value is 0 no need to do any work
+	{ 
+		static char result[3] = "00";
+		return result;
+	}
+
+	int i = 30;
+	for(; val && i; --i, val /= base)
+	{
+		buf[i] = "0123456789abcdef"[val % base];
+	}
+	return &buf[i + 1];
 }

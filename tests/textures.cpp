@@ -21,14 +21,14 @@ void setup()
 
 void draw(float) 
 {
-	//background(bg_img);
-	//imageMode(CORNER);
-	//image(img, 0, 0);
-	//image(bg_img, 0, 0);
+	background(bg_img);
+	imageMode(CORNER);
+	image(img, 0, 0, 300, 300);
+	image(bg_img, 500, 300, 100, 100);
 }
 
 int main()
 {
-	Application app(500, 300);
+	Application app(1000, 700);
 	return app.run(draw, setup);
 }

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_BUILD_TYPE Debug)
+
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(OpenGLGraphicsLibrary)
@@ -27,7 +29,8 @@ add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    src/shader.cpp
                                    src/image.cpp
                                    src/color.cpp
-                                   src/shape.cpp)
+                                   src/shape.cpp
+                                   src/noise.cpp)
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 

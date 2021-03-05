@@ -81,7 +81,7 @@ public:
     ///\brief Convert color values from HEX to RGB format
     ///
     ///\returns New Color made from the given HEX color
-    static Color HEX2RGB(char* hexCol);
+    static Color HEX2RGB(std::string hexCol);
 private:
     uint8_t alphaVal;
     uint8_t redVal;
@@ -94,6 +94,7 @@ private:
     void RGB2HSB(uint8_t r, uint8_t g, uint8_t b);
     void HSB2RGB(float h, float s, float b);
 
+    static char* DItoa(int val, int base);
     static int correctValue(int value, int min, int max);
 };
 

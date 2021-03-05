@@ -4,6 +4,17 @@
 #include <cstdint>
 #include <functional>
 #include <random.hpp>
+#include <noise.hpp>
+#include <image.hpp>
+#include <shader.hpp>
+#include <shape.hpp>
+#include <color.hpp>
+
+// DEBUG: TEMP
+#pragma warning(push,1)
+#include "nanosvg.h"
+#include "nanosvgrast.h"
+#pragma warning(pop)
 
 class Window;
 class DGraphics;
@@ -33,11 +44,14 @@ public:
     void exit();
 
     DGraphics& graphics_object();
+    int getWidth();
+    int getHeight();
     bool graphicsExists();
 
     static Application* GetInstance();
 
     Random random;
+    Noise noise;
 
 private:
     bool init_application();

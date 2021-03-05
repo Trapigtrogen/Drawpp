@@ -56,6 +56,47 @@ float randomGaussian()
     return Application::GetInstance()->random.randomGaussian();
 }
 
+
+// Noise
+
+float noise(int x)
+{
+    return Application::GetInstance()->noise.pNoise(x);
+}
+
+float noise(int x, int y)
+{
+    return Application::GetInstance()->noise.pNoise(x, y);
+}
+
+void noiseSeed(int seed)
+{
+    Application::GetInstance()->noise.noiseSeed(seed);
+}
+
+void noiseScale(float scale)
+{
+    Application::GetInstance()->noise.setScale(scale);
+}
+
+void noiseDetails(int lod)
+{
+    Application::GetInstance()->noise.setOctaves(lod);
+}
+
+void noiseDetails(int lod, float falloff)
+{
+    Application::GetInstance()->noise.setOctaves(lod);
+    Application::GetInstance()->noise.setFalloff(falloff);
+}
+
+void noiseMapSize(int width, int heigth) 
+{
+    Application::GetInstance()->noise.resize(width, heigth);
+}
+
+
+
 void rectMode(PosMode m)
 {
     Application::GetInstance()->graphics_object().rectMode(m);
@@ -360,14 +401,19 @@ void background(const DImage& image)
 
 // Shapes
 
-void shape(DShape shape, int x, int  y)
+void shape(DShape _shape) 
 {
-    // Draw shape
+    shape(_shape, 0, 0, 1, 1);
 }
 
-void shape(DShape shape, int x, int y, int w, int h)
+void shape(DShape _shape, int x, int  y)
 {
-    // Draw shape
+    shape(_shape, 0, 0, x, y);
+}
+
+void shape(DShape _shape, int x, int y, int w, int h)
+{
+    Application::GetInstance()->graphics_object().shape(_shape, x, y, w, h);
 }
 
 DShape loadShape(std::string filename) 
@@ -382,10 +428,12 @@ DShape createShape()
 
 DShape createShape(DShape::ShapeType type)
 {
-    return DShape::createShape(type); //DEBUG TEMP
+    return DShape::createShape(type);
 }
 
 //DShape createShape(DShape::ShapeType type, float[] p){}
+
+
 
 void rect(float x, float y, float w, float h)
 {

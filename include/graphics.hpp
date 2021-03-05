@@ -5,6 +5,7 @@
 #include <string>
 #include <matrix4.hpp>
 #include <color.hpp>
+#include <shape.hpp>
 #include <memory>
 
 class DImage;
@@ -444,6 +445,8 @@ public:
     ///\brief Draw image \p img at ( \p x, \p y ), resized to ( \p w, \p h)
     void image(const DImage& img, float x, float y, float w, float h);
 
+    ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)
+    void shape(DShape& s, float x, float y, float w, float h);
 
     ///\brief Draw a quad from points ( \p x1, \p y1 ), ( \p x2, \p y2 ), ( \p x3, \p y3 ) and ( \p x4, \p y4 )
     void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
@@ -556,7 +559,7 @@ private:
     int image_shader_vpos_loc;
     int image_shader_tpos_loc;
 
-    //Shader used to draw triangles
+    //Shader used to draw quads
     std::unique_ptr<Shader> quad_shader;
     int quad_shader_strokeWeight_loc;
     int quad_shader_strokeColor_loc;

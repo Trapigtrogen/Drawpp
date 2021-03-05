@@ -2,24 +2,24 @@
 #include <iostream>
 
 DShape shape1; // 1 element image
-DShape shape2; // no image. child of 1
+DShape shape2; // no image. child of 3
 DShape shape3; // 2 custom named element image
 DShape shape4; // empty image
 
 void setup() 
 {
-    size(500, 500);
-    setTitle("Vertex Shaping");
     setResizable(true);
+    size(1000, 1000);
+    setTitle("Vertex Shaping");
 
     // Empty images are not allowed and system should revert the load after loading svg with no elements
     printf("Loading empty image to shape4...\n");
     shape4 = loadShape("assets/empty.svg"); 
 
     // Normal image containing 1 element
-    
-    //printf("Loading image (1 element) to shape1...\n");
-    //shape1 = loadShape("assets/tests/archlinux-logo-black.svg");
+    // DEBUG seems like all the images  with 1 element will break
+    printf("Loading image (1 element) to shape1...\n");
+    shape1 = loadShape("assets/circleimage.svg");
 
     // Normal image containing 2 elements with names/ids
     printf("Loading image (multiple elements) to shape3...\n\n");
@@ -62,10 +62,9 @@ void setup()
 
 void draw(float) 
 {
-    //fill(0, 250, 181); // Set fill colour for next shape
-    //rect(0, 0, 10, 10); // Draw. Origin point and size
-    
-    shape(shape1, 10, 10, 80, 80);
+    background(0,0,0);
+    shape(shape2);
+    shape(shape2, 10, 10, 80, 80);
 }
 
 int main() 

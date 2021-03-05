@@ -9,6 +9,11 @@
 
 #include "stb_image_write.h"
 
+#pragma warning(push,1)
+#include "nanosvg.h"
+#include "nanosvgrast.h"
+#pragma warning(pop)
+
 const float primitive_square[] = 
 {
     0.0f, -1.0f,
@@ -742,6 +747,71 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
 
     glDisableVertexAttribArray(image_shader_vpos_loc);
     glDisableVertexAttribArray(image_shader_tpos_loc);
+}
+
+void DGraphics::shape(DShape& s, float x, float y, float w, float h)
+{
+    if(s.image == NULL)
+    {
+        for(int i = 0; i < s.getChildCount(); i++)
+        {
+            DShape* child = s.getChild(i);
+            Color fillColor(child->image->shapes->fill.color);
+            fillColor.alphaVal = child->image->shapes->opacity;
+            Color strokeColor(child->image->shapes->stroke.color);
+            strokeColor.alphaVal = child->image->shapes->opacity;
+
+            std::vector<float> Vverts;
+            for(NSVGpath* path = child->image->shapes->paths; path->next != NULL; path = path->next) 
+            {
+                for(int i = 0; i < sizeof(path->bounds); i++) 
+                {
+                    Vverts.push_back(path->bounds[i]);
+                    printf("\npoint: %f\n", path->bounds[i]);
+                }
+            }
+
+            glUseProgram(quad_shader->getId());
+            glUniform1f(quad_shader_strokeWeight_loc, properties.use_stroke ? child->image->shapes->strokeWidth : 0.0f);
+            glUniform1fv(quad_shader_bpos_loc, 12, (GLfloat*)Vverts.data());
+            glUniform4f(quad_shader_strokeColor_loc, strokeColor.red() / 255.0f,
+                        strokeColor.green() / 255.0f,
+                        strokeColor.blue() / 255.0f,
+                        strokeColor.alpha() / 255.0f);
+            glUniform4f(quad_shader_fillColor_loc, fillColor.red() / 255.0f,
+                        fillColor.green() / 255.0f,
+                        fillColor.blue() / 255.0f,
+                        properties.use_fill ? fillColor.alpha() / 255.0f : 0.0f);
+            glUniformMatrix4fv(quad_shader_view_loc, 1, GL_FALSE, view_mat.values);
+
+            glEnableVertexAttribArray(quad_shader_vpos_loc);
+
+            glVertexAttribPointer(quad_shader_vpos_loc, 2, GL_FLOAT, false, 0, (GLfloat*)Vverts.data());
+
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+
+            glDisableVertexAttribArray(quad_shader_vpos_loc);
+        }
+    }
+    else
+    {
+        NSVGshape* shape = s.image->shapes;
+        //for(NSVGshape* shape = s.image->shapes; shape->next != NULL; shape = shape->next)
+        //{
+            Color fillColor(shape->fill.color);
+            fillColor.alphaVal = shape->opacity;
+            Color strokeColor(shape->stroke.color);
+            strokeColor.alphaVal = shape->opacity;
+
+            std::vector<float*> Vverts;
+            for(NSVGpath* path = shape->paths; path->next != NULL; path = path->next)
+            {
+                Vverts.push_back(path->pts);
+            }
+
+            // OGL STUFF
+        //}
+    }
 }
 
 void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)

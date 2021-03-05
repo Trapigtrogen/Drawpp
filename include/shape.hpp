@@ -32,6 +32,13 @@ public:
 		SPHERE
 	};
 
+	struct CombinedImage
+	{
+		std::vector<float*> vectors;
+		std::vector<int> fills;
+		std::vector<int> strokes;
+	};
+
 	///\brief Load SVG image as shape
 	static DShape loadShape(std::string filename);
 
@@ -90,7 +97,7 @@ public:
 	///\brief Get the shape's visibility
 	///
 	/// See if the shape is drawn or not
-	/// \returns \p visible
+	///\returns \p visible
 	bool isVisible() { return visible; };
 
 	// Drawable objects are in image->shapes. If image == NULL go through children's images

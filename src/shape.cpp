@@ -38,7 +38,6 @@ DShape::DShape(const DShape& other)
 	{
 		addChild(it);
 	}
-
 }
 
 DShape::DShape(DShape&& other)
@@ -254,8 +253,6 @@ void DShape::loadSVG(std::string filename)
 
 		addChild(childShape); // Create parent-child link
 	}
-
-	printf("Children created\n");
 	
 	// Clear dublicate data
 	image = nullptr;
