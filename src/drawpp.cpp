@@ -56,6 +56,47 @@ float randomGaussian()
     return Application::GetInstance()->random.randomGaussian();
 }
 
+
+// Noise
+
+float noise(int x)
+{
+    return Application::GetInstance()->noise.pNoise(x);
+}
+
+float noise(int x, int y)
+{
+    return Application::GetInstance()->noise.pNoise(x, y);
+}
+
+void noiseSeed(int seed)
+{
+    Application::GetInstance()->noise.noiseSeed(seed);
+}
+
+void noiseScale(float scale)
+{
+    Application::GetInstance()->noise.setScale(scale);
+}
+
+void noiseDetails(int lod)
+{
+    Application::GetInstance()->noise.setOctaves(lod);
+}
+
+void noiseDetails(int lod, float falloff)
+{
+    Application::GetInstance()->noise.setOctaves(lod);
+    Application::GetInstance()->noise.setFalloff(falloff);
+}
+
+void noiseMapSize(int width, int heigth) 
+{
+    Application::GetInstance()->noise.resize(width, heigth);
+}
+
+
+
 void rectMode(PosMode m)
 {
     Application::GetInstance()->graphics_object().rectMode(m);

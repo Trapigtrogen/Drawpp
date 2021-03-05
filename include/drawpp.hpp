@@ -152,8 +152,16 @@ int randomInt(int low, int high);
 float randomFloat(float low, float high);
 float randomGaussian();
 
-// Push Pop
+// Noise
+float noise(int x);
+float noise(int x, int y);
+void noiseSeed(int x);
+void noiseScale(float scale);
+void noiseDetails(int lod);
+void noiseDetails(int lod, float falloff);
+void noiseMapSize(int width, int heigth);
 
+// Push Pop
 void push();
 void pop();
 void pushMatrix();
