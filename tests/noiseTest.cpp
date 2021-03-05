@@ -23,8 +23,7 @@ void draw(float)
     {
         for(int y = 0; y < height; y++)    
         {
-            Color col((noise(x, y) * 255), (noise(x, y) * 255), (noise(x, y) * 255));
-            fill(col);
+            fill((noise(x, y) * 255));
             //rect(x*5, y*5, 5, 5); // pixel like
             circle(x*5, y*5, 5); // Smoother
             
