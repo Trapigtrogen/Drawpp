@@ -11,7 +11,6 @@ void setup()
 {
     setTitle("Perlin noise");
     noStroke();
-    //size(500, 500);
 }
 
 void draw(float)
@@ -25,8 +24,7 @@ void draw(float)
         {
             fill((noise(x, y) * 255));
             //rect(x*5, y*5, 5, 5); // pixel like
-            circle(x*5, y*5, 5); // Smoother
-            
+            circle(x*5, y*5, 5); // Smoother           
         }
     }
 }
