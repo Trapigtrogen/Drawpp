@@ -6,11 +6,11 @@ Processing style graphic library for c++ using OpenGL. Support for Windows and L
 * Shape class with GameObject like parent-child hierarcy
 * Color API
 * Random API
+* Perlin noise generator
 
 ### Upcoming
 * Load SVG files as shapes
   * Vector graphics
-* Noise generator
 * Load and render fonts
 
 # Building
