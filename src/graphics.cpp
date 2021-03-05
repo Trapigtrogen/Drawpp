@@ -995,9 +995,10 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
 
     auto& chars = properties.font.impl->chars;
 
-    float height = -properties.font.impl->properties.char_height;
-    float row_s = properties.font.impl->properties.row_spacing;
-    float char_s = properties.font.impl->properties.char_spacing;
+    float height = -properties.font.impl->char_height;
+    float row_s = properties.font.impl->row_spacing;
+    float char_s = properties.font.impl->char_spacing;
+    float bl = properties.font.impl->baseline;
 
     //Assume 'missing character' to always be present
     auto* _c = &(chars[L'\0']);
@@ -1013,7 +1014,7 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
 
     //align such that origin is the top-left corner of the 1st characater
     float xloc = x - first->bearing_x;
-    float yloc = -y + height;
+    float yloc = -y + height + bl;
 
     for(unsigned i = 0; i < txt.length(); ++i)
     {   
@@ -1037,34 +1038,30 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
 
         if(f != chars.end())
         {
-            if(f->second.valid)
-            {
-                c = &f->second;
-            }
+            c = &f->second;
         }
         else
         {
-            properties.font.impl->load_additional_char(txt[i]);
+            if(properties.font.impl->load_additional_char(txt[i]))
+            {
+                properties.font.impl->apply_texture();
+            }
 
             auto& nc = chars[txt[i]];
-
-            if(nc.valid)
-            {
-                c = &nc;
-            }
+            c = &nc;
         }
         
         if(nl)
         {
             xloc = x - c->bearing_x;
-            yloc += height - row_s;
+            yloc += height - row_s + bl;
         }
 
         //calculate vertex positions from character metrics
         float x1 = xloc + c->bearing_x;
-        float y1 = yloc - c->bearing_y;
+        float y1 = yloc - c->bearing_y + bl;
         float x2 = xloc + c->bearing_x + c->width;
-        float y2 = yloc - c->bearing_y - c->height;
+        float y2 = yloc - c->bearing_y - c->height + bl;
 
         txt_vert_buffer.insert(txt_vert_buffer.end(),
         {
