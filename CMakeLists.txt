@@ -27,7 +27,8 @@ add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    src/shader.cpp
                                    src/image.cpp
                                    src/color.cpp
-                                   src/shape.cpp)
+                                   src/shape.cpp
+                                   src/noise.cpp)
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 

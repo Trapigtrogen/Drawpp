@@ -2,6 +2,8 @@
 #define DPP_IMAGE_H
 
 #include <string>
+#include <debug.hpp>
+#include <noise.hpp>
 
 ///  DImage is an object that textures can be loaded to from image or pixel set
 class DImage
@@ -25,21 +27,17 @@ public:
 
 	static DImage loadImage(const std::string& fileName);
 
-	void imageMode(ImgMode mode);
-
-	void drawImage(int x, int y, unsigned int w, unsigned int h);
-
-	void background(DImage* image);
-
-	void bind(unsigned int unit);
+	void bind(unsigned int unit) const;
 
 	unsigned char* pixels = nullptr;
-	unsigned int width = 0;
-	unsigned int height = 0;
+	int width = 0;
+	int height = 0;
+	int channels = 0;
 
 private:
 	unsigned int m_texture = 0;
-	DImage(unsigned char* _pixels, unsigned int _texture);
+	DImage(unsigned char* _pixels, GLuint _texture, int w, int h, int c);
+	static GLuint generateTexture(int w, int h, unsigned char* pixels);
 };
 
 #endif

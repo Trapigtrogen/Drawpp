@@ -17,8 +17,9 @@ void setup()
     shape4 = loadShape("assets/empty.svg"); 
 
     // Normal image containing 1 element
-    printf("Loading image (1 element) to shape1...\n");
-    shape1 = loadShape("assets/archlinux-logo-black.svg");
+    
+    //printf("Loading image (1 element) to shape1...\n");
+    //shape1 = loadShape("assets/tests/archlinux-logo-black.svg");
 
     // Normal image containing 2 elements with names/ids
     printf("Loading image (multiple elements) to shape3...\n\n");

@@ -28,14 +28,18 @@ void arc(int x, int y, int width, int height, int start, int stop);
 void arc(int x, int y, int width, int height, int start, int stop, int mode);
 void circle(float x, float y, float radius);
 void ellipse(float x, float y, float width, float height);
-void line(int x1, int y1, int x2, int y2);
-void point(int x, int y);
-void quad(int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4);
+void line(float x1, float y1, float x2, float y2);
+void line(const DVector& p1,const DVector& p2);
+void point(float x, float y);
+void point(const DVector& p);
+void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
+void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4);
 void rect(float x, float y, float w, float h);
 void rect(float x, float y, float w, float h, float r);
 void rect(float x, float y, float w, float h, float tl, float tr, float br, float bl);
 void square(float x, float y, float size);
-void triangle(int x1, int y1, int x2, int y2, int x3, int y3);
+void triangle(float x1, float y1, float x2, float y2, float x3, float y3);
+void triangle(const DVector& p1, const DVector& p2, const DVector& p3);
 
 // Shapes 3D
 void point(int x, int y, int z);
@@ -44,8 +48,11 @@ void box(int size);
 void box(int width, int height, int dimension);
 void sphere(int radius);
 
-
+void rectMode(PosMode m);
+void ellipseMode(PosMode m);
+void imageMode(PosMode m);
 void strokeWeight(float w);
+void strokeCap(CapStyle cap);
 void clear();
 void noFill();
 void noStroke();
@@ -55,6 +62,7 @@ void noTint();
 void fill(Color col);
 void fill(int rgb);
 void fill(int rgb, float alpha);
+void fill(std::string hexCol);
 void fill(float gray);
 void fill(float gray, float alpha);
 void fill(int v1, int v2, int v3);
@@ -62,12 +70,14 @@ void fill(int v1, int v2, int v3, float alpha);
 
 void stroke(Color rgba);
 void stroke(Color rgb, float alpha);
+void stroke(std::string hexCol);
 void stroke(float gray);
 void stroke(float gray, float alpha);
 void stroke(float v1, float v2, float v3);
 void stroke(float v1, float v2, float v3, float alpha);
 
 void background(Color col);
+void background(const char* hexCol);
 void background(int rgb);
 void background(int rgb, float alpha);
 void background(float gray);
@@ -94,13 +104,15 @@ float saturation(Color col);
 float brightness(Color col);
 
 // Lerps color. Percentage needs to be in range 0.0 - 1.0 or it will be cut to closest point
-Color lerpColor(Color from, Color to, float percentage);
+Color lerpColor(const Color& from, const Color& to, float percentage);
+std::string hex(Color col);
+std::string hex(Color col, int num);
 
 // Image
 DImage loadImage(const std::string& fileName);
-void image(DImage image, int x, int y);
-void image(DImage image, int x, int y, int width, int height);
-void background(DImage image);
+void image(const DImage& image, float x, float y);
+void image(const DImage& image, float x, float y, float width, float height);
+void background(const DImage& image);
 
 // Shader
 Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader);
@@ -140,8 +152,16 @@ int randomInt(int low, int high);
 float randomFloat(float low, float high);
 float randomGaussian();
 
-// Push Pop
+// Noise
+float noise(int x);
+float noise(int x, int y);
+void noiseSeed(int x);
+void noiseScale(float scale);
+void noiseDetails(int lod);
+void noiseDetails(int lod, float falloff);
+void noiseMapSize(int width, int heigth);
 
+// Push Pop
 void push();
 void pop();
 void pushMatrix();

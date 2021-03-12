@@ -14,7 +14,6 @@
 
 DShape::~DShape()
 {
-	delete[] data;
 	for(auto& it : children) 
 	{
 		it->removeParent();
@@ -24,15 +23,13 @@ DShape::~DShape()
 
 DShape::DShape()
 {
-	data = new unsigned char[0];
+	//printf("constructor\n");
 	name = (char*)"Shape";
 }
 
 DShape::DShape(const DShape& other)
 {
-	delete[] data;
-	data = new unsigned char[strlen((char*)other.data)];
-	std::copy(other.data, other.data + strlen((char*)other.data), data);
+	//printf("Copy constructor\n");
 	visible = other.visible;
 	parent = other.parent;
 	image = other.image;
@@ -46,7 +43,7 @@ DShape::DShape(const DShape& other)
 
 DShape::DShape(DShape&& other)
 {
-	data = other.data;
+	//printf("Move constructor\n");
 	visible = other.visible;
 	parent = other.parent;
 	image = other.image;
@@ -56,30 +53,31 @@ DShape::DShape(DShape&& other)
 		addChild(it);
 	}
 
-	other.data = nullptr;
 	other.visible = 0;
 	other.parent = nullptr;
 	other.children.clear();
 	other.image = nullptr;
-	other.name = nullptr;
+	other.name = "";
 }
 
 DShape& DShape::operator=(DShape& other)
 {
+	//printf("Copy operator\n");
 	if(this != &other) 
-	{
-		delete[] data;
-		for(auto& it : children) {
+	{		
+		// Abandon old children if any
+		for(auto& it : children) 
+		{
 			it->removeParent();
-			it->children.clear();
+			//it->children.clear(); // DEBUG: Brain fart?
 		}
 		children.clear();
 
-		data = other.data;
 		visible = other.visible;
 		parent = other.parent;
 		image = other.image;
 		name = other.name;
+		
 		for(auto& it : other.children) 
 		{
 			addChild(it);
@@ -91,30 +89,32 @@ DShape& DShape::operator=(DShape& other)
 
 DShape& DShape::operator=(DShape&& other) 
 {
+	//printf("Move operator\n");
 	if(this != &other)
 	{
-		delete[] data;
-		for(auto& it : children) {
+		// Abandon old children if any
+		for(auto& it : children) 
+		{
 			it->removeParent();
-			it->children.clear();
+			//it->children.clear(); // DEBUG: Brain fart?
 		}
 		children.clear();
 
-		data = other.data;
 		visible = other.visible;
 		parent = other.parent;
 		image = other.image;
 		name = other.name;
-		for(auto& it : other.children) {
+
+		for(auto& it : other.children) 
+		{
 			addChild(it);
 		}
 
-		other.data = nullptr;
 		other.visible = 0;
 		other.parent = nullptr;
 		other.children.clear();
 		other.image = nullptr;
-		other.name = nullptr;
+		other.name = "";
 	}
 
 	return *this;
@@ -124,14 +124,13 @@ DShape& DShape::operator=(DShape* other)
 {
 	if(this != other) 
 	{
-		delete[] data;
-		for(auto& it : children) {
+		for(auto& it : children)
+		{
 			it->removeParent();
 			it->children.clear();
 		}
 		children.clear();
 
-		data = other->data;
 		visible = other->visible;
 		parent = other->parent;
 		image = other->image;
@@ -237,7 +236,7 @@ void DShape::loadSVG(std::string filename)
 	// Empty image should not be loaded
 	if(image->shapes == nullptr) 
 	{
-		dbg::error("Image is empty. Loading has been cancelled"); 
+		dbg::error("Image is found but it's empty. Loading has been cancelled"); 
 		nsvgDelete(image);
 		image = nullptr;
 		return;
@@ -256,6 +255,8 @@ void DShape::loadSVG(std::string filename)
 		addChild(childShape); // Create parent-child link
 	}
 
+	printf("Children created\n");
+	
 	// Clear dublicate data
 	image = nullptr;
 

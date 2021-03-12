@@ -4,6 +4,11 @@
 #include <vector>
 #include <fstream> 
 
+Shader::~Shader()
+{
+    //if(id >= 0) glDeleteProgram(id);
+}
+
 // Use default
 Shader::Shader()
 {
@@ -36,7 +41,8 @@ Shader::Shader(Shader&& other)
 
 Shader& Shader::operator=(Shader&& other)
 {
-    if(this != &other) {
+    if(this != &other)
+    {
         if(id >= 0) glDeleteProgram(id);
         id = other.id;
         other.id = -1;
@@ -88,11 +94,6 @@ Shader Shader::loadShadersDefault()
     tmpShader.createShaderProgram();
 
     return tmpShader;
-}
-
-Shader::~Shader()
-{
-    if(id >= 0) glDeleteProgram(id);
 }
 
 std::string Shader::readShaderFile(const char* filename)
