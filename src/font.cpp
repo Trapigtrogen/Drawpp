@@ -2,6 +2,7 @@
 #include FT_FREETYPE_H
 
 #include <font.hpp>
+#include <font_impl.h>
 #include <debug.hpp>
 #include <glad/glad.h>
 #include <string>
@@ -700,6 +701,11 @@ void DFont::ClearCharset(const std::wstring& new_charset)
 bool DFont::valid() const
 {
     return bool(impl);
+}
+
+DFont::operator bool() const
+{
+    return valid();
 }
 
 void* _DFont_impl::lib_ptr = nullptr;

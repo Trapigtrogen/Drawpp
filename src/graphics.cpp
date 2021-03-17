@@ -6,6 +6,7 @@
 #include <image.hpp>
 #include <vector3.hpp>
 #include <font.hpp>
+#include <font_impl.h>
 #include <cstring>
 #include <locale>
 #include <codecvt>
