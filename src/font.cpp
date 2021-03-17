@@ -5,15 +5,22 @@
 #include <debug.hpp>
 #include <glad/glad.h>
 #include <string>
+#include <algorithm>
 
-static const std::wstring default_charset = L"t aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsSTuUvVwWxXy\
-YzZ1234567890!\"@#$%&/{([)]=}?\\+^'*-_.:,;<>|";
+static const std::wstring default_charset = L" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXy"
+"YzZ1234567890!\"@#$%&/{([)]=}?\\+^'*-_.:,;<>|";
 
 std::shared_ptr<_DFont_impl> _DFont_impl::load_font(void* _face, const FontOptions& options)
 {
     std::wstring charset = options.charset;
     charset.insert(charset.begin(),L'\0');
-    //TODO: remove duplicates from charsets
+
+    auto ed = charset.end();
+    for(auto it = charset.begin(); it != ed; ++it)
+    {
+        ed = std::remove(std::next(it),ed,*it);
+    }
+    charset.erase(ed,charset.end());
 
     FT_Face face = reinterpret_cast<FT_Face>(_face);
 
@@ -140,7 +147,7 @@ std::shared_ptr<_DFont_impl> _DFont_impl::load_font(void* _face, const FontOptio
     no_space:
 
     //this should only happen if freetype messes up
-    if(missing_chars)
+    /*if(missing_chars)
     {
         missing_chars += chars_per_row - (charset.length() % chars_per_row);
         int rows = missing_chars/chars_per_row;
@@ -177,7 +184,7 @@ std::shared_ptr<_DFont_impl> _DFont_impl::load_font(void* _face, const FontOptio
 
         delete[] bitmap;
         bitmap = tmp;
-    }
+    }*/
     
     //divide texture coordinates to 0..1 range
     for( auto& c : data)
@@ -403,13 +410,155 @@ void _DFont_impl::load_all_chars()
         old_w = (current_column+1);
     }
 
-    int height = (num_glyphs / chars_per_row) + (num_glyphs % chars_per_row);
+    int height = (num_glyphs / chars_per_row) + (1 && (num_glyphs % chars_per_row));
     int old_h = (current_row+1);
     
+    float mul_height = (current_row+1) * char_height;
+    float mul_width = old_w * char_width;
+
     width *= char_width;
     old_w *= char_width;
 
-    //not finished
+    if(height > chars_per_col)
+    {
+        height = chars_per_row;
+    }
+
+    height *= char_height;
+    old_h  *= char_height;
+
+    uint8_t* tmp = new uint8_t[width*height]();
+
+    if(!tmp)
+    {
+        dbg::error("Failed to reallocate font bitmap for all characters");
+        return;
+    }
+
+    for(auto& c : chars)
+    {
+        Char& cc = c.second;
+        cc.tx_pos_y *= mul_height;
+        cc.tx_height *= mul_height;
+        cc.tx_pos_x *= mul_width;
+        cc.tx_width *= mul_width;
+    }
+
+    if(current_column >= chars_per_row || current_row > 0)
+    {
+        memcpy(tmp,bitmap,old_w*old_h);
+        current_column = 0;
+    }
+    else if (current_column < chars_per_row && current_row == 0)
+    {
+        for(int i = 0; i < old_h; ++i)
+        {
+            memcpy(tmp + width * i, bitmap + old_w * i, old_w);
+        }
+    }
+
+    delete[] bitmap;
+    bitmap = tmp;
+
+    int loaded_valid = 0;
+    float c_width2 = char_width/2;
+    float c_height2 = char_height/2;
+    
+    unsigned int glyph_index = 0;
+    unsigned long c = FT_Get_First_Char(face,&glyph_index);
+    goto initial;
+
+    //for(int i = 0; i < charset.length(); ++i,++cur_col)
+    while(true)
+    {
+        //int glyph_index = FT_Get_Char_Index(face,c);
+        c = FT_Get_Next_Char(face,c,&glyph_index);
+
+        initial:
+
+        if(glyph_index == 0)
+        {
+            break;
+        }
+
+        if(chars.find(c) != chars.end())
+        {
+            continue;
+        }
+
+        if(FT_Load_Glyph(face,glyph_index,FT_LOAD_DEFAULT) || 
+            FT_Render_Glyph(face->glyph,FT_RENDER_MODE_NORMAL))
+        {
+            dbg::error("Failed to load or render character: ",c);
+            chars[c] = chars[L'\0'];
+            --current_column;
+            continue;
+        }
+
+        if(current_column >= chars_per_row)
+        {
+            current_column = 0;
+            current_row += 1;
+        }
+
+        if(current_row >= chars_per_col)
+        {
+            dbg::error("Ran out of texture space for font at ", c,"\n\t",
+            chars_per_col*current_row + current_column,",",loaded_valid,
+            "(",loaded_chars+loaded_valid,") characters loaded.");
+            
+            while(glyph_index)
+            {
+                c = FT_Get_Next_Char(face,c,&glyph_index);
+                chars[c] = chars[L'\0'];
+            }
+            current_column = chars_per_row-1;
+            --current_row;
+            goto no_space;
+        }
+
+        int base_x = (current_column * char_width) + c_width2 - (face->glyph->bitmap.width / 2.0f);
+        int base_y = (current_row * char_height) + c_height2 - (face->glyph->bitmap.rows / 2.0f);
+
+        chars[c].tx_pos_x  = base_x;
+        chars[c].tx_pos_y = base_y;
+        chars[c].tx_width  = face->glyph->bitmap.width;
+        chars[c].tx_height = face->glyph->bitmap.rows;
+        chars[c].width     = face->glyph->bitmap.width;
+        chars[c].height    = face->glyph->bitmap.rows;
+        chars[c].bearing_x = face->glyph->bitmap_left;
+        chars[c].bearing_y = -face->glyph->bitmap_top;    //y coords inversed
+        chars[c].advance_x = face->glyph->advance.x;
+        chars[c].advance_y = face->glyph->advance.y;
+
+        for(int y = 0; y < face->glyph->bitmap.rows; ++y)
+        {
+            for(int x = 0; x < face->glyph->bitmap.width; ++x)
+            {
+                bitmap[(y+base_y) * width + base_x + x] =
+                    *(face->glyph->bitmap.buffer + y * face->glyph->bitmap.width + x);
+            }
+        }
+        ++loaded_valid;
+        ++current_column;
+    }
+
+    --current_column;
+
+    no_space:
+
+    for( auto& c : chars)
+    {
+        Char& cc = c.second;
+
+        cc.tx_pos_x /= width;
+        cc.tx_width /= width;
+
+        cc.tx_pos_y /= height;
+        cc.tx_height /= height;
+    }
+
+    loaded_chars += loaded_valid;
 }
 
 void _DFont_impl::apply_texture()
