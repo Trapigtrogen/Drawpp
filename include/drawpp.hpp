@@ -53,6 +53,7 @@ void sphere(int radius);
 // Font and text
 
 DFont loadFont(const std::string& filename, int size, float row_spacing = 0.0f, float char_spacing = 0.0f);
+DFont loadFont(const std::string& filename, const FontOptions& opt);
 void textFont(DFont font);
 void text(const std::string& txt, float x, float y);
 void text(const std::string& txt, const DVector& p);

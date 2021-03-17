@@ -579,6 +579,11 @@ DFont loadFont(const std::string& filename, int size, float row_spacing, float c
     return DFont::load(filename,size,row_spacing,char_spacing);
 }
 
+DFont loadFont(const std::string& filename, const FontOptions& opt)
+{
+    return DFont::load(filename,opt);
+}
+
 void textFont(DFont font)
 {
     Application::GetInstance()->graphics_object().textFont(font);
