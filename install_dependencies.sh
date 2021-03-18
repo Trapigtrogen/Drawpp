@@ -21,12 +21,10 @@ elif [ -f /etc/debian_version ]; then
     VER=$(cat /etc/debian_version)
 elif [ -f /etc/SuSe-release ]; then
     # Older SuSE/etc.
-    echo "opensuse based distros are not officially supported by us"
     OS="Not supported"
     VER="Not supported"
 elif [ -f /etc/redhat-release ]; then
     # Older Red Hat, CentOS, etc.
-    echo "redhat based distros are not officially supported by us"
     OS="Not supported"
     VER="Not supported"
 else
@@ -35,4 +33,53 @@ else
     VER=$(uname -r)
 fi
 
-echo $OS
+# Show found info
+echo "OS info: $OS $VER"
+
+# Install dependencies
+if [ "$OS" =  "Arch Linux" ]; then
+     echo "this is Arch -> using pacman"
+     manager="pacman"
+elif [ "$OS" =  "Debian" ]; then
+    echo "this is Debian -> using apt"
+    manager="aptitude"
+elif [ "$OS" =  "Raspbian GNU/Linux" ]; then
+    echo "this is Raspbian -> using aptitude"
+    manager="aptitude"
+else
+    echo "This distro is not officially supported by us"
+    echo "However if you know your distribution should work you can select packet manager manually:"
+    while true
+    do
+        read -r -p "1. aptitude\n2. pacman\n3. quit [1/2/q] " managerMan
+
+        case $managerMan in
+        [1])
+            echo "Using aptitude"
+            manager="aptitude"
+            break
+            ;;
+        [2])
+            echo "Using pacman"
+            manager="pacman"
+            break
+            ;;
+        [qQ])
+            exit
+            ;;
+        *)
+            echo "Invalid input."
+            break
+            ;;
+        esac
+    done
+fi
+
+if [ "$manager" = "aptitude" ]; then
+    sudo apt-get update && sudo apt-get -y install\
+                g++ libxcursor-dev libxrandr-dev libxinerama-dev\
+                libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev
+
+else
+    sudo pacman  -Sy base-devel --needed --noconfirm
+fi
