@@ -63,8 +63,8 @@ void setup()
 void draw(float) 
 {
     background(0,0,0);
-    shape(shape2);
-    shape(shape2, 10, 10, 80, 80);
+    //shape(shape3);
+    shape(shape1, 100, 100, 40, 40);
 }
 
 int main() 

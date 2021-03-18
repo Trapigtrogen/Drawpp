@@ -447,6 +447,13 @@ public:
 
     ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)
     void shape(DShape& s, float x, float y, float w, float h);
+    static void shapeCubicBez(float x1, float y1, float x2, 
+                                float y2, float x3, float y3, float x4, float y4,
+                                float tol, int level);
+    void shapeDrawControlPts(float* pts, int npts);
+    void shapeDrawPath(float* pts, int npts, char closed, float tol);
+    static float shapeDistPtSeg(float x, float y, float px, float py, float qx, float qy);
+
 
     ///\brief Draw a quad from points ( \p x1, \p y1 ), ( \p x2, \p y2 ), ( \p x3, \p y3 ) and ( \p x4, \p y4 )
     void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
