@@ -5,6 +5,7 @@
 #include <string>
 #include <matrix4.hpp>
 #include <color.hpp>
+#include <font.hpp>
 #include <memory>
 
 class DImage;
@@ -57,6 +58,7 @@ struct GraphicsProperties
     PosMode rectmode = PosMode::CORNER;
     PosMode ellipsemode = PosMode::CENTRE;
     PosMode imagemode = PosMode::CORNER;
+    DFont font;
 };
 
 class DGraphics
@@ -277,6 +279,10 @@ public:
     void noTint();
 
 
+    ///\brief Set the font which will be used for drawing text
+    void textFont(DFont font);
+
+
     ///\brief Set target cap style to \p cap
     void strokeCap(CapStyle cap);
 
@@ -452,11 +458,23 @@ public:
     ///\brief Draw a quad from points \p p1, \p p2, \p p3 and \p p4
     void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4);
 
+
     ///\brief Save target pixels to a file as an image
     ///
     ///\p filename should not include the extenstion, as it will be added according to \p format.
     ///\return success
     bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG) const;
+
+
+    ///\brief Draw text at ( \p x, \p y )
+    ///
+    ///A font must be set with textFont() before drawing any text.
+    void text(const std::string& txt, float x, float y);
+
+
+    ///\copydoc text(const std::string&,float,float);
+    void text(const std::wstring& txt, float x, float y);
+
 
     GraphicsProperties getStyle();
 
@@ -564,6 +582,15 @@ private:
     int quad_shader_bpos_loc;
     int quad_shader_view_loc;
     int quad_shader_vpos_loc;
+
+    std::unique_ptr<Shader> text_shader;
+    int text_shader_offset_loc;
+    int text_shader_texture_loc;
+    int text_shader_posmode_loc;
+    int text_shader_fillColor_loc;
+    int text_shader_view_loc;
+    int text_shader_vpos_loc;
+    int text_shader_tpos_loc;
 };
 
 #endif

@@ -571,3 +571,40 @@ bool save(const std::string& filename, ImageFormat format)
 {
     return Application::GetInstance()->graphics_object().save(filename,format);
 }
+
+// Font and text
+
+DFont loadFont(const std::string& filename, int size, float row_spacing, float char_spacing)
+{
+    return DFont::load(filename,size,row_spacing,char_spacing);
+}
+
+DFont loadFont(const std::string& filename, const FontOptions& opt)
+{
+    return DFont::load(filename,opt);
+}
+
+void textFont(DFont font)
+{
+    Application::GetInstance()->graphics_object().textFont(font);
+}
+
+void text(const std::string& txt, float x, float y)
+{
+    Application::GetInstance()->graphics_object().text(txt,x,y);
+}
+
+void text(const std::string& txt, const DVector& p)
+{
+    text(txt,p.x,p.y);
+}
+
+void text(const std::wstring& txt, float x, float y)
+{
+    Application::GetInstance()->graphics_object().text(txt,x,y);
+}
+
+void text(const std::wstring& txt, const DVector& p)
+{
+    text(txt,p.x,p.y);
+}
