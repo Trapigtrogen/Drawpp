@@ -7,19 +7,19 @@ DVector::DVector(float n):x(n),y(n),z(n){}
 DVector::DVector(float x, float y):x(x),y(y),z(0){}
 DVector::DVector(float x, float y, float z):x(x),y(y),z(z){}
 
-DVector& DVector::set(float x, float y, float z)
+DVector& DVector::set(float _x, float _y, float _z)
 {
-    DVector::x = x;
-    DVector::y = y;
-    DVector::z = z;
+    x = _x;
+    y = _y;
+    z = _z;
     return *this;
 }
 
-DVector& DVector::set(float x, float y)
+DVector& DVector::set(float _x, float _y)
 {
-    DVector::x = x;
-    DVector::y = y;
-    DVector::z = 0;
+    x = _x;
+    y = _y;
+    z = 0;
     return *this;
 }
 
@@ -39,7 +39,7 @@ DVector DVector::random2D()
 DVector DVector::random2D(Random& gen)
 {
     DVector res;
-    return random2D(res,Application::GetInstance()->random);
+    return random2D(res,gen);
 }
 
 DVector& DVector::random2D(DVector& target)
@@ -63,7 +63,7 @@ DVector DVector::random3D()
 DVector DVector::random3D(Random& gen)
 {
     DVector res;
-    return random3D(res,Application::GetInstance()->random);
+    return random3D(res,gen);
 }
 
 DVector& DVector::random3D(DVector& target)
@@ -114,18 +114,18 @@ DVector& DVector::add(const DVector& v1)
     return *this;
 }
 
-DVector& DVector::add(float x, float y)
+DVector& DVector::add(float _x, float _y)
 {
-    DVector::x += x;
-    DVector::y += y;
+    x += _x;
+    y += _y;
     return *this;
 }
 
-DVector& DVector::add(float x, float y, float z)
+DVector& DVector::add(float _x, float _y, float _z)
 {
-    DVector::x += x;
-    DVector::y += y;
-    DVector::z += z;
+    x += _x;
+    y += _y;
+    z += _z;
     return *this;
 }
 
@@ -147,18 +147,18 @@ DVector& DVector::sub(const DVector& v1)
     return *this;
 }
 
-DVector& DVector::sub(float x, float y)
+DVector& DVector::sub(float _x, float _y)
 {
-    DVector::x -= x;
-    DVector::y -= y;
+    x -= _x;
+    y -= _y;
     return *this;
 }
 
-DVector& DVector::sub(float x, float y, float z)
+DVector& DVector::sub(float _x, float _y, float _z)
 {
-    DVector::x -= x;
-    DVector::y -= y;
-    DVector::z -= z;
+    x -= _x;
+    y -= _y;
+    z -= _z;
     return *this;
 }
 
@@ -226,9 +226,9 @@ float DVector::dot(const DVector& v1) const
     return dot(*this,v1);
 }
 
-float DVector::dot(float x, float y, float z) const
+float DVector::dot(float _x, float _y, float _z) const
 {
-    return DVector::x*x+DVector::y*y+DVector::z*z;
+    return x*_x+y*_y+z*_z;
 }
 
 float DVector::dot(const DVector& v1, const DVector& v2) 
@@ -325,11 +325,11 @@ DVector& DVector::lerp(const DVector& v1, float t)
     return *this;
 }
 
-DVector& DVector::lerp(float x, float y, float z, float t)
+DVector& DVector::lerp(float _x, float _y, float _z, float t)
 {
-    DVector::x = DVector::x + (x - DVector::x) * t;
-    DVector::y = DVector::y + (y - DVector::y) * t;
-    DVector::z = DVector::z + (z - DVector::z) * t;
+    x = x + (_x - x) * t;
+    y = y + (_y - y) * t;
+    z = z + (_z - z) * t;
     return *this;
 }
 

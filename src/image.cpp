@@ -1,23 +1,26 @@
 #include <image.hpp>
+#include <debug.hpp>
 #include <cassert>
+#include <glad/glad.h>
+
+#pragma warning(push,1)
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#pragma warning(pop)
+
 DImage::~DImage() 
 {
-	if(pixels != nullptr) stbi_image_free(pixels);
-	if(m_texture != -1) glDeleteTextures(1, &m_texture);
+	if(pixels != nullptr) free(pixels);
+	if(m_texture != 0) glDeleteTextures(1, &m_texture);
 }
 
-DImage::DImage() 
-{
-	pixels = new unsigned char[0];
-}
+DImage::DImage() = default;
 
-DImage::DImage(unsigned char* _pixels, GLuint _texture, int w, int h, int c)
+DImage::DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c)
 {
 	pixels = _pixels;
 	m_texture = _texture;
@@ -34,7 +37,7 @@ DImage::DImage(const DImage& other)
 
 	if(other.pixels != nullptr) 
 	{
-		pixels = new unsigned char[other.width * other.height * other.channels];
+		pixels = (unsigned char*) malloc(other.width * other.height * other.channels);
 		std::copy(other.pixels, other.pixels + other.width * other.height * other.channels, pixels);
 	}
 
@@ -51,7 +54,7 @@ DImage::DImage(DImage&& other)
 	channels = other.channels;
 
 	other.pixels = nullptr;
-	other.m_texture = -1;
+	other.m_texture = 0;
 	other.height = 0;
 	other.width = 0;
 	other.channels = 0;
@@ -65,10 +68,11 @@ DImage& DImage::operator=(DImage& other)
 		width = other.width;
 		channels = other.channels;
 
-		delete[] pixels; // Remove old pixels and copy new ones
+		free(pixels); // Remove old pixels and copy new ones
+        pixels = nullptr;
 		if(other.pixels != nullptr) 
 		{
-			pixels = new unsigned char[other.width * other.height * other.channels];
+			pixels = (unsigned char*) malloc(other.width * other.height * other.channels);
 			std::copy(other.pixels, other.pixels + other.width * other.height * other.channels, pixels);
 		}
 
@@ -83,7 +87,7 @@ DImage& DImage::operator=(DImage&& other)
 {
 	if(this != &other) 
 	{
-		delete[] pixels;
+		free(pixels);
 
 		pixels = other.pixels;
 		m_texture = other.m_texture;
@@ -92,7 +96,7 @@ DImage& DImage::operator=(DImage&& other)
 		channels = other.channels;
 
 		other.pixels = nullptr;
-		other.m_texture = -1;
+		other.m_texture = 0;
 		other.height = 0;
 		other.width = 0;
 		other.channels = 0;
@@ -118,6 +122,7 @@ DImage DImage::loadImage(const std::string& fileName)
 
 	int width, height, channels;
 	unsigned char* pixels = stbi_load(fileName.c_str(), &width, &height, &channels, 4);
+    channels = 4;
 	if(pixels == NULL)
 		dbg::error(("Image data not found: " + fileName).c_str());
 
@@ -128,9 +133,10 @@ DImage DImage::loadImage(const std::string& fileName)
 	return tmpImg;
 }
 
-GLuint DImage::generateTexture(int width, int height, unsigned char* pixels)
+
+unsigned int DImage::generateTexture(int width, int height, unsigned char* pixels)
 {
-	GLuint m_texture;
+	unsigned int m_texture;
 	glGenTextures(1, &m_texture);
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 

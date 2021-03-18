@@ -188,17 +188,12 @@ void timeReset()
 void fill(Color col) 
 {
     // DEBUG TODO: RGB/HSB Modes
-    Application::GetInstance()->graphics_object().fill(col.red(), col.green(), col.blue(), col.alpha());
+    Application::GetInstance()->graphics_object().fill(col);
 }
 
-void fill(int rgb)
+void fill(Color rgb, float alpha)
 {
-    Application::GetInstance()->graphics_object().fill(rgb);
-}
-
-void fill(int rgb, float alpha)
-{
-    Application::GetInstance()->graphics_object().fill(rgb);
+    Application::GetInstance()->graphics_object().fill(rgb,alpha);
 }
 
 void fill(float gray)
@@ -211,12 +206,12 @@ void fill(float gray, float alpha)
     Application::GetInstance()->graphics_object().fill(gray, alpha);
 }
 
-void fill(int v1, int v2, int v3)
+void fill(float v1, float v2, float v3)
 {
     Application::GetInstance()->graphics_object().fill(v1, v2, v3);
 }
 
-void fill(int v1, int v2, int v3, float alpha)
+void fill(float v1, float v2, float v3, float alpha)
 {
     Application::GetInstance()->graphics_object().fill(v1, v2, v3, alpha);
 }
@@ -252,9 +247,9 @@ void stroke(float v1, float v2, float v3, float alpha)
 }
 
 
-void background(Color col) 
-{
-    Application::GetInstance()->graphics_object().background(col.red(), col.green(), col.blue(), col.alpha());
+void background(Color col) {
+    // DEBUG TODO: RGB/HSB Modes
+    Application::GetInstance()->graphics_object().background(col);
 }
 
 void background(const char* hexCol) 
@@ -263,12 +258,7 @@ void background(const char* hexCol)
     Application::GetInstance()->graphics_object().background(col);
 }
 
-void background(int rgb)
-{
-    Application::GetInstance()->graphics_object().background(Color(rgb));
-}
-
-void background(int rgb, float alpha)
+void background(Color rgb, float alpha)
 {
     Application::GetInstance()->graphics_object().background(rgb, alpha);
 }
@@ -283,12 +273,12 @@ void background(float gray, float alpha)
     Application::GetInstance()->graphics_object().background(gray, alpha);
 }
 
-void background(int v1, int v2, int v3)
+void background(float v1, float v2, float v3)
 {
     Application::GetInstance()->graphics_object().background(v1, v2, v3);
 }
 
-void background(int v1, int v2, int v3, float alpha)
+void background(float v1, float v2, float v3, float alpha)
 {
     Application::GetInstance()->graphics_object().background(v1, v2, v3, alpha);
 }
@@ -616,4 +606,46 @@ void pushStyle()
 void popStyle()
 {
     Application::GetInstance()->graphics_object().popStyle();
+}
+
+bool save(const std::string& filename, ImageFormat format)
+{
+    return Application::GetInstance()->graphics_object().save(filename,format);
+}
+
+// Font and text
+
+DFont loadFont(const std::string& filename, int size, float row_spacing, float char_spacing)
+{
+    return DFont::load(filename,size,row_spacing,char_spacing);
+}
+
+DFont loadFont(const std::string& filename, const FontOptions& opt)
+{
+    return DFont::load(filename,opt);
+}
+
+void textFont(DFont font)
+{
+    Application::GetInstance()->graphics_object().textFont(font);
+}
+
+void text(const std::string& txt, float x, float y)
+{
+    Application::GetInstance()->graphics_object().text(txt,x,y);
+}
+
+void text(const std::string& txt, const DVector& p)
+{
+    text(txt,p.x,p.y);
+}
+
+void text(const std::wstring& txt, float x, float y)
+{
+    Application::GetInstance()->graphics_object().text(txt,x,y);
+}
+
+void text(const std::wstring& txt, const DVector& p)
+{
+    text(txt,p.x,p.y);
 }

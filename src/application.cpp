@@ -6,7 +6,12 @@
 #include <shader.hpp>
 #include <graphics.hpp>
 #include <time.hpp>
+#include <font.hpp>
 #include <chrono>
+
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 float quad_coords[] = 
 {
@@ -56,7 +61,7 @@ int vertpos_attrib = 0;
 int texc_attrib = 0;
 int tex_uniform = 0;
 
-void windowclose_cb(GLFWwindow* window)
+void windowclose_cb(GLFWwindow*)
 {
     Application::GetInstance()->exit();
 }
@@ -241,6 +246,8 @@ bool Application::init_application()
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    
+    DFont::init_lib();
 
     graphics->beginDraw();
     

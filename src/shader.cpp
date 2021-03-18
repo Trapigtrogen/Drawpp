@@ -1,5 +1,8 @@
 #include <shader.hpp>
+#include <debug.hpp>
+#include <glad/glad.h>
 #include <vector>
+#include <fstream> 
 
 Shader::~Shader()
 {
@@ -116,7 +119,7 @@ std::string Shader::readShaderFile(const char* filename)
     return content;
 }
 
-GLuint Shader::compileShader(unsigned int shader_type, const char* shader_source)
+unsigned int Shader::compileShader(unsigned int shader_type, const char* shader_source)
 {
     GLuint shader_id = glCreateShader(shader_type);
 

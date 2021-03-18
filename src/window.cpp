@@ -1,6 +1,10 @@
 #include <window.hpp>
 #include <debug.hpp>
 
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+#include <glad/glad.h>
+
 bool Window::Init()
 {
     if(glfwInit() == GLFW_FALSE)

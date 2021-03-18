@@ -1,16 +1,12 @@
 #ifndef DPP_IMAGE_H
 #define DPP_IMAGE_H
 
-#include <glad/glad.h>
-
 #include <string>
-#include <debug.hpp>
-#include <noise.hpp>
-
 
 ///  DImage is an object that textures can be loaded to from image or pixel set
 class DImage
 {
+    friend class DGraphics;
 public:
 	DImage();
 	~DImage();
@@ -38,9 +34,9 @@ public:
 	int channels = 0;
 
 private:
-	GLuint m_texture = 0;
-	DImage(unsigned char* _pixels, GLuint _texture, int w, int h, int c);
-	static GLuint generateTexture(int w, int h, unsigned char* pixels);
+	unsigned int m_texture = 0;
+	DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c);
+	static unsigned int generateTexture(int w, int h, unsigned char* pixels);
 };
 
 #endif

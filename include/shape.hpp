@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <algorithm>
 
 /// Shape objects are vector graphics that have GameObject like parent-child hierarcy. Also includes SVG loader
 class DShape
