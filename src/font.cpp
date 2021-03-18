@@ -11,7 +11,7 @@
 static const std::wstring default_charset = L" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXy"
 "YzZ1234567890!\"@#$%&/{([)]=}?\\+^'*-_.:,;<>|";
 
-std::shared_ptr<_DFont_impl> _DFont_impl::load_font(void* _face, const FontOptions& options)
+_DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
 {
     std::wstring charset = options.charset;
     charset.insert(charset.begin(),L'\0');
@@ -49,7 +49,7 @@ std::shared_ptr<_DFont_impl> _DFont_impl::load_font(void* _face, const FontOptio
     if (c_height > gl_mx_s || c_width > gl_mx_s)
     {
         dbg::error("Not enough texture space: font size = ", c_width,'x',c_height, ", max size = ", gl_mx_s);
-        return std::shared_ptr<_DFont_impl>();
+        return nullptr;
     }
 
     int chars_per_row = gl_mx_s / c_width;
@@ -91,7 +91,7 @@ std::shared_ptr<_DFont_impl> _DFont_impl::load_font(void* _face, const FontOptio
             if(c == L'\0')
             {
                 delete[] bitmap;
-                return std::shared_ptr<_DFont_impl>();
+                return nullptr;
             }
             data[c] = data[L'\0'];
             --cur_col;
@@ -199,9 +199,13 @@ std::shared_ptr<_DFont_impl> _DFont_impl::load_font(void* _face, const FontOptio
         cc.tx_height /= height;
     }
 
-    std::shared_ptr<_DFont_impl> result = std::shared_ptr<_DFont_impl>(new _DFont_impl());
+    _DFont_impl* result = new _DFont_impl;
 
     result->chars = std::move(data);
+    result->font_face = _face;
+    result->font_size = options.size;
+    result->row_spacing = options.row_spacing;
+    result->char_spacing = options.char_spacing;
     result->char_height = c_height;
     result->char_width = c_width;
     result->baseline = baseline;
@@ -469,10 +473,8 @@ void _DFont_impl::load_all_chars()
     unsigned long c = FT_Get_First_Char(face,&glyph_index);
     goto initial;
 
-    //for(int i = 0; i < charset.length(); ++i,++cur_col)
     while(true)
     {
-        //int glyph_index = FT_Get_Char_Index(face,c);
         c = FT_Get_Next_Char(face,c,&glyph_index);
 
         initial:
@@ -660,7 +662,7 @@ DFont DFont::load(const std::string& filename, const FontOptions& options)
         return DFont();
     }
 
-    std::shared_ptr<_DFont_impl> font_impl = _DFont_impl::load_font(face,options);
+    std::shared_ptr<_DFont_impl> font_impl = std::shared_ptr<_DFont_impl>(_DFont_impl::load_font(face,options));
     
     if(!font_impl)
     {
@@ -672,11 +674,7 @@ DFont DFont::load(const std::string& filename, const FontOptions& options)
 
     DFont result;
     result.impl = font_impl;
-
-    result.impl->row_spacing = options.row_spacing;
-    result.impl->char_spacing = options.char_spacing;
     result.impl->font_data = data;
-    result.impl->font_face = face;
 
     if(options.load_all)
     {
@@ -695,7 +693,33 @@ void DFont::init_lib()
 
 void DFont::ClearCharset(const std::wstring& new_charset)
 {
-    //replace impl with a new one with new charset
+    if(!valid())
+    {
+        dbg::error("Could not clear charset: the font is not in a valid state");
+        return;
+    }
+
+    FontOptions opt;
+
+    opt.char_spacing = impl->char_spacing;
+    opt.row_spacing = impl->row_spacing;
+    opt.size = impl->font_size;
+    opt.load_all = false;
+    opt.charset = new_charset;
+
+    _DFont_impl* nfont = _DFont_impl::load_font(impl->font_face,opt);
+
+    if(!nfont)
+    {
+        dbg::error("Could not clear charset");
+        return;
+    }
+
+    nfont->font_data = impl->font_data;
+    impl->font_data = nullptr;
+    impl->font_face = nullptr;
+
+    impl = std::shared_ptr<_DFont_impl>(nfont);
 }
 
 bool DFont::valid() const

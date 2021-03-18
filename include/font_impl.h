@@ -2,7 +2,7 @@
 #define DPP_FONT_IMPL_H
 
 #include <unordered_map>
-#include <memory>
+//#include <memory>
 
 struct _DFont_impl
 {
@@ -26,7 +26,7 @@ struct _DFont_impl
     
     //Load a font from a font face. This should be used to initialize a font
     //Returns nullptr on failure
-    static std::shared_ptr<_DFont_impl> load_font(void* face, const struct FontOptions& options);
+    static _DFont_impl* load_font(void* face, const struct FontOptions& options);
 
     //Initialize the freetype library
     static void init_lib();
@@ -43,6 +43,7 @@ struct _DFont_impl
     unsigned int texture_id = 0;
     std::unordered_map<wchar_t,Char> chars;
 
+    float font_size = 0;
     float char_height = 0;
     float char_width = 0;
     float baseline = 0;

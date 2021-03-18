@@ -56,8 +56,6 @@ public:
 
 
     ///\brief Unload all previously loaded characters, and load a new character set
-    ///
-    ///Not implemented yet.
     void ClearCharset(const std::wstring& new_charset);
 
 
