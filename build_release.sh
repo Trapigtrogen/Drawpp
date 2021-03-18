@@ -59,29 +59,22 @@ git submodule update --init --recursive
 cd ./release
 
 # CMake and build
-# TODO add build mode
 cmake .. -DDPP_BUILD_DOCS=$incDoc -DPP_BUILD_TESTS=OFF -DPP_BUILD_EXAMPLES=ON -DPP_BUILD_DEBUG=$debugBuild
 make || { echo "Build failed. Exiting.."; exit 1; }
 
 
-# CLEANUP:
-
-echo "Removing build files..."
+echo "Removing some build files..."
 # remove all loose files
 rm ./*.*
 rm ./Makefile
-# remove unnecessary folders
-rm -rf ./CMakeFiles
-rm -rf ./examples
-rm -rf ./tests
 
 echo "Copying headers over..."
 # copy include files
 cp -r ../include/ ./
-cp -r ../external/glad/include/ ./include/
-cp -r ../external/glfw/include/GLFW ./include/
-cp -r ../external/stb ./include/
-cp -r ../external/nanosvg ./include/
+#cp -r ../external/glad/include/ ./include/
+#cp -r ../external/glfw/include/GLFW ./include/
+#cp -r ../external/stb ./include/
+#cp -r ../external/nanosvg ./include/
 
 echo "Combining libraries..."
 # combine libraries
@@ -91,14 +84,37 @@ mkdir lib2 && cd lib2 && ar -x ../external/glfw/src/libglfw3.a
 cd ..
 ar -qc libOpenGLGraphicsLibrary.a ./lib1/*.o ./lib2/*.o
 
-echo "Copying tests and examples over..."
-# move tests and examples to main folder and release empty folders
+# move tests to main folder
 if [ -d ./bin/tests ] && [ $debugBuild = "ON" ]; then
+    echo "Copying tests over..."
     mv ./bin/tests ./
 fi
-if [ -d ./bin/examples ]; then
-mv ./bin/examples ./
+
+# EXAMPLES:
+if [ ! -d ./examples ]; then
+    mkdir examples
 fi
+
+cp -r ../examples ./
+
+# Create CMakeLists.txt file for examples
+echo "cmake_minimum_required(VERSION 3.13.4)">./examples/CMakeLists.txt
+echo "set(CMAKE_CXX_STANDARD 11)">>./examples/CMakeLists.txt
+echo "set(CMAKE_CXX_STANDARD_REQUIRED ON)">>./examples/CMakeLists.txt
+echo "project(GraphicsLib_Examples)">>./examples/CMakeLists.txt
+echo "link_libraries(\${CMAKE_SOURCE_DIR}/../OpenGLGraphicsLibrary.lib)">>./examples/CMakeLists.txt
+
+echo "include_directories(\${CMAKE_SOURCE_DIR}/../include)">>./examples/CMakeLists.txt
+echo "set(EXECUTABLE_OUTPUT_PATH \${CMAKE_BINARY_DIR}/bin)">>./examples/CMakeLists.txt
+#add example files here like this
+#echo add_executable(example_window window.cpp)>>./examples/CMakeLists.txt
+
+#for now, no examples
+echo "message(SEND_ERROR \"No examples!\")">>./examples/CMakeLists.txt
+
+
+
+# FINAL CLEANUP:
 
 echo "final cleanup..."
 rm -rf ./bin
@@ -110,5 +126,9 @@ rm -rf ./lib2
 # Remove library folders
 rm -rf ./lib
 rm -rf ./external
+
+# remove other unnecessary folders
+rm -rf ./CMakeFiles
+rm -rf ./tests
 
 echo "Done!"
