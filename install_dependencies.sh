@@ -38,20 +38,20 @@ echo "OS info: $OS $VER"
 
 # Install dependencies
 if [ "$OS" =  "Arch Linux" ]; then
-     echo "this is Arch -> using pacman"
+     echo "Using Pacman"
      manager="pacman"
 elif [ "$OS" =  "Debian" ]; then
-    echo "this is Debian -> using apt"
+    echo "Using Aptitude"
     manager="aptitude"
 elif [ "$OS" =  "Raspbian GNU/Linux" ]; then
-    echo "this is Raspbian -> using aptitude"
+    echo "Using aptitude"
     manager="aptitude"
 else
-    echo "This distro is not officially supported by us"
+    echo "This distro is not officially supported by us."
     echo "However if you know your distribution should work you can select packet manager manually:"
     while true
     do
-        read -r -p "1. aptitude\n2. pacman\n3. quit [1/2/q] " managerMan
+        read -r -p "1.Aptitude 2.Pacman 3.Quit [1/2/q] " managerMan
 
         case $managerMan in
         [1])
