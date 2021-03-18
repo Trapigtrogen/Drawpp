@@ -401,16 +401,7 @@ void background(const DImage& image)
 
 // Shapes
 
-void shape(DShape shape, int x, int  y)
-{
-    // Draw shape
-}
-
-void shape(DShape shape, int x, int y, int w, int h)
-{
-    // Draw shape
-}
-
+/*
 DShape loadShape(std::string filename) 
 {
     return DShape::loadShape(filename);
@@ -420,6 +411,7 @@ DShape createShape()
 {
     return DShape::createShape();
 }
+*/
 
 DShape createShape(DShape::ShapeType type)
 {

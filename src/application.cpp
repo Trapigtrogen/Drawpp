@@ -211,6 +211,7 @@ int Application::getWidth()
     {
         return window->properties.width;
     }
+    return -1;
 }
 
 int Application::getHeight()
@@ -219,6 +220,7 @@ int Application::getHeight()
     {
         return window->properties.height;
     }
+    return -1;
 }
 
 bool Application::graphicsExists()
