@@ -114,7 +114,7 @@ DGraphics::DGraphics(int width, int height)
 
 DGraphics::~DGraphics()
 {
-    if(buffer_id != -1)
+    if(buffer_id != static_cast<unsigned int>(-1))
     {
         glDeleteFramebuffers(1,&buffer_id);
     }

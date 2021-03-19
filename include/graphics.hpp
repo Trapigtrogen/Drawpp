@@ -514,7 +514,7 @@ private:
     std::stack<GraphicsProperties> property_stack;
 
     //Target framebuffer info
-    unsigned int buffer_id = -1;
+    unsigned int buffer_id = static_cast<unsigned int>(-1);
     unsigned int texture_id = 0;
     unsigned int buffer_width = 0;
     unsigned int buffer_height = 0;
