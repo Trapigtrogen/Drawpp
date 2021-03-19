@@ -27,8 +27,8 @@ void setup()
 
     // Set image mode and rect mode to centre, so that they
     // will be drawn on the proper spot
-    imageMode(CENTRE);
-    rectMode(CENTRE);
+    imageMode(CENTER);
+    rectMode(CENTER);
 
     // We want some stroke around the buttons, so set stroke to 5
     strokeWeight(5);

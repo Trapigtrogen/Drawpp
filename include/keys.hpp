@@ -123,9 +123,9 @@ enum KeyID
     VK_F24  = 0x139,
     VK_F25  = 0x13A,
 
-    LEFT    = 0xFF0,
-    RIGHT   = 0xFF1,
-    CENTER  = 0xFF2,
+    MOUSE_LEFT    = 0xFF0,
+    MOUSE_RIGHT   = 0xFF1,
+    MOUSE_CENTER  = 0xFF2,
     MOUSE_4 = 0xFF3,
     MOUSE_5 = 0xFF4,
     MOUSE_6 = 0xFF5,
