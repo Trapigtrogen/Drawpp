@@ -77,7 +77,7 @@ Application::Application(int width, int height, const char* title)
         dbg::error("Only one Application instance is allowed");
         ::exit(1);
     }
-    window = std::make_unique<Window>();
+    window = std::unique_ptr<Window>(new Window);
 
     window->properties.width_hint = width>-1?width:window->properties.width_hint;
     window->properties.height_hint = height>-1?height:window->properties.height_hint;
@@ -172,7 +172,7 @@ void Application::size(int width, int height)
         window->properties.width    = window->properties.width_hint;
         window->properties.height   = window->properties.height_hint;
 
-        graphics = std::make_unique<DGraphics>(window->properties.width,window->properties.height);
+        graphics = std::unique_ptr<DGraphics>(new DGraphics(window->properties.width,window->properties.height));
         
         glfwSetWindowSize(window->GetHandle(),width,height);
     }
@@ -242,7 +242,7 @@ bool Application::init_application()
     glfwSetCursorPosCallback(   window->GetHandle(),&Input::mousemov_callback);
     glfwSetWindowCloseCallback( window->GetHandle(),&windowclose_cb);
 
-    graphics = std::make_unique<DGraphics>(window->properties.width,window->properties.height);
+    graphics = std::unique_ptr<DGraphics>(new DGraphics(window->properties.width,window->properties.height));
     shader = new Shader(Shader::loadShadersFromString(quad_shader_v,quad_shader_f));
     vertpos_attrib = glGetAttribLocation(shader->getId(),"pos");
     texc_attrib = glGetAttribLocation(shader->getId(),"texpos");

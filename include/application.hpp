@@ -53,7 +53,7 @@ private:
     void draw_buffer();
     
     std::unique_ptr<Window> window;
-    std::unique_ptr<DGraphics> graphics = nullptr;
+    std::unique_ptr<DGraphics> graphics;
     bool quit_flag = false;
     bool started = false;
 

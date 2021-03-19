@@ -37,6 +37,8 @@ private:
 	unsigned int m_texture = 0;
 	DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c);
 	static unsigned int generateTexture(int w, int h, unsigned char* pixels);
+
+    static unsigned int max_texture_units;
 };
 
 #endif

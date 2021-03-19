@@ -57,7 +57,7 @@ struct _DFont_impl
     uint8_t* bitmap = nullptr;
 
     void* font_face;
-    void* font_data;
+    unsigned char* font_data;
 
     static void* lib_ptr;
 };

@@ -113,7 +113,7 @@ DGraphics::DGraphics(int width, int height)
 
 DGraphics::~DGraphics()
 {
-    if(buffer_id != -1)
+    if(buffer_id != static_cast<unsigned int>(-1))
     {
         glDeleteFramebuffers(1,&buffer_id);
     }
@@ -929,7 +929,7 @@ void DGraphics::quad(const DVector& p1, const DVector& p2, const DVector& p3, co
 
 bool DGraphics::save(const std::string& filename, ImageFormat format) const
 {
-    if(buffer_id == -1 || buffer_height == 0 || buffer_width == 0) return false;
+    if(buffer_id == static_cast<unsigned int>(-1) || buffer_height == 0 || buffer_width == 0) return false;
 
     unsigned char* data = new unsigned char[buffer_width*buffer_height*3];
     glBindTexture(GL_TEXTURE_2D,texture_id);

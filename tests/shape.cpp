@@ -14,7 +14,7 @@ void setup()
 
     // Empty images are not allowed and system should revert the load after loading svg with no elements
     printf("Loading empty image to shape4...\n");
-    shape4 = loadShape("assets/empty.svg"); 
+    //shape4 = loadShape("assets/empty.svg"); 
 
     // Normal image containing 1 element
     
@@ -23,7 +23,7 @@ void setup()
 
     // Normal image containing 2 elements with names/ids
     printf("Loading image (multiple elements) to shape3...\n\n");
-    shape3 = loadShape("assets/starstripe.svg");
+    //shape3 = loadShape("assets/starstripe.svg");
 
     // Naming
     shape1.name = "shape1";
@@ -65,7 +65,7 @@ void draw(float)
     //fill(0, 250, 181); // Set fill colour for next shape
     //rect(0, 0, 10, 10); // Draw. Origin point and size
     
-    shape(shape1, 10, 10, 80, 80);
+    //shape(shape1, 10, 10, 80, 80);
 }
 
 int main() 
