@@ -62,9 +62,10 @@ void setup()
 
 void draw(float) 
 {
-    background(0,0,0);
+    background(255,255,255);
     //shape(shape3);
-    shape(shape1, 100, 100, 40, 40);
+    strokeWeight(7);
+    shape(shape3, mouseX, mouseY, 1, 1);
 }
 
 int main() 

@@ -749,147 +749,6 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
     glDisableVertexAttribArray(image_shader_tpos_loc);
 }
 
-void DGraphics::shape(DShape& s, float x, float y, float w, float h)
-{
-    if(s.image == NULL)
-    {
-        for(int i = 0; i < s.getChildCount(); i++)
-        {
-            DShape* child = s.getChild(i);
-
-            if (child->image == NULL) { continue; }
-            for(NSVGpath* path = child->image->shapes->paths; path->next != NULL; path = path->next) 
-            {
-                shapeDrawPath(path->pts, path->npts, path->closed, 1.0f);
-                shapeDrawControlPts(path->pts, path->npts);
-            }
-        }
-    }
-    else
-    {
-        NSVGshape* shape = s.image->shapes;
-        for (NSVGpath* path = shape->paths; path != NULL; path = path->next) {
-            shapeDrawPath(path->pts, path->npts, path->closed, 1.0f);
-            shapeDrawControlPts(path->pts, path->npts);
-        }
-    }
-}
-
-void DGraphics::shapeDrawPath(float* pts, int npts, char closed, float tol)
-{
-    int i;
-    static unsigned char lineColor[4] = { 0,160,192,255 };
-
-    glBegin(GL_LINE_STRIP);
-    glColor4ubv(lineColor);
-    glVertex2f(pts[0], pts[1]);
-    for (i = 0; i < npts - 1; i += 3) {
-        float* p = &pts[i * 2];
-        shapeCubicBez(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], tol, 0);
-    }
-    if (closed) {
-        glVertex2f(pts[0], pts[1]);
-    }
-    glEnd();
-}
-
-float DGraphics::shapeDistPtSeg(float x, float y, float px, float py, float qx, float qy)
-{
-    float pqx, pqy, dx, dy, d, t;
-    pqx = qx - px;
-    pqy = qy - py;
-    dx = x - px;
-    dy = y - py;
-    d = pqx * pqx + pqy * pqy;
-    t = pqx * dx + pqy * dy;
-    if (d > 0) t /= d;
-    if (t < 0) t = 0;
-    else if (t > 1) t = 1;
-    dx = px + t * pqx - x;
-    dy = py + t * pqy - y;
-    return dx * dx + dy * dy;
-}
-
-void DGraphics::shapeDrawControlPts(float* pts, int npts)
-{
-    int i;
-    static unsigned char lineColor[4] = { 0,160,192,255 };
-    static unsigned char bgColor[4] = { 205,202,200,255 };
-
-
-    // Control lines
-    glColor4ubv(lineColor);
-    glBegin(GL_LINES);
-    for (i = 0; i < npts - 1; i += 3) {
-        float* p = &pts[i * 2];
-        glVertex2f(p[0], p[1]);
-        glVertex2f(p[2], p[3]);
-        glVertex2f(p[4], p[5]);
-        glVertex2f(p[6], p[7]);
-    }
-    glEnd();
-
-    // Points
-    glPointSize(6.0f);
-    glColor4ubv(lineColor);
-
-    glBegin(GL_POINTS);
-    glVertex2f(pts[0], pts[1]);
-    for (i = 0; i < npts - 1; i += 3) {
-        float* p = &pts[i * 2];
-        glVertex2f(p[6], p[7]);
-    }
-    glEnd();
-
-    // Points
-    glPointSize(3.0f);
-
-    glBegin(GL_POINTS);
-    glColor4ubv(bgColor);
-    glVertex2f(pts[0], pts[1]);
-    for (i = 0; i < npts - 1; i += 3) {
-        float* p = &pts[i * 2];
-        glColor4ubv(lineColor);
-        glVertex2f(p[2], p[3]);
-        glVertex2f(p[4], p[5]);
-        glColor4ubv(bgColor);
-        glVertex2f(p[6], p[7]);
-    }
-    glEnd();
-}
-
-void DGraphics::shapeCubicBez(float x1, float y1, float x2, float y2,
-    float x3, float y3, float x4, float y4,
-    float tol, int level)
-{
-    float x12, y12, x23, y23, x34, y34, x123, y123, x234, y234, x1234, y1234;
-    float d;
-
-    if (level > 12) return;
-
-    x12 = (x1 + x2) * 0.5f;
-    y12 = (y1 + y2) * 0.5f;
-    x23 = (x2 + x3) * 0.5f;
-    y23 = (y2 + y3) * 0.5f;
-    x34 = (x3 + x4) * 0.5f;
-    y34 = (y3 + y4) * 0.5f;
-    x123 = (x12 + x23) * 0.5f;
-    y123 = (y12 + y23) * 0.5f;
-    x234 = (x23 + x34) * 0.5f;
-    y234 = (y23 + y34) * 0.5f;
-    x1234 = (x123 + x234) * 0.5f;
-    y1234 = (y123 + y234) * 0.5f;
-
-    d = shapeDistPtSeg(x1234, y1234, x1, y1, x4, y4);
-    if (d > tol * tol) {
-        shapeCubicBez(x1, y1, x12, y12, x123, y123, x1234, y1234, tol, level + 1);
-        shapeCubicBez(x1234, y1234, x234, y234, x34, y34, x4, y4, tol, level + 1);
-    }
-    else {
-        glVertex2f(x4, y4);
-    }
-}
-
 void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
 {
     float t_abc = (y1-y2)*x3 + (x2-x1)*y3 + (x1*y2 - x2*y1);
@@ -1042,6 +901,210 @@ void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3,
 void DGraphics::quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4)
 {
     quad(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
+}
+
+void DGraphics::shape(DShape& s, float x, float y, float w, float h)
+{
+
+
+
+    // If loaded SVG had multiple objects, its objects has been split to new shapes. The Null image indicates that
+    if(s.image == NULL)
+    {
+        for(int i = 0; i < s.getChildCount(); i++)
+        {
+            DShape* child = s.getChild(i);
+            if (child->image == NULL) { continue; }
+
+            // DEBUG TEMP: Draw bounds
+            glColor4ub(0, 0, 0, 64);
+            glBegin(GL_LINE_LOOP);
+            glVertex2f(x, y);
+            glVertex2f(child->image->width * w, y);
+            glVertex2f(child->image->width * w, child->image->height * h);
+            glVertex2f(x, child->image->height * h);
+            glEnd();
+
+
+            for(NSVGpath* path = child->image->shapes->paths; path->next != NULL; path = path->next) 
+            {
+                for (int i = 0; i < path->npts; i+=6) {
+                    path->pts[i] += x;
+                    path->pts[i+1] += x;
+                    path->pts[i+2] += x;
+                    path->pts[i+3] += y;
+                    path->pts[i+4] += x;
+                    path->pts[i+5] += y;
+                }
+                shapeDrawPath(path->pts, path->npts, path->closed, 1.0f);
+                shapeDrawControlPts(path->pts, path->npts);
+            }
+        }
+    }
+    else
+    {
+        // DEBUG TEMP: Draw bounds
+        glColor4ub(0, 0, 0, 64);
+        glBegin(GL_LINE_LOOP);
+        glVertex2f(x, y);
+        glVertex2f(s.image->width * w, y);
+        glVertex2f(s.image->width * w, s.image->height * h);
+        glVertex2f(x, s.image->height * h);
+        glEnd();
+
+        NSVGshape* shape = s.image->shapes;
+        for (NSVGpath* path = shape->paths; path != NULL; path = path->next) {
+            for (int i = 0; i < path->npts; i += 6) {
+                path->pts[i] += x;
+                path->pts[i + 1] += x;
+                path->pts[i + 2] += x;
+                path->pts[i + 3] += y;
+                path->pts[i + 4] += x;
+                path->pts[i + 5] += y;
+            }
+            shapeDrawPath(path->pts, path->npts, path->closed, 1.0f);
+            shapeDrawControlPts(path->pts, path->npts);
+        }
+    }
+}
+
+void DGraphics::shapeDrawPath(float* pts, int npts, char closed, float tol)
+{
+    int i;
+    static unsigned char lineColor[4] = { 0,160,192,255 };
+
+    glBegin(GL_LINE_STRIP);
+    glColor4ubv(lineColor);
+    glVertex2f(pts[0], pts[1]);
+    for (i = 0; i < npts - 1; i += 3)
+    {
+        float* p = &pts[i * 2];
+        shapeCubicBez(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], tol, 0);
+    }
+
+    if (closed) 
+    {
+        glVertex2f(pts[0], pts[1]);
+    }
+    glEnd();
+
+    glUseProgram(quad_shader->getId());
+    glUniform1f(quad_shader_strokeWeight_loc, properties.use_stroke ? properties.stroke_weight : 0.0f);
+    glUniform1fv(quad_shader_bpos_loc, 12, quad_verts);
+    glUniform4f(quad_shader_strokeColor_loc, properties.stroke_color.red() / 255.0f,
+        properties.stroke_color.green() / 255.0f,
+        properties.stroke_color.blue() / 255.0f,
+        properties.stroke_color.alpha() / 255.0f);
+    glUniform4f(quad_shader_fillColor_loc, properties.fill_color.red() / 255.0f,
+        properties.fill_color.green() / 255.0f,
+        properties.fill_color.blue() / 255.0f,
+        properties.use_fill ? properties.fill_color.alpha() / 255.0f : 0.0f);
+    glUniformMatrix4fv(quad_shader_view_loc, 1, GL_FALSE, view_mat.values);
+
+    glEnableVertexAttribArray(quad_shader_vpos_loc);
+
+    glVertexAttribPointer(quad_shader_vpos_loc, 2, GL_FLOAT, false, 0, quad_verts);
+
+    glDrawArrays(GL_TRIANGLES, 0, npts);
+
+    glDisableVertexAttribArray(quad_shader_vpos_loc);
+}
+
+float DGraphics::shapeDistPtSeg(float x, float y, float px, float py, float qx, float qy)
+{
+    float pqx, pqy, dx, dy, d, t;
+    pqx = qx - px;
+    pqy = qy - py;
+    dx = x - px;
+    dy = y - py;
+    d = pqx * pqx + pqy * pqy;
+    t = pqx * dx + pqy * dy;
+    if (d > 0) t /= d;
+    if (t < 0) t = 0;
+    else if (t > 1) t = 1;
+    dx = px + t * pqx - x;
+    dy = py + t * pqy - y;
+    return dx * dx + dy * dy;
+}
+
+void DGraphics::shapeDrawControlPts(float* pts, int npts)
+{
+    int i;
+    static unsigned char lineColor[4] = { 0,160,192,255 };
+    static unsigned char bgColor[4] = { 205,202,200,255 };
+
+
+    // Control lines
+    glColor4ubv(lineColor);
+    glBegin(GL_LINES);
+    for (i = 0; i < npts - 1; i += 3) {
+        float* p = &pts[i * 2];
+        glVertex2f(p[0], p[1]);
+        glVertex2f(p[2], p[3]);
+        glVertex2f(p[4], p[5]);
+        glVertex2f(p[6], p[7]);
+    }
+    glEnd();
+
+    // Points
+    glPointSize(6.0f);
+    glColor4ubv(lineColor);
+
+    glBegin(GL_POINTS);
+    glVertex2f(pts[0], pts[1]);
+    for (i = 0; i < npts - 1; i += 3) {
+        float* p = &pts[i * 2];
+        glVertex2f(p[6], p[7]);
+    }
+    glEnd();
+
+    // Points
+    glPointSize(3.0f);
+
+    glBegin(GL_POINTS);
+    glColor4ubv(bgColor);
+    glVertex2f(pts[0], pts[1]);
+    for (i = 0; i < npts - 1; i += 3) {
+        float* p = &pts[i * 2];
+        glColor4ubv(lineColor);
+        glVertex2f(p[2], p[3]);
+        glVertex2f(p[4], p[5]);
+        glColor4ubv(bgColor);
+        glVertex2f(p[6], p[7]);
+    }
+    glEnd();
+}
+
+void DGraphics::shapeCubicBez(float x1, float y1, float x2, float y2,
+    float x3, float y3, float x4, float y4,
+    float tol, int level)
+{
+    float x12, y12, x23, y23, x34, y34, x123, y123, x234, y234, x1234, y1234;
+    float d;
+
+    if (level > 12) return;
+
+    x12 = (x1 + x2) * 0.5f;
+    y12 = (y1 + y2) * 0.5f;
+    x23 = (x2 + x3) * 0.5f;
+    y23 = (y2 + y3) * 0.5f;
+    x34 = (x3 + x4) * 0.5f;
+    y34 = (y3 + y4) * 0.5f;
+    x123 = (x12 + x23) * 0.5f;
+    y123 = (y12 + y23) * 0.5f;
+    x234 = (x23 + x34) * 0.5f;
+    y234 = (y23 + y34) * 0.5f;
+    x1234 = (x123 + x234) * 0.5f;
+    y1234 = (y123 + y234) * 0.5f;
+
+    d = shapeDistPtSeg(x1234, y1234, x1, y1, x4, y4);
+    if (d > tol * tol) {
+        shapeCubicBez(x1, y1, x12, y12, x123, y123, x1234, y1234, tol, level + 1);
+        shapeCubicBez(x1234, y1234, x234, y234, x34, y34, x4, y4, tol, level + 1);
+    }
+    else {
+        glVertex2f(x4, y4);
+    }
 }
 
 bool DGraphics::save(const std::string& filename, ImageFormat format) const
