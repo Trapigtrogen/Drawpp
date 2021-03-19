@@ -25,7 +25,7 @@
 
 unsigned int get_max_units()
 {
-    int value;
+    int value = 0;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&value);
     return value;
 }
@@ -36,10 +36,7 @@ DImage::~DImage()
 	if(m_texture != 0) glDeleteTextures(1, &m_texture);
 }
 
-DImage::DImage()
-{
-    max_texture_units = get_max_units();
-}
+DImage::DImage() = default;
 
 DImage::DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c)
 {
