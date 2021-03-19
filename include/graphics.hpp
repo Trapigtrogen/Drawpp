@@ -502,7 +502,7 @@ private:
     GraphicsProperties properties;
 
     //is this needed?
-    //DMatrix4 transform_mat = DMatrix4::identity();
+    DMatrix4 transform_mat = DMatrix4::identity();
 
     //View transformations
     DMatrix4 view_mat;
@@ -527,7 +527,7 @@ private:
     int ellipse_shader_strokeWeight_loc;
     int ellipse_shader_strokeColor_loc;
     int ellipse_shader_fillColor_loc;
-    //int ellipse_shader_transform_loc;
+    int ellipse_shader_transform_loc;
     int ellipse_shader_view_loc;
     int ellipse_shader_posmode_loc;
     int ellipse_shader_vpos_loc;
@@ -539,7 +539,7 @@ private:
     int rect_shader_strokeWeight_loc;
     int rect_shader_strokeColor_loc;
     int rect_shader_fillColor_loc;
-    //int rect_shader_transform_loc;
+    int rect_shader_transform_loc;
     int rect_shader_view_loc;
     int rect_shader_posmode_loc;
     int rect_shader_radii_loc;
@@ -552,6 +552,7 @@ private:
     int triangle_shader_strokeColor_loc;
     int triangle_shader_fillColor_loc;
     int triangle_shader_bpos_loc;
+    int triangle_shader_transform_loc;
     int triangle_shader_view_loc;
     int triangle_shader_vpos_loc;
 
@@ -560,6 +561,7 @@ private:
     int line_shader_points_loc;
     int line_shader_strokeWeight_loc;
     int line_shader_strokeColor_loc;
+    int line_shader_transform_loc;
     int line_shader_view_loc;
     int line_shader_cap_loc;
     int line_shader_vpos_loc;
@@ -570,6 +572,7 @@ private:
     int image_shader_offset_loc;
     int image_shader_posmode_loc;
     int image_shader_tex_loc;
+    int image_shader_transform_loc;
     int image_shader_view_loc;
     int image_shader_vpos_loc;
     int image_shader_tpos_loc;
@@ -580,14 +583,16 @@ private:
     int quad_shader_strokeColor_loc;
     int quad_shader_fillColor_loc;
     int quad_shader_bpos_loc;
+    int quad_shader_transform_loc;
     int quad_shader_view_loc;
     int quad_shader_vpos_loc;
 
+    //Shader used to draw text
     std::unique_ptr<Shader> text_shader;
-    int text_shader_offset_loc;
     int text_shader_texture_loc;
     int text_shader_posmode_loc;
     int text_shader_fillColor_loc;
+    int text_shader_transform_loc;
     int text_shader_view_loc;
     int text_shader_vpos_loc;
     int text_shader_tpos_loc;

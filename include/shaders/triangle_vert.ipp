@@ -1,6 +1,7 @@
 static const char* triangle_shader_v = R"(
     #version 100
     precision mediump float;
+    uniform mat4 transform;
     uniform mat4 view;
     attribute vec2 pos;
     varying vec2 vpos;
@@ -8,6 +9,6 @@ static const char* triangle_shader_v = R"(
     void main()
     {
         vpos = pos;
-        gl_Position = vec4(pos,0.0,1.0) * view;
+        gl_Position = vec4(pos,0.0,1.0) * (transform * view);
     }
 )";
