@@ -14,6 +14,7 @@ add_executable(example_buttons example_buttons.cpp)
 
 if (MSVC)
     add_dependencies(example_de-jong-attractor ${PROJECT_NAME})
+    add_dependencies(example_buttons ${PROJECT_NAME})
     
     set_property(TARGET example_de-jong-attractor
                         example_buttons
