@@ -2,56 +2,38 @@
 #include <debug.hpp>
 #include <glad/glad.h>
 #include <vector>
-#include <fstream> 
-
-Shader::~Shader()
-{
-    //if(id >= 0) glDeleteProgram(id);
-}
+#include <fstream>
+#include <debug.hpp>
 
 // Use default
-Shader::Shader()
-{
-    id = -1;
-}
+Shader::Shader() = default;
 
 Shader::Shader(const Shader& other)
 {
-    id = other.id;
-
     shaderVSrc = other.shaderVSrc;
-    vertexShader = other.vertexShader;
-
     shaderFSrc = other.shaderFSrc;
-    fragmentShader = other.fragmentShader;
+    createShaderProgram();
 }
 
 Shader::Shader(Shader&& other) 
 {
-    if(id >= 0) glDeleteProgram(id);
+    if(id > 0) glDeleteProgram(id);
     id = other.id;
-    other.id = -1;
+    other.id = 0;
 
     shaderVSrc = other.shaderVSrc;
-    vertexShader = other.vertexShader;
-
     shaderFSrc = other.shaderFSrc;
-    fragmentShader = other.fragmentShader;
 }
 
 Shader& Shader::operator=(Shader&& other)
 {
-    if(this != &other)
-    {
-        if(id >= 0) glDeleteProgram(id);
+    if(this != &other) {
+        if(id > 0) glDeleteProgram(id);
         id = other.id;
-        other.id = -1;
+        other.id = 0;
 
         shaderVSrc = other.shaderVSrc;
-        vertexShader = other.vertexShader;
-
         shaderFSrc = other.shaderFSrc;
-        fragmentShader = other.fragmentShader;
     }
 
     return *this;
@@ -96,6 +78,11 @@ Shader Shader::loadShadersDefault()
     return tmpShader;
 }
 
+Shader::~Shader()
+{
+    if(id > 0) glDeleteProgram(id);
+}
+
 std::string Shader::readShaderFile(const char* filename)
 {
     std::string content;
@@ -133,10 +120,14 @@ unsigned int Shader::compileShader(unsigned int shader_type, const char* shader_
 
     // Check if shader compile was successfull
     glGetShaderiv(shader_id, GL_COMPILE_STATUS, &result);
-    glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &logLength);
-    std::vector<GLchar> vertShaderError((logLength > 1) ? logLength : 1);
-    glGetShaderInfoLog(shader_id, logLength, NULL, &vertShaderError[0]);
-    std::cout << &vertShaderError[0] << std::endl;
+
+    if(result == GL_FALSE)
+    {
+        glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &logLength);
+        std::vector<GLchar> vertShaderError(logLength+1);
+        glGetShaderInfoLog(shader_id, logLength, NULL, vertShaderError.data());
+        dbg::error(vertShaderError.data());
+    }
 
     return shader_id;
 }
@@ -146,14 +137,13 @@ void Shader::createShaderProgram()
     id = glCreateProgram();
 
     // Compile shaders
-    vertexShader = compileShader(GL_VERTEX_SHADER, shaderVSrc.c_str());
-    fragmentShader = compileShader(GL_FRAGMENT_SHADER, shaderFSrc.c_str());
+    GLuint vertexShader = compileShader(GL_VERTEX_SHADER, shaderVSrc.c_str());
+    GLuint fragmentShader = compileShader(GL_FRAGMENT_SHADER, shaderFSrc.c_str());
 
     glAttachShader(id, vertexShader);
     glAttachShader(id, fragmentShader);
 
     glLinkProgram(id);
-    glValidateProgram(id);
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);

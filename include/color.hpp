@@ -6,6 +6,7 @@
 /// Color API
 class Color 
 {
+    friend class DGraphics;
 public:
     ///\brief Create an empty Color object
     ///
@@ -22,7 +23,7 @@ public:
 
     ///\brief Create a Color object using string containing the hex value
     ///
-    /// Correct formats are #RGB, #RGBA, #RRGGBB and #RRGGBBAA and they must include the '#'
+    /// Correct formats are \#RGB, \#RGBA, \#RRGGBB and \#RRGGBBAA and they must include the '#'
     Color(std::string hexCol);
 
     Color(const Color&) = default;

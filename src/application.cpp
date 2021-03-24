@@ -6,6 +6,7 @@
 #include <shader.hpp>
 #include <graphics.hpp>
 #include <time.hpp>
+#include <font.hpp>
 #include <chrono>
 
 #define GLFW_INCLUDE_NONE
@@ -76,12 +77,14 @@ Application::Application(int width, int height, const char* title)
         dbg::error("Only one Application instance is allowed");
         ::exit(1);
     }
-    window = new Window();
+    window = std::unique_ptr<Window>(new Window);
 
     window->properties.width_hint = width>-1?width:window->properties.width_hint;
     window->properties.height_hint = height>-1?height:window->properties.height_hint;
     window->properties.title = title;
 }
+
+Application::~Application() = default;
 
 int Application::run(std::function<void(float)> draw,
                       std::function<void()> setup,
@@ -102,6 +105,7 @@ int Application::run(std::function<void(float)> draw,
 
     while(!quit_flag)
     {
+        Input::setPrevMouse();
         glfwPollEvents();
 
         draw_func(std::chrono::duration<float>(std::chrono::system_clock::now()-st).count());
@@ -168,8 +172,7 @@ void Application::size(int width, int height)
         window->properties.width    = window->properties.width_hint;
         window->properties.height   = window->properties.height_hint;
 
-        delete graphics;
-        graphics = new DGraphics(window->properties.width,window->properties.height);
+        graphics = std::unique_ptr<DGraphics>(new DGraphics(window->properties.width,window->properties.height));
         
         glfwSetWindowSize(window->GetHandle(),width,height);
     }
@@ -208,6 +211,7 @@ int Application::getWidth()
     {
         return window->properties.width;
     }
+    return -1;
 }
 
 int Application::getHeight()
@@ -216,6 +220,7 @@ int Application::getHeight()
     {
         return window->properties.height;
     }
+    return -1;
 }
 
 bool Application::graphicsExists()
@@ -237,7 +242,7 @@ bool Application::init_application()
     glfwSetCursorPosCallback(   window->GetHandle(),&Input::mousemov_callback);
     glfwSetWindowCloseCallback( window->GetHandle(),&windowclose_cb);
 
-    graphics = new DGraphics(window->properties.width,window->properties.height);
+    graphics = std::unique_ptr<DGraphics>(new DGraphics(window->properties.width,window->properties.height));
     shader = new Shader(Shader::loadShadersFromString(quad_shader_v,quad_shader_f));
     vertpos_attrib = glGetAttribLocation(shader->getId(),"pos");
     texc_attrib = glGetAttribLocation(shader->getId(),"texpos");
@@ -245,6 +250,8 @@ bool Application::init_application()
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    
+    DFont::init_lib();
 
     graphics->beginDraw();
     
@@ -267,8 +274,8 @@ void Application::cleanup_application()
 
     window->Cleanup();
     
-    delete window;
-    delete graphics;
+    window.reset();
+    graphics.reset();
 }
 
 Application* Application::GetInstance()

@@ -39,7 +39,7 @@ DVector DVector::random2D()
 DVector DVector::random2D(Random& gen)
 {
     DVector res;
-    return random2D(res,Application::GetInstance()->random);
+    return random2D(res,gen);
 }
 
 DVector& DVector::random2D(DVector& target)
@@ -63,7 +63,7 @@ DVector DVector::random3D()
 DVector DVector::random3D(Random& gen)
 {
     DVector res;
-    return random3D(res,Application::GetInstance()->random);
+    return random3D(res,gen);
 }
 
 DVector& DVector::random3D(DVector& target)

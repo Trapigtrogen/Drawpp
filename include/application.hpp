@@ -3,12 +3,9 @@
 
 #include <cstdint>
 #include <functional>
+#include <memory>
 #include <random.hpp>
 #include <noise.hpp>
-#include <image.hpp>
-#include <shader.hpp>
-#include <shape.hpp>
-#include <color.hpp>
 
 class Window;
 class DGraphics;
@@ -18,6 +15,8 @@ class Application
 {
 public:
     Application(int width = 200, int height = 200, const char* title = "Title");
+
+    ~Application();
 
     int run(std::function<void(float)> draw, std::function<void()> setup = [](){}, std::function<void()> cleanup = [](){});
 
@@ -53,8 +52,8 @@ private:
 
     void draw_buffer();
     
-    Window* window = nullptr;
-    DGraphics* graphics = nullptr;
+    std::unique_ptr<Window> window;
+    std::unique_ptr<DGraphics> graphics;
     bool quit_flag = false;
     bool started = false;
 

@@ -6,6 +6,8 @@
 #include <shader.hpp>
 #include <color.hpp>
 #include <graphics.hpp>
+#include <shape.hpp>
+#include <font.hpp>
 
 void exit();
 
@@ -16,8 +18,8 @@ void setTitle(const char* title);
 
 // DShape
 // Draws given shape
-void shape(DShape shape, int x,int  y);
-void shape(DShape shape, int x, int y, int w, int h);
+//void shape(DShape shape, int x,int  y);
+//void shape(DShape shape, int x, int y, int w, int h);
 DShape loadShape(std::string filename);
 DShape createShape();
 DShape createShape(DShape::ShapeType type);
@@ -48,6 +50,16 @@ void box(int size);
 void box(int width, int height, int dimension);
 void sphere(int radius);
 
+// Font and text
+
+DFont loadFont(const std::string& filename, int size, float row_spacing = 0.0f, float char_spacing = 0.0f);
+DFont loadFont(const std::string& filename, const FontOptions& opt);
+void textFont(DFont font);
+void text(const std::string& txt, float x, float y);
+void text(const std::string& txt, const DVector& p);
+void text(const std::wstring& txt, float x, float y);
+void text(const std::wstring& txt, const DVector& p);
+
 void rectMode(PosMode m);
 void ellipseMode(PosMode m);
 void imageMode(PosMode m);
@@ -60,13 +72,12 @@ void noTint();
 
 // Color
 void fill(Color col);
-void fill(int rgb);
-void fill(int rgb, float alpha);
+void fill(Color rgb, float alpha);
 void fill(std::string hexCol);
 void fill(float gray);
 void fill(float gray, float alpha);
-void fill(int v1, int v2, int v3);
-void fill(int v1, int v2, int v3, float alpha);
+void fill(float v1, float v2, float v3);
+void fill(float v1, float v2, float v3, float alpha);
 
 void stroke(Color rgba);
 void stroke(Color rgb, float alpha);
@@ -77,13 +88,12 @@ void stroke(float v1, float v2, float v3);
 void stroke(float v1, float v2, float v3, float alpha);
 
 void background(Color col);
+void background(Color rgb, float alpha);
 void background(const char* hexCol);
-void background(int rgb);
-void background(int rgb, float alpha);
 void background(float gray);
 void background(float gray, float alpha);
-void background(int v1, int v2, int v3);
-void background(int v1, int v2, int v3, float alpha);
+void background(float v1, float v2, float v3);
+void background(float v1, float v2, float v3, float alpha);
 
 void colorMode(ColorMode mode);
 void colorMode(ColorMode mode, float max);
@@ -143,6 +153,8 @@ extern int mouseX;
 extern int mouseY;
 extern int pmouseX;
 extern int pmouseY;
+extern int pfmouseX;
+extern int pfmouseY;
 
 // Random
 void randomSeed(int seed);
@@ -178,5 +190,8 @@ int day();
 int month();
 int year();
 void timeReset();
+
+// Save screenshot
+bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG);
 
 #endif

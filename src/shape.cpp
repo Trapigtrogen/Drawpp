@@ -2,7 +2,11 @@
 #include <debug.hpp>
 #include <algorithm>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#else
 #pragma warning(push,1)
+#endif
 
 #define NANOSVG_ALL_COLOR_KEYWORDS	// Include full list of color keywords.
 #define NANOSVG_IMPLEMENTATION		// Expands implementation
@@ -10,7 +14,11 @@
 #define NANOSVGRAST_IMPLEMENTATION
 #include "nanosvgrast.h"
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#else
 #pragma warning(pop)
+#endif
 
 DShape::~DShape()
 {
@@ -190,12 +198,12 @@ DShape* DShape::getChild(int idx)
 	return *it;
 }
 
-DShape* DShape::getChild(std::string name)
+DShape* DShape::getChild(std::string _name)
 {
 	
 	for(std::vector<DShape*>::iterator it = children.begin(); it != children.end(); ++it)
 	{
-		if((*it)->name == name){ return *it; }
+		if((*it)->name == _name){ return *it; }
 	}
 	dbg::error("No child found with given name");
 	return nullptr;
@@ -223,6 +231,7 @@ DShape DShape::createShape()
 
 DShape DShape::createShape(DShape::ShapeType type)
 {
+    (void)type;
 	return DShape(); // DEBUG TEMP
 }
 

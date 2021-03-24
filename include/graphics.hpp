@@ -2,13 +2,15 @@
 #define DPP_GRAPHICS_H
 
 #include <stack>
+#include <string>
 #include <matrix4.hpp>
 #include <color.hpp>
+#include <font.hpp>
 #include <memory>
 
 class DImage;
 class Shader;
-class DVector;
+struct DVector;
 
 enum ColorMode
 {
@@ -24,9 +26,17 @@ enum CapStyle
 
 enum PosMode
 {
-    CENTRE = 0,
+    CENTER = 0,
     CORNER = 1,
     //CORNERS,
+};
+
+enum ImageFormat
+{
+    PNG,
+    JPG,
+    TGA,
+    BMP,
 };
 
 struct GraphicsProperties
@@ -46,14 +56,17 @@ struct GraphicsProperties
     Color fill_color = {255,255,255};
     CapStyle strokecap = CapStyle::ROUND;
     PosMode rectmode = PosMode::CORNER;
-    PosMode ellipsemode = PosMode::CENTRE;
+    PosMode ellipsemode = PosMode::CENTER;
     PosMode imagemode = PosMode::CORNER;
+    DFont font;
 };
 
 class DGraphics
 {
     friend class Application;
 public:
+
+    ~DGraphics();
 
     ///\brief Create a DGraphics object with a \p width by \p height frame
     DGraphics(int width, int height);
@@ -82,7 +95,7 @@ public:
 
 
     ///\brief Set fill color to \p grey
-    void fill(float grey);
+    void fill(float grey );
 
     ///\brief Set fill color to \p grey with \p alpha
     void fill(float grey, float alpha);
@@ -111,7 +124,7 @@ public:
 
 
     ///\brief Fill target with \p grey color
-    void background(float gray);
+    void background(float gray );
 
 
     ///\brief Fill target with \p grey color using \p alpha
@@ -145,7 +158,7 @@ public:
 
 
     ///\brief Set stroke color to \p grey
-    void stroke(float gray);
+    void stroke(float gray );
 
 
     ///\brief Set stroke color to \p grey with \p alpha
@@ -190,7 +203,7 @@ public:
 
     //void tint(Color rgba);
     //void tint(Color rgb, float alpha);
-    //void tint(float grey);
+    //void tint(float grey );
     //void tint(float grey, float alpha);
 
     //affected by colorMode
@@ -199,7 +212,7 @@ public:
 
 
     ///\brief Get a color from \p grey
-    Color color(float grey);
+    Color color(float grey );
 
 
     ///\brief Get a color from \p grey with \p alpha
@@ -246,10 +259,6 @@ public:
     float brightness(Color c);
 
 
-    //void image(DImage* img, float x, float y);
-    //void image(DImage* img, float x, float y, float w, float h);
-
-
     ///\brief Disable fill
     ///
     ///Any drawing functions which use fill color, will draw transparent fill.
@@ -268,6 +277,10 @@ public:
     ///
     ///To enable tint again, call tint().
     void noTint();
+
+
+    ///\brief Set the font which will be used for drawing text
+    void textFont(DFont font);
 
 
     ///\brief Set target cap style to \p cap
@@ -305,7 +318,7 @@ public:
 
 
     ///\brief Translate view by \p x and \p y
-    void translate(float x, float y);
+    void translate(float x, float y );
 
 
     ///\brief Translate view by \p x, \p y and \p z
@@ -337,7 +350,7 @@ public:
 
 
     ///\brief Scale view by \p x and \p y
-    void scale(float x, float y);
+    void scale(float x, float y );
 
 
     
@@ -374,27 +387,27 @@ public:
     void popStyle();
 
 
-    ///\brief Draw an ellipse at ( \p x, \p y), with size ( \p sizex, \p sizey)
-    void ellipse(float x, float y, float sizex, float sizey);
+    ///\brief Draw an ellipse at ( \p x, \p y ), with size ( \p sizex, \p sizey )
+    void ellipse(float x, float y, float sizex, float sizey );
 
 
-    ///\brief Draw a circle at ( \p x, \p y), with radius \p size
+    ///\brief Draw a circle at ( \p x, \p y ), with radius \p size
     void circle(float x, float y, float size);
 
 
-    ///\brief Draw a rectangle at ( \p x, \p y), with size ( \p sizex, \p sizey)
-    void rect(float x, float y, float sizex, float sizey);
+    ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey )
+    void rect(float x, float y, float sizex, float sizey );
 
 
-    ///\brief Draw a rectangle at ( \p x, \p y), with size ( \p sizex, \p sizey), and with corners rounded by \p radii
+    ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey ), and with corners rounded by \p radii
     void rect(float x, float y, float sizex, float sizey, float radii);
 
 
-    ///\brief Draw a rectangle at ( \p x, \p y), with size ( \p sizex, \p sizey), and with corners rounded by \p tl, \p tr, \p br and \p bl
+    ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey ), and with corners rounded by \p tl, \p tr, \p br and \p bl
     void rect(float x, float y, float sizex, float sizey, float tl, float tr, float br, float bl);
 
 
-    ///\brief Draw a square at ( \p x, \p y), with \p size
+    ///\brief Draw a square at ( \p x, \p y ), with \p size
     void square(float x, float y, float size);
 
 
@@ -418,10 +431,10 @@ public:
     void line(const DVector& p1,const DVector& p2);
 
 
-    ///\brief Draw a point at ( \p x, \p y)
+    ///\brief Draw a point at ( \p x, \p y )
     ///
     ///Target cap style must be ROUND for the point to be visible.
-    void point(float x, float y);
+    void point(float x, float y );
 
 
     ///\brief Draw a point at \p p
@@ -430,16 +443,38 @@ public:
     void point(const DVector& p);
 
 
-    ///\brief Draw image \p img at ( \p x, \p y)
-    void image(const DImage& img, float x, float y);
+    ///\brief Draw image \p img at ( \p x, \p y )
+    void image(const DImage& img, float x, float y );
 
 
-    ///\brief Draw image \p img at ( \p x, \p y), resized to ( \p w, \p h)
+    ///\brief Draw image \p img at ( \p x, \p y ), resized to ( \p w, \p h)
     void image(const DImage& img, float x, float y, float w, float h);
 
 
+    ///\brief Draw a quad from points ( \p x1, \p y1 ), ( \p x2, \p y2 ), ( \p x3, \p y3 ) and ( \p x4, \p y4 )
     void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
+
+
+    ///\brief Draw a quad from points \p p1, \p p2, \p p3 and \p p4
     void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4);
+
+
+    ///\brief Save target pixels to a file as an image
+    ///
+    ///\p filename should not include the extenstion, as it will be added according to \p format.
+    ///\return success
+    bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG) const;
+
+
+    ///\brief Draw text at ( \p x, \p y )
+    ///
+    ///A font must be set with textFont() before drawing any text.
+    void text(const std::string& txt, float x, float y);
+
+
+    ///\copydoc text(const std::string&,float,float);
+    void text(const std::wstring& txt, float x, float y);
+
 
     GraphicsProperties getStyle();
 
@@ -479,13 +514,12 @@ private:
     std::stack<GraphicsProperties> property_stack;
 
     //Target framebuffer info
-    unsigned int render_id = -1;
     unsigned int buffer_id = -1;
-    unsigned int texture_id = -1;
+    unsigned int texture_id = 0;
     unsigned int buffer_width = 0;
     unsigned int buffer_height = 0;
-    int type;
-    int format;
+    int type = -1;
+    int format = -1;
 
     //Shader used to draw ellipses
     std::unique_ptr<Shader> ellipse_shader;
@@ -549,8 +583,14 @@ private:
     int quad_shader_view_loc;
     int quad_shader_vpos_loc;
 
-    //static unsigned int current_bound_buffer;
-    //static unsigned int previous_bound_buffer;
+    std::unique_ptr<Shader> text_shader;
+    int text_shader_offset_loc;
+    int text_shader_texture_loc;
+    int text_shader_posmode_loc;
+    int text_shader_fillColor_loc;
+    int text_shader_view_loc;
+    int text_shader_vpos_loc;
+    int text_shader_tpos_loc;
 };
 
 #endif
