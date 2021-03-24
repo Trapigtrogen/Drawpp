@@ -77,18 +77,15 @@ mkdir include
 
 cp ../include/application.hpp ./include/
 cp ../include/color.hpp ./include/
-cp ../include/debug.hpp ./include/
 cp ../include/drawpp.hpp ./include/
 cp ../include/graphics.hpp ./include/
 cp ../include/image.hpp ./include/
-cp ../include/input.hpp ./include/
 cp ../include/keys.hpp ./include/
 cp ../include/matrix4.hpp ./include/
 cp ../include/noise.hpp ./include/
 cp ../include/random.hpp ./include/
 cp ../include/shader.hpp ./include/
 cp ../include/shape.hpp ./include/
-cp ../include/time.hpp ./include/
 cp ../include/vector3.hpp ./include/
 cp ../include/font.hpp ./include/
 
