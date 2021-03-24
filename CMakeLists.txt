@@ -97,3 +97,11 @@ endif (GEN_DOCS)
 
 add_subdirectory(tests)
 add_subdirectory(examples)
+
+# Fix bug in Linux where the HAVE_FCNTL_H is not defined even when it's found in the system
+if (UNIX)
+    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/external/freetype/builds/unix/ftsystem.c)
+        execute_process(COMMAND git submodule update --init --recursive)
+    endif ()
+    execute_process(COMMAND sed -i"s/#ifdef HAVE_FCNTL_H/#if 1/g" ${CMAKE_SOURCE_DIR}/external/freetype/builds/unix/ftsystem.c)
+endif (UNIX)
