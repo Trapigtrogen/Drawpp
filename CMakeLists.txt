@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.13.4)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(OpenGLGraphicsLibrary)
+project(Drawpp)
 
 option(DPP_BUILD_DEBUG "Debug build" OFF)
 option(DPP_BUILD_DOCS "Generate documentation with Doxygen" ON)

@@ -91,13 +91,13 @@ cp ../include/font.hpp ./include/
 
 echo "Combining libraries..."
 # combine libraries
-mkdir lib1 && cd lib1 && ar -x ../lib/libOpenGLGraphicsLibrary.a
+mkdir lib1 && cd lib1 && ar -x ../lib/libDrawpp.a
 cd ..
 mkdir lib2 && cd lib2 && ar -x ../external/glfw/src/libglfw3.a
 cd ..
 mkdir lib3 && cd lib3 && ar -x ../external/freetype/libfreetype.a
 cd ..
-ar -qc libOpenGLGraphicsLibrary.a ./lib1/*.o ./lib2/*.o ./lib3/*.o
+ar -qc libDrawpp.a ./lib1/*.o ./lib2/*.o ./lib3/*.o
 
 # move tests to main folder
 if [ -d ./bin/tests ] && [ $debugBuild = "ON" ]; then
@@ -117,7 +117,7 @@ echo "cmake_minimum_required(VERSION 3.13.4)">./examples/CMakeLists.txt
 echo "set(CMAKE_CXX_STANDARD 11)">>./examples/CMakeLists.txt
 echo "set(CMAKE_CXX_STANDARD_REQUIRED ON)">>./examples/CMakeLists.txt
 echo "project(GraphicsLib_Examples)">>./examples/CMakeLists.txt
-echo "link_libraries(\${CMAKE_SOURCE_DIR}/../libOpenGLGraphicsLibrary.a)">>./examples/CMakeLists.txt
+echo "link_libraries(\${CMAKE_SOURCE_DIR}/../libDrawpp.a)">>./examples/CMakeLists.txt
 
 echo "include_directories(\${CMAKE_SOURCE_DIR}/../include)">>./examples/CMakeLists.txt
 echo "set(EXECUTABLE_OUTPUT_PATH \${CMAKE_BINARY_DIR}/bin)">>./examples/CMakeLists.txt
