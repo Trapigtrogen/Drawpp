@@ -69,7 +69,6 @@ public:
     DFont& operator=(const DFont&) = default;
     DFont& operator=(DFont&&) = default;
 
-
 private:
     static void init_lib();
     

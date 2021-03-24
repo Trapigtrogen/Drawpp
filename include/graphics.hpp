@@ -39,6 +39,7 @@ enum ImageFormat
     BMP,
 };
 
+///\private
 struct GraphicsProperties
 {
     Color last_background_color = {0,0,0};
@@ -61,6 +62,12 @@ struct GraphicsProperties
     DFont font;
 };
 
+///\brief Graphics class describes a render target
+///
+///All drawing will happen through a DGraphics object. \n
+///Calling the drawpp api drawing functions will relay the call to an internal instance of DGraphics. \n
+///You can create your own instance, and draw to that with the member functions, but make sure to call beginDraw() first, or things will break.
+///When you are done drawing to your own target, remember to call endDraw() before drawing to other targets, or things will break.
 class DGraphics
 {
     friend class Application;

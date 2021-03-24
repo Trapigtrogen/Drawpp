@@ -6,6 +6,7 @@
 
 class Random;
 
+///\brief A basic vector3 class
 struct DVector
 {
     ///\brief All values are initialized to zero
