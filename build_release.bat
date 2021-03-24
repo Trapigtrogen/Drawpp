@@ -26,10 +26,10 @@ if "%crt_q%" == "y" set crt=ON & goto query_debug
 if "%crt_q%" == "Y" set crt=ON & goto query_debug
 if "%crt_q%" == "yes" set crt=ON & goto query_debug
 if "%crt_q%" == "YES" set crt=ON & goto query_debug
-if "%crt_q%" == "n" set docs=OFF & goto query_debug
-if "%crt_q%" == "N" set docs=OFF & goto query_debug
-if "%crt_q%" == "no" set docs=OFF & goto query_debug
-if "%crt_q%" == "NO" set docs=OFF & goto query_debug
+if "%crt_q%" == "n" set crt=OFF & goto query_debug
+if "%crt_q%" == "N" set crt=OFF & goto query_debug
+if "%crt_q%" == "no" set crt=OFF & goto query_debug
+if "%crt_q%" == "NO" set crt=OFF & goto query_debug
 goto query_crt
 
 :query_debug
@@ -40,10 +40,10 @@ if "%dbg_q%" == "y" set mode=Debug & goto update_modules
 if "%dbg_q%" == "Y" set mode=Debug & goto update_modules
 if "%dbg_q%" == "yes" set mode=Debug & goto update_modules
 if "%dbg_q%" == "YES" set mode=Debug & goto update_modules
-if "%dbg_q%" == "n" set docs=Release & goto update_modules
-if "%dbg_q%" == "N" set docs=Release & goto update_modules
-if "%dbg_q%" == "no" set docs=Release & goto update_modules
-if "%dbg_q%" == "NO" set docs=Release & goto update_modules
+if "%dbg_q%" == "n" set mode=Release & goto update_modules
+if "%dbg_q%" == "N" set mode=Release & goto update_modules
+if "%dbg_q%" == "no" set mode=Release & goto update_modules
+if "%dbg_q%" == "NO" set mode=Release & goto update_modules
 goto query_debug
 
 :update_modules
