@@ -905,9 +905,6 @@ void DGraphics::quad(const DVector& p1, const DVector& p2, const DVector& p3, co
 
 void DGraphics::shape(DShape& s, float x, float y, float w, float h)
 {
-
-
-
     // If loaded SVG had multiple objects, its objects has been split to new shapes. The Null image indicates that
     if(s.image == NULL)
     {
@@ -919,25 +916,20 @@ void DGraphics::shape(DShape& s, float x, float y, float w, float h)
             // DEBUG TEMP: Draw bounds
             glColor4ub(0, 0, 0, 64);
             glBegin(GL_LINE_LOOP);
-            glVertex2f(x, y);
-            glVertex2f(child->image->width * w, y);
-            glVertex2f(child->image->width * w, child->image->height * h);
-            glVertex2f(x, child->image->height * h);
+            glVertex2f(0, 0);
+            glVertex2f(child->image->width, 0);
+            glVertex2f(child->image->width, child->image->height);
+            glVertex2f(0, child->image->height);
             glEnd();
 
-
-            for(NSVGpath* path = child->image->shapes->paths; path->next != NULL; path = path->next) 
+            bool continueNext = true;
+            for(NSVGpath* path = child->image->shapes->paths; continueNext; path = path->next) 
             {
-                for (int i = 0; i < path->npts; i+=6) {
-                    path->pts[i] += x;
-                    path->pts[i+1] += x;
-                    path->pts[i+2] += x;
-                    path->pts[i+3] += y;
-                    path->pts[i+4] += x;
-                    path->pts[i+5] += y;
-                }
+                
                 shapeDrawPath(path->pts, path->npts, path->closed, 1.0f);
                 shapeDrawControlPts(path->pts, path->npts);
+
+                if(path->next == NULL){ continueNext = false; }
             }
         }
     }
@@ -953,8 +945,10 @@ void DGraphics::shape(DShape& s, float x, float y, float w, float h)
         glEnd();
 
         NSVGshape* shape = s.image->shapes;
-        for (NSVGpath* path = shape->paths; path != NULL; path = path->next) {
-            for (int i = 0; i < path->npts; i += 6) {
+        for (NSVGpath* path = shape->paths; path != NULL; path = path->next) 
+        {
+            for (int i = 0; i < path->npts; i += 6)
+            {
                 path->pts[i] += x;
                 path->pts[i + 1] += x;
                 path->pts[i + 2] += x;

@@ -411,7 +411,7 @@ void shape(DShape _shape, int x, int  y)
     shape(_shape, 0, 0, x, y);
 }
 
-void shape(DShape _shape, int x, int y, int w, int h)
+void shape(DShape _shape, int x, int y, float w, float h)
 {
     Application::GetInstance()->graphics_object().shape(_shape, x, y, w, h);
 }
