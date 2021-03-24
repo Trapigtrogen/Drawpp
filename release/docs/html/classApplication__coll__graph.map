@@ -1,5 +1,0 @@
-<map id="Application" name="Application">
-<area shape="rect" id="node1" title="Application class is the core of the program." alt="" coords="41,95,128,121"/>
-<area shape="rect" id="node2" href="$classRandom.html" title="Random number generation." alt="" coords="5,5,76,32"/>
-<area shape="rect" id="node3" href="$classNoise.html" title=" " alt="" coords="101,5,157,32"/>
-</map>
