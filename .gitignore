@@ -1,3 +1,4 @@
 build
 release
 .vscode
+external/freetype/builds
