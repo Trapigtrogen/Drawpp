@@ -7,11 +7,11 @@ Processing style graphic library for c++ using OpenGL. Support for Windows and L
 * Color API
 * Random API
 * Perlin noise generator
+* Load and render fonts
 
 ### Upcoming
 * Load SVG files as shapes
   * Vector graphics
-* Load and render fonts
 
 # Building
 Clone with `git clone git@gitlab.com:Trapigtrogen/graphics-library.git --recursive` to get the dependensies also\
