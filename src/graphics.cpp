@@ -913,7 +913,7 @@ void DGraphics::shape(DShape& s, float x, float y, float w, float h)
             DShape* child = s.getChild(i);
             if (child->image == NULL) { continue; }
 
-            // DEBUG TEMP: Draw bounds
+            // Draw bounds
             glColor4ub(0, 0, 0, 64);
             glBegin(GL_LINE_LOOP);
             glVertex2f(0, 0);
@@ -922,43 +922,16 @@ void DGraphics::shape(DShape& s, float x, float y, float w, float h)
             glVertex2f(0, child->image->height);
             glEnd();
 
-            bool continueNext = true;
-            for(NSVGpath* path = child->image->shapes->paths; continueNext; path = path->next) 
+            for(NSVGpath* path = child->image->shapes->paths; path != NULL; path = path->next) 
             {
-                
-                shapeDrawPath(path->pts, path->npts, path->closed, 1.0f);
+                shapeDrawPath(path->pts, path->npts, path->closed, 3.0f);
                 shapeDrawControlPts(path->pts, path->npts);
-
-                if(path->next == NULL){ continueNext = false; }
             }
         }
     }
     else
     {
-        // DEBUG TEMP: Draw bounds
-        glColor4ub(0, 0, 0, 64);
-        glBegin(GL_LINE_LOOP);
-        glVertex2f(x, y);
-        glVertex2f(s.image->width * w, y);
-        glVertex2f(s.image->width * w, s.image->height * h);
-        glVertex2f(x, s.image->height * h);
-        glEnd();
-
-        NSVGshape* shape = s.image->shapes;
-        for (NSVGpath* path = shape->paths; path != NULL; path = path->next) 
-        {
-            for (int i = 0; i < path->npts; i += 6)
-            {
-                path->pts[i] += x;
-                path->pts[i + 1] += x;
-                path->pts[i + 2] += x;
-                path->pts[i + 3] += y;
-                path->pts[i + 4] += x;
-                path->pts[i + 5] += y;
-            }
-            shapeDrawPath(path->pts, path->npts, path->closed, 1.0f);
-            shapeDrawControlPts(path->pts, path->npts);
-        }
+        // DEBUG TODO: Copy and edit from above when working
     }
 }
 
@@ -982,26 +955,7 @@ void DGraphics::shapeDrawPath(float* pts, int npts, char closed, float tol)
     }
     glEnd();
 
-    glUseProgram(quad_shader->getId());
-    glUniform1f(quad_shader_strokeWeight_loc, properties.use_stroke ? properties.stroke_weight : 0.0f);
-    glUniform1fv(quad_shader_bpos_loc, 12, quad_verts);
-    glUniform4f(quad_shader_strokeColor_loc, properties.stroke_color.red() / 255.0f,
-        properties.stroke_color.green() / 255.0f,
-        properties.stroke_color.blue() / 255.0f,
-        properties.stroke_color.alpha() / 255.0f);
-    glUniform4f(quad_shader_fillColor_loc, properties.fill_color.red() / 255.0f,
-        properties.fill_color.green() / 255.0f,
-        properties.fill_color.blue() / 255.0f,
-        properties.use_fill ? properties.fill_color.alpha() / 255.0f : 0.0f);
-    glUniformMatrix4fv(quad_shader_view_loc, 1, GL_FALSE, view_mat.values);
-
-    glEnableVertexAttribArray(quad_shader_vpos_loc);
-
-    glVertexAttribPointer(quad_shader_vpos_loc, 2, GL_FLOAT, false, 0, quad_verts);
-
     glDrawArrays(GL_TRIANGLES, 0, npts);
-
-    glDisableVertexAttribArray(quad_shader_vpos_loc);
 }
 
 float DGraphics::shapeDistPtSeg(float x, float y, float px, float py, float qx, float qy)

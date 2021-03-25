@@ -23,7 +23,7 @@ void setup()
 
     // Normal image containing 2 elements with names/ids
     printf("Loading image (multiple elements) to shape3...\n\n");
-    shape3 = loadShape("assets/starstripe.svg");
+    shape3 = loadShape("assets/nano.svg");
 
     // Naming
     shape1.name = "shape1";
@@ -55,7 +55,8 @@ void setup()
     // Count shape3 children
     childSize = shape3.getChildCount();
     std::cout << "Shape3 has " << childSize << " children \nThey are:\n";
-    for(int i = 0; i < childSize; ++i) {
+    for(int i = 0; i < childSize; ++i)
+    {
         std::cout << shape3.getChild(i)->name << "\n";
     }
 }
