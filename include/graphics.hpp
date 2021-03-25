@@ -483,6 +483,14 @@ public:
     void text(const std::wstring& txt, float x, float y);
 
 
+    ///\brief Draw a cubic bezier curve from 4 points.
+    void bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2);
+
+
+    ///\brief Draw a cubic bezier curve from 4 points.
+    void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2);
+
+
     GraphicsProperties getStyle();
 
 private:

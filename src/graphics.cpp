@@ -7,6 +7,7 @@
 #include <vector3.hpp>
 #include <font.hpp>
 #include <font_impl.h>
+#include <vec2f.hpp>
 #include <cstring>
 #include <locale>
 #include <codecvt>
@@ -1134,6 +1135,50 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
     glDisableVertexAttribArray(rect_shader_tpos_loc);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+vec2f bezier_bezierCubic(vec2f a, vec2f b, vec2f c, vec2f d, float t)
+{
+    float f1 = 1.0-t;
+    return f1*f1*f1*a + 
+    3.0*f1*f1*t*b + 
+    3.0*f1*t*t*c + 
+    t*t*t*d;
+}
+
+float bezier_getT(float t, float l, vec2f a, vec2f b, vec2f c)
+{
+    return t + (l/(((t*t)*a + t*b + c).len()));
+}
+
+void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2)
+{
+    vec2f a = vec2f{x1,y1};
+    vec2f d = vec2f{x2,y2};
+    vec2f b = vec2f{cx1,cy1};
+    vec2f c = vec2f{cx2,cy2};
+
+    vec2f v1 = -3.0*a + 9.0*b - 9.0*c + 3.0*d;
+    vec2f v2 = 6.0*a - 12.0*b + 6.0*c;
+    vec2f v3 = -3.0*a + 3.0*b;
+
+    float s = 10.0; //segment length in pixels
+    float t = 0.0;
+
+    vec2f p = bezier_bezierCubic(a,b,c,d,t);
+
+    while(t <= 1.0)
+    {
+        vec2f np = bezier_bezierCubic(a,b,c,d,t);
+        line(p.x,p.y,np.x,np.y);
+        p = np;
+        t = bezier_getT(t,s,v1,v2,v3);
+    }
+}
+
+void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2)
+{
+    bezier(p1.x,p2.y,p2.x,p2.y,cp1.x,cp1.y,cp2.x,cp2.y);
 }
 
 GraphicsProperties DGraphics::getStyle()
