@@ -60,7 +60,7 @@ int main()
 Application app(500,500,"Drawpp application");
 ```
 
-<br>Now all that's left is to start the application. This can be done with the member function ***run***. It will take as parameters, the loop function we created earlier, and some optional parameters which aren't relevant right now. The ***run*** function will also return an error code, so we can use that as the return value from main.<br>
+<br>Now all that's left is to start the application. This can be done with the member function ***run***. It will take as parameters, the loop function we created earlier, and some optional parameters which we'll look at in the next section. The ***run*** function will also return an error code, so we can use that as the return value from main.<br>
 
 
 ```cpp
@@ -122,3 +122,5 @@ Conversely, if you need to do any cleanup after the application exits, you can c
 ```cpp
 app.run(draw,setup,cleanup);
 ```
+
+<br>The cleanup function will be called right after the draw loop had exited.<br>
