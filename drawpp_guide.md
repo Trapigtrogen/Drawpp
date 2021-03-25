@@ -5,6 +5,7 @@ Beginners guide to Drawpp
 - [Building the library](#build)
 - [Generating a release](#release)
 - [Simple application](#simpleapp)
+- [Setup and cleanup](#setupcleanup)
 
 
 <br>
@@ -27,14 +28,13 @@ This is how you generate a release of the drawpp library.<br>
 
 ## <a id="simpleapp">Simple application</a>
 
-When creating an application with the drawpp library, you will first have to include the main header in your file.<br>
-<br>
+<br>When creating an application with the drawpp library, you will first have to include the main header in your file.<br>
+
 ```cpp
 #include "drawpp.hpp"
 ```
 
-Next up, create a function for the application loop. We'll call it draw, and it should look something like this:<br>
-<br>
+<br>Next up, create a function for the application loop. We'll call it draw, and it should look something like this:<br>
 
 ```cpp
 void draw(float t)
@@ -43,9 +43,8 @@ void draw(float t)
 }
 ```
 
-The parameter `float t` will tell you the time elapsed during the last cycle (or frame).<br>
-
-Next, create the main function.
+<br>The parameter `float t` will tell you the time elapsed during the last cycle (or frame).
+Next, create the main function.<br>
 
 ```cpp
 int main()
@@ -54,26 +53,29 @@ int main()
 }
 ```
 
-In the main function, we want to create our application instance. As parameters for the constructor, you should give the width and height of the application window. You can also give a title for the window.
+<br>In the main function, we want to create our application instance. As parameters for the constructor, you should give the width and height of the application window. You can also give a title for the window.<br>
+
 
 ```cpp
 Application app(500,500,"Drawpp application");
 ```
 
-Now all that's left is to start the application. This can be done with the member function ***run***. It will take as parameters, the loop function we created earlier, and some optional parameters which aren't relevant right now. The ***run*** function will also return an error code, so we can use that as the return value from main.
+<br>Now all that's left is to start the application. This can be done with the member function ***run***. It will take as parameters, the loop function we created earlier, and some optional parameters which aren't relevant right now. The ***run*** function will also return an error code, so we can use that as the return value from main.<br>
+
 
 ```cpp
 return app.run(draw);
 ```
 
-Lastly, so that we don't have to look at a back screen, put a call to the ***background*** function inside of the *draw* function. The ***background*** function will color the window with the color we give it.
+<br>Lastly, so that we don't have to look at a back screen, put a call to the ***background*** function inside of the *draw* function. The ***background*** function will color the window with the color we give it.<br>
+
 
 ```cpp
 background(200,255,100);
 ```
 
-And now we're done. You now should be able to build and run the application. <br>
-Here is the full code we wrote for this app:
+<br>And now we're done. You now should be able to build and run the application.
+Here is the full code we wrote for this app:<br>
 
 ```cpp
 #include "drawpp.hpp"
@@ -88,4 +90,35 @@ int main()
     Application app(500,500,"Drawpp application");
     return app.run(draw);
 }
+```
+
+<br>
+
+## <a id="setupcleanup">Setup and cleanup</a>
+
+<br>Often you need to initialize some things at the beginning of your program. Normally you would do that in the beginning of the main function, but when using the drawpp library, we strongly recommend you do all initializing in a setup function. This is because a lot of things need the application to be running to work.<br>
+
+Here is an example of a setup function:<br>
+
+```cpp
+void setup()
+{
+    strokeWeight(5);
+}
+```
+
+<br> There, we call the ***strokeWeight*** function. Were you to call it in main, before starting the application, the program would probably crash. The ***strokeWeight*** function will set the thickness of a stroke, or a line that will be draw.<br>
+
+To run the setup function, you should give it as a parameter to the *app.run* function, when starting up your application:<br>
+
+```cpp
+app.run(draw,setup);
+```
+
+<br>The setup function will be called once by the application, before it starts the draw loop.<br>
+
+Conversely, if you need to do any cleanup after the application exits, you can create a cleanup function, and pass that to the *app.run* function as well:<br>
+
+```cpp
+app.run(draw,setup,cleanup);
 ```
