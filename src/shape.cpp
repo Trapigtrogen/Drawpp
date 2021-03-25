@@ -262,7 +262,7 @@ void DShape::loadSVG(std::string filename)
 	// Clear dublicate data
 	image = nullptr;
 
-	// Destroy shapel chain as each child would continue it
+	// Destroy shape chain as each child would continue it
 	for(auto& it : children)
 	{
 		it->image->shapes->next = NULL;

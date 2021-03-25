@@ -65,7 +65,7 @@ void draw(float)
 {
     background(255,255,255);
     strokeWeight(7);
-    shape(shape3, 450, 450, 1, 1);
+    shape(&shape3, 10.0f, 10.0f, 400.0f, 500.0f);
 }
 
 int main() 

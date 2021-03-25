@@ -903,35 +903,40 @@ void DGraphics::quad(const DVector& p1, const DVector& p2, const DVector& p3, co
     quad(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
 }
 
-void DGraphics::shape(DShape& s, float x, float y, float w, float h)
+void DGraphics::shape(DShape* s, float x, float y, float w, float h)
 {
-    // If loaded SVG had multiple objects, its objects has been split to new shapes. The Null image indicates that
-    if(s.image == NULL)
+    // DEBUG TEMP: Draw bounds
+    glColor4ub(0, 0, 0, 255);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(w, h);
+    glVertex2f(x, h);
+    glVertex2f(x, y);
+    glVertex2f(w, y);
+    glEnd();
+
+    // If SVG was loaded into this shape its objects has been split to new child shapes
+    // The NULL image indicates that when drawing this shape, only its children should be drawn instead
+    if (s->image != NULL)
     {
-        for(int i = 0; i < s.getChildCount(); i++)
+        // If child of SVG shape was copied this is where it's drawn
+        for (NSVGpath* path = s->image->shapes->paths; path != NULL; path = path->next)
         {
-            DShape* child = s.getChild(i);
-            if (child->image == NULL) { continue; }
-
-            // Draw bounds
-            glColor4ub(0, 0, 0, 64);
-            glBegin(GL_LINE_LOOP);
-            glVertex2f(0, 0);
-            glVertex2f(child->image->width, 0);
-            glVertex2f(child->image->width, child->image->height);
-            glVertex2f(0, child->image->height);
-            glEnd();
-
-            for(NSVGpath* path = child->image->shapes->paths; path != NULL; path = path->next) 
-            {
-                shapeDrawPath(path->pts, path->npts, path->closed, 3.0f);
-                shapeDrawControlPts(path->pts, path->npts);
-            }
+            shapeDrawPath(path->pts, path->npts, path->closed, 1.0f);
+            shapeDrawControlPts(path->pts, path->npts);
         }
     }
-    else
+
+    // Draw childrens
+    for (int i = 0; i < s->getChildCount(); i++)
     {
-        // DEBUG TODO: Copy and edit from above when working
+        DShape* child = s->getChild(i);
+        if (child->image == NULL) { continue; }
+
+        for (NSVGpath* path = child->image->shapes->paths; path != NULL; path = path->next)
+        {
+            shapeDrawPath(path->pts, path->npts, path->closed, 1.0f);
+            shapeDrawControlPts(path->pts, path->npts);
+        }
     }
 }
 

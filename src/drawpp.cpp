@@ -401,19 +401,27 @@ void background(const DImage& image)
 
 // Shapes
 
-void shape(DShape _shape) 
+void shape(DShape* _shape) 
 {
     shape(_shape, 0, 0, 1, 1);
 }
 
-void shape(DShape _shape, int x, int  y)
+void shape(DShape* _shape, int x, int  y)
 {
     shape(_shape, 0, 0, x, y);
 }
 
-void shape(DShape _shape, int x, int y, float w, float h)
+void shape(DShape* _shape, float x, float y, float w, float h)
 {
-    Application::GetInstance()->graphics_object().shape(_shape, x, y, w, h);
+    int windowWidth = Application::GetInstance()->getWidth();
+    int windowHeight = Application::GetInstance()->getHeight();
+    // Convert size and position from screen space values
+    float newX = (x / windowWidth) - 1;
+    float newY = 0 - (y / windowHeight) + 1;
+    float newW = (w / windowWidth) - 1;
+    float newH = 0 - (h / windowHeight) + 1;
+
+    Application::GetInstance()->graphics_object().shape(_shape, newX, newY, newW, newH);
 }
 
 DShape loadShape(std::string filename) 

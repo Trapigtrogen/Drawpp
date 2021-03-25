@@ -446,7 +446,7 @@ public:
     void image(const DImage& img, float x, float y, float w, float h);
 
     ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)
-    void shape(DShape& s, float x, float y, float w, float h);
+    void shape(DShape* s, float x, float y, float w, float h);
     static void shapeCubicBez(float x1, float y1, float x2, 
                                 float y2, float x3, float y3, float x4, float y4,
                                 float tol, int level);
