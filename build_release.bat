@@ -3,6 +3,9 @@
 set docs=OFF
 set crt=OFF
 set mode=Release
+set plat=x64
+
+if "%1"=="-f" goto update_modules
 
 :query_docs
 set "docs_q=n"
@@ -36,15 +39,29 @@ goto query_crt
 set "dbg_q=n"
 set /p "dbg_q=Debug build? (y/n): "
 
-if "%dbg_q%" == "y" set mode=Debug & goto update_modules
-if "%dbg_q%" == "Y" set mode=Debug & goto update_modules
-if "%dbg_q%" == "yes" set mode=Debug & goto update_modules
-if "%dbg_q%" == "YES" set mode=Debug & goto update_modules
-if "%dbg_q%" == "n" set mode=Release & goto update_modules
-if "%dbg_q%" == "N" set mode=Release & goto update_modules
-if "%dbg_q%" == "no" set mode=Release & goto update_modules
-if "%dbg_q%" == "NO" set mode=Release & goto update_modules
+if "%dbg_q%" == "y" set mode=Debug & goto query_plat
+if "%dbg_q%" == "Y" set mode=Debug & goto query_plat
+if "%dbg_q%" == "yes" set mode=Debug & goto query_plat
+if "%dbg_q%" == "YES" set mode=Debug & goto query_plat
+if "%dbg_q%" == "n" set mode=Release & goto query_plat
+if "%dbg_q%" == "N" set mode=Release & goto query_plat
+if "%dbg_q%" == "no" set mode=Release & goto query_plat
+if "%dbg_q%" == "NO" set mode=Release & goto query_plat
 goto query_debug
+
+:query_plat
+set "plat_q=n"
+set /p "plat_q=x86 build? (y/n): "
+
+if "%plat_q%" == "y" set plat=win32 & goto update_modules
+if "%plat_q%" == "Y" set plat=win32 & goto update_modules
+if "%plat_q%" == "yes" set plat=win32 & goto update_modules
+if "%plat_q%" == "YES" set plat=win32 & goto update_modules
+if "%plat_q%" == "n" set plat=x64 & goto update_modules
+if "%plat_q%" == "N" set plat=x64 & goto update_modules
+if "%plat_q%" == "no" set plat=x64 & goto update_modules
+if "%plat_q%" == "NO" set plat=x64 & goto update_modules
+goto query_plat
 
 :update_modules
 git submodule update --init --recursive
@@ -53,7 +70,7 @@ if not exist release\_dpp_tmp_release_build mkdir release\_dpp_tmp_release_build
 
 cd release\_dpp_tmp_release_build
 
-cmake ..\.. -DDPP_BUILD_DOCS=OFF -DDPP_BUILD_TESTS=OFF -DDPP_BUILD_EXAMPLES=OFF
+cmake ..\.. -A %plat% -DDPP_BUILD_DOCS=OFF -DDPP_BUILD_TESTS=OFF -DDPP_BUILD_EXAMPLES=OFF
 
 ::use cmake to get msbuild path
 mkdir .\vs_loc
@@ -139,7 +156,9 @@ cd examples
 echo cmake_minimum_required(VERSION 3.13.4)>CMakeLists.txt
 echo set(CMAKE_CXX_STANDARD 11)>>CMakeLists.txt
 echo set(CMAKE_CXX_STANDARD_REQUIRED ON)>>CMakeLists.txt
+echo set(CMAKE_GENERATOR_PLATFORM %plat%)>>CMakeLists.txt
 echo project(Drawpp_Examples)>>CMakeLists.txt
+echo set(CMAKE_CONFIGURATION_TYPES %mode%)>>CMakeLists.txt
 echo link_libraries(${CMAKE_SOURCE_DIR}/../Drawpp.lib)>>CMakeLists.txt
 
 if %crt%==OFF goto dll_crt
@@ -173,6 +192,7 @@ echo example_buttons>>CMakeLists.txt
 echo example_de-jong-attractor>>CMakeLists.txt
 
 echo PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")>>CMakeLists.txt
+echo set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT example_buttons)>>CMakeLists.txt
 
 cd ..
 
