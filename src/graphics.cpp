@@ -555,6 +555,21 @@ void DGraphics::scale(const DVector& s)
     //view_mat = view_mat.scale(s);
 }
 
+void DGraphics::shearX(float a)
+{
+    DMatrix4 m;
+    m(0,1) = a;
+    transform_mat = transform_mat * m;
+}
+
+void DGraphics::shearY(float a)
+{
+    DMatrix4 m;
+    m(1,0) = a;
+    transform_mat = transform_mat * m;
+}
+
+
 void DGraphics::push()
 {
     pushMatrix();

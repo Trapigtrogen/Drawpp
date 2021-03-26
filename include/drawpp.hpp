@@ -146,6 +146,9 @@ void scale(float x, float y);
 void scale(float x, float y, float z);
 void scale(const DVector& s);
 
+void shearX(float a);
+void shearY(float a);
+
 // Input
 extern char key;
 extern int keyCode;

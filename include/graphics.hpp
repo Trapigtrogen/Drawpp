@@ -359,15 +359,18 @@ public:
     ///\brief Scale view by \p x and \p y
     void scale(float x, float y );
 
-
     
     ///\brief Scale view by \p x, \p y and \p z
     void scale(float x, float y, float z);
 
-
     
     ///\brief Scale view by \p s
     void scale(const DVector& s);
+
+
+
+    void shearX(float a);
+    void shearY(float a);
 
 
     ///\brief Push current transformations, and style properties to the stack

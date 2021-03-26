@@ -586,6 +586,16 @@ void scale(const DVector& s)
     Application::GetInstance()->graphics_object().scale(s);
 }
 
+void shearX(float a)
+{
+    Application::GetInstance()->graphics_object().shearX(a);
+}
+
+void shearY(float a)
+{
+    Application::GetInstance()->graphics_object().shearY(a);
+}
+
 
 // Push Pop
 
