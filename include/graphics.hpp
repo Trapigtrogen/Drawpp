@@ -368,8 +368,11 @@ public:
     void scale(const DVector& s);
 
 
-
+    ///\brief Shear in the X direction by \p a
     void shearX(float a);
+
+
+    ///\brief Shear in the Y direction by \p a
     void shearY(float a);
 
 
