@@ -11,7 +11,7 @@ Processing style graphic library for c++ using OpenGL. Support for Windows and L
 * Load and render fonts
 
 ### Upcoming
-* Vector graphics
+* More stuff to do with vector graphics and SVG shapes
 
 # Building
 Clone with `git clone git@gitlab.com:Trapigtrogen/graphics-library.git --recursive` to get the dependensies also\
