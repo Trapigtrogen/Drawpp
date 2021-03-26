@@ -48,7 +48,7 @@ set_target_properties(${LIBNAME} PROPERTIES
 if(MSVC)
     target_compile_options(${LIBNAME} PRIVATE /W4)
 else()
-    target_compile_options(${LIBNAME} PRIVATE -Wall -Wextra -Werror)
+    target_compile_options(${LIBNAME} PRIVATE -Wall -Wextra)
 endif()
 
 include_directories(include)
