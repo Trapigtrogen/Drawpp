@@ -11,6 +11,7 @@ include_directories(include)
 
 add_executable(example_de-jong-attractor example_de-jong-attractor.cpp)
 add_executable(example_buttons example_buttons.cpp)
+add_executable(example_draw example_draw.cpp)
 
 if (MSVC)
     add_dependencies(example_de-jong-attractor ${PROJECT_NAME})
@@ -18,6 +19,7 @@ if (MSVC)
     
     set_property(TARGET example_de-jong-attractor
                         example_buttons
+                        example_draw
                  PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/examples")
 else ()
     file(COPY "${CMAKE_SOURCE_DIR}/examples/assets" DESTINATION "${CMAKE_BINARY_DIR}/bin/examples")

@@ -18,21 +18,55 @@ public:
 
     ~Application();
 
+    ///\brief Run the application
+    ///
+    ///If you don't need the draw function, you can pass a nullptr as the draw function.
     int run(std::function<void(float)> draw, std::function<void()> setup = [](){}, std::function<void()> cleanup = [](){});
+    
 
+    ///\brief Set the KeyPressed callback
     void setKeyPressed(std::function<void()>);
+
+
+    ///\brief Set the KeyReleased callback
     void setKeyReleased(std::function<void()>);
 
+
+    ///\brief Set the MouseClicked callback
     void setMouseClicked(std::function<void()>);
+    
+
+    ///\brief Set the MousePressed callback
     void setMousePressed(std::function<void()>);
+    
+
+    ///\brief Set the MouseReleased callback
     void setMouseReleased(std::function<void()>);
+    
+
+    ///\brief Set the MouseWheel callback
     void setMouseWheel(std::function<void(float)>);
+    
+
+    ///\brief Set the MouseMoved callback
     void setMouseMoved(std::function<void()>);
+    
+
+    ///\brief Set the MouseDragged callback
     void setMouseDragged(std::function<void()>);
 
-    //virtual void keyPressed();
+
+    ///\brief Change the application window size
     void size(int width, int height);
+
+
+    ///\brief Set the allowance of resizing
+    ///
+    ///Only effective in setup.
     void setResizable(bool);
+
+
+    ///\brief Set the application window title
     void setTitle(const char* title);
 
 
@@ -53,9 +87,16 @@ public:
     int getHeight() const;
     bool graphicsExists() const;
 
+
+    ///\private
     static Application* GetInstance();
 
+
+    ///\brief Default random instance
     Random random;
+
+
+    ///\brief Default noise instance
     Noise noise;
 
 private:

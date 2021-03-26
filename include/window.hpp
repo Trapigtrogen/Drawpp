@@ -3,6 +3,7 @@
 
 struct GLFWwindow;
 
+///\private
 class Window
 {
 public:

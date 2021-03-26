@@ -7,6 +7,7 @@
 #include <vector3.hpp>
 #include <font.hpp>
 #include <font_impl.h>
+#include <vec2f.hpp>
 #include <cstring>
 #include <locale>
 #include <codecvt>
@@ -109,6 +110,7 @@ DGraphics::DGraphics(int width, int height)
     glBindFramebuffer(GL_FRAMEBUFFER, prev_buffer);
 
     init_shaders();
+    view_mat = DMatrix4::identity().translate(DVector(-1.0,1.0)).scale(DVector(2.0/buffer_width,2.0/buffer_height));
 }
 
 DGraphics::~DGraphics()
@@ -133,7 +135,7 @@ void DGraphics::init_shaders()
     ellipse_shader_strokeWeight_loc = glGetUniformLocation(ellipse_shader->getId(),"strokeWeight");
     ellipse_shader_strokeColor_loc = glGetUniformLocation(ellipse_shader->getId(),"strokeColor");                                             
     ellipse_shader_fillColor_loc = glGetUniformLocation(ellipse_shader->getId(),"fillColor");
-    //ellipse_shader_transform_loc = glGetUniformLocation(ellipse_shader->getId(),"transform");
+    ellipse_shader_transform_loc = glGetUniformLocation(ellipse_shader->getId(),"transform");
     ellipse_shader_view_loc = glGetUniformLocation(ellipse_shader->getId(),"view");
     ellipse_shader_posmode_loc = glGetUniformLocation(ellipse_shader->getId(),"posmode");
     ellipse_shader_vpos_loc = glGetAttribLocation(ellipse_shader->getId(),"pos");
@@ -149,6 +151,7 @@ void DGraphics::init_shaders()
     rect_shader_fillColor_loc = glGetUniformLocation(rect_shader->getId(),"fillColor");                                           
     rect_shader_radii_loc = glGetUniformLocation(rect_shader->getId(),"radii");
     rect_shader_view_loc = glGetUniformLocation(rect_shader->getId(),"view");
+    rect_shader_transform_loc = glGetUniformLocation(rect_shader->getId(),"transform");
     rect_shader_posmode_loc = glGetUniformLocation(rect_shader->getId(),"posmode");
     rect_shader_vpos_loc = glGetAttribLocation(rect_shader->getId(),"pos");
     rect_shader_tpos_loc = glGetAttribLocation(rect_shader->getId(),"texpos");
@@ -159,6 +162,7 @@ void DGraphics::init_shaders()
     triangle_shader_strokeWeight_loc = glGetUniformLocation(triangle_shader->getId(),"strokeWeight");
     triangle_shader_strokeColor_loc = glGetUniformLocation(triangle_shader->getId(),"strokeColor");                                             
     triangle_shader_fillColor_loc = glGetUniformLocation(triangle_shader->getId(),"fillColor");
+    triangle_shader_transform_loc = glGetUniformLocation(triangle_shader->getId(),"transform");
     triangle_shader_view_loc = glGetUniformLocation(triangle_shader->getId(),"view");
     triangle_shader_bpos_loc = glGetUniformLocation(triangle_shader->getId(),"bpos");
     triangle_shader_vpos_loc = glGetAttribLocation(triangle_shader->getId(),"pos");
@@ -168,7 +172,8 @@ void DGraphics::init_shaders()
 
     line_shader_points_loc = glGetUniformLocation(line_shader->getId(),"points");
     line_shader_strokeWeight_loc = glGetUniformLocation(line_shader->getId(),"strokeWeight");
-    line_shader_strokeColor_loc = glGetUniformLocation(line_shader->getId(),"strokeColor");   
+    line_shader_strokeColor_loc = glGetUniformLocation(line_shader->getId(),"strokeColor"); 
+    line_shader_transform_loc = glGetUniformLocation(line_shader->getId(),"transform");  
     line_shader_view_loc = glGetUniformLocation(line_shader->getId(),"view");
     line_shader_cap_loc = glGetUniformLocation(line_shader->getId(),"captype");
     line_shader_tpos_loc = glGetAttribLocation(line_shader->getId(),"texpos");
@@ -179,6 +184,7 @@ void DGraphics::init_shaders()
  
     image_shader_offset_loc = glGetUniformLocation(image_shader->getId(),"offset");
     image_shader_posmode_loc = glGetUniformLocation(image_shader->getId(),"posmode");
+    image_shader_transform_loc = glGetUniformLocation(image_shader->getId(),"transform");  
     image_shader_view_loc = glGetUniformLocation(image_shader->getId(),"view");
     image_shader_tex_loc = glGetUniformLocation(image_shader->getId(),"tex");
     image_shader_tpos_loc = glGetAttribLocation(image_shader->getId(),"texpos");
@@ -190,14 +196,15 @@ void DGraphics::init_shaders()
     quad_shader_strokeWeight_loc = glGetUniformLocation(quad_shader->getId(),"strokeWeight");
     quad_shader_strokeColor_loc = glGetUniformLocation(quad_shader->getId(),"strokeColor");                                             
     quad_shader_fillColor_loc = glGetUniformLocation(quad_shader->getId(),"fillColor");
+    quad_shader_transform_loc = glGetUniformLocation(quad_shader->getId(),"transform");  
     quad_shader_view_loc = glGetUniformLocation(quad_shader->getId(),"view");
     quad_shader_bpos_loc = glGetUniformLocation(quad_shader->getId(),"bpos");
     quad_shader_vpos_loc = glGetAttribLocation(quad_shader->getId(),"pos");
 
     text_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(text_shader_v,text_shader_f)));
-
-    text_shader_offset_loc = glGetUniformLocation(text_shader->getId(),"offset");                                          
+                                      
     text_shader_fillColor_loc = glGetUniformLocation(text_shader->getId(),"fillColor");
+    text_shader_transform_loc = glGetUniformLocation(text_shader->getId(),"transform");
     text_shader_view_loc = glGetUniformLocation(text_shader->getId(),"view");
     text_shader_texture_loc = glGetUniformLocation(image_shader->getId(),"texture");
     text_shader_posmode_loc = glGetUniformLocation(text_shader->getId(),"posmode");
@@ -207,8 +214,8 @@ void DGraphics::init_shaders()
 
 void DGraphics::beginDraw()
 {
-    view_mat = DMatrix4::identity().translate(DVector(-1.0,1.0)).scale(DVector(2.0/buffer_width,2.0/buffer_height));
-    //transform_mat = DMatrix4::identity();
+    //view_mat = DMatrix4::identity().translate(DVector(-1.0,1.0)).scale(DVector(2.0/buffer_width,2.0/buffer_height));
+    transform_mat = DMatrix4::identity();
     glBindFramebuffer(GL_FRAMEBUFFER,buffer_id);
     glViewport(0,0,buffer_width,buffer_height);
 }
@@ -500,8 +507,8 @@ void DGraphics::translate(float x, float y, float z)
 
 void DGraphics::translate(const DVector& t)
 {
-    //transform_mat = transform_mat.translate(DVector(t.x/buffer_width,-t.y/buffer_height));
-    view_mat = view_mat.translate(DVector(t.x,-t.y));
+    transform_mat = transform_mat.translate(DVector(t.x,-t.y));
+    //view_mat = view_mat.translate(DVector(t.x,-t.y));
 }
 
 void DGraphics::rotate(float angle)
@@ -511,18 +518,20 @@ void DGraphics::rotate(float angle)
 
 void DGraphics::rotateX(float angle)
 {
-    view_mat = view_mat.rotate<Axis::X>(-angle);
+    //view_mat = view_mat.rotate<Axis::X>(-angle);
+    transform_mat = transform_mat.rotate<Axis::X>(-angle);
 }
 
 void DGraphics::rotateY(float angle)
 {
-    view_mat = view_mat.rotate<Axis::Y>(-angle);
+    //view_mat = view_mat.rotate<Axis::Y>(-angle);
+    transform_mat = transform_mat.rotate<Axis::Y>(-angle);
 }
 
 void DGraphics::rotateZ(float angle)
 {
-    //transform_mat = transform_mat.rotate<Axis::Z>(angle);
-    view_mat = view_mat.rotate<Axis::Z>(-angle);
+    transform_mat = transform_mat.rotate<Axis::Z>(-angle);
+    //view_mat = view_mat.rotate<Axis::Z>(-angle);
 }
 
 void DGraphics::scale(float s)
@@ -542,9 +551,24 @@ void DGraphics::scale(float x, float y, float z)
 
 void DGraphics::scale(const DVector& s)
 {
-    //transform_mat = transform_mat.scale(s);
-    view_mat = view_mat.scale(s);
+    transform_mat = transform_mat.scale(s);
+    //view_mat = view_mat.scale(s);
 }
+
+void DGraphics::shearX(float a)
+{
+    DMatrix4 m;
+    m(0,1) = a;
+    transform_mat = transform_mat * m;
+}
+
+void DGraphics::shearY(float a)
+{
+    DMatrix4 m;
+    m(1,0) = a;
+    transform_mat = transform_mat * m;
+}
+
 
 void DGraphics::push()
 {
@@ -560,7 +584,7 @@ void DGraphics::pop()
 
 void DGraphics::pushMatrix()
 {
-    matrix_stack.push(view_mat);
+    matrix_stack.push(transform_mat);
 }
 
 void DGraphics::popMatrix()
@@ -570,7 +594,7 @@ void DGraphics::popMatrix()
         return;
     }
 
-    view_mat = matrix_stack.top();
+    transform_mat = matrix_stack.top();
     matrix_stack.pop();
 }
 
@@ -603,7 +627,7 @@ void DGraphics::ellipse(float x, float y, float sizex, float sizey)
                                                                     properties.fill_color.green()/255.0f,
                                                                     properties.fill_color.blue()/255.0f,
                                                                     properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
-    //glUniformMatrix4fv(ellipse_shader_transform_loc,1,GL_FALSE,transform_mat.values);
+    glUniformMatrix4fv(ellipse_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(ellipse_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(ellipse_shader_posmode_loc,properties.ellipsemode);
 
@@ -649,6 +673,7 @@ void DGraphics::rect(float x, float y, float sizex, float sizey, float tl, float
                                                                     properties.fill_color.blue()/255.0f,
                                                                     properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
     glUniformMatrix4fv(rect_shader_view_loc,1,GL_FALSE,view_mat.values);
+    glUniformMatrix4fv(rect_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniform1i(rect_shader_posmode_loc,properties.rectmode);
 
     glEnableVertexAttribArray(rect_shader_vpos_loc);
@@ -688,6 +713,8 @@ void DGraphics::triangle(float x1, float y1, float x2, float y2, float x3, float
                                                                     properties.fill_color.green()/255.0f,
                                                                     properties.fill_color.blue()/255.0f,
                                                                     properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+                                                                    
+    glUniformMatrix4fv(triangle_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(triangle_shader_view_loc,1,GL_FALSE,view_mat.values);
 
     glEnableVertexAttribArray(triangle_shader_vpos_loc);
@@ -714,6 +741,7 @@ void DGraphics::line(float x1, float y1, float x2, float y2)
                                                                     properties.stroke_color.green()/255.0f,
                                                                     properties.stroke_color.blue()/255.0f,
                                                                     properties.stroke_color.alpha()/255.0f);
+    glUniformMatrix4fv(line_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(line_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(line_shader_cap_loc,properties.strokecap);
 
@@ -755,6 +783,7 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
     glUseProgram(image_shader->getId());
     glUniform4f(image_shader_offset_loc,x,y,w,h);
    
+    glUniformMatrix4fv(image_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(image_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(image_shader_posmode_loc,properties.imagemode);
 
@@ -1097,11 +1126,11 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
     }
 
     glUseProgram(text_shader->getId());
-    glUniform4f(text_shader_offset_loc,x,y,1,1);
     glUniform4f(text_shader_fillColor_loc,properties.fill_color.red()/255.0f,
                                                                     properties.fill_color.green()/255.0f,
                                                                     properties.fill_color.blue()/255.0f,
                                                                     properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniformMatrix4fv(text_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(text_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(text_shader_posmode_loc,properties.rectmode);
 
@@ -1121,6 +1150,50 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
     glDisableVertexAttribArray(rect_shader_tpos_loc);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+vec2f bezier_bezierCubic(vec2f a, vec2f b, vec2f c, vec2f d, float t)
+{
+    float f1 = 1.0-t;
+    return f1*f1*f1*a + 
+    3.0*f1*f1*t*b + 
+    3.0*f1*t*t*c + 
+    t*t*t*d;
+}
+
+float bezier_getT(float t, float l, vec2f a, vec2f b, vec2f c)
+{
+    return t + (l/(((t*t)*a + t*b + c).len()));
+}
+
+void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2)
+{
+    vec2f a = vec2f{x1,y1};
+    vec2f d = vec2f{x2,y2};
+    vec2f b = vec2f{cx1,cy1};
+    vec2f c = vec2f{cx2,cy2};
+
+    vec2f v1 = -3.0*a + 9.0*b - 9.0*c + 3.0*d;
+    vec2f v2 = 6.0*a - 12.0*b + 6.0*c;
+    vec2f v3 = -3.0*a + 3.0*b;
+
+    float s = 10.0; //segment length in pixels
+    float t = 0.0;
+
+    vec2f p = bezier_bezierCubic(a,b,c,d,t);
+
+    while(t <= 1.0)
+    {
+        vec2f np = bezier_bezierCubic(a,b,c,d,t);
+        line(p.x,p.y,np.x,np.y);
+        p = np;
+        t = bezier_getT(t,s,v1,v2,v3);
+    }
+}
+
+void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2)
+{
+    bezier(p1.x,p2.y,p2.x,p2.y,cp1.x,cp1.y,cp2.x,cp2.y);
 }
 
 GraphicsProperties DGraphics::getStyle()

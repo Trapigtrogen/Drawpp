@@ -1,6 +1,7 @@
 #ifndef DPP_NOISE_H
 #define DPP_NOISE_H
 
+///\brief Noise class provides 1D and 2D fractal noise
 class Noise
 {
 public:

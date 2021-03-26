@@ -38,7 +38,7 @@ void setup()
 void draw(float)
 {
     // Draw the background
-    background(color(200,255,100));
+    background(200,255,100);
 
     // Depending on image_select, draw a happy face or a sad face
     if(image_select)
@@ -51,11 +51,11 @@ void draw(float)
     }
 
     // Draw the right side button, with red color
-    fill(color(250,100,100));
+    fill(250,100,100);
     rect(300,700,btn_width,btn_height,30);
 
     // Draw the left side button, with blue color 
-    fill(color(100,100,250));
+    fill(100,100,250);
     rect(700,700,btn_width,btn_height,30);
 }
 

@@ -1,6 +1,7 @@
 static const char* line_shader_v = R"(
     #version 100
     precision mediump float;
+    uniform mat4 transform;
     uniform mat4 view;
     uniform vec4 points;
     uniform float strokeWeight;
@@ -44,7 +45,7 @@ static const char* line_shader_v = R"(
         rot[1][0] = sin(angle);
         rot[1][1] = cos(angle);
 
-        mat4 mv = scale * rot * transl * view;
+        mat4 mv = scale * rot * transl * transform * view;
 
         texc = texpos;
         size = vec2(width,height);
