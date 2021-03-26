@@ -413,15 +413,7 @@ void shape(DShape* _shape, int x, int  y)
 
 void shape(DShape* _shape, float x, float y, float w, float h)
 {
-    int windowWidth = Application::GetInstance()->getWidth();
-    int windowHeight = Application::GetInstance()->getHeight();
-    // Convert size and position from screen space values
-    float newX = (x / windowWidth) - 1;
-    float newY = 0 - (y / windowHeight) + 1;
-    float newW = (w / windowWidth) - 1;
-    float newH = 0 - (h / windowHeight) + 1;
-
-    Application::GetInstance()->graphics_object().shape(_shape, newX, newY, newW, newH);
+    Application::GetInstance()->graphics_object().shape(_shape, x, y, w, h);
 }
 
 DShape loadShape(std::string filename) 
@@ -513,6 +505,17 @@ void triangle(const DVector& p1, const DVector& p2, const DVector& p3)
 {
     Application::GetInstance()->graphics_object().triangle(p1,p2,p3);
 }
+
+void bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2)
+{
+    Application::GetInstance()->graphics_object().bezier(x1,y1,x2,y2,cx1,cy1,cx2,cy2);
+}
+
+void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2)
+{
+    Application::GetInstance()->graphics_object().bezier(p1,p2,cp1,cp2);
+}
+
 
 
 // Shader
@@ -626,4 +629,41 @@ void popStyle()
 bool save(const std::string& filename, ImageFormat format)
 {
     return Application::GetInstance()->graphics_object().save(filename,format);
+}
+
+// Font and text
+
+DFont loadFont(const std::string& filename, int size, float row_spacing, float char_spacing)
+{
+    return DFont::load(filename,size,row_spacing,char_spacing);
+}
+
+DFont loadFont(const std::string& filename, const FontOptions& opt)
+{
+    return DFont::load(filename,opt);
+}
+
+void textFont(DFont font)
+{
+    Application::GetInstance()->graphics_object().textFont(font);
+}
+
+void text(const std::string& txt, float x, float y)
+{
+    Application::GetInstance()->graphics_object().text(txt,x,y);
+}
+
+void text(const std::string& txt, const DVector& p)
+{
+    text(txt,p.x,p.y);
+}
+
+void text(const std::wstring& txt, float x, float y)
+{
+    Application::GetInstance()->graphics_object().text(txt,x,y);
+}
+
+void text(const std::wstring& txt, const DVector& p)
+{
+    text(txt,p.x,p.y);
 }

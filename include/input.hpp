@@ -8,6 +8,7 @@ struct GLFWwindow;
 
 //Add option for no repeat
 
+///\private
 class Input
 {
 public:
@@ -25,6 +26,8 @@ public:
     static std::function<void(float)> mouseWheel_func;
     static std::function<void()> mouseMoved_func;
     static std::function<void()> mouseDragged_func;
+
+    static void setPrevMouse();
 
 
     static bool mouseBtnStates[8];

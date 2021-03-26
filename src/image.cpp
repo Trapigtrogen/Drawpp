@@ -133,8 +133,8 @@ DImage DImage::loadImage(const std::string& fileName)
 	return tmpImg;
 }
 
-unsigned int DImage::generateTexture(int width, int height, unsigned char* pixels)
 
+unsigned int DImage::generateTexture(int width, int height, unsigned char* pixels)
 {
 	unsigned int m_texture;
 	glGenTextures(1, &m_texture);

@@ -126,6 +126,7 @@ DShape& DShape::operator=(DShape* other)
 		DShape empty;
 		return empty;
 	}
+
 	if(this != other) 
 	{
 		for(auto& it : children)

@@ -24,6 +24,8 @@ add_executable(test_draw_rect_square draw_rect_square.cpp)
 add_executable(test_draw_line_point draw_line_point.cpp)
 add_executable(test_draw_quad draw_quad.cpp)
 add_executable(test_noise noiseTest.cpp)
+add_executable(test_draw_text draw_text.cpp)
+add_executable(test_draw_bezier draw_bezier.cpp)
 
 if (MSVC)
     add_dependencies(test_window ${PROJECT_NAME})
@@ -40,6 +42,8 @@ if (MSVC)
     add_dependencies(test_draw_line_point ${PROJECT_NAME})
     add_dependencies(test_draw_quad ${PROJECT_NAME})
     add_dependencies(test_noise ${PROJECT_NAME})
+    add_dependencies(test_draw_text ${PROJECT_NAME})
+    add_dependencies(test_draw_bezier ${PROJECT_NAME})
 
     set_property(TARGET test_window
                         test_textures
@@ -55,6 +59,8 @@ if (MSVC)
                         test_draw_line_point
                         test_draw_quad
                         test_noise
+                        test_draw_text
+                        test_draw_bezier
                  PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")
 else ()
     file(COPY "${CMAKE_SOURCE_DIR}/tests/assets" DESTINATION "${CMAKE_BINARY_DIR}/bin/tests")

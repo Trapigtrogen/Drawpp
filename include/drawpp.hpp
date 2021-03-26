@@ -7,6 +7,7 @@
 #include <color.hpp>
 #include <graphics.hpp>
 #include <shape.hpp>
+#include <font.hpp>
 
 void exit();
 
@@ -42,6 +43,8 @@ void rect(float x, float y, float w, float h, float tl, float tr, float br, floa
 void square(float x, float y, float size);
 void triangle(float x1, float y1, float x2, float y2, float x3, float y3);
 void triangle(const DVector& p1, const DVector& p2, const DVector& p3);
+void bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2);
+void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2);
 
 // Shapes 3D
 void point(int x, int y, int z);
@@ -49,6 +52,16 @@ void line(int x1, int y1, int z1, int x2, int y2, int z2);
 void box(int size);
 void box(int width, int height, int dimension);
 void sphere(int radius);
+
+// Font and text
+
+DFont loadFont(const std::string& filename, int size, float row_spacing = 0.0f, float char_spacing = 0.0f);
+DFont loadFont(const std::string& filename, const FontOptions& opt);
+void textFont(DFont font);
+void text(const std::string& txt, float x, float y);
+void text(const std::string& txt, const DVector& p);
+void text(const std::wstring& txt, float x, float y);
+void text(const std::wstring& txt, const DVector& p);
 
 void rectMode(PosMode m);
 void ellipseMode(PosMode m);
@@ -143,6 +156,8 @@ extern int mouseX;
 extern int mouseY;
 extern int pmouseX;
 extern int pmouseY;
+extern int pfmouseX;
+extern int pfmouseY;
 
 // Random
 void randomSeed(int seed);

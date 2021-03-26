@@ -3,6 +3,7 @@
 
 #include <string>
 #include <debug.hpp>
+#include <noise.hpp>
 
 ///  DImage is an object that textures can be loaded to from image or pixel set
 class DImage
@@ -25,18 +26,19 @@ public:
 		CENTER // Attach to center
 	};
 
+    ///\brief Load an image from a file
 	static DImage loadImage(const std::string& fileName);
 
-	void bind(unsigned int unit) const;
+private:
 
-	unsigned char* pixels = nullptr;
+    unsigned char* pixels = nullptr;
 	int width = 0;
 	int height = 0;
 	int channels = 0;
-
-private:
 	unsigned int m_texture = 0;
+
 	DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c);
+	void bind(unsigned int unit) const;
 	static unsigned int generateTexture(int w, int h, unsigned char* pixels);
 };
 

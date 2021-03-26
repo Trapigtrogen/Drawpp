@@ -5,7 +5,12 @@
 #include <debug.hpp>
 #include <image.hpp>
 #include <vector3.hpp>
+#include <font.hpp>
+#include <font_impl.h>
+#include <vec2f.hpp>
 #include <cstring>
+#include <locale>
+#include <codecvt>
 
 #include "stb_image_write.h"
 
@@ -61,6 +66,8 @@ float quad_verts[] =
     0.0f, 0.0f,
 };
 
+std::vector<float> txt_vert_buffer;
+std::vector<float> txt_texc_buffer;
 
 #include <shaders/generic_vert.ipp>
 #include <shaders/ellipse_frag.ipp>
@@ -71,6 +78,8 @@ float quad_verts[] =
 #include <shaders/line_frag.ipp>
 #include <shaders/image_frag.ipp>
 #include <shaders/quad_frag.ipp>
+#include <shaders/text_vert.ipp>
+#include <shaders/text_frag.ipp>
 
 
 DGraphics::DGraphics(int width, int height)
@@ -106,11 +115,12 @@ DGraphics::DGraphics(int width, int height)
     glBindFramebuffer(GL_FRAMEBUFFER, prev_buffer);
 
     init_shaders();
+    view_mat = DMatrix4::identity().translate(DVector(-1.0,1.0)).scale(DVector(2.0/buffer_width,2.0/buffer_height));
 }
 
 DGraphics::~DGraphics()
 {
-    if(buffer_id != -1)
+    if(buffer_id != static_cast<unsigned int>(-1))
     {
         glDeleteFramebuffers(1,&buffer_id);
     }
@@ -123,20 +133,22 @@ DGraphics::~DGraphics()
 
 void DGraphics::init_shaders()
 {
-    ellipse_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f));
+    //ellipse_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f));
+    ellipse_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f)));
     
     ellipse_shader_offset_loc = glGetUniformLocation(ellipse_shader->getId(),"offset");
     ellipse_shader_strokeWeight_loc = glGetUniformLocation(ellipse_shader->getId(),"strokeWeight");
     ellipse_shader_strokeColor_loc = glGetUniformLocation(ellipse_shader->getId(),"strokeColor");                                             
     ellipse_shader_fillColor_loc = glGetUniformLocation(ellipse_shader->getId(),"fillColor");
-    //ellipse_shader_transform_loc = glGetUniformLocation(ellipse_shader->getId(),"transform");
+    ellipse_shader_transform_loc = glGetUniformLocation(ellipse_shader->getId(),"transform");
     ellipse_shader_view_loc = glGetUniformLocation(ellipse_shader->getId(),"view");
     ellipse_shader_posmode_loc = glGetUniformLocation(ellipse_shader->getId(),"posmode");
     ellipse_shader_vpos_loc = glGetAttribLocation(ellipse_shader->getId(),"pos");
     ellipse_shader_tpos_loc = glGetAttribLocation(ellipse_shader->getId(),"texpos");
 
 
-    rect_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,rect_shader_f));
+    //rect_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,rect_shader_f));
+    rect_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,rect_shader_f)));
     
     rect_shader_offset_loc = glGetUniformLocation(rect_shader->getId(),"offset");
     rect_shader_strokeWeight_loc = glGetUniformLocation(rect_shader->getId(),"strokeWeight");
@@ -144,52 +156,71 @@ void DGraphics::init_shaders()
     rect_shader_fillColor_loc = glGetUniformLocation(rect_shader->getId(),"fillColor");                                           
     rect_shader_radii_loc = glGetUniformLocation(rect_shader->getId(),"radii");
     rect_shader_view_loc = glGetUniformLocation(rect_shader->getId(),"view");
+    rect_shader_transform_loc = glGetUniformLocation(rect_shader->getId(),"transform");
     rect_shader_posmode_loc = glGetUniformLocation(rect_shader->getId(),"posmode");
     rect_shader_vpos_loc = glGetAttribLocation(rect_shader->getId(),"pos");
     rect_shader_tpos_loc = glGetAttribLocation(rect_shader->getId(),"texpos");
 
-    triangle_shader = std::make_unique<Shader>(Shader::loadShadersFromString(triangle_shader_v,triangle_shader_f));
+    //triangle_shader = std::make_unique<Shader>(Shader::loadShadersFromString(triangle_shader_v,triangle_shader_f));
+    triangle_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(triangle_shader_v,triangle_shader_f)));
 
     triangle_shader_strokeWeight_loc = glGetUniformLocation(triangle_shader->getId(),"strokeWeight");
     triangle_shader_strokeColor_loc = glGetUniformLocation(triangle_shader->getId(),"strokeColor");                                             
     triangle_shader_fillColor_loc = glGetUniformLocation(triangle_shader->getId(),"fillColor");
+    triangle_shader_transform_loc = glGetUniformLocation(triangle_shader->getId(),"transform");
     triangle_shader_view_loc = glGetUniformLocation(triangle_shader->getId(),"view");
     triangle_shader_bpos_loc = glGetUniformLocation(triangle_shader->getId(),"bpos");
     triangle_shader_vpos_loc = glGetAttribLocation(triangle_shader->getId(),"pos");
 
-    line_shader = std::make_unique<Shader>(Shader::loadShadersFromString(line_shader_v,line_shader_f));
+    //line_shader = std::make_unique<Shader>(Shader::loadShadersFromString(line_shader_v,line_shader_f));
+    line_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(line_shader_v,line_shader_f)));
 
     line_shader_points_loc = glGetUniformLocation(line_shader->getId(),"points");
     line_shader_strokeWeight_loc = glGetUniformLocation(line_shader->getId(),"strokeWeight");
-    line_shader_strokeColor_loc = glGetUniformLocation(line_shader->getId(),"strokeColor");   
+    line_shader_strokeColor_loc = glGetUniformLocation(line_shader->getId(),"strokeColor"); 
+    line_shader_transform_loc = glGetUniformLocation(line_shader->getId(),"transform");  
     line_shader_view_loc = glGetUniformLocation(line_shader->getId(),"view");
     line_shader_cap_loc = glGetUniformLocation(line_shader->getId(),"captype");
     line_shader_tpos_loc = glGetAttribLocation(line_shader->getId(),"texpos");
     line_shader_vpos_loc = glGetAttribLocation(line_shader->getId(),"pos");
 
-    image_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,image_shader_f));
+    //image_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,image_shader_f));
+    image_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,image_shader_f)));
  
     image_shader_offset_loc = glGetUniformLocation(image_shader->getId(),"offset");
     image_shader_posmode_loc = glGetUniformLocation(image_shader->getId(),"posmode");
+    image_shader_transform_loc = glGetUniformLocation(image_shader->getId(),"transform");  
     image_shader_view_loc = glGetUniformLocation(image_shader->getId(),"view");
     image_shader_tex_loc = glGetUniformLocation(image_shader->getId(),"tex");
     image_shader_tpos_loc = glGetAttribLocation(image_shader->getId(),"texpos");
     image_shader_vpos_loc = glGetAttribLocation(image_shader->getId(),"pos");
 
-    quad_shader = std::make_unique<Shader>(Shader::loadShadersFromString(triangle_shader_v,quad_shader_f));
+    //quad_shader = std::make_unique<Shader>(Shader::loadShadersFromString(triangle_shader_v,quad_shader_f));
+    quad_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(triangle_shader_v,quad_shader_f)));
 
     quad_shader_strokeWeight_loc = glGetUniformLocation(quad_shader->getId(),"strokeWeight");
     quad_shader_strokeColor_loc = glGetUniformLocation(quad_shader->getId(),"strokeColor");                                             
     quad_shader_fillColor_loc = glGetUniformLocation(quad_shader->getId(),"fillColor");
+    quad_shader_transform_loc = glGetUniformLocation(quad_shader->getId(),"transform");  
     quad_shader_view_loc = glGetUniformLocation(quad_shader->getId(),"view");
     quad_shader_bpos_loc = glGetUniformLocation(quad_shader->getId(),"bpos");
     quad_shader_vpos_loc = glGetAttribLocation(quad_shader->getId(),"pos");
+
+    text_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(text_shader_v,text_shader_f)));
+                                      
+    text_shader_fillColor_loc = glGetUniformLocation(text_shader->getId(),"fillColor");
+    text_shader_transform_loc = glGetUniformLocation(text_shader->getId(),"transform");
+    text_shader_view_loc = glGetUniformLocation(text_shader->getId(),"view");
+    text_shader_texture_loc = glGetUniformLocation(image_shader->getId(),"texture");
+    text_shader_posmode_loc = glGetUniformLocation(text_shader->getId(),"posmode");
+    text_shader_vpos_loc = glGetAttribLocation(text_shader->getId(),"pos");
+    text_shader_tpos_loc = glGetAttribLocation(text_shader->getId(),"texpos");
 }
 
 void DGraphics::beginDraw()
 {
-    view_mat = DMatrix4::identity().translate(DVector(-1.0,1.0)).scale(DVector(2.0/buffer_width,2.0/buffer_height));
-    //transform_mat = DMatrix4::identity();
+    //view_mat = DMatrix4::identity().translate(DVector(-1.0,1.0)).scale(DVector(2.0/buffer_width,2.0/buffer_height));
+    transform_mat = DMatrix4::identity();
     glBindFramebuffer(GL_FRAMEBUFFER,buffer_id);
     glViewport(0,0,buffer_width,buffer_height);
 }
@@ -369,7 +400,7 @@ Color DGraphics::color(float grey, float alpha)
     // Color uses main target colormode
     // Gotta do this to use local colormode
     Color r;
-    std::memset(&r+1,v,3);
+    std::memset(reinterpret_cast<uint8_t*>(&r)+1,v,3);
     reinterpret_cast<uint8_t*>(&r)[0] = a;
     r.RGB2HSB(v,v,v);
 
@@ -438,6 +469,11 @@ void DGraphics::noTint()
     properties.use_tint = false;
 }
 
+void DGraphics::textFont(DFont font)
+{
+    properties.font = font;
+}
+
 void DGraphics::strokeCap(CapStyle cap)
 {
     properties.strokecap = cap;
@@ -476,8 +512,8 @@ void DGraphics::translate(float x, float y, float z)
 
 void DGraphics::translate(const DVector& t)
 {
-    //transform_mat = transform_mat.translate(DVector(t.x/buffer_width,-t.y/buffer_height));
-    view_mat = view_mat.translate(DVector(t.x,-t.y));
+    transform_mat = transform_mat.translate(DVector(t.x,-t.y));
+    //view_mat = view_mat.translate(DVector(t.x,-t.y));
 }
 
 void DGraphics::rotate(float angle)
@@ -487,18 +523,20 @@ void DGraphics::rotate(float angle)
 
 void DGraphics::rotateX(float angle)
 {
-    view_mat = view_mat.rotate<Axis::X>(-angle);
+    //view_mat = view_mat.rotate<Axis::X>(-angle);
+    transform_mat = transform_mat.rotate<Axis::X>(-angle);
 }
 
 void DGraphics::rotateY(float angle)
 {
-    view_mat = view_mat.rotate<Axis::Y>(-angle);
+    //view_mat = view_mat.rotate<Axis::Y>(-angle);
+    transform_mat = transform_mat.rotate<Axis::Y>(-angle);
 }
 
 void DGraphics::rotateZ(float angle)
 {
-    //transform_mat = transform_mat.rotate<Axis::Z>(angle);
-    view_mat = view_mat.rotate<Axis::Z>(-angle);
+    transform_mat = transform_mat.rotate<Axis::Z>(-angle);
+    //view_mat = view_mat.rotate<Axis::Z>(-angle);
 }
 
 void DGraphics::scale(float s)
@@ -518,8 +556,8 @@ void DGraphics::scale(float x, float y, float z)
 
 void DGraphics::scale(const DVector& s)
 {
-    //transform_mat = transform_mat.scale(s);
-    view_mat = view_mat.scale(s);
+    transform_mat = transform_mat.scale(s);
+    //view_mat = view_mat.scale(s);
 }
 
 void DGraphics::push()
@@ -536,7 +574,7 @@ void DGraphics::pop()
 
 void DGraphics::pushMatrix()
 {
-    matrix_stack.push(view_mat);
+    matrix_stack.push(transform_mat);
 }
 
 void DGraphics::popMatrix()
@@ -546,7 +584,7 @@ void DGraphics::popMatrix()
         return;
     }
 
-    view_mat = matrix_stack.top();
+    transform_mat = matrix_stack.top();
     matrix_stack.pop();
 }
 
@@ -579,7 +617,7 @@ void DGraphics::ellipse(float x, float y, float sizex, float sizey)
                                                                     properties.fill_color.green()/255.0f,
                                                                     properties.fill_color.blue()/255.0f,
                                                                     properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
-    //glUniformMatrix4fv(ellipse_shader_transform_loc,1,GL_FALSE,transform_mat.values);
+    glUniformMatrix4fv(ellipse_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(ellipse_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(ellipse_shader_posmode_loc,properties.ellipsemode);
 
@@ -625,6 +663,7 @@ void DGraphics::rect(float x, float y, float sizex, float sizey, float tl, float
                                                                     properties.fill_color.blue()/255.0f,
                                                                     properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
     glUniformMatrix4fv(rect_shader_view_loc,1,GL_FALSE,view_mat.values);
+    glUniformMatrix4fv(rect_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniform1i(rect_shader_posmode_loc,properties.rectmode);
 
     glEnableVertexAttribArray(rect_shader_vpos_loc);
@@ -664,6 +703,8 @@ void DGraphics::triangle(float x1, float y1, float x2, float y2, float x3, float
                                                                     properties.fill_color.green()/255.0f,
                                                                     properties.fill_color.blue()/255.0f,
                                                                     properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+                                                                    
+    glUniformMatrix4fv(triangle_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(triangle_shader_view_loc,1,GL_FALSE,view_mat.values);
 
     glEnableVertexAttribArray(triangle_shader_vpos_loc);
@@ -690,6 +731,7 @@ void DGraphics::line(float x1, float y1, float x2, float y2)
                                                                     properties.stroke_color.green()/255.0f,
                                                                     properties.stroke_color.blue()/255.0f,
                                                                     properties.stroke_color.alpha()/255.0f);
+    glUniformMatrix4fv(line_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(line_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(line_shader_cap_loc,properties.strokecap);
 
@@ -731,6 +773,7 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
     glUseProgram(image_shader->getId());
     glUniform4f(image_shader_offset_loc,x,y,w,h);
    
+    glUniformMatrix4fv(image_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(image_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(image_shader_posmode_loc,properties.imagemode);
 
@@ -905,15 +948,6 @@ void DGraphics::quad(const DVector& p1, const DVector& p2, const DVector& p3, co
 
 void DGraphics::shape(DShape* s, float x, float y, float w, float h)
 {
-    // DEBUG TEMP: Draw bounds
-    glColor4ub(0, 0, 0, 255);
-    glBegin(GL_LINE_LOOP);
-    glVertex2f(w, h);
-    glVertex2f(x, h);
-    glVertex2f(x, y);
-    glVertex2f(w, y);
-    glEnd();
-
     // If SVG was loaded into this shape its objects has been split to new child shapes
     // The NULL image indicates that when drawing this shape, only its children should be drawn instead
     if (s->image != NULL)
@@ -921,8 +955,12 @@ void DGraphics::shape(DShape* s, float x, float y, float w, float h)
         // If child of SVG shape was copied this is where it's drawn
         for (NSVGpath* path = s->image->shapes->paths; path != NULL; path = path->next)
         {
-            shapeDrawPath(path->pts, path->npts, path->closed, 1.0f);
-            shapeDrawControlPts(path->pts, path->npts);
+            strokeWeight(s->image->shapes->strokeWidth);
+            for (int i = 0; i < path->npts - 1; i += 3) 
+            {
+                float* p = &path->pts[i * 2];
+                bezier(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
+            }
         }
     }
 
@@ -934,129 +972,13 @@ void DGraphics::shape(DShape* s, float x, float y, float w, float h)
 
         for (NSVGpath* path = child->image->shapes->paths; path != NULL; path = path->next)
         {
-            shapeDrawPath(path->pts, path->npts, path->closed, 1.0f);
-            shapeDrawControlPts(path->pts, path->npts);
+
+            for (int i = 0; i < path->npts - 1; i += 3)
+            {
+                float* p = &path->pts[i * 2];
+                bezier(p[0], p[1], p[6], p[7], p[2], p[3], p[4], p[5]);
+            }
         }
-    }
-}
-
-void DGraphics::shapeDrawPath(float* pts, int npts, char closed, float tol)
-{
-    int i;
-    static unsigned char lineColor[4] = { 0,160,192,255 };
-
-    glBegin(GL_LINE_STRIP);
-    glColor4ubv(lineColor);
-    glVertex2f(pts[0], pts[1]);
-    for (i = 0; i < npts - 1; i += 3)
-    {
-        float* p = &pts[i * 2];
-        shapeCubicBez(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], tol, 0);
-    }
-
-    if (closed) 
-    {
-        glVertex2f(pts[0], pts[1]);
-    }
-    glEnd();
-
-    glDrawArrays(GL_TRIANGLES, 0, npts);
-}
-
-float DGraphics::shapeDistPtSeg(float x, float y, float px, float py, float qx, float qy)
-{
-    float pqx, pqy, dx, dy, d, t;
-    pqx = qx - px;
-    pqy = qy - py;
-    dx = x - px;
-    dy = y - py;
-    d = pqx * pqx + pqy * pqy;
-    t = pqx * dx + pqy * dy;
-    if (d > 0) t /= d;
-    if (t < 0) t = 0;
-    else if (t > 1) t = 1;
-    dx = px + t * pqx - x;
-    dy = py + t * pqy - y;
-    return dx * dx + dy * dy;
-}
-
-void DGraphics::shapeDrawControlPts(float* pts, int npts)
-{
-    int i;
-    static unsigned char lineColor[4] = { 0,160,192,255 };
-    static unsigned char bgColor[4] = { 205,202,200,255 };
-
-
-    // Control lines
-    glColor4ubv(lineColor);
-    glBegin(GL_LINES);
-    for (i = 0; i < npts - 1; i += 3) {
-        float* p = &pts[i * 2];
-        glVertex2f(p[0], p[1]);
-        glVertex2f(p[2], p[3]);
-        glVertex2f(p[4], p[5]);
-        glVertex2f(p[6], p[7]);
-    }
-    glEnd();
-
-    // Points
-    glPointSize(6.0f);
-    glColor4ubv(lineColor);
-
-    glBegin(GL_POINTS);
-    glVertex2f(pts[0], pts[1]);
-    for (i = 0; i < npts - 1; i += 3) {
-        float* p = &pts[i * 2];
-        glVertex2f(p[6], p[7]);
-    }
-    glEnd();
-
-    // Points
-    glPointSize(3.0f);
-
-    glBegin(GL_POINTS);
-    glColor4ubv(bgColor);
-    glVertex2f(pts[0], pts[1]);
-    for (i = 0; i < npts - 1; i += 3) {
-        float* p = &pts[i * 2];
-        glColor4ubv(lineColor);
-        glVertex2f(p[2], p[3]);
-        glVertex2f(p[4], p[5]);
-        glColor4ubv(bgColor);
-        glVertex2f(p[6], p[7]);
-    }
-    glEnd();
-}
-
-void DGraphics::shapeCubicBez(float x1, float y1, float x2, float y2,
-    float x3, float y3, float x4, float y4,
-    float tol, int level)
-{
-    float x12, y12, x23, y23, x34, y34, x123, y123, x234, y234, x1234, y1234;
-    float d;
-
-    if (level > 12) return;
-
-    x12 = (x1 + x2) * 0.5f;
-    y12 = (y1 + y2) * 0.5f;
-    x23 = (x2 + x3) * 0.5f;
-    y23 = (y2 + y3) * 0.5f;
-    x34 = (x3 + x4) * 0.5f;
-    y34 = (y3 + y4) * 0.5f;
-    x123 = (x12 + x23) * 0.5f;
-    y123 = (y12 + y23) * 0.5f;
-    x234 = (x23 + x34) * 0.5f;
-    y234 = (y23 + y34) * 0.5f;
-    x1234 = (x123 + x234) * 0.5f;
-    y1234 = (y123 + y234) * 0.5f;
-
-    d = shapeDistPtSeg(x1234, y1234, x1, y1, x4, y4);
-    if (d > tol * tol) {
-        shapeCubicBez(x1, y1, x12, y12, x123, y123, x1234, y1234, tol, level + 1);
-        shapeCubicBez(x1234, y1234, x234, y234, x34, y34, x4, y4, tol, level + 1);
-    }
-    else {
-        glVertex2f(x4, y4);
     }
 }
 
@@ -1106,6 +1028,199 @@ bool DGraphics::save(const std::string& filename, ImageFormat format) const
     return result == 1;
 }
 
+void DGraphics::text(const std::string& txt, float x, float y)
+{
+    text(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(txt),x,y);
+}
+
+void DGraphics::text(const std::wstring& txt, float x, float y)
+{
+    if(!properties.font.valid())
+    {
+        dbg::error("No valid font set!");
+        return;
+    }
+
+    if(!txt.size())
+    {
+        return;
+    }
+
+    txt_vert_buffer.clear();
+    txt_texc_buffer.clear();
+
+    auto& chars = properties.font.impl->chars;
+
+    float height = -properties.font.impl->char_height;
+    float row_s = properties.font.impl->row_spacing;
+    float char_s = properties.font.impl->char_spacing;
+    float bl = properties.font.impl->baseline;
+
+    //Assume 'missing character' to always be present
+    auto* _c = &(chars[L'\0']);
+
+    const auto* first = _c;
+
+    auto f = chars.find(txt[0]);
+
+    if(f != chars.end())
+    {
+        first = &f->second;
+    }
+
+    //align such that origin is the top-left corner of the 1st characater
+    float xloc = x - first->bearing_x;
+    float yloc = -y + height + bl;
+
+    for(unsigned i = 0; i < txt.length(); ++i)
+    {   
+        const auto* c = _c;
+
+        bool nl = false;
+
+        if(txt[i] == '\n')
+        {
+            nl = true;
+
+            ++i;
+
+            if(i >= txt.length())
+            {
+                break;
+            }
+        }
+        
+        f = chars.find(txt[i]);
+
+        if(f != chars.end())
+        {
+            c = &f->second;
+        }
+        else
+        {
+            if(properties.font.impl->load_additional_char(txt[i]))
+            {
+                properties.font.impl->apply_texture();
+            }
+
+            auto& nc = chars[txt[i]];
+            c = &nc;
+        }
+        
+        if(nl)
+        {
+            xloc = x - c->bearing_x;
+            yloc += height - row_s + bl;
+        }
+
+        //calculate vertex positions from character metrics
+        float x1 = xloc + c->bearing_x;
+        float y1 = yloc - c->bearing_y + bl;
+        float x2 = xloc + c->bearing_x + c->width;
+        float y2 = yloc - c->bearing_y - c->height + bl;
+
+        txt_vert_buffer.insert(txt_vert_buffer.end(),
+        {
+            x1, y2,
+            x2, y2,
+            x1, y1,
+
+            x2, y2,
+            x2, y1,
+            x1, y1,
+        });
+
+        //calculate texture coordinates from character metrics
+        float tx1 = c->tx_pos_x;
+        float ty1 = c->tx_pos_y;
+        float tx2 = c->tx_pos_x + c->tx_width;
+        float ty2 = c->tx_pos_y + c->tx_height;
+
+        txt_texc_buffer.insert(txt_texc_buffer.end(),
+        {
+            tx1,ty2,
+            tx2,ty2,
+            tx1,ty1,
+
+            tx2,ty2,
+            tx2,ty1,
+            tx1,ty1,
+        });
+
+        //move cursor
+        xloc += c->advance_x/64.0f + char_s;
+    }
+
+    glUseProgram(text_shader->getId());
+    glUniform4f(text_shader_fillColor_loc,properties.fill_color.red()/255.0f,
+                                                                    properties.fill_color.green()/255.0f,
+                                                                    properties.fill_color.blue()/255.0f,
+                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniformMatrix4fv(text_shader_transform_loc,1,GL_FALSE,transform_mat.values);
+    glUniformMatrix4fv(text_shader_view_loc,1,GL_FALSE,view_mat.values);
+    glUniform1i(text_shader_posmode_loc,properties.rectmode);
+
+    glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, properties.font.impl->texture_id);
+    glUniform1i(text_shader_texture_loc,0);
+
+    glEnableVertexAttribArray(text_shader_vpos_loc);
+    glEnableVertexAttribArray(text_shader_tpos_loc);
+
+    glVertexAttribPointer(rect_shader_tpos_loc,2,GL_FLOAT,false,0, txt_texc_buffer.data());
+    glVertexAttribPointer(rect_shader_vpos_loc,2,GL_FLOAT,false,0, txt_vert_buffer.data());
+
+    glDrawArrays(GL_TRIANGLES,0,txt_vert_buffer.size()/2);
+
+    glDisableVertexAttribArray(rect_shader_vpos_loc);
+    glDisableVertexAttribArray(rect_shader_tpos_loc);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+vec2f bezier_bezierCubic(vec2f a, vec2f b, vec2f c, vec2f d, float t)
+{
+    float f1 = 1.0-t;
+    return f1*f1*f1*a + 
+    3.0*f1*f1*t*b + 
+    3.0*f1*t*t*c + 
+    t*t*t*d;
+}
+
+float bezier_getT(float t, float l, vec2f a, vec2f b, vec2f c)
+{
+    return t + (l/(((t*t)*a + t*b + c).len()));
+}
+
+void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2)
+{
+    vec2f a = vec2f{x1,y1};
+    vec2f d = vec2f{x2,y2};
+    vec2f b = vec2f{cx1,cy1};
+    vec2f c = vec2f{cx2,cy2};
+
+    vec2f v1 = -3.0*a + 9.0*b - 9.0*c + 3.0*d;
+    vec2f v2 = 6.0*a - 12.0*b + 6.0*c;
+    vec2f v3 = -3.0*a + 3.0*b;
+
+    float s = 10.0; //segment length in pixels
+    float t = 0.0;
+
+    vec2f p = bezier_bezierCubic(a,b,c,d,t);
+
+    while(t <= 1.0)
+    {
+        vec2f np = bezier_bezierCubic(a,b,c,d,t);
+        line(p.x,p.y,np.x,np.y);
+        p = np;
+        t = bezier_getT(t,s,v1,v2,v3);
+    }
+}
+
+void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2)
+{
+    bezier(p1.x,p2.y,p2.x,p2.y,cp1.x,cp1.y,cp2.x,cp2.y);
+}
 
 GraphicsProperties DGraphics::getStyle()
 {

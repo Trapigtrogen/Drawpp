@@ -6,6 +6,7 @@
 #include <matrix4.hpp>
 #include <color.hpp>
 #include <shape.hpp>
+#include <font.hpp>
 #include <memory>
 
 class DImage;
@@ -39,6 +40,7 @@ enum ImageFormat
     BMP,
 };
 
+///\private
 struct GraphicsProperties
 {
     Color last_background_color = {0,0,0};
@@ -58,8 +60,15 @@ struct GraphicsProperties
     PosMode rectmode = PosMode::CORNER;
     PosMode ellipsemode = PosMode::CENTRE;
     PosMode imagemode = PosMode::CORNER;
+    DFont font;
 };
 
+///\brief Graphics class describes a render target
+///
+///All drawing will happen through a DGraphics object. \n
+///Calling the drawpp api drawing functions will relay the call to an internal instance of DGraphics. \n
+///You can create your own instance, and draw to that with the member functions, but make sure to call beginDraw() first, or things will break.
+///When you are done drawing to your own target, remember to call endDraw() before drawing to other targets, or things will break.
 class DGraphics
 {
     friend class Application;
@@ -278,6 +287,10 @@ public:
     void noTint();
 
 
+    ///\brief Set the font which will be used for drawing text
+    void textFont(DFont font);
+
+
     ///\brief Set target cap style to \p cap
     void strokeCap(CapStyle cap);
 
@@ -445,14 +458,9 @@ public:
     ///\brief Draw image \p img at ( \p x, \p y ), resized to ( \p w, \p h)
     void image(const DImage& img, float x, float y, float w, float h);
 
+
     ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)
     void shape(DShape* s, float x, float y, float w, float h);
-    static void shapeCubicBez(float x1, float y1, float x2, 
-                                float y2, float x3, float y3, float x4, float y4,
-                                float tol, int level);
-    void shapeDrawControlPts(float* pts, int npts);
-    void shapeDrawPath(float* pts, int npts, char closed, float tol);
-    static float shapeDistPtSeg(float x, float y, float px, float py, float qx, float qy);
 
 
     ///\brief Draw a quad from points ( \p x1, \p y1 ), ( \p x2, \p y2 ), ( \p x3, \p y3 ) and ( \p x4, \p y4 )
@@ -462,11 +470,31 @@ public:
     ///\brief Draw a quad from points \p p1, \p p2, \p p3 and \p p4
     void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4);
 
+
     ///\brief Save target pixels to a file as an image
     ///
     ///\p filename should not include the extenstion, as it will be added according to \p format.
     ///\return success
     bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG) const;
+
+
+    ///\brief Draw text at ( \p x, \p y )
+    ///
+    ///A font must be set with textFont() before drawing any text.
+    void text(const std::string& txt, float x, float y);
+
+
+    ///\copydoc text(const std::string&,float,float);
+    void text(const std::wstring& txt, float x, float y);
+
+
+    ///\brief Draw a cubic bezier curve from 4 points.
+    void bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2);
+
+
+    ///\brief Draw a cubic bezier curve from 4 points.
+    void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2);
+
 
     GraphicsProperties getStyle();
 
@@ -494,7 +522,7 @@ private:
     GraphicsProperties properties;
 
     //is this needed?
-    //DMatrix4 transform_mat = DMatrix4::identity();
+    DMatrix4 transform_mat = DMatrix4::identity();
 
     //View transformations
     DMatrix4 view_mat;
@@ -506,7 +534,7 @@ private:
     std::stack<GraphicsProperties> property_stack;
 
     //Target framebuffer info
-    unsigned int buffer_id = -1;
+    unsigned int buffer_id = static_cast<unsigned int>(-1);
     unsigned int texture_id = 0;
     unsigned int buffer_width = 0;
     unsigned int buffer_height = 0;
@@ -519,7 +547,7 @@ private:
     int ellipse_shader_strokeWeight_loc;
     int ellipse_shader_strokeColor_loc;
     int ellipse_shader_fillColor_loc;
-    //int ellipse_shader_transform_loc;
+    int ellipse_shader_transform_loc;
     int ellipse_shader_view_loc;
     int ellipse_shader_posmode_loc;
     int ellipse_shader_vpos_loc;
@@ -531,7 +559,7 @@ private:
     int rect_shader_strokeWeight_loc;
     int rect_shader_strokeColor_loc;
     int rect_shader_fillColor_loc;
-    //int rect_shader_transform_loc;
+    int rect_shader_transform_loc;
     int rect_shader_view_loc;
     int rect_shader_posmode_loc;
     int rect_shader_radii_loc;
@@ -544,6 +572,7 @@ private:
     int triangle_shader_strokeColor_loc;
     int triangle_shader_fillColor_loc;
     int triangle_shader_bpos_loc;
+    int triangle_shader_transform_loc;
     int triangle_shader_view_loc;
     int triangle_shader_vpos_loc;
 
@@ -552,6 +581,7 @@ private:
     int line_shader_points_loc;
     int line_shader_strokeWeight_loc;
     int line_shader_strokeColor_loc;
+    int line_shader_transform_loc;
     int line_shader_view_loc;
     int line_shader_cap_loc;
     int line_shader_vpos_loc;
@@ -562,6 +592,7 @@ private:
     int image_shader_offset_loc;
     int image_shader_posmode_loc;
     int image_shader_tex_loc;
+    int image_shader_transform_loc;
     int image_shader_view_loc;
     int image_shader_vpos_loc;
     int image_shader_tpos_loc;
@@ -572,8 +603,19 @@ private:
     int quad_shader_strokeColor_loc;
     int quad_shader_fillColor_loc;
     int quad_shader_bpos_loc;
+    int quad_shader_transform_loc;
     int quad_shader_view_loc;
     int quad_shader_vpos_loc;
+
+    //Shader used to draw text
+    std::unique_ptr<Shader> text_shader;
+    int text_shader_texture_loc;
+    int text_shader_posmode_loc;
+    int text_shader_fillColor_loc;
+    int text_shader_transform_loc;
+    int text_shader_view_loc;
+    int text_shader_vpos_loc;
+    int text_shader_tpos_loc;
 };
 
 #endif

@@ -23,7 +23,7 @@ void setup()
 
     // Normal image containing 2 elements with names/ids
     printf("Loading image (multiple elements) to shape3...\n\n");
-    shape3 = loadShape("assets/nano.svg");
+    shape3 = loadShape("assets/bot1.svg");
 
     // Naming
     shape1.name = "shape1";
@@ -64,8 +64,9 @@ void setup()
 void draw(float) 
 {
     background(255,255,255);
-    strokeWeight(7);
+    strokeWeight(3);
     shape(&shape3, 10.0f, 10.0f, 400.0f, 500.0f);
+    shape(&shape1, 10.0f, 10.0f, 400.0f, 500.0f);
 }
 
 int main() 
