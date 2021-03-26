@@ -17,6 +17,14 @@ Processing style graphic library for c++ using OpenGL. Support for Windows and L
 Clone with `git clone git@gitlab.com:Trapigtrogen/graphics-library.git --recursive` to get the dependensies also\
 You can also update the submodule afterwards with `git submodule update --init`
 
+## Automatic
+We provide scripts for building releases. Windows script 'build-release.bat' assumes you have cmake and Visual Studio installed
+On Linux there's 'install-dependencies.sh' which installs dependencies using you distro's package manager. 'build-release.sh' for building the release.
+
+release folder will be created and deployed program will be build there.
+
+## Manual
+
 ### Windows
 Use CMake-gui 
 
