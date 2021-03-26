@@ -34,12 +34,24 @@ public:
     void size(int width, int height);
     void setResizable(bool);
     void setTitle(const char* title);
+
+
+    ///\brief Set the maximum framerate
+    ///
+    ///Anything below 1, will set the fps to unlimited. \n
+    ///If VSync is enabled, fps is limited by monitor refresh rate, 
+    ///and setting the maximum framerate above that will have no effect. \n
+    void setFrameRate(int fps);
+
+
+    ///\brief Enable or disable VSync
+    void setVSync(bool vsync);
     void exit();
 
     DGraphics& graphics_object();
-    int getWidth();
-    int getHeight();
-    bool graphicsExists();
+    int getWidth() const;
+    int getHeight() const;
+    bool graphicsExists() const;
 
     static Application* GetInstance();
 
@@ -49,6 +61,8 @@ public:
 private:
     bool init_application();
     void cleanup_application();
+
+    float min_delta = -1;
 
     void draw_buffer();
     

@@ -8,6 +8,7 @@
 #include <time.hpp>
 #include <font.hpp>
 #include <chrono>
+#include <thread>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -101,15 +102,28 @@ int Application::run(std::function<void(float)> draw,
 
     started = true;
 
-    std::chrono::system_clock::time_point st = std::chrono::system_clock::now();
+    std::chrono::steady_clock::time_point st = std::chrono::steady_clock::now();
+
+    float delta = 0;
 
     while(!quit_flag)
     {
         Input::setPrevMouse();
         glfwPollEvents();
 
-        draw_func(std::chrono::duration<float>(std::chrono::system_clock::now()-st).count());
-        st = std::chrono::system_clock::now();
+        delta = std::chrono::duration<float>(std::chrono::steady_clock::now()-st).count();
+
+        if(min_delta < 0 || min_delta < delta)
+        {
+            draw_func(delta);
+        }
+        else
+        {
+            std::this_thread::sleep_for(std::chrono::duration<float>(min_delta-delta));
+            draw_func(min_delta);
+        }
+
+        st = std::chrono::steady_clock::now();
 
         draw_buffer();
 
@@ -195,6 +209,22 @@ void Application::setTitle(const char* title)
     }
 }
 
+void Application::setFrameRate(int fps)
+{
+    if(fps < 1)
+    {
+        min_delta = -1;
+        return;
+    }
+
+    min_delta = 1.0/(fps+1);
+}
+
+void Application::setVSync(bool vsync)
+{
+    glfwSwapInterval(vsync);
+}
+
 void Application::exit()
 {
     quit_flag = true;
@@ -205,7 +235,7 @@ DGraphics& Application::graphics_object()
     return *graphics;
 }
 
-int Application::getWidth()
+int Application::getWidth() const
 {
     if(window) 
     {
@@ -214,7 +244,7 @@ int Application::getWidth()
     return -1;
 }
 
-int Application::getHeight()
+int Application::getHeight() const
 {
     if(window)   
     {
@@ -223,7 +253,7 @@ int Application::getHeight()
     return -1;
 }
 
-bool Application::graphicsExists()
+bool Application::graphicsExists() const
 {
     if(graphics != nullptr) return true;
     return false;
