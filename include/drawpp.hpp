@@ -8,6 +8,7 @@
 #include <graphics.hpp>
 #include <shape.hpp>
 #include <font.hpp>
+#include <constants.hpp>
 
 void exit();
 
