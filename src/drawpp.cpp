@@ -609,6 +609,11 @@ void pop()
     Application::GetInstance()->graphics_object().pop();
 }
 
+void applyMatrix(const DMatrix4& m)
+{
+    Application::GetInstance()->graphics_object().applyMatrix(m);
+}
+
 void pushMatrix()
 {
     Application::GetInstance()->graphics_object().pushMatrix();

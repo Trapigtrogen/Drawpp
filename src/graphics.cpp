@@ -582,6 +582,11 @@ void DGraphics::pop()
     popStyle();
 }
 
+void DGraphics::applyMatrix(const DMatrix4& m)
+{
+    transform_mat = transform_mat * m;
+}
+
 void DGraphics::pushMatrix()
 {
     matrix_stack.push(transform_mat);

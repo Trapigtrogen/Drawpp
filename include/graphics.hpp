@@ -384,6 +384,10 @@ public:
     void pop();
 
 
+    ///\brief Multiply the transform matrix by \p m
+    void applyMatrix(const DMatrix4& m);
+
+
     ///\brief Push current transformations to the stack
     void pushMatrix();
 

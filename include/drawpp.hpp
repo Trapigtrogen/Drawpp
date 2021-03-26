@@ -181,6 +181,7 @@ void noiseMapSize(int width, int heigth);
 // Push Pop
 void push();
 void pop();
+void applyMatrix(const DMatrix4& m);
 void pushMatrix();
 void popMatrix();
 void pushStyle();
