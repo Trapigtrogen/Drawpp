@@ -100,6 +100,7 @@ cd ..
 ar -qc libOpenGLGraphicsLibrary.a ./lib1/*.o ./lib2/*.o ./lib3/*.o
 
 # move tests to main folder
+rm -rf ./tests
 if [ -d ./bin/tests ] && [ $debugBuild = "ON" ]; then
     echo "Copying tests over..."
     mv ./bin/tests ./
@@ -147,6 +148,5 @@ rm -rf ./external
 
 # remove other unnecessary folders
 rm -rf ./CMakeFiles
-rm -rf ./tests
 
 echo "Done!"
