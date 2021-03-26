@@ -46,7 +46,6 @@ DShape::DShape(const DShape& other)
 	{
 		addChild(it);
 	}
-
 }
 
 DShape::DShape(DShape&& other)
@@ -130,6 +129,12 @@ DShape& DShape::operator=(DShape&& other)
 
 DShape& DShape::operator=(DShape* other) 
 {
+	if (other == nullptr) 
+	{
+		DShape empty;
+		return empty;
+	}
+
 	if(this != other) 
 	{
 		for(auto& it : children)
@@ -263,13 +268,11 @@ void DShape::loadSVG(std::string filename)
 
 		addChild(childShape); // Create parent-child link
 	}
-
-	printf("Children created\n");
 	
 	// Clear dublicate data
 	image = nullptr;
 
-	// Destroy shapel chain as each child would continue it
+	// Destroy shape chain as each child would continue it
 	for(auto& it : children)
 	{
 		it->image->shapes->next = NULL;

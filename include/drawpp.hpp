@@ -20,8 +20,9 @@ void setTitle(const char* title);
 
 // DShape
 // Draws given shape
-//void shape(DShape shape, int x,int  y);
-//void shape(DShape shape, int x, int y, int w, int h);
+void shape(DShape* _shape);
+void shape(DShape* _shape, float x, float  y);
+void shape(DShape* _shape, float x, float y, float w, float h);
 DShape loadShape(std::string filename);
 DShape createShape();
 DShape createShape(DShape::ShapeType type);

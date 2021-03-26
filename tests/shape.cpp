@@ -2,28 +2,28 @@
 #include <iostream>
 
 DShape shape1; // 1 element image
-DShape shape2; // no image. child of 1
+DShape shape2; // no image. child of 3
 DShape shape3; // 2 custom named element image
 DShape shape4; // empty image
 
 void setup() 
 {
-    size(500, 500);
-    setTitle("Vertex Shaping");
     setResizable(true);
+    size(1000, 1000);
+    setTitle("Vertex Shaping");
 
     // Empty images are not allowed and system should revert the load after loading svg with no elements
     printf("Loading empty image to shape4...\n");
     //shape4 = loadShape("assets/empty.svg"); 
 
     // Normal image containing 1 element
-    
-    //printf("Loading image (1 element) to shape1...\n");
-    //shape1 = loadShape("assets/tests/archlinux-logo-black.svg");
+    // DEBUG seems like all the images  with 1 element will break
+    printf("Loading image (1 element) to shape1...\n");
+    shape1 = loadShape("assets/circleimage.svg");
 
-    // Normal image containing 2 elements with names/ids
+    // Normal image containing multiple elements with names/ids
     printf("Loading image (multiple elements) to shape3...\n\n");
-    //shape3 = loadShape("assets/starstripe.svg");
+    shape3 = loadShape("assets/bot1.svg");
 
     // Naming
     shape1.name = "shape1";
@@ -55,17 +55,18 @@ void setup()
     // Count shape3 children
     childSize = shape3.getChildCount();
     std::cout << "Shape3 has " << childSize << " children \nThey are:\n";
-    for(int i = 0; i < childSize; ++i) {
+    for(int i = 0; i < childSize; ++i)
+    {
         std::cout << shape3.getChild(i)->name << "\n";
     }
 }
 
 void draw(float) 
 {
-    //fill(0, 250, 181); // Set fill colour for next shape
-    //rect(0, 0, 10, 10); // Draw. Origin point and size
-    
-    //shape(shape1, 10, 10, 80, 80);
+    background(255,255,255);
+    strokeWeight(3);
+    shape(&shape3, 10.0f, 10.0f, 400.0f, 500.0f);
+    shape(&shape1, 10.0f, 10.0f, 400.0f, 500.0f);
 }
 
 int main() 

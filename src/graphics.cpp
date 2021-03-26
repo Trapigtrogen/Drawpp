@@ -14,6 +14,11 @@
 
 #include "stb_image_write.h"
 
+#pragma warning(push,1)
+#include "nanosvg.h"
+#include "nanosvgrast.h"
+#pragma warning(pop)
+
 const float primitive_square[] = 
 {
     0.0f, -1.0f,
@@ -954,6 +959,42 @@ void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3,
 void DGraphics::quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4)
 {
     quad(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
+}
+
+void DGraphics::shape(DShape* s, float x, float y, float w, float h)
+{
+    // If SVG was loaded into this shape its objects has been split to new child shapes
+    // The NULL image indicates that when drawing this shape, only its children should be drawn instead
+    if (s->image != NULL)
+    {
+        // If child of SVG shape was copied this is where it's drawn
+        for (NSVGpath* path = s->image->shapes->paths; path != NULL; path = path->next)
+        {
+            strokeWeight(s->image->shapes->strokeWidth);
+            for (int i = 0; i < path->npts - 1; i += 3) 
+            {
+                float* p = &path->pts[i * 2];
+                bezier(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
+            }
+        }
+    }
+
+    // Draw childrens
+    for (int i = 0; i < s->getChildCount(); i++)
+    {
+        DShape* child = s->getChild(i);
+        if (child->image == NULL) { continue; }
+
+        for (NSVGpath* path = child->image->shapes->paths; path != NULL; path = path->next)
+        {
+
+            for (int i = 0; i < path->npts - 1; i += 3)
+            {
+                float* p = &path->pts[i * 2];
+                bezier(p[0], p[1], p[6], p[7], p[2], p[3], p[4], p[5]);
+            }
+        }
+    }
 }
 
 bool DGraphics::save(const std::string& filename, ImageFormat format) const
