@@ -1,17 +1,17 @@
 Processing style graphic library for c++ using OpenGL. Support for Windows and Linux desktops and Raspberry Pi 3 upwards
 
 # Features
-* Draw lines and shapes
+* Draw lines and basic shapes
 * Render Image as texture
 * Shape class with GameObject like parent-child hierarcy
+  * Load SVG to shape (currently draws only the outlines)
 * Color API
 * Random API
 * Perlin noise generator
 * Load and render fonts
 
 ### Upcoming
-* Load SVG files as shapes
-  * Vector graphics
+* Vector graphics
 
 # Building
 Clone with `git clone git@gitlab.com:Trapigtrogen/graphics-library.git --recursive` to get the dependensies also\
@@ -36,8 +36,8 @@ cmake ..
 
 ### Linux
 You need to install your distripution's development packages:
-* __Arch__ `sudo pacman -Sy base-devel`
-* __Debian__/__Raspberry Pi OS__  `sudo apt-get -y install g++ libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev`\
+* __Arch__ `sudo pacman -Sy base-devel git cmake `
+* __Debian__/__Raspberry Pi OS__  `sudo apt-get -y install g++ git cmake libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev`\
 On Raspberry Pi make sure that you have using Legacy OpenGL driver from `sudo raspi-config` -> Advanced options -> GL Driver -> Legacy - Original non-GL desktop driver
 
 Type following in the terminal:
