@@ -98,6 +98,14 @@ void background(float gray, float alpha);
 void background(float v1, float v2, float v3);
 void background(float v1, float v2, float v3, float alpha);
 
+void tint(Color col);
+void tint(Color rgb, float alpha);
+void tint(const char* hexCol);
+void tint(float gray);
+void tint(float gray, float alpha);
+void tint(float v1, float v2, float v3);
+void tint(float v1, float v2, float v3, float alpha);
+
 void colorMode(ColorMode mode);
 void colorMode(ColorMode mode, float max);
 void colorMode(ColorMode mode, float max1, float max2, float max3);

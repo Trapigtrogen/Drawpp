@@ -208,14 +208,34 @@ public:
     void colorMode(ColorMode mode, float max1, float max2, float max3, float maxA);
 
 
-    //void tint(Color rgba);
-    //void tint(Color rgb, float alpha);
-    //void tint(float grey );
-    //void tint(float grey, float alpha);
+    ///\brief Set tint color to \p rgba
+    void tint(Color rgba);
 
-    //affected by colorMode
-    //void tint(float v1, float v2, float v3);
-    //void tint(float v1, float v2, float v3, float alpha);
+
+    ///\brief Set tint color to \p rgb using \p alpha
+    ///
+    ///The alpha component of \p rgb is ignored.
+    void tint(Color rgb, float alpha);
+
+
+    ///\brief Set tint color to \p grey
+    void tint(float grey );
+
+
+    ///\brief Set tint color to \p grey with \p alpha
+    void tint(float grey, float alpha);
+
+
+    ///\brief Set tint color 
+    ///
+    ///ColorMode determines how the values are interpreted.
+    void tint(float v1, float v2, float v3);
+
+    
+    ///\brief Set tint color with \p alpha
+    ///
+    ///ColorMode determines how the values are interpreted.
+    void tint(float v1, float v2, float v3, float alpha);
 
 
     ///\brief Get a color from \p grey
@@ -595,6 +615,8 @@ private:
     //Shader used to draw images
     std::unique_ptr<Shader> image_shader;
     int image_shader_offset_loc;
+    int image_shader_tint_loc;
+    int image_shader_use_tint_loc;
     int image_shader_posmode_loc;
     int image_shader_tex_loc;
     int image_shader_transform_loc;

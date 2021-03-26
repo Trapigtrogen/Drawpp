@@ -183,6 +183,8 @@ void DGraphics::init_shaders()
     image_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,image_shader_f)));
  
     image_shader_offset_loc = glGetUniformLocation(image_shader->getId(),"offset");
+    image_shader_tint_loc = glGetUniformLocation(image_shader->getId(),"tint");
+    image_shader_use_tint_loc = glGetUniformLocation(image_shader->getId(),"useTint");
     image_shader_posmode_loc = glGetUniformLocation(image_shader->getId(),"posmode");
     image_shader_transform_loc = glGetUniformLocation(image_shader->getId(),"transform");  
     image_shader_view_loc = glGetUniformLocation(image_shader->getId(),"view");
@@ -379,6 +381,41 @@ void DGraphics::colorMode(ColorMode mode, float max1, float max2, float max3, fl
     properties.color_max2 = max2;
     properties.color_max3 = max3;
     properties.color_maxa = maxA;
+}
+
+void DGraphics::tint(Color rgba)
+{
+    properties.tint_color = rgba;
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(Color rgb, float alpha)
+{
+    properties.tint_color = Color(rgb.red(),rgb.green(),rgb.blue(),alpha);
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(float gray )
+{
+    tint(gray,properties.color_maxa);
+}
+
+void DGraphics::tint(float gray, float alpha)
+{
+    properties.tint_color = color(gray, alpha);
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(float v1, float v2, float v3)
+{
+    properties.tint_color = get_color(v1,v2,v3,properties.color_maxa);
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(float v1, float v2, float v3, float alpha)
+{
+    properties.tint_color = get_color(v1,v2,v3,alpha);
+    properties.use_tint = true;
 }
 
 
@@ -791,6 +828,15 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
     glUniformMatrix4fv(image_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(image_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(image_shader_posmode_loc,properties.imagemode);
+
+    glUniform1i(image_shader_use_tint_loc,properties.use_tint);
+    if(properties.use_tint)
+    {
+        glUniform4f(image_shader_tint_loc,properties.tint_color.red()/255.0f,
+                                          properties.tint_color.green()/255.0f,
+                                          properties.tint_color.blue()/255.0f,
+                                          properties.tint_color.alpha()/255.0f);
+    }
 
     img.bind(0);
     glUniform1i(image_shader_tex_loc,0);

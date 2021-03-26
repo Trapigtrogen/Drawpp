@@ -283,6 +283,43 @@ void background(float v1, float v2, float v3, float alpha)
     Application::GetInstance()->graphics_object().background(v1, v2, v3, alpha);
 }
 
+void tint(Color col)
+{
+    Application::GetInstance()->graphics_object().tint(col);
+}
+
+void tint(Color rgb, float alpha)
+{
+    Application::GetInstance()->graphics_object().tint(rgb, alpha);
+}
+
+void tint(const char* hexCol)
+{
+    Color col = Color::HEX2RGB((char*)hexCol);
+    Application::GetInstance()->graphics_object().tint(col);
+}
+
+void tint(float gray)
+{
+    Application::GetInstance()->graphics_object().tint(gray);
+}
+
+void tint(float gray, float alpha)
+{
+    Application::GetInstance()->graphics_object().tint(gray, alpha);
+}
+
+void tint(float v1, float v2, float v3)
+{
+    Application::GetInstance()->graphics_object().tint(v1, v2, v3);
+}
+
+void tint(float v1, float v2, float v3, float alpha)
+{
+    Application::GetInstance()->graphics_object().tint(v1, v2, v3, alpha);
+}
+
+
 void colorMode(ColorMode mode)
 {
     Application::GetInstance()->graphics_object().colorMode(mode);
