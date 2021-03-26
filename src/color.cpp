@@ -86,6 +86,9 @@ Color::operator unsigned int () const
 
 Color Color::lerpColor(const Color& from, const Color& to, float percentage) 
 {
+	// Store colormode for later
+	ColorMode origColMode = Application::GetInstance()->graphics_object().getStyle().colormode;
+
 	// Ensure that the values are in the range
 	if(percentage > 1) percentage = 1.0;
 	if(percentage < 0) percentage = 0.0;
@@ -96,7 +99,12 @@ Color Color::lerpColor(const Color& from, const Color& to, float percentage)
 	uint8_t lerpBlue = from.blueVal + percentage * (to.blueVal - from.blueVal);
     uint8_t lerpAlpha = from.alphaVal + percentage * (to.alphaVal - from.alphaVal);
 
-	return Color(lerpRed, lerpGreen, lerpBlue, lerpAlpha);
+	// Change color mode to rgb and restore after color has been created
+	Application::GetInstance()->graphics_object().colorMode(RGB);
+	Color lerpCol(lerpRed, lerpGreen, lerpBlue, lerpAlpha);
+	Application::GetInstance()->graphics_object().colorMode(origColMode);
+
+	return lerpCol;
 }
 
 void Color::RGB2HSB(uint8_t r, uint8_t g, uint8_t b)
