@@ -11,6 +11,7 @@
 #include <cstring>
 #include <locale>
 #include <codecvt>
+#include <shape.hpp>
 
 #include "stb_image_write.h"
 
@@ -188,6 +189,8 @@ void DGraphics::init_shaders()
     image_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,image_shader_f)));
  
     image_shader_offset_loc = glGetUniformLocation(image_shader->getId(),"offset");
+    image_shader_tint_loc = glGetUniformLocation(image_shader->getId(),"tint");
+    image_shader_use_tint_loc = glGetUniformLocation(image_shader->getId(),"useTint");
     image_shader_posmode_loc = glGetUniformLocation(image_shader->getId(),"posmode");
     image_shader_transform_loc = glGetUniformLocation(image_shader->getId(),"transform");  
     image_shader_view_loc = glGetUniformLocation(image_shader->getId(),"view");
@@ -386,6 +389,41 @@ void DGraphics::colorMode(ColorMode mode, float max1, float max2, float max3, fl
     properties.color_maxa = maxA;
 }
 
+void DGraphics::tint(Color rgba)
+{
+    properties.tint_color = rgba;
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(Color rgb, float alpha)
+{
+    properties.tint_color = Color(rgb.red(),rgb.green(),rgb.blue(),alpha);
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(float gray )
+{
+    tint(gray,properties.color_maxa);
+}
+
+void DGraphics::tint(float gray, float alpha)
+{
+    properties.tint_color = color(gray, alpha);
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(float v1, float v2, float v3)
+{
+    properties.tint_color = get_color(v1,v2,v3,properties.color_maxa);
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(float v1, float v2, float v3, float alpha)
+{
+    properties.tint_color = get_color(v1,v2,v3,alpha);
+    properties.use_tint = true;
+}
+
 
 Color DGraphics::color(float grey)
 {
@@ -452,7 +490,13 @@ float DGraphics::brightness(Color c)
     return (c.brightness() / 255.0f) * properties.color_max3;
 }
 
-
+void DGraphics::bezierDetail(float d)
+{
+    if(d > 0.0)
+    {
+        properties.bezier_detail = d;
+    }
+}
 
 void DGraphics::noFill()
 {
@@ -560,6 +604,21 @@ void DGraphics::scale(const DVector& s)
     //view_mat = view_mat.scale(s);
 }
 
+void DGraphics::shearX(float a)
+{
+    DMatrix4 m;
+    m(0,1) = a;
+    transform_mat = transform_mat * m;
+}
+
+void DGraphics::shearY(float a)
+{
+    DMatrix4 m;
+    m(1,0) = a;
+    transform_mat = transform_mat * m;
+}
+
+
 void DGraphics::push()
 {
     pushMatrix();
@@ -570,6 +629,11 @@ void DGraphics::pop()
 {
     popMatrix();
     popStyle();
+}
+
+void DGraphics::applyMatrix(const DMatrix4& m)
+{
+    transform_mat = transform_mat * m;
 }
 
 void DGraphics::pushMatrix()
@@ -776,6 +840,15 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
     glUniformMatrix4fv(image_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(image_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(image_shader_posmode_loc,properties.imagemode);
+
+    glUniform1i(image_shader_use_tint_loc,properties.use_tint);
+    if(properties.use_tint)
+    {
+        glUniform4f(image_shader_tint_loc,properties.tint_color.red()/255.0f,
+                                          properties.tint_color.green()/255.0f,
+                                          properties.tint_color.blue()/255.0f,
+                                          properties.tint_color.alpha()/255.0f);
+    }
 
     img.bind(0);
     glUniform1i(image_shader_tex_loc,0);
@@ -1187,7 +1260,13 @@ vec2f bezier_bezierCubic(vec2f a, vec2f b, vec2f c, vec2f d, float t)
     t*t*t*d;
 }
 
-float bezier_getT(float t, float l, vec2f a, vec2f b, vec2f c)
+vec2f bezier_bezierQuadratic(vec2f p0, vec2f p1,vec2f p2, float t)
+{
+    float t1 = 1.0-t;
+    return  t1*(t1*p0+t*p1)+t*(t1*p1+t*p2);
+}
+
+float bezier_cubicGetUniformT(float t, float l, vec2f a, vec2f b, vec2f c)
 {
     return t + (l/(((t*t)*a + t*b + c).len()));
 }
@@ -1203,23 +1282,67 @@ void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx1, float 
     vec2f v2 = 6.0*a - 12.0*b + 6.0*c;
     vec2f v3 = -3.0*a + 3.0*b;
 
-    float s = 10.0; //segment length in pixels
+    //float& s = properties.bezier_detail;
+
+    float s = 1.0/properties.bezier_detail;
     float t = 0.0;
+
+    //get t stroke thickness away from zero, to have line start such that zero point is on it's edge
+    //float t_st = bezier_cubicGetUniformT(0.0, properties.stroke_weight, v1, v2, v3);
+    //t = t_st;
 
     vec2f p = bezier_bezierCubic(a,b,c,d,t);
 
-    while(t <= 1.0)
+    //This way to get t, will approximate uniform segment length. 
+    //Better in some cases, but often worse for performance
+    //t = bezier_cubicGetUniformT(t, s, v1, v2, v3);
+
+    t += s;
+
+    while(t < 1.0)
     {
         vec2f np = bezier_bezierCubic(a,b,c,d,t);
         line(p.x,p.y,np.x,np.y);
         p = np;
-        t = bezier_getT(t,s,v1,v2,v3);
+        //t = bezier_cubicGetUniformT(t,s,v1,v2,v3);
+        t += s;
     }
+    t = 1.0;//-t_st;
+
+    vec2f np = bezier_bezierCubic(a, b, c, d, t);
+    line(p.x, p.y, np.x, np.y);
 }
 
 void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2)
 {
     bezier(p1.x,p2.y,p2.x,p2.y,cp1.x,cp1.y,cp2.x,cp2.y);
+}
+
+void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx, float cy)
+{
+    vec2f p0 = vec2f{x1,y1};
+    vec2f p1 = vec2f{cx,cy};
+    vec2f p2 = vec2f{x2,y2};
+
+    float s = 1.0/properties.bezier_detail;
+    float t = 0.0;
+    vec2f p = bezier_bezierQuadratic(p0,p1,p2,t);
+    t += s;
+
+    while(t < 1.0)
+    {
+        vec2f np = bezier_bezierQuadratic(p0,p1,p2,t);
+        line(np.x,np.y,p.x,p.y);
+        p = np;
+        t += s;
+    }
+    vec2f np = bezier_bezierQuadratic(p0,p1,p2,t);
+    line(np.x,np.y,p.x,p.y);
+}
+
+void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp)
+{
+    bezier(p1.x,p1.y,p2.x,p2.y,cp.x,cp.y);
 }
 
 GraphicsProperties DGraphics::getStyle()

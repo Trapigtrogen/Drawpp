@@ -5,9 +5,9 @@
 #include <string>
 #include <matrix4.hpp>
 #include <color.hpp>
-#include <shape.hpp>
 #include <font.hpp>
 #include <memory>
+#include <shape.hpp>
 
 class DImage;
 class Shader;
@@ -61,6 +61,7 @@ struct GraphicsProperties
     PosMode ellipsemode = PosMode::CENTRE;
     PosMode imagemode = PosMode::CORNER;
     DFont font;
+    float bezier_detail = 20;
 };
 
 ///\brief Graphics class describes a render target
@@ -209,14 +210,34 @@ public:
     void colorMode(ColorMode mode, float max1, float max2, float max3, float maxA);
 
 
-    //void tint(Color rgba);
-    //void tint(Color rgb, float alpha);
-    //void tint(float grey );
-    //void tint(float grey, float alpha);
+    ///\brief Set tint color to \p rgba
+    void tint(Color rgba);
 
-    //affected by colorMode
-    //void tint(float v1, float v2, float v3);
-    //void tint(float v1, float v2, float v3, float alpha);
+
+    ///\brief Set tint color to \p rgb using \p alpha
+    ///
+    ///The alpha component of \p rgb is ignored.
+    void tint(Color rgb, float alpha);
+
+
+    ///\brief Set tint color to \p grey
+    void tint(float grey );
+
+
+    ///\brief Set tint color to \p grey with \p alpha
+    void tint(float grey, float alpha);
+
+
+    ///\brief Set tint color 
+    ///
+    ///ColorMode determines how the values are interpreted.
+    void tint(float v1, float v2, float v3);
+
+    
+    ///\brief Set tint color with \p alpha
+    ///
+    ///ColorMode determines how the values are interpreted.
+    void tint(float v1, float v2, float v3, float alpha);
 
 
     ///\brief Get a color from \p grey
@@ -285,6 +306,13 @@ public:
     ///
     ///To enable tint again, call tint().
     void noTint();
+
+
+    ///\brief Set bezier curve detail
+    ///
+    ///Higher detail will result in smoother lines, but will quickly tank performance. \n
+    ///Default detail value is 20.
+    void bezierDetail(float d);
 
 
     ///\brief Set the font which will be used for drawing text
@@ -360,15 +388,21 @@ public:
     ///\brief Scale view by \p x and \p y
     void scale(float x, float y );
 
-
     
     ///\brief Scale view by \p x, \p y and \p z
     void scale(float x, float y, float z);
 
-
     
     ///\brief Scale view by \p s
     void scale(const DVector& s);
+
+
+    ///\brief Shear in the X direction by \p a
+    void shearX(float a);
+
+
+    ///\brief Shear in the Y direction by \p a
+    void shearY(float a);
 
 
     ///\brief Push current transformations, and style properties to the stack
@@ -377,6 +411,10 @@ public:
 
     ///\brief Pop transformations, and style properties from the stack
     void pop();
+
+
+    ///\brief Multiply the transform matrix by \p m
+    void applyMatrix(const DMatrix4& m);
 
 
     ///\brief Push current transformations to the stack
@@ -496,6 +534,14 @@ public:
     void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2);
 
 
+    ///\brief Draw a quadratic bezier curve from 3 points
+    void bezier(float x1, float y1, float x2, float y2, float cx, float cy);
+
+
+    ///\brief Draw a quadratic bezier curve from 3 points
+    void bezier(const DVector& p1, const DVector& p2, const DVector& cp);
+
+
     GraphicsProperties getStyle();
 
 private:
@@ -590,6 +636,8 @@ private:
     //Shader used to draw images
     std::unique_ptr<Shader> image_shader;
     int image_shader_offset_loc;
+    int image_shader_tint_loc;
+    int image_shader_use_tint_loc;
     int image_shader_posmode_loc;
     int image_shader_tex_loc;
     int image_shader_transform_loc;
