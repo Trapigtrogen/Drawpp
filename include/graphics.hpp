@@ -60,6 +60,7 @@ struct GraphicsProperties
     PosMode ellipsemode = PosMode::CENTRE;
     PosMode imagemode = PosMode::CORNER;
     DFont font;
+    float bezier_detail = 20;
 };
 
 ///\brief Graphics class describes a render target
@@ -306,6 +307,13 @@ public:
     void noTint();
 
 
+    ///\brief Set bezier curve detail
+    ///
+    ///Higher detail will result in smoother lines, but will quickly tank performance. \n
+    ///Default detail value is 20.
+    void bezierDetail(float d);
+
+
     ///\brief Set the font which will be used for drawing text
     void textFont(DFont font);
 
@@ -519,6 +527,14 @@ public:
 
     ///\brief Draw a cubic bezier curve from 4 points.
     void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2);
+
+
+    ///\brief Draw a quadratic bezier curve from 3 points
+    void bezier(float x1, float y1, float x2, float y2, float cx, float cy);
+
+
+    ///\brief Draw a quadratic bezier curve from 3 points
+    void bezier(const DVector& p1, const DVector& p2, const DVector& cp);
 
 
     GraphicsProperties getStyle();

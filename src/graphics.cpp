@@ -484,7 +484,13 @@ float DGraphics::brightness(Color c)
     return (c.brightness() / 255.0f) * properties.color_max3;
 }
 
-
+void DGraphics::bezierDetail(float d)
+{
+    if(d > 0.0)
+    {
+        properties.bezier_detail = d;
+    }
+}
 
 void DGraphics::noFill()
 {
@@ -1212,10 +1218,17 @@ vec2f bezier_bezierCubic(vec2f a, vec2f b, vec2f c, vec2f d, float t)
     t*t*t*d;
 }
 
-float bezier_getT(float t, float l, vec2f a, vec2f b, vec2f c)
+vec2f bezier_bezierQuadratic(vec2f p0, vec2f p1,vec2f p2, float t)
+{
+    float t1 = 1.0-t;
+    return  t1*(t1*p0+t*p1)+t*(t1*p1+t*p2);
+}
+
+float bezier_cubicGetUniformT(float t, float l, vec2f a, vec2f b, vec2f c)
 {
     return t + (l/(((t*t)*a + t*b + c).len()));
 }
+
 
 void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2)
 {
@@ -1228,23 +1241,67 @@ void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx1, float 
     vec2f v2 = 6.0*a - 12.0*b + 6.0*c;
     vec2f v3 = -3.0*a + 3.0*b;
 
-    float s = 10.0; //segment length in pixels
+    //float& s = properties.bezier_detail;
+
+    float s = 1.0/properties.bezier_detail;
     float t = 0.0;
+
+    //get t stroke thickness away from zero, to have line start such that zero point is on it's edge
+    //float t_st = bezier_cubicGetUniformT(0.0, properties.stroke_weight, v1, v2, v3);
+    //t = t_st;
 
     vec2f p = bezier_bezierCubic(a,b,c,d,t);
 
-    while(t <= 1.0)
+    //This way to get t, will approximate uniform segment length. 
+    //Better in some cases, but often worse for performance
+    //t = bezier_cubicGetUniformT(t, s, v1, v2, v3);
+
+    t += s;
+
+    while(t < 1.0)
     {
         vec2f np = bezier_bezierCubic(a,b,c,d,t);
         line(p.x,p.y,np.x,np.y);
         p = np;
-        t = bezier_getT(t,s,v1,v2,v3);
+        //t = bezier_cubicGetUniformT(t,s,v1,v2,v3);
+        t += s;
     }
+    t = 1.0;//-t_st;
+
+    vec2f np = bezier_bezierCubic(a, b, c, d, t);
+    line(p.x, p.y, np.x, np.y);
 }
 
 void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2)
 {
     bezier(p1.x,p2.y,p2.x,p2.y,cp1.x,cp1.y,cp2.x,cp2.y);
+}
+
+void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx, float cy)
+{
+    vec2f p0 = vec2f{x1,y1};
+    vec2f p1 = vec2f{cx,cy};
+    vec2f p2 = vec2f{x2,y2};
+
+    float s = 1.0/properties.bezier_detail;
+    float t = 0.0;
+    vec2f p = bezier_bezierQuadratic(p0,p1,p2,t);
+    t += s;
+
+    while(t < 1.0)
+    {
+        vec2f np = bezier_bezierQuadratic(p0,p1,p2,t);
+        line(np.x,np.y,p.x,p.y);
+        p = np;
+        t += s;
+    }
+    vec2f np = bezier_bezierQuadratic(p0,p1,p2,t);
+    line(np.x,np.y,p.x,p.y);
+}
+
+void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp)
+{
+    bezier(p1.x,p1.y,p2.x,p2.y,cp.x,cp.y);
 }
 
 GraphicsProperties DGraphics::getStyle()

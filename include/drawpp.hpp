@@ -45,6 +45,8 @@ void triangle(float x1, float y1, float x2, float y2, float x3, float y3);
 void triangle(const DVector& p1, const DVector& p2, const DVector& p3);
 void bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2);
 void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2);
+void bezier(float x1, float y1, float x2, float y2, float cx, float cy);
+void bezier(const DVector& p1, const DVector& p2, const DVector& cp);
 
 // Shapes 3D
 void point(int x, int y, int z);
@@ -72,6 +74,7 @@ void clear();
 void noFill();
 void noStroke();
 void noTint();
+void bezierDetail(float d);
 
 // Color
 void fill(Color col);

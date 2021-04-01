@@ -142,6 +142,10 @@ void noTint()
     Application::GetInstance()->graphics_object().noTint();
 }
 
+void bezierDetail(float d)
+{
+    Application::GetInstance()->graphics_object().bezierDetail(d);
+}
 
 long long millis()
 {
@@ -546,6 +550,15 @@ void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVec
     Application::GetInstance()->graphics_object().bezier(p1,p2,cp1,cp2);
 }
 
+void bezier(float x1, float y1, float x2, float y2, float cx, float cy)
+{
+    Application::GetInstance()->graphics_object().bezier(x1,y1,x2,y2,cx,cy);
+}
+
+void bezier(const DVector& p1, const DVector& p2, const DVector& cp)
+{
+    Application::GetInstance()->graphics_object().bezier(p1,p2,cp);
+}
 
 
 // Shader
