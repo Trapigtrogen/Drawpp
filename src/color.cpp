@@ -230,19 +230,19 @@ Color Color::HEX2RGB(std::string hexCol)
 			// Compact hex with alpha
 			case 4: 
 				sscanf(hexNum, "%01x%01x%01x%01x", &r, &g, &b, &a);
-				r *= 10;
-				g *= 10;
-				b *= 10;
-				a *= 10;
+				r *= 25;
+				g *= 25;
+				b *= 25;
+				a *= 25;
 				valid = true;
 			break;
 
 			// Compact hex without alpha
 			case 3: 
 				sscanf(hexNum, "%01x%01x%01x", &r, &g, &b);
-				r *= 10;
-				g *= 10;
-				b *= 10;
+				r *= 25;
+				g *= 25;
+				b *= 25;
 				valid = true;
 			break;
 
