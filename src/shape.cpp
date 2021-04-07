@@ -205,6 +205,16 @@ std::string& DShape::name()
     return impl->name;
 }
 
+void DShape::strokeWeight(float w)
+{
+    impl->strokeWeight = w;
+}
+
+void DShape::stroke(Color rgba)
+{
+    impl->strokeColor = rgba;
+}
+
 DShape DShape::loadShape(const std::string& filename)
 {
     std::shared_ptr<DShape_impl> impl = 

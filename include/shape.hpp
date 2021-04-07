@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <path.hpp>
+#include <color.hpp>
 
 struct DShape_impl;
 
@@ -92,6 +93,14 @@ public:
 
     ///\brief Get a reference to the name of this shape
     std::string& name();
+
+
+    ///\brief Set the stroke weight for this shape
+    void strokeWeight(float w);
+
+
+    ///\brief Set the stroke color for this shape
+    void stroke(Color rgba);
 
 
     ///\brief Load SVG image as shape
