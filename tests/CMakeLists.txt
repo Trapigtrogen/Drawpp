@@ -13,7 +13,6 @@ include_directories(include)
 add_executable(test_window window.cpp)
 add_executable(test_textures textures.cpp)
 add_executable(test_shape shape.cpp)
-add_executable(test_line line.cpp)
 add_executable(test_background background.cpp)
 add_executable(test_input input.cpp)
 add_executable(test_movement movement.cpp)
@@ -31,7 +30,6 @@ if (MSVC)
     add_dependencies(test_window ${PROJECT_NAME})
     add_dependencies(test_textures ${PROJECT_NAME})
     add_dependencies(test_shape ${PROJECT_NAME})
-    add_dependencies(test_line ${PROJECT_NAME})
     add_dependencies(test_background ${PROJECT_NAME})
     add_dependencies(test_input ${PROJECT_NAME})
     add_dependencies(test_movement ${PROJECT_NAME})
@@ -48,7 +46,6 @@ if (MSVC)
     set_property(TARGET test_window
                         test_textures
                         test_shape
-                        test_line
                         test_background
                         test_input
                         test_movement

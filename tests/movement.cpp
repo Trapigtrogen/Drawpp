@@ -10,8 +10,8 @@ int i = 0;
 void draw(float) 
 {
 	background(255);
-	//translate(i, i);
-	//rotate(i);
+	translate(i, i);
+	rotate(i);
 	rect(0, 0, 10, 10);
 	i++;
 }
