@@ -1,60 +1,61 @@
 #!/bin/sh
 cd `dirname $(realpath $0)`
-
 # Either create or empty release folder
 if [ ! -d ./release ]; then
-  mkdir -p ./release;
+    mkdir -p ./release;
 else
     rm -rf ./release/*
 fi
 
-while true
-do
-    read -r -p "Include documentation? [y/n] " docs
+# If -f is used use default settings
+if [ $1 == "-f" ]; then
+    incDoc="OFF"
+    debugBuild="OFF"
+else
 
-    case $docs in
-    [yY])
-        echo "Will include documentation"
-        incDoc="ON"
-        break
-        ;;
-    [nN])
-        echo "Won't include documentation"
-        incDoc="OFF"
-        break
-        ;;
-    *)
-        echo "Invalid input. Should be y/n"
-        ;;
-    esac
-done
+    while true
+    do
+        read -r -p "Include documentation? [y/n] " docs
 
-while true
-do
-    read -r -p "Debug build? [y/n] " mode
+        case $docs in
+        [yY])
+            echo "Will include documentation"
+            incDoc="ON"
+            break
+            ;;
+        [nN])
+            echo "Won't include documentation"
+            incDoc="OFF"
+            break
+            ;;
+        *)
+            echo "Invalid input. Should be y/n"
+            ;;
+        esac
+    done
 
-    case $mode in
-    [yY])
-        echo "Will build in debug mode"
-        debugBuild="ON"
-        if [ ! -d ./release ]; then
-            mkdir -p ./release;
-        fi
-        break
-        ;;
-    [nN])
-        echo "Will build in release mode"
-        debugBuild="OFF"
-        if [ ! -d ./release ]; then
-            mkdir -p ./release;
-        fi
-        break
-        ;;
-    *)
-        echo "Invalid input. Should be y/n"
-        ;;
-    esac
-done
+    while true
+    do
+        read -r -p "Debug build? [y/n] " mode
+
+        case $mode in
+        [yY])
+            echo "Will build in debug mode"
+            debugBuild="ON"
+            break
+            ;;
+        [nN])
+            echo "Will build in release mode"
+            debugBuild="OFF"
+            break
+            ;;
+        *)
+            echo "Invalid input. Should be y/n"
+            ;;
+        esac
+    done
+
+fi
 
 # Update GLFW
 git submodule update --init --recursive
