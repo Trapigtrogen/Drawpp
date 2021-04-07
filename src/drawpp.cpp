@@ -447,7 +447,7 @@ void shape(const DShape& _shape)
     Application::GetInstance()->graphics_object().shape(_shape, 0, 0, 1, 1);
 }
 
-void shape(const DShape& _shape, int x, int  y)
+void shape(const DShape& _shape, float x, float  y)
 {
     //shape(_shape, 0, 0, x, y);
     Application::GetInstance()->graphics_object().shape(_shape, x,y,1,1);

@@ -24,7 +24,7 @@ class DShape
     friend class ::std::shared_ptr<DShape_impl>;
 
 public:
-	DShape() = default;
+	DShape();
 	~DShape() = default;
 	DShape(DShape&& other) = default;
 	DShape(const DShape&);
@@ -90,8 +90,8 @@ public:
     void moveChild(int index, int newIndex);
 
 
-    ///\brief Get a reference to the id of this shape
-    std::string& getId();
+    ///\brief Get a reference to the name of this shape
+    std::string& name();
 
 
     ///\brief Load SVG image as shape

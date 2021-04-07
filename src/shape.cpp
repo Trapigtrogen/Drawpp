@@ -81,6 +81,8 @@ void DShape_impl::loadSVG(const std::string& filename)
 	nsvgDelete(image);
 }
 
+DShape::DShape() : impl(new DShape_impl){}
+
 DShape::DShape(const DShape& other)
 {
     impl = std::shared_ptr<DShape_impl>(new DShape_impl(*other.impl));
@@ -198,7 +200,7 @@ void DShape::moveChild(int index, int newIndex)
     }
 }
 
-std::string& DShape::getId()
+std::string& DShape::name()
 {
     return impl->name;
 }

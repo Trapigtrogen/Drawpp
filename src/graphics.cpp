@@ -1076,13 +1076,14 @@ void DGraphics::shape(const DShape& s, float x, float y, float w, float h)
     properties.stroke_weight = s.impl->strokeWeight;
     properties.stroke_color = s.impl->strokeColor;
     DVector posv = {x,y};
+    DVector scalev = {w,h};
 
     for(const Path& pt : s.impl->paths)
     {
         for (int i = 0; i < pt.points.size()-1; i += 3) 
         {
             const DVector* p = &pt.points[i];
-            bezier(p[0]+posv,p[3]+posv,p[1]+posv,p[2]+posv);
+            bezier(p[0]*scalev+posv,p[3]*scalev+posv,p[1]*scalev+posv,p[2]*scalev+posv);
         }
     }
 
