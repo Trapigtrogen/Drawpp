@@ -331,6 +331,11 @@ struct DVector
     DVector operator*(float n)            const;
 
 
+    ///\brief Multiply each elements of this vector by elements of \p vec
+    ///\return DVector
+    DVector operator*(const DVector& vec) const;
+    
+
     ///\brief Divide this vector by \p n
     ///\return DVector
     DVector operator/(float n)            const;
