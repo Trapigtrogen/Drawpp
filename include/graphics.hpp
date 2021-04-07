@@ -558,6 +558,13 @@ private:
     //Get rgba color from the components
     Color get_color(float v1, float v2, float v3, float a);
 
+    //expects curves to have 1 common point
+    void generate_cubic_bezier_path(const struct vec2f* points, size_t count);
+
+    void generate_quadratic_bezier_path(const struct vec2f* points, size_t count);
+
+    void render_bezier_buffer();
+
     //void set_current();
 
     //Initialize the shaders used by this graphics object
@@ -664,6 +671,13 @@ private:
     int text_shader_view_loc;
     int text_shader_vpos_loc;
     int text_shader_tpos_loc;
+
+    //Shader used to draw text
+    std::unique_ptr<Shader> generic_colored_shader;
+    int generic_colored_shader_color_loc;
+    int generic_colored_shader_transform_loc;
+    int generic_colored_shader_view_loc;
+    int generic_colored_shader_vpos_loc;
 };
 
 #endif
