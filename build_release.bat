@@ -3,6 +3,9 @@
 set docs=OFF
 set crt=OFF
 set mode=Release
+set plat=x64
+
+if "%1"=="-f" goto update_modules
 
 :query_docs
 set "docs_q=n"
@@ -36,15 +39,29 @@ goto query_crt
 set "dbg_q=n"
 set /p "dbg_q=Debug build? (y/n): "
 
-if "%dbg_q%" == "y" set mode=Debug & goto update_modules
-if "%dbg_q%" == "Y" set mode=Debug & goto update_modules
-if "%dbg_q%" == "yes" set mode=Debug & goto update_modules
-if "%dbg_q%" == "YES" set mode=Debug & goto update_modules
-if "%dbg_q%" == "n" set mode=Release & goto update_modules
-if "%dbg_q%" == "N" set mode=Release & goto update_modules
-if "%dbg_q%" == "no" set mode=Release & goto update_modules
-if "%dbg_q%" == "NO" set mode=Release & goto update_modules
+if "%dbg_q%" == "y" set mode=Debug & goto query_plat
+if "%dbg_q%" == "Y" set mode=Debug & goto query_plat
+if "%dbg_q%" == "yes" set mode=Debug & goto query_plat
+if "%dbg_q%" == "YES" set mode=Debug & goto query_plat
+if "%dbg_q%" == "n" set mode=Release & goto query_plat
+if "%dbg_q%" == "N" set mode=Release & goto query_plat
+if "%dbg_q%" == "no" set mode=Release & goto query_plat
+if "%dbg_q%" == "NO" set mode=Release & goto query_plat
 goto query_debug
+
+:query_plat
+set "plat_q=n"
+set /p "plat_q=x86 build? (y/n): "
+
+if "%plat_q%" == "y" set plat=win32 & goto update_modules
+if "%plat_q%" == "Y" set plat=win32 & goto update_modules
+if "%plat_q%" == "yes" set plat=win32 & goto update_modules
+if "%plat_q%" == "YES" set plat=win32 & goto update_modules
+if "%plat_q%" == "n" set plat=x64 & goto update_modules
+if "%plat_q%" == "N" set plat=x64 & goto update_modules
+if "%plat_q%" == "no" set plat=x64 & goto update_modules
+if "%plat_q%" == "NO" set plat=x64 & goto update_modules
+goto query_plat
 
 :update_modules
 git submodule update --init --recursive
@@ -53,7 +70,7 @@ if not exist release\_dpp_tmp_release_build mkdir release\_dpp_tmp_release_build
 
 cd release\_dpp_tmp_release_build
 
-cmake ..\.. -DDPP_BUILD_DOCS=OFF -DDPP_BUILD_TESTS=OFF -DDPP_BUILD_EXAMPLES=OFF
+cmake ..\.. -A %plat% -DDPP_BUILD_DOCS=OFF -DDPP_BUILD_TESTS=OFF -DDPP_BUILD_EXAMPLES=OFF
 
 ::use cmake to get msbuild path
 mkdir .\vs_loc
@@ -81,7 +98,7 @@ for /f "delims=" %%i in ('type "%glfwproj%" ^& break ^> "%glfwproj%" ') do (
 	endlocal
 )
 
-set "gllibproj=OpenGLGraphicsLibrary_tmp.vcxproj"
+set "gllibproj=Drawpp_tmp.vcxproj"
 
 for /f "delims=" %%i in ('type "%gllibproj%" ^& break ^> "%gllibproj%" ') do (
 	set "line=%%i"
@@ -94,7 +111,7 @@ endlocal
 
 :skip_crt
 
-"%msb%" OpenGLGraphicsLibrary.sln /p:Configuration=%mode%
+"%msb%" Drawpp.sln /p:Configuration=%mode%
 
 if %errorlevel%==0 goto success
 
@@ -104,7 +121,7 @@ goto end
 
 :success
 cd ..
-copy "_dpp_tmp_release_build\lib\OpenGLGraphicsLibrary.lib" "OpenGLGraphicsLibrary.lib"
+copy "_dpp_tmp_release_build\lib\Drawpp.lib" "Drawpp.lib"
 
 if not exist include mkdir include
 cd include
@@ -124,6 +141,7 @@ copy "..\..\include\shader.hpp"         "shader.hpp"
 copy "..\..\include\shape.hpp"          "shape.hpp"
 ::copy "..\..\include\time.hpp"           "time.hpp"
 copy "..\..\include\vector3.hpp"        "vector3.hpp"
+copy "..\..\include\font.hpp"        "font.hpp"
 ::copy "..\..\include\window.hpp" "window.hpp"
 
 cd ..
@@ -138,8 +156,10 @@ cd examples
 echo cmake_minimum_required(VERSION 3.13.4)>CMakeLists.txt
 echo set(CMAKE_CXX_STANDARD 11)>>CMakeLists.txt
 echo set(CMAKE_CXX_STANDARD_REQUIRED ON)>>CMakeLists.txt
-echo project(GraphicsLib_Examples)>>CMakeLists.txt
-echo link_libraries(${CMAKE_SOURCE_DIR}/../OpenGLGraphicsLibrary.lib)>>CMakeLists.txt
+echo set(CMAKE_GENERATOR_PLATFORM %plat%)>>CMakeLists.txt
+echo project(Drawpp_Examples)>>CMakeLists.txt
+echo set(CMAKE_CONFIGURATION_TYPES %mode%)>>CMakeLists.txt
+echo link_libraries(${CMAKE_SOURCE_DIR}/../Drawpp.lib)>>CMakeLists.txt
 
 if %crt%==OFF goto dll_crt
 
@@ -162,10 +182,17 @@ echo link_libraries(msvcrtd.lib)>>CMakeLists.txt
 echo include_directories(${CMAKE_SOURCE_DIR}/../include)>>CMakeLists.txt
 echo set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)>>CMakeLists.txt
 ::add example files here like this
-::echo add_executable(example_window window.cpp)>>CMakeLists.txt
+echo add_executable(example_buttons example_buttons.cpp)>>CMakeLists.txt
+echo add_executable(example_de-jong-attractor example_de-jong-attractor.cpp)>>CMakeLists.txt
 
-::for now, no examples
-echo message(SEND_ERROR "No examples!")>>CMakeLists.txt
+echo set_property(TARGET>>CMakeLists.txt
+
+::add example names here to change working dir
+echo example_buttons>>CMakeLists.txt
+echo example_de-jong-attractor>>CMakeLists.txt
+
+echo PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")>>CMakeLists.txt
+echo set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT example_buttons)>>CMakeLists.txt
 
 cd ..
 
@@ -175,7 +202,7 @@ if not exist _dpp_tmp_docs_build mkdir _dpp_tmp_docs_build
 cd _dpp_tmp_docs_build
 
 echo cmake_minimum_required(VERSION 3.13.4)>CMakeLists.txt
-echo project(GraphicsLib_Examples_Docs)>>CMakeLists.txt
+echo project(Drawpp_Examples_Docs)>>CMakeLists.txt
 echo find_package(Doxygen)>>CMakeLists.txt
 echo if (DOXYGEN_FOUND)>>CMakeLists.txt
 echo set(DOXYGEN_ALWAYS_DETAILED_SEC YES)>>CMakeLists.txt
@@ -189,7 +216,7 @@ echo endif (DOXYGEN_FOUND)>>CMakeLists.txt
 
 cmake .
 
-"%msb%" GraphicsLib_Examples_Docs.sln
+"%msb%" Drawpp_Examples_Docs.sln
 
 cd ..
 xcopy _dpp_tmp_docs_build\docs docs /E /I /Y /Q

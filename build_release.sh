@@ -1,60 +1,61 @@
 #!/bin/sh
 cd `dirname $(realpath $0)`
-
 # Either create or empty release folder
 if [ ! -d ./release ]; then
-  mkdir -p ./release;
+    mkdir -p ./release;
 else
     rm -rf ./release/*
 fi
 
-while true
-do
-    read -r -p "Include documentation? [y/n] " docs
+# If -f is used use default settings
+if [ $1 == "-f" ]; then
+    incDoc="OFF"
+    debugBuild="OFF"
+else
 
-    case $docs in
-    [yY])
-        echo "Will include documentation"
-        incDoc="ON"
-        break
-        ;;
-    [nN])
-        echo "Won't include documentation"
-        incDoc="OFF"
-        break
-        ;;
-    *)
-        echo "Invalid input. Should be y/n"
-        ;;
-    esac
-done
+    while true
+    do
+        read -r -p "Include documentation? [y/n] " docs
 
-while true
-do
-    read -r -p "Debug build? [y/n] " mode
+        case $docs in
+        [yY])
+            echo "Will include documentation"
+            incDoc="ON"
+            break
+            ;;
+        [nN])
+            echo "Won't include documentation"
+            incDoc="OFF"
+            break
+            ;;
+        *)
+            echo "Invalid input. Should be y/n"
+            ;;
+        esac
+    done
 
-    case $mode in
-    [yY])
-        echo "Will build in debug mode"
-        debugBuild="ON"
-        if [ ! -d ./release ]; then
-            mkdir -p ./release;
-        fi
-        break
-        ;;
-    [nN])
-        echo "Will build in release mode"
-        debugBuild="OFF"
-        if [ ! -d ./release ]; then
-            mkdir -p ./release;
-        fi
-        break
-        ;;
-    *)
-        echo "Invalid input. Should be y/n"
-        ;;
-    esac
-done
+    while true
+    do
+        read -r -p "Debug build? [y/n] " mode
+
+        case $mode in
+        [yY])
+            echo "Will build in debug mode"
+            debugBuild="ON"
+            break
+            ;;
+        [nN])
+            echo "Will build in release mode"
+            debugBuild="OFF"
+            break
+            ;;
+        *)
+            echo "Invalid input. Should be y/n"
+            ;;
+        esac
+    done
+
+fi
 
 # Update GLFW
 git submodule update --init --recursive
@@ -91,13 +92,13 @@ cp ../include/font.hpp ./include/
 
 echo "Combining libraries..."
 # combine libraries
-mkdir lib1 && cd lib1 && ar -x ../lib/libOpenGLGraphicsLibrary.a
+mkdir lib1 && cd lib1 && ar -x ../lib/libDrawpp.a
 cd ..
 mkdir lib2 && cd lib2 && ar -x ../external/glfw/src/libglfw3.a
 cd ..
 mkdir lib3 && cd lib3 && ar -x ../external/freetype/libfreetype.a
 cd ..
-ar -qc libOpenGLGraphicsLibrary.a ./lib1/*.o ./lib2/*.o ./lib3/*.o
+ar -qc libDrawpp.a ./lib1/*.o ./lib2/*.o ./lib3/*.o
 
 # move tests to main folder
 rm -rf ./tests
@@ -118,7 +119,7 @@ echo "cmake_minimum_required(VERSION 3.13.4)">./examples/CMakeLists.txt
 echo "set(CMAKE_CXX_STANDARD 11)">>./examples/CMakeLists.txt
 echo "set(CMAKE_CXX_STANDARD_REQUIRED ON)">>./examples/CMakeLists.txt
 echo "project(GraphicsLib_Examples)">>./examples/CMakeLists.txt
-echo "link_libraries(\${CMAKE_SOURCE_DIR}/../libOpenGLGraphicsLibrary.a)">>./examples/CMakeLists.txt
+echo "link_libraries(\${CMAKE_SOURCE_DIR}/../libDrawpp.a)">>./examples/CMakeLists.txt
 
 echo "include_directories(\${CMAKE_SOURCE_DIR}/../include)">>./examples/CMakeLists.txt
 echo "set(EXECUTABLE_OUTPUT_PATH \${CMAKE_BINARY_DIR}/bin)">>./examples/CMakeLists.txt
