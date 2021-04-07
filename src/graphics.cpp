@@ -11,6 +11,7 @@
 #include <cstring>
 #include <locale>
 #include <codecvt>
+#include <constants.hpp>
 
 #include "stb_image_write.h"
 
@@ -19,7 +20,7 @@
 #include "nanosvgrast.h"
 #pragma warning(pop)
 
-const float primitive_square[] = 
+static const float primitive_square[] = 
 {
     0.0f, -1.0f,
     1.0f, -1.0f,
@@ -29,7 +30,7 @@ const float primitive_square[] =
     0.0f,  0.0f,
 };
 
-const float primitive_square_line[] = 
+static const float primitive_square_line[] = 
 {
     -0.5f,-0.5f,
     0.5f, -0.5f,
@@ -39,7 +40,7 @@ const float primitive_square_line[] =
     -0.5f, 0.5f,
 };
 
-float coords_quad[] = 
+static const float coords_quad[] = 
 {
     0.0f, 0.0f,
     1.0f, 0.0f, 
@@ -49,14 +50,14 @@ float coords_quad[] =
     0.0f, 1.0f, 
 };
 
-float triangle_verts[] = 
+static float triangle_verts[] = 
 {
     0.0f, 0.0f,
     0.0f, 0.0f,
     0.0f, 0.0f,
 };
 
-float quad_verts[] = 
+static float quad_verts[] = 
 {
     0.0f, 0.0f,
     0.0f, 0.0f,
@@ -66,8 +67,9 @@ float quad_verts[] =
     0.0f, 0.0f,
 };
 
-std::vector<float> txt_vert_buffer;
-std::vector<float> txt_texc_buffer;
+static std::vector<float> txt_vert_buffer;
+static std::vector<float> txt_texc_buffer;
+static std::vector<vec2f> bezier_buffer;
 
 #include <shaders/generic_vert.ipp>
 #include <shaders/ellipse_frag.ipp>
@@ -80,6 +82,8 @@ std::vector<float> txt_texc_buffer;
 #include <shaders/quad_frag.ipp>
 #include <shaders/text_vert.ipp>
 #include <shaders/text_frag.ipp>
+#include <shaders/generic_colored_vert.ipp>
+#include <shaders/generic_colored_frag.ipp>
 
 
 DGraphics::DGraphics(int width, int height)
@@ -188,6 +192,8 @@ void DGraphics::init_shaders()
     image_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,image_shader_f)));
  
     image_shader_offset_loc = glGetUniformLocation(image_shader->getId(),"offset");
+    image_shader_tint_loc = glGetUniformLocation(image_shader->getId(),"tint");
+    image_shader_use_tint_loc = glGetUniformLocation(image_shader->getId(),"useTint");
     image_shader_posmode_loc = glGetUniformLocation(image_shader->getId(),"posmode");
     image_shader_transform_loc = glGetUniformLocation(image_shader->getId(),"transform");  
     image_shader_view_loc = glGetUniformLocation(image_shader->getId(),"view");
@@ -215,6 +221,13 @@ void DGraphics::init_shaders()
     text_shader_posmode_loc = glGetUniformLocation(text_shader->getId(),"posmode");
     text_shader_vpos_loc = glGetAttribLocation(text_shader->getId(),"pos");
     text_shader_tpos_loc = glGetAttribLocation(text_shader->getId(),"texpos");
+
+    generic_colored_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_colored_shader_v,generic_colored_shader_f)));
+                                      
+    generic_colored_shader_color_loc = glGetUniformLocation(generic_colored_shader->getId(),"color");
+    generic_colored_shader_transform_loc = glGetUniformLocation(generic_colored_shader->getId(),"transform");
+    generic_colored_shader_view_loc = glGetUniformLocation(generic_colored_shader->getId(),"view");
+    generic_colored_shader_vpos_loc = glGetAttribLocation(generic_colored_shader->getId(),"pos");
 }
 
 void DGraphics::beginDraw()
@@ -386,6 +399,41 @@ void DGraphics::colorMode(ColorMode mode, float max1, float max2, float max3, fl
     properties.color_maxa = maxA;
 }
 
+void DGraphics::tint(Color rgba)
+{
+    properties.tint_color = rgba;
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(Color rgb, float alpha)
+{
+    properties.tint_color = Color(rgb.red(),rgb.green(),rgb.blue(),alpha);
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(float gray )
+{
+    tint(gray,properties.color_maxa);
+}
+
+void DGraphics::tint(float gray, float alpha)
+{
+    properties.tint_color = color(gray, alpha);
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(float v1, float v2, float v3)
+{
+    properties.tint_color = get_color(v1,v2,v3,properties.color_maxa);
+    properties.use_tint = true;
+}
+
+void DGraphics::tint(float v1, float v2, float v3, float alpha)
+{
+    properties.tint_color = get_color(v1,v2,v3,alpha);
+    properties.use_tint = true;
+}
+
 
 Color DGraphics::color(float grey)
 {
@@ -452,7 +500,13 @@ float DGraphics::brightness(Color c)
     return (c.brightness() / 255.0f) * properties.color_max3;
 }
 
-
+void DGraphics::bezierDetail(float d)
+{
+    if(d > 0.0)
+    {
+        properties.bezier_detail = d;
+    }
+}
 
 void DGraphics::noFill()
 {
@@ -585,6 +639,11 @@ void DGraphics::pop()
 {
     popMatrix();
     popStyle();
+}
+
+void DGraphics::applyMatrix(const DMatrix4& m)
+{
+    transform_mat = transform_mat * m;
 }
 
 void DGraphics::pushMatrix()
@@ -791,6 +850,15 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
     glUniformMatrix4fv(image_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(image_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(image_shader_posmode_loc,properties.imagemode);
+
+    glUniform1i(image_shader_use_tint_loc,properties.use_tint);
+    if(properties.use_tint)
+    {
+        glUniform4f(image_shader_tint_loc,properties.tint_color.red()/255.0f,
+                                          properties.tint_color.green()/255.0f,
+                                          properties.tint_color.blue()/255.0f,
+                                          properties.tint_color.alpha()/255.0f);
+    }
 
     img.bind(0);
     glUniform1i(image_shader_tex_loc,0);
@@ -1202,39 +1270,163 @@ vec2f bezier_bezierCubic(vec2f a, vec2f b, vec2f c, vec2f d, float t)
     t*t*t*d;
 }
 
-float bezier_getT(float t, float l, vec2f a, vec2f b, vec2f c)
+vec2f bezier_bezierQuadratic(vec2f p0, vec2f p1,vec2f p2, float t)
 {
-    return t + (l/(((t*t)*a + t*b + c).len()));
+    float t1 = 1.0-t;
+    return  t1*(t1*p0+t*p1)+t*(t1*p1+t*p2);
+}
+
+void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t count)
+{
+    bezier_buffer.clear();
+
+    float s = 1.0/properties.bezier_detail;
+    float t = 1.0;
+
+    vec2f a;
+    vec2f d;
+    vec2f b;
+    vec2f c;
+
+    for(size_t i = 0; i < count-1; i += 3){
+
+        a = vec2f{points[i].x  ,-points[i].y  };
+        b = vec2f{points[i+1].x,-points[i+1].y};
+        c = vec2f{points[i+2].x,-points[i+2].y};
+        d = vec2f{points[i+3].x,-points[i+3].y};
+
+        t -= 1.0;
+
+        while(t < 1.0)
+        {
+            bezier_buffer.push_back(bezier_bezierCubic(a,b,c,d,t));
+            t += s;
+        }
+    }
+    bezier_buffer.push_back(bezier_bezierCubic(a,b,c,d,1.0));
+}
+
+
+void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_t count)
+{
+    bezier_buffer.clear();
+
+    float s = 1.0/properties.bezier_detail;
+    float t = 1.0;
+
+    vec2f p0;
+    vec2f p1;
+    vec2f p2;
+
+    for(size_t i = 0; i < count-1; i += 2)
+    {
+        p0 = vec2f{points[i].x  ,-points[i].y  };
+        p1 = vec2f{points[i+1].x,-points[i+1].y};
+        p2 = vec2f{points[i+2].x,-points[i+2].y};
+
+        t -= 1.0;
+        while(t < 1.0)
+        {
+            bezier_buffer.push_back(bezier_bezierQuadratic(p0,p1,p2,t));
+            t += s;
+        }
+    }
+    bezier_buffer.push_back(bezier_bezierQuadratic(p0,p1,p2,1.0));
+}
+
+void DGraphics::render_bezier_buffer()
+{
+    static std::vector<vec2f> mesh;
+
+    mesh.clear();
+
+    float stroke2 = (properties.stroke_weight/2);
+
+    vec2f dir = (bezier_buffer[1] - bezier_buffer[0]);
+    dir = dir / dir.len();
+    vec2f normal = {-dir.y,dir.x};
+    vec2f s_dist = (normal * stroke2);
+
+    mesh.push_back(bezier_buffer[0] + s_dist);
+    mesh.push_back(bezier_buffer[0] - s_dist);
+    mesh.push_back(bezier_buffer[1] + s_dist);
+    mesh.push_back(bezier_buffer[1] - s_dist);
+
+    for(unsigned i = 1; i < bezier_buffer.size()-1; ++i)
+    {
+        dir = (bezier_buffer[i+1] - bezier_buffer[i]);
+        dir = dir / dir.len();
+        normal = {-dir.y,dir.x};
+        s_dist = (normal * stroke2);
+
+        mesh.push_back(bezier_buffer[i+1] + s_dist);
+        mesh.push_back(bezier_buffer[i+1] - s_dist);
+    }
+
+    glUseProgram(generic_colored_shader->getId());
+
+    glUniformMatrix4fv(generic_colored_shader_view_loc,1,GL_FALSE,view_mat.values);
+    glUniformMatrix4fv(generic_colored_shader_transform_loc,1,GL_FALSE,transform_mat.values);
+    glUniform4f(generic_colored_shader_color_loc,properties.stroke_color.red()/255.0f,
+                                                properties.stroke_color.green()/255.0f,
+                                                properties.stroke_color.blue()/255.0f,
+                                                properties.stroke_color.alpha()/255.0f);
+
+
+    glEnableVertexAttribArray(generic_colored_shader_vpos_loc);
+    glVertexAttribPointer(generic_colored_shader_vpos_loc,2,GL_FLOAT,false,0, mesh.data());
+
+    glDrawArrays(GL_TRIANGLE_STRIP,0,mesh.size());
+
+    glDisableVertexAttribArray(generic_colored_shader_vpos_loc);
+
+    if(properties.strokecap == CapStyle::ROUND)
+    {
+        point(bezier_buffer[0].x,-bezier_buffer[0].y);
+        point(bezier_buffer[bezier_buffer.size()-1].x,-bezier_buffer[bezier_buffer.size()-1].y);
+    }
 }
 
 void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2)
 {
-    vec2f a = vec2f{x1,y1};
-    vec2f d = vec2f{x2,y2};
-    vec2f b = vec2f{cx1,cy1};
-    vec2f c = vec2f{cx2,cy2};
+    static vec2f pp[4];
 
-    vec2f v1 = -3.0*a + 9.0*b - 9.0*c + 3.0*d;
-    vec2f v2 = 6.0*a - 12.0*b + 6.0*c;
-    vec2f v3 = -3.0*a + 3.0*b;
+    pp[0].x = x1;
+    pp[0].y = y1;
+    pp[3].x = x2;
+    pp[3].y = y2;
+    pp[1].x = cx1;
+    pp[1].y = cy1;
+    pp[2].x = cx2;
+    pp[2].y = cy2;
 
-    float s = 10.0; //segment length in pixels
-    float t = 0.0;
-
-    vec2f p = bezier_bezierCubic(a,b,c,d,t);
-
-    while(t <= 1.0)
-    {
-        vec2f np = bezier_bezierCubic(a,b,c,d,t);
-        line(p.x,p.y,np.x,np.y);
-        p = np;
-        t = bezier_getT(t,s,v1,v2,v3);
-    }
+    generate_cubic_bezier_path(pp,4);
+    render_bezier_buffer();
 }
 
 void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2)
 {
     bezier(p1.x,p2.y,p2.x,p2.y,cp1.x,cp1.y,cp2.x,cp2.y);
+}
+
+void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx, float cy)
+{
+    static vec2f pp[3];
+
+    pp[0].x = x1;
+    pp[0].y = y1;
+    pp[1].x = cx;
+    pp[1].y = cy;
+    pp[2].x = x2;
+    pp[2].y = y2;
+
+    generate_quadratic_bezier_path(pp,3);
+    render_bezier_buffer();
+}
+
+void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp)
+{
+    bezier(p1.x,p1.y,p2.x,p2.y,cp.x,cp.y);
 }
 
 GraphicsProperties DGraphics::getStyle()
