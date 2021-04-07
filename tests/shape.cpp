@@ -25,6 +25,7 @@ void setup()
     printf("Loading image (multiple elements) to shape3...\n\n");
     shape3 = loadShape("assets/bot1.svg");
 
+    /*
     // Naming
     shape1.name = "shape1";
     shape2.name = "shape2";
@@ -59,14 +60,15 @@ void setup()
     {
         std::cout << shape3.getChild(i)->name << "\n";
     }
+    */
 }
 
 void draw(float) 
 {
     background(255,255,255);
     strokeWeight(3);
-    shape(&shape3, 10.0f, 10.0f, 400.0f, 500.0f);
-    shape(&shape1, 10.0f, 10.0f, 400.0f, 500.0f);
+    shape(shape3, 10.0f, 10.0f, 400.0f, 500.0f);
+    shape(shape1, 10.0f, 10.0f, 400.0f, 500.0f);
 }
 
 int main() 

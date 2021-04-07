@@ -7,11 +7,11 @@
 #include <color.hpp>
 #include <font.hpp>
 #include <memory>
-#include <shape.hpp>
 
 class DImage;
 class Shader;
 struct DVector;
+class DShape;
 
 enum ColorMode
 {
@@ -498,7 +498,7 @@ public:
 
 
     ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)
-    void shape(DShape* s, float x, float y, float w, float h);
+    void shape(const DShape& s, float x, float y, float w, float h);
 
 
     ///\brief Draw a quad from points ( \p x1, \p y1 ), ( \p x2, \p y2 ), ( \p x3, \p y3 ) and ( \p x4, \p y4 )

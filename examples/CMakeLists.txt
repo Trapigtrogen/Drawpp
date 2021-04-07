@@ -15,6 +15,8 @@ add_executable(example_draw example_draw.cpp)
 
 if (MSVC)
     add_dependencies(example_de-jong-attractor ${PROJECT_NAME})
+    add_dependencies(example_buttons ${PROJECT_NAME})
+    add_dependencies(example_draw ${PROJECT_NAME})
     
     set_property(TARGET example_de-jong-attractor
                         example_buttons

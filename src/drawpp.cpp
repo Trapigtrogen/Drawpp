@@ -442,26 +442,28 @@ void background(const DImage& image)
 
 // Shapes
 
-void shape(DShape* _shape) 
+void shape(const DShape& _shape) 
 {
-    shape(_shape, 0, 0, 1, 1);
+    Application::GetInstance()->graphics_object().shape(_shape, 0, 0, 1, 1);
 }
 
-void shape(DShape* _shape, int x, int  y)
+void shape(const DShape& _shape, int x, int  y)
 {
-    shape(_shape, 0, 0, x, y);
+    //shape(_shape, 0, 0, x, y);
+    Application::GetInstance()->graphics_object().shape(_shape, x,y,1,1);
 }
 
-void shape(DShape* _shape, float x, float y, float w, float h)
+void shape(const DShape& _shape, float x, float y, float w, float h)
 {
     Application::GetInstance()->graphics_object().shape(_shape, x, y, w, h);
 }
 
-DShape loadShape(std::string filename) 
+DShape loadShape(const std::string& filename) 
 {
     return DShape::loadShape(filename);
 }
 
+/*
 DShape createShape()
 {
     return DShape::createShape();
@@ -471,7 +473,7 @@ DShape createShape(DShape::ShapeType type)
 {
     return DShape::createShape(type);
 }
-
+*/
 //DShape createShape(DShape::ShapeType type, float[] p){}
 
 

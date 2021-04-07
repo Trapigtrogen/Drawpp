@@ -12,6 +12,7 @@
 #include <locale>
 #include <codecvt>
 #include <shape.hpp>
+#include <shape_impl.hpp>
 
 #include "stb_image_write.h"
 
@@ -83,6 +84,37 @@ std::vector<float> txt_texc_buffer;
 #include <shaders/text_frag.ipp>
 
 
+Shader* beshader = nullptr;
+int generic_colored_shader_color_loc;
+int generic_colored_shader_transform_loc;
+int generic_colored_shader_view_loc;
+int generic_colored_shader_vpos_loc;
+
+const char* besha_v = R"(
+    #version 100
+    precision mediump float;
+    uniform mat4 view;
+    uniform mat4 transform;
+    attribute vec2 pos;
+    
+    void main()
+    {
+        gl_Position = vec4(pos,0.0,1.0) * (transform * view);
+    }
+)";
+
+
+const char* besha_f = R"(
+    #version 100
+    precision mediump float;
+
+    void main()
+    {
+        gl_FragColor = vec4(0.0,0.0,0.0,1.0);
+    }
+)";
+
+
 DGraphics::DGraphics(int width, int height)
 {
     buffer_width = static_cast<unsigned int>(width);
@@ -134,6 +166,14 @@ DGraphics::~DGraphics()
 
 void DGraphics::init_shaders()
 {
+    beshader = new Shader(Shader::loadShadersFromString(besha_v,besha_f));
+
+    generic_colored_shader_color_loc = glGetUniformLocation(beshader->getId(),"color");
+    generic_colored_shader_transform_loc = glGetUniformLocation(beshader->getId(),"transform");
+    generic_colored_shader_view_loc = glGetUniformLocation(beshader->getId(),"view");
+    generic_colored_shader_vpos_loc = glGetAttribLocation(beshader->getId(),"pos");
+
+
     //ellipse_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f));
     ellipse_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f)));
     
@@ -1019,39 +1059,30 @@ void DGraphics::quad(const DVector& p1, const DVector& p2, const DVector& p3, co
     quad(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
 }
 
-void DGraphics::shape(DShape* s, float x, float y, float w, float h)
+void DGraphics::shape(const DShape& s, float x, float y, float w, float h)
 {
-    // If SVG was loaded into this shape its objects has been split to new child shapes
-    // The NULL image indicates that when drawing this shape, only its children should be drawn instead
-    if (s->image != NULL)
+    float we = properties.stroke_weight;
+    Color c = properties.stroke_color;
+
+    properties.stroke_weight = s.impl->strokeWeight;
+    properties.stroke_color = s.impl->strokeColor;
+    DVector posv = {x,y};
+
+    for(const Path& pt : s.impl->paths)
     {
-        // If child of SVG shape was copied this is where it's drawn
-        for (NSVGpath* path = s->image->shapes->paths; path != NULL; path = path->next)
+        for (int i = 0; i < pt.points.size()-1; i += 3) 
         {
-            strokeWeight(s->image->shapes->strokeWidth);
-            for (int i = 0; i < path->npts - 1; i += 3) 
-            {
-                float* p = &path->pts[i * 2];
-                bezier(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
-            }
+            const DVector* p = &pt.points[i];
+            bezier(p[0]+posv,p[3]+posv,p[1]+posv,p[2]+posv);
         }
     }
 
-    // Draw childrens
-    for (int i = 0; i < s->getChildCount(); i++)
+    properties.stroke_weight = we;
+    properties.stroke_color = c;
+
+    for(const DShape& ss : s.impl->children)
     {
-        DShape* child = s->getChild(i);
-        if (child->image == NULL) { continue; }
-
-        for (NSVGpath* path = child->image->shapes->paths; path != NULL; path = path->next)
-        {
-
-            for (int i = 0; i < path->npts - 1; i += 3)
-            {
-                float* p = &path->pts[i * 2];
-                bezier(p[0], p[1], p[6], p[7], p[2], p[3], p[4], p[5]);
-            }
-        }
+        shape(ss,x,y,w,h);
     }
 }
 
@@ -1315,7 +1346,7 @@ void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx1, float 
 
 void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2)
 {
-    bezier(p1.x,p2.y,p2.x,p2.y,cp1.x,cp1.y,cp2.x,cp2.y);
+    bezier(p1.x,p1.y,p2.x,p2.y,cp1.x,cp1.y,cp2.x,cp2.y);
 }
 
 void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx, float cy)

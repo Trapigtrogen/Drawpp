@@ -1,271 +1,215 @@
 #include <shape.hpp>
+#include <shape_impl.hpp>
 #include <debug.hpp>
 #include <algorithm>
+#include <exception>
 
 #pragma warning(push,1)
 
 #define NANOSVG_ALL_COLOR_KEYWORDS	// Include full list of color keywords.
 #define NANOSVG_IMPLEMENTATION		// Expands implementation
-#include "nanosvg.h"
-#define NANOSVGRAST_IMPLEMENTATION
-#include "nanosvgrast.h"
+#include <nanosvg.h>
 
 #pragma warning(pop)
 
-DShape::~DShape()
+DShape_impl::DShape_impl(const DShape_impl& other)
 {
-	for(auto& it : children) 
-	{
-		it->removeParent();
-	}
-	children.clear();
+    strokeColor = other.strokeColor;
+    strokeWeight = other.strokeWeight;
+    name = other.name;
+
+    for(const Path& p : other.paths)
+    {
+        paths.push_back(p);
+    }
+
+    for(const DShape& c : other.children)
+    {
+        children.push_back(DShape(c));
+    }
 }
 
-DShape::DShape()
+void DShape_impl::impl_loadShape(const NSVGshape& shape)
 {
-	//printf("constructor\n");
-	name = (char*)"Shape";
+    strokeWeight = shape.strokeWidth;
+    strokeColor = shape.stroke.color;
+    reinterpret_cast<uint8_t*>(&strokeColor)[0] = 255/shape.opacity;
+    name = std::string(shape.id);
+
+    for(const NSVGpath* p = shape.paths; p != nullptr; p = p->next)
+    {
+        Path np;
+        np.closed = p->closed;
+        for(unsigned i = 0; i < p->npts*2-1; i+=2)
+        {
+            np.points.push_back({p->pts[i],p->pts[i+1]});
+        }
+        paths.emplace_back(std::move(np));
+    }
+}
+
+void DShape_impl::loadSVG(const std::string& filename)
+{
+    NSVGimage* image = nsvgParseFromFile(filename.c_str(), "px", 96);
+
+    if(image == nullptr) 
+	{
+		dbg::error("Failed to load svg image: ", filename);
+		return;
+	}
+	else if(image->shapes == nullptr) // Empty image should not be loaded
+
+	{
+		dbg::error("Image is found but it's empty. Loading has been cancelled"); 
+		nsvgDelete(image);
+		return;
+	}
+
+    const NSVGshape* shape = image->shapes;
+
+    impl_loadShape(*shape);
+
+	for(shape = shape->next; shape != nullptr; shape = shape->next) 
+	{
+        DShape ns;
+        ns.impl = std::shared_ptr<DShape_impl>(new DShape_impl);
+
+        ns.impl->impl_loadShape(*shape);
+
+		children.emplace_back(std::move(ns));
+	}
+	nsvgDelete(image);
 }
 
 DShape::DShape(const DShape& other)
 {
-	//printf("Copy constructor\n");
-	visible = other.visible;
-	parent = other.parent;
-	image = other.image;
-	name = other.name;
-	for(auto& it : other.children)
-	{
-		addChild(it);
-	}
+    impl = std::shared_ptr<DShape_impl>(new DShape_impl(*other.impl));
 }
 
-DShape::DShape(DShape&& other)
+DShape& DShape::operator=(const DShape& other)
 {
-	//printf("Move constructor\n");
-	visible = other.visible;
-	parent = other.parent;
-	image = other.image;
-	name = other.name;
-	for(auto& it : other.children) 
-	{
-		addChild(it);
-	}
-
-	other.visible = 0;
-	other.parent = nullptr;
-	other.children.clear();
-	other.image = nullptr;
-	other.name = "";
+    impl = std::shared_ptr<DShape_impl>(new DShape_impl(*other.impl));
+    return *this;
 }
 
-DShape& DShape::operator=(DShape& other)
+int DShape::addChild(DShape& other)
 {
-	//printf("Copy operator\n");
-	if(this != &other) 
-	{		
-		// Abandon old children if any
-		for(auto& it : children) 
-		{
-			it->removeParent();
-			//it->children.clear(); // DEBUG: Brain fart?
-		}
-		children.clear();
+    DShape s;
+    s.impl = other.impl;
 
-		visible = other.visible;
-		parent = other.parent;
-		image = other.image;
-		name = other.name;
-		
-		for(auto& it : other.children) 
-		{
-			addChild(it);
-		}
-	}
-
-	return *this;
+    impl->children.emplace_back(std::move(s));
+    return impl->children.size()-1;
 }
 
-DShape& DShape::operator=(DShape&& other) 
+bool DShape::removeChild(int index)
 {
-	//printf("Move operator\n");
-	if(this != &other)
-	{
-		// Abandon old children if any
-		for(auto& it : children) 
-		{
-			it->removeParent();
-			//it->children.clear(); // DEBUG: Brain fart?
-		}
-		children.clear();
+    if(index < 0 || index >= impl->children.size())
+    {
+        return false;
+    }
 
-		visible = other.visible;
-		parent = other.parent;
-		image = other.image;
-		name = other.name;
-
-		for(auto& it : other.children) 
-		{
-			addChild(it);
-		}
-
-		other.visible = 0;
-		other.parent = nullptr;
-		other.children.clear();
-		other.image = nullptr;
-		other.name = "";
-	}
-
-	return *this;
+    impl->children.erase(impl->children.begin()+index);
+    return true;
 }
 
-DShape& DShape::operator=(DShape* other) 
+DShape& DShape::getChild(int index)
 {
-	if (other == nullptr) 
-	{
-		DShape empty;
-		return empty;
-	}
-
-	if(this != other) 
-	{
-		for(auto& it : children)
-		{
-			it->removeParent();
-			it->children.clear();
-		}
-		children.clear();
-
-		visible = other->visible;
-		parent = other->parent;
-		image = other->image;
-		name = other->name;
-		for(auto& it : other->children) 
-		{
-			addChild(it);
-		}
-	}
-
-	return *this;
+    return impl->children[index];
 }
 
-void DShape::addChild(DShape* child)
+const DShape& DShape::getChild(int index) const noexcept(false)
 {
-	child->renderIdx = renderIdx + 1;
-	child->addParent(this);
-	children.push_back(child);
+    if(index < 0 || index >= impl->children.size())
+    {
+        throw std::out_of_range("Child index out or range");
+    }
+    return impl->children[index];
 }
 
-void DShape::addChild(DShape* child, int _renderIdx)
+int DShape::findChild(const std::string& id) const
 {
-	child->renderIdx = _renderIdx;
-	child->addParent(this);
-	children.push_back(child);
+    for(size_t i = 0; i < impl->children.size(); ++i)
+    {
+        if(impl->children[i].impl->name == id)
+        {
+            return static_cast<int>(i);
+        }
+    }
+    return -1;
 }
 
-void DShape::removeChild(DShape* child)
+int DShape::getChildCount() const
 {
-	std::vector<DShape*>::iterator it = std::find(children.begin(), children.end(), child);
-	if(it != children.end()) 
-	{
-		children.erase(it);
-		child->removeParent();
-	}
-	else dbg::error("Given object is not child of this object");
+    return static_cast<int>(impl->children.size());
 }
 
-void DShape::addParent(DShape* _parent)
+int DShape::getPathCount() const
 {
-	parent = _parent;
+    return static_cast<int>(impl->paths.size());
 }
 
-void DShape::removeParent()
+Path& DShape::operator[](size_t index)
 {
-	parent = nullptr;
+    return impl->paths[index];
 }
 
-size_t DShape::getChildCount()
+const Path& DShape::operator[](size_t index) const
 {
-	return children.size();
+    return impl->paths[index];
 }
 
-DShape* DShape::getChild(int idx) 
+void DShape::setVisible(bool visible)
 {
-	std::vector<DShape*>::iterator it = children.begin() + idx;
-	return *it;
+    impl->visible = visible;
 }
 
-DShape* DShape::getChild(std::string _name)
+bool DShape::isVisible() const
 {
-	
-	for(std::vector<DShape*>::iterator it = children.begin(); it != children.end(); ++it)
-	{
-		if((*it)->name == _name){ return *it; }
-	}
-	dbg::error("No child found with given name");
-	return nullptr;
-
+    return impl->visible;
 }
 
-
-DShape* DShape::getParent()
+void DShape::moveChild(int index, int newIndex)
 {
-	return parent;
+    if(index == newIndex)
+    {
+        return;
+    }
+
+    if(newIndex > impl->children.size())
+    {
+        newIndex = impl->children.size()-1;
+    }
+    else if(newIndex < 0)
+    {
+        newIndex = 0;
+    }
+
+    if(index > newIndex)
+    {
+        std::rotate(impl->children.rend() - index - 1,
+                    impl->children.rend() - index,
+                    impl->children.rend() - newIndex);
+    }
+    else
+    {
+        std::rotate(impl->children.begin() + index + 1,
+                    impl->children.begin() + index,
+                    impl->children.begin() + newIndex);
+    }
 }
 
-DShape DShape::loadShape(std::string filename)
+std::string& DShape::getId()
 {
-	DShape tempShape;
-	tempShape.loadSVG(filename);
-
-	return tempShape;
+    return impl->name;
 }
 
-DShape DShape::createShape()
+DShape DShape::loadShape(const std::string& filename)
 {
-	return DShape(); // DEBUG TEMP
-}
+    std::shared_ptr<DShape_impl> impl = 
+    std::shared_ptr<DShape_impl>(new DShape_impl);
+    impl->loadSVG(filename);
 
-DShape DShape::createShape(DShape::ShapeType type)
-{
-	return DShape(); // DEBUG TEMP
-}
-
-//DShape DShape::createShape(DShape::ShapeType type, float[] p){}
-
-void DShape::loadSVG(std::string filename)
-{
-	// Load File to object's data
-	image = nsvgParseFromFile(filename.c_str(), "px", 96);
-
-	// Empty image should not be loaded
-	if(image->shapes == nullptr) 
-	{
-		dbg::error("Image is found but it's empty. Loading has been cancelled"); 
-		nsvgDelete(image);
-		image = nullptr;
-		return;
-	}
-
-	// Make separate copies of child elements
-	for(NSVGshape* targetChild = image->shapes; targetChild != NULL; targetChild = targetChild->next) 
-	{
-		DShape* childShape = new DShape;
-		childShape->image = new NSVGimage;
-		childShape->image->height = image->height;
-		childShape->image->width = image->width;
-		childShape->name = targetChild->id;
-		childShape->image->shapes = targetChild;
-
-		addChild(childShape); // Create parent-child link
-	}
-	
-	// Clear dublicate data
-	image = nullptr;
-
-	// Destroy shape chain as each child would continue it
-	for(auto& it : children)
-	{
-		it->image->shapes->next = NULL;
-	}
+    DShape s;
+    s.impl = std::move(impl);
+    return s;
 }
