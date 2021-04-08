@@ -137,9 +137,11 @@ std::string hex(Color col, int num);
 
 // Image
 DImage loadImage(const std::string& fileName);
+DImage createImage(unsigned char* pixels, int width, int height);
 void image(const DImage& image, float x, float y);
 void image(const DImage& image, float x, float y, float width, float height);
 void background(const DImage& image);
+
 
 // Shader
 Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader);

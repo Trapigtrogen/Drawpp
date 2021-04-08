@@ -434,6 +434,11 @@ DImage loadImage(const std::string& fileName)
     return DImage::loadImage(fileName);
 }
 
+DImage createImage(unsigned char* pixels, int width, int height)
+{
+    return DImage::createImage(pixels, width, height);
+}
+
 void image(const DImage& image, float x, float y)
 {
     Application::GetInstance()->graphics_object().image(image,x,y);

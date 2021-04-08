@@ -27,6 +27,9 @@ public:
     ///\brief Load an image from a file
 	static DImage loadImage(const std::string& fileName);
 
+	///\brief Create custom image with \p pixels
+	static DImage createImage(unsigned char* pixels, int width, int height);
+
 private:
 
     unsigned char* pixels = nullptr;

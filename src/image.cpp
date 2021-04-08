@@ -2,6 +2,7 @@
 #include <debug.hpp>
 #include <cassert>
 #include <glad/glad.h>
+#include <color.hpp>
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
@@ -145,6 +146,16 @@ DImage DImage::loadImage(const std::string& fileName)
 	GLuint m_texture = generateTexture(width, height, pixels);
 
 	DImage tmpImg(pixels, m_texture, width, height, channels);
+
+	return tmpImg;
+}
+
+
+DImage DImage::createImage(unsigned char* pixels, int width, int height)
+{
+	GLuint m_texture = generateTexture(width, height, pixels);
+
+	DImage tmpImg(pixels, m_texture, width, height, 4);
 
 	return tmpImg;
 }
