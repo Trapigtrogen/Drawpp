@@ -14,7 +14,7 @@ Processing style graphic library for c++ using OpenGL. Support for Windows and L
 * More stuff to do with vector graphics and SVG shapes
 
 # Building
-Clone with `git clone git@gitlab.com:Trapigtrogen/graphics-library.git --recursive` to get the dependensies also\
+Clone with `git clone https://gitlab.com/Trapigtrogen/graphics-library.git --recursive` to get the dependensies also\
 You can also update the submodule afterwards with `git submodule update --init`
 
 ## Automatic
@@ -45,7 +45,7 @@ cmake ..
 
 ### Linux
 You need to install your distripution's development packages:
-* __Arch__ `sudo pacman -Sy base-devel git cmake `
+* __Arch__ `sudo pacman -Sy base-devel git cmake`
 * __Debian__/__Raspberry Pi OS__  `sudo apt-get -y install g++ git cmake libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev`\
 On Raspberry Pi make sure that you have using Legacy OpenGL driver from `sudo raspi-config` -> Advanced options -> GL Driver -> Legacy - Original non-GL desktop driver
 
