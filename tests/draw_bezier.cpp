@@ -1,6 +1,5 @@
 #include <drawpp.hpp>
 
-
 void setup()
 {
     bezierDetail(30);

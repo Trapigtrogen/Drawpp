@@ -11,6 +11,8 @@
 #include <constants.hpp>
 
 void exit();
+void frameRate(int fps);
+void vSync(bool state);
 
 // Window
 void size(int width, int height);

@@ -58,7 +58,7 @@ void Input::keyboard_callback(GLFWwindow*, int keyc, int, int action, int)
 
 void Input::mousebtn_callback(GLFWwindow*,int button, int action, int)
 {
-    mouseButton = button + KeyID::LEFT;
+    mouseButton = button + KeyID::MOUSE_LEFT;
 
     if(action == GLFW_PRESS)
     {

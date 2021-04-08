@@ -4,7 +4,14 @@
 #include <glad/glad.h>
 #include <cstring>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#else
 #pragma warning(push,1)
+#endif
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -15,7 +22,18 @@
 #define NANOSVGRAST_IMPLEMENTATION
 #include <nanosvgrast.h>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#else
 #pragma warning(pop)
+#endif
+
+unsigned int get_max_units()
+{
+    int value = 0;
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&value);
+    return value;
+}
 
 DImage::~DImage() 
 {
@@ -28,6 +46,7 @@ DImage::DImage() = default;
 DImage::DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c)
 {
 	m_pixels = _pixels;
+    max_texture_units = get_max_units();
 	m_texture = _texture;
 	m_width = w;
 	m_height = h;
@@ -113,7 +132,7 @@ DImage& DImage::operator=(DImage&& other)
 
 void DImage::bind(unsigned int unit) const
 {
-	assert(unit >= 0 && unit <= max_tex_units-1);
+	assert(unit < max_texture_units);
 
 	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -183,9 +202,6 @@ unsigned int DImage::generateTexture(int width, int height, unsigned char* pixel
 	glGenTextures(1, &m_texture);
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_NEAREST);
-
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -193,7 +209,6 @@ unsigned int DImage::generateTexture(int width, int height, unsigned char* pixel
 
 	return m_texture;
 }
-
 
 int DImage::width() const
 {
@@ -235,3 +250,4 @@ void DImage::apply()
 }
 
 unsigned int DImage::max_tex_units = 32;
+unsigned int DImage::max_texture_units = 0;

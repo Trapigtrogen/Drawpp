@@ -65,6 +65,8 @@ private:
 	DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c);
 	void bind(unsigned int unit) const;
 	static unsigned int generateTexture(int w, int h, unsigned char* pixels);
+
+    static unsigned int max_texture_units;
 };
 
 #endif

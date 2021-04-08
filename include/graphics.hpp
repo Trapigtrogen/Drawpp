@@ -27,7 +27,7 @@ enum CapStyle
 
 enum PosMode
 {
-    CENTRE = 0,
+    CENTER = 0,
     CORNER = 1,
     //CORNERS,
 };
@@ -58,7 +58,7 @@ struct GraphicsProperties
     Color fill_color = {255,255,255};
     CapStyle strokecap = CapStyle::ROUND;
     PosMode rectmode = PosMode::CORNER;
-    PosMode ellipsemode = PosMode::CENTRE;
+    PosMode ellipsemode = PosMode::CENTER;
     PosMode imagemode = PosMode::CORNER;
     DFont font;
     float bezier_detail = 20;

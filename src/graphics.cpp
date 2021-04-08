@@ -13,6 +13,7 @@
 #include <codecvt>
 #include <shape.hpp>
 #include <shape_impl.hpp>
+#include <constants.hpp>
 
 #include "stb_image_write.h"
 
@@ -20,6 +21,7 @@
 #include "nanosvg.h"
 #include "nanosvgrast.h"
 #pragma warning(pop)
+
 static const float primitive_square[] = 
 {
     0.0f, -1.0f,
@@ -85,38 +87,6 @@ static std::vector<vec2f> bezier_buffer;
 #include <shaders/generic_colored_vert.ipp>
 #include <shaders/generic_colored_frag.ipp>
 
-
-Shader* beshader = nullptr;
-int generic_colored_shader_color_loc;
-int generic_colored_shader_transform_loc;
-int generic_colored_shader_view_loc;
-int generic_colored_shader_vpos_loc;
-
-const char* besha_v = R"(
-    #version 100
-    precision mediump float;
-    uniform mat4 view;
-    uniform mat4 transform;
-    attribute vec2 pos;
-    
-    void main()
-    {
-        gl_Position = vec4(pos,0.0,1.0) * (transform * view);
-    }
-)";
-
-
-const char* besha_f = R"(
-    #version 100
-    precision mediump float;
-
-    void main()
-    {
-        gl_FragColor = vec4(0.0,0.0,0.0,1.0);
-    }
-)";
-
-
 DGraphics::DGraphics(int width, int height)
 {
     buffer_width = static_cast<unsigned int>(width);
@@ -168,14 +138,6 @@ DGraphics::~DGraphics()
 
 void DGraphics::init_shaders()
 {
-    beshader = new Shader(Shader::loadShadersFromString(besha_v,besha_f));
-
-    generic_colored_shader_color_loc = glGetUniformLocation(beshader->getId(),"color");
-    generic_colored_shader_transform_loc = glGetUniformLocation(beshader->getId(),"transform");
-    generic_colored_shader_view_loc = glGetUniformLocation(beshader->getId(),"view");
-    generic_colored_shader_vpos_loc = glGetAttribLocation(beshader->getId(),"pos");
-
-
     //ellipse_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f));
     ellipse_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f)));
     
@@ -1098,7 +1060,7 @@ void DGraphics::shape(const DShape& s, float x, float y, float w, float h)
 
 bool DGraphics::save(const std::string& filename, ImageFormat format) const
 {
-    if(buffer_id == -1 || buffer_height == 0 || buffer_width == 0) return false;
+    if(buffer_id == static_cast<unsigned int>(-1) || buffer_height == 0 || buffer_width == 0) return false;
 
     unsigned char* data = new unsigned char[buffer_width*buffer_height*3];
     glBindTexture(GL_TEXTURE_2D,texture_id);

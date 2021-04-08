@@ -22,6 +22,17 @@ void exit()
     Application::GetInstance()->exit();
 }
 
+void frameRate(int fps)
+{
+    Application::GetInstance()->setFrameRate(fps);
+}
+
+void vSync(bool state)
+{
+    Application::GetInstance()->setVSync(state);
+}
+
+
 // Random
 
 void randomSeed(int seed)
@@ -446,7 +457,6 @@ void background(const DImage& image)
 
 
 // Shapes
-
 void shape(const DShape& _shape) 
 {
     Application::GetInstance()->graphics_object().shape(_shape, 0, 0, 1, 1);

@@ -17,14 +17,14 @@ void setup()
 
     // Empty images are not allowed and system should revert the load after loading svg with no elements
     printf("Loading empty image to shape4...\n");
-    shape4 = loadShape("assets/empty.svg"); 
+    //shape4 = loadShape("assets/empty.svg"); 
 
     // Normal image containing 1 element
     // DEBUG seems like all the images  with 1 element will break
     printf("Loading image (1 element) to shape1...\n");
     shape1 = loadShape("assets/circleimage.svg");
 
-    // Normal image containing 2 elements with names/ids
+    // Normal image containing multiple elements with names/ids
     printf("Loading image (multiple elements) to shape3...\n\n");
     shape3 = loadShape("assets/bot1.svg");
 

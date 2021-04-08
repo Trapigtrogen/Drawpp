@@ -1,10 +1,20 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(OpenGLGraphicsLibrary)
+project(Drawpp)
+
+option(DPP_BUILD_DEBUG "Debug build" OFF)
+option(DPP_BUILD_DOCS "Generate documentation with Doxygen" ON)
+option(DPP_BUILD_TESTS "Include tests" ON)
+option(DPP_BUILD_EXAMPLES "Include examples" ON)
+
+if (DPP_BUILD_DEBUG)
+    set(CMAKE_BUILD_TYPE Debug)
+else ()
+    set(CMAKE_BUILD_TYPE Release)
+endif (DPP_BUILD_DEBUG)
 
 if (MSVC)
     set(LIBNAME ${PROJECT_NAME}_tmp)
@@ -39,7 +49,7 @@ set_target_properties(${LIBNAME} PROPERTIES
 if(MSVC)
     target_compile_options(${LIBNAME} PRIVATE /W4)
 else()
-    target_compile_options(${LIBNAME} PRIVATE -Wall -Wextra -pedantic -Werror)
+    target_compile_options(${LIBNAME} PRIVATE -Wall -Wextra)
 endif()
 
 include_directories(include)
@@ -81,21 +91,32 @@ else ()
 endif (MSVC)
 
 find_package(Doxygen)
-option(GEN_DOCS "Generate documentation with doxygen" ${DOXYGEN_FOUND})
 
-if (GEN_DOCS)
-    if(NOT DOXYGEN_FOUND)
-        message(SEND_ERROR "Doxygen executable not found")
-    else ()
-        set(DOXYGEN_ALWAYS_DETAILED_SEC YES)
-        set(DOXYGEN_WARN_IF_UNDOCUMENTED NO)
-        set(doxyfile ${CMAKE_BINARY_DIR}/doxyfile)
-        set(DOXYGEN_OUTPUT_DIRECTORY ./docs)
+if (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
+    set(DOXYGEN_ALWAYS_DETAILED_SEC YES)
+    set(DOXYGEN_WARN_IF_UNDOCUMENTED NO)
+    set(doxyfile ${CMAKE_BINARY_DIR}/doxyfile)
+    set(DOXYGEN_OUTPUT_DIRECTORY ./docs)
 
-        doxygen_add_docs(doxygen ALL
-                    ${CMAKE_SOURCE_DIR}/include)
-    endif (NOT DOXYGEN_FOUND)
-endif (GEN_DOCS)
+    doxygen_add_docs(doxygen ALL
+                ${CMAKE_SOURCE_DIR}/include)
+elseif(NOT DOXYGEN_FOUND)
+    message(SEND_ERROR "Doxygen executable not found")
+endif (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
 
-add_subdirectory(tests)
-add_subdirectory(examples)
+if (DPP_BUILD_TESTS)
+    add_subdirectory(tests)
+endif (DPP_BUILD_TESTS)
+
+if (DPP_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif (DPP_BUILD_EXAMPLES)
+
+
+# Fix bug in Linux where the HAVE_FCNTL_H is not defined even when it's found in the system
+if (UNIX)
+    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/external/freetype/builds/unix/ftsystem.c)
+        execute_process(COMMAND git submodule update --init --recursive)
+    endif ()
+    execute_process(COMMAND sed -i"s/#ifdef HAVE_FCNTL_H/#if 1/g" ${CMAKE_SOURCE_DIR}/external/freetype/builds/unix/ftsystem.c)
+endif (UNIX)

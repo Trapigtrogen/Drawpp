@@ -4,13 +4,21 @@
 #include <algorithm>
 #include <exception>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#else
 #pragma warning(push,1)
+#endif
 
 #define NANOSVG_ALL_COLOR_KEYWORDS	// Include full list of color keywords.
 #define NANOSVG_IMPLEMENTATION		// Expands implementation
 #include <nanosvg.h>
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#else
 #pragma warning(pop)
+#endif
 
 DShape_impl::DShape_impl(const DShape_impl& other)
 {

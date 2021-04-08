@@ -23,6 +23,8 @@ _DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
     }
     charset.erase(ed,charset.end());
 
+    int charset_len = int(charset.length());
+
     FT_Face face = reinterpret_cast<FT_Face>(_face);
 
     int gl_mx_s;// = 2000;
@@ -38,7 +40,7 @@ _DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
 
     float mul = size / face->units_per_EM;
     int c_width = (face->bbox.xMax - face->bbox.xMin)*mul;
-    int width = charset.length() * c_width;
+    int width = charset_len * c_width;
     int c_height = (face->bbox.yMax - face->bbox.yMin)*mul+1;
     int height = c_height;
     float c_height2 = c_height / 2.0f;
@@ -55,10 +57,10 @@ _DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
     int chars_per_row = gl_mx_s / c_width;
     int chars_per_col = gl_mx_s / c_height;
 
-    if(chars_per_row < charset.length())
+    if(chars_per_row < charset_len)
     {
         width = chars_per_row * c_width;
-        height = ((charset.length() / chars_per_row) + (1 && (charset.length() % chars_per_row)));
+        height = ((charset_len / chars_per_row) + (1 && (charset_len % chars_per_row)));
 
         if(height > chars_per_col)
         {
@@ -74,12 +76,11 @@ _DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
     std::unordered_map<wchar_t,_DFont_impl::Char> data;
 
     int loaded_valid = 0;
-    int missing_chars = 0;
 
     int cur_row = 0;
     int cur_col = 0;
 
-    for(int i = 0; i < charset.length(); ++i,++cur_col)
+    for(int i = 0; i < charset_len; ++i,++cur_col)
     {
         wchar_t c = charset[i];
         int glyph_index = FT_Get_Char_Index(face,c);
@@ -108,7 +109,7 @@ _DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
         {
             dbg::error("Ran out of texture space for font at ", c,"\n\t",i,"(",loaded_valid,") characters loaded.");
             
-            for(;i<charset.length(); ++i)
+            for(;i<charset_len; ++i)
             {
                 c = charset[i];
                 data[c] = data[L'\0'];
@@ -132,9 +133,9 @@ _DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
         data[c].advance_x = face->glyph->advance.x;
         data[c].advance_y = face->glyph->advance.y;
 
-        for(int y = 0; y < face->glyph->bitmap.rows; ++y)
+        for(unsigned int y = 0; y < face->glyph->bitmap.rows; ++y)
         {
-            for(int x = 0; x < face->glyph->bitmap.width; ++x)
+            for(unsigned int x = 0; x < face->glyph->bitmap.width; ++x)
             {
                 bitmap[(y+base_y) * width + base_x + x] =
                     *(face->glyph->bitmap.buffer + y * face->glyph->bitmap.width + x);
@@ -147,46 +148,6 @@ _DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
 
     no_space:
 
-    //this should only happen if freetype messes up
-    /*if(missing_chars)
-    {
-        missing_chars += chars_per_row - (charset.length() % chars_per_row);
-        int rows = missing_chars/chars_per_row;
-
-        height -= rows*c_height;
-
-        int old_w = width;
-
-        if(height == c_height)
-        {
-            missing_chars -= rows*chars_per_row;
-            width -= c_width*missing_chars;
-        }
-        
-        uint8_t* tmp = new uint8_t[width*height];
-        if(!tmp)
-        {
-            dbg::error("Failed to resize font texture.");
-            delete[] bitmap;
-            return std::shared_ptr<_DFont_impl>();
-        }
-
-        if(old_w > width)
-        {
-            for(int i = 0; i < height; ++i)
-            {
-                memcpy(tmp + width * i, bitmap + old_w * i, old_w);
-            }
-        }
-        else
-        {
-            memcpy(tmp,bitmap,width*height);
-        }
-
-        delete[] bitmap;
-        bitmap = tmp;
-    }*/
-    
     //divide texture coordinates to 0..1 range
     for( auto& c : data)
     {
@@ -344,9 +305,9 @@ bool _DFont_impl::load_additional_char(wchar_t c)
     chars[c].advance_x = face->glyph->advance.x;
     chars[c].advance_y = face->glyph->advance.y;
 
-    for(int y = 0; y < face->glyph->bitmap.rows; ++y)
+    for(unsigned int y = 0; y < face->glyph->bitmap.rows; ++y)
     {
-        for(int x = 0; x < face->glyph->bitmap.width; ++x)
+        for(unsigned int x = 0; x < face->glyph->bitmap.width; ++x)
         {
             bitmap[(y+base_y) * width + base_x + x] =
                 *(face->glyph->bitmap.buffer + y * face->glyph->bitmap.width + x);
@@ -362,7 +323,7 @@ void _DFont_impl::load_all_chars()
 {
     FT_Face face = reinterpret_cast<FT_Face>(font_face);
 
-    unsigned long num_glyphs = 0;
+    int num_glyphs = 0;
 
     if(FT_IS_CID_KEYED(face))
     {
@@ -534,9 +495,9 @@ void _DFont_impl::load_all_chars()
         chars[c].advance_x = face->glyph->advance.x;
         chars[c].advance_y = face->glyph->advance.y;
 
-        for(int y = 0; y < face->glyph->bitmap.rows; ++y)
+        for(unsigned int y = 0; y < face->glyph->bitmap.rows; ++y)
         {
-            for(int x = 0; x < face->glyph->bitmap.width; ++x)
+            for(unsigned int x = 0; x < face->glyph->bitmap.width; ++x)
             {
                 bitmap[(y+base_y) * width + base_x + x] =
                     *(face->glyph->bitmap.buffer + y * face->glyph->bitmap.width + x);

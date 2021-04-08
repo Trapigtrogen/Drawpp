@@ -70,25 +70,22 @@ public:
     void setTitle(const char* title);
 
 
-    ///\brief Exit the application
+    ///\brief Set the maximum framerate
     ///
-    ///Calling exit() will not immideately quit, instead the application will quit after the current cycle is finished.
+    ///Anything below 1, will set the fps to unlimited. \n
+    ///If VSync is enabled, fps is limited by monitor refresh rate, 
+    ///and setting the maximum framerate above that will have no effect. \n
+    void setFrameRate(int fps);
+
+
+    ///\brief Enable or disable VSync
+    void setVSync(bool vsync);
     void exit();
 
-
-    ///\brief Get the current window width
-    int getWidth();
-
-
-    ///\brief Get the current window height
-    int getHeight();
-
-    ///\private
     DGraphics& graphics_object();
-
-
-    ///\private
-    bool graphicsExists();
+    int getWidth() const;
+    int getHeight() const;
+    bool graphicsExists() const;
 
 
     ///\private
@@ -106,10 +103,12 @@ private:
     bool init_application();
     void cleanup_application();
 
+    float min_delta = -1;
+
     void draw_buffer();
     
     std::unique_ptr<Window> window;
-    std::unique_ptr<DGraphics> graphics = nullptr;
+    std::unique_ptr<DGraphics> graphics;
     bool quit_flag = false;
     bool started = false;
 
