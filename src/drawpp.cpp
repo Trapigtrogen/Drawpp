@@ -423,6 +423,11 @@ DImage loadImage(const std::string& fileName)
     return DImage::loadImage(fileName);
 }
 
+DImage loadSVGImage(const std::string& filename, float scale)
+{
+    return DImage::loadSVGImage(filename,scale);
+}
+
 void image(const DImage& image, float x, float y)
 {
     Application::GetInstance()->graphics_object().image(image,x,y);

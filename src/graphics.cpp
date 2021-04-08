@@ -878,7 +878,7 @@ void DGraphics::point(const DVector& p)
 
 void DGraphics::image(const DImage& img, float x, float y)
 {
-    image(img,x,y,img.width,img.height);
+    image(img,x,y,img.m_width,img.m_height);
 }
 
 void DGraphics::image(const DImage& img, float x, float y, float w, float h)

@@ -6,6 +6,9 @@ DShape shape2; // no image. child of 3
 DShape shape3; // 2 custom named element image
 DShape shape4; // empty image
 
+DImage img;
+DImage img2;
+
 void setup() 
 {
     setResizable(true);
@@ -63,6 +66,11 @@ void setup()
     {
         std::cout << shape3.getChild(i).name() << "\n";
     }
+
+    // Load svg as an image
+    img = loadSVGImage("assets/bot1.svg");
+
+    img2 = img;
 }
 
 void draw(float) 
@@ -70,6 +78,8 @@ void draw(float)
     background(255,255,255);
     shape(shape3, 10.0f, 10.0f);
     shape(shape1, 10.0f, 10.0f,2,1);
+    image(img, 20 + img.width(), 10);
+    image(img2, 30 + img.width()*2, 10);
 }
 
 int main() 
