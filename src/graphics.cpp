@@ -329,10 +329,10 @@ void DGraphics::clear()
 
 void DGraphics::background(Color rgba)
 {
-    glClearColor(rgba.red()/properties.color_max1,
-                rgba.green()/properties.color_max2,
-                rgba.blue()/properties.color_max3,
-                rgba.alpha()/properties.color_maxa);
+    glClearColor(rgba.red() / 255.0f,
+                rgba.green() / 255.0f,
+                rgba.blue() / 255.0f,
+                rgba.alpha() / 255.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -1426,12 +1426,19 @@ GraphicsProperties DGraphics::getStyle()
     return properties;
 }
 
+float to_0range(float v, float max)
+{
+    while ((v += max) < 0);
+    while ((v -= max) > max);
+    return v;
+}
+
 Color DGraphics::get_rgba(float r, float g, float b, float a)
 {
-    r = std::max(0.0f,std::min(properties.color_max1,r));
-    g = std::max(0.0f,std::min(properties.color_max1,g));
-    b = std::max(0.0f,std::min(properties.color_max1,b));
-    a = std::max(0.0f,std::min(properties.color_max1,a));
+    r = to_0range(r,properties.color_max1);
+    g = to_0range(g,properties.color_max2);
+    b = to_0range(b,properties.color_max3);
+    a = to_0range(a,properties.color_maxa);
     
     uint8_t rv = (r / properties.color_max1)*255;
     uint8_t gv = (g / properties.color_max2)*255;
@@ -1452,10 +1459,10 @@ Color DGraphics::get_rgba(float r, float g, float b, float a)
 
 Color DGraphics::get_hsba(float h, float s, float b, float a)
 {
-    h = std::max(0.0f,std::min(properties.color_max1,h));
-    s = std::max(0.0f,std::min(properties.color_max1,s));
-    b = std::max(0.0f,std::min(properties.color_max1,b));
-    a = std::max(0.0f,std::min(properties.color_max1,a));
+    h = to_0range(h,properties.color_max1);
+    s = to_0range(s,properties.color_max2);
+    b = to_0range(b,properties.color_max3);
+    a = to_0range(a,properties.color_maxa);
     
     float hv = h / properties.color_max1;
     float sv = s / properties.color_max2;
