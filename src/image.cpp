@@ -28,13 +28,6 @@
 #pragma warning(pop)
 #endif
 
-unsigned int get_max_units()
-{
-    int value = 0;
-    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&value);
-    return value;
-}
-
 DImage::~DImage() 
 {
 	if(m_pixels != nullptr) free(m_pixels);
@@ -46,7 +39,6 @@ DImage::DImage() = default;
 DImage::DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c)
 {
 	m_pixels = _pixels;
-    max_texture_units = get_max_units();
 	m_texture = _texture;
 	m_width = w;
 	m_height = h;
@@ -249,5 +241,4 @@ void DImage::apply()
     }
 }
 
-unsigned int DImage::max_tex_units = 32;
-unsigned int DImage::max_texture_units = 0;
+unsigned int DImage::max_texture_units = 32;

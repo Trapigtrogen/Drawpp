@@ -60,13 +60,11 @@ private:
 	int m_channels = 0;
 	unsigned int m_texture = 0;
 
-    static unsigned int max_tex_units;
+    static unsigned int max_texture_units;
 
 	DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c);
 	void bind(unsigned int unit) const;
 	static unsigned int generateTexture(int w, int h, unsigned char* pixels);
-
-    static unsigned int max_texture_units;
 };
 
 #endif

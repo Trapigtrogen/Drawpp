@@ -287,7 +287,7 @@ bool Application::init_application()
     
 
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
-        reinterpret_cast<GLint*>(&DImage::max_tex_units));
+        reinterpret_cast<GLint*>(&DImage::max_texture_units));
 
     graphics->beginDraw();
     
