@@ -522,8 +522,18 @@ public:
     void text(const std::string& txt, float x, float y);
 
 
+    ///\brief Draw text at \p p
+    ///
+    ///A font must be set with textFont() before drawing any text.
+    void text(const std::string& txt, const DVector& p);
+
+
     ///\copydoc text(const std::string&,float,float);
     void text(const std::wstring& txt, float x, float y);
+
+
+    ///\copydoc text(const std::string&,const DVector&)
+    void text(const std::wstring& txt, const DVector& p);
 
 
     ///\brief Draw a cubic bezier curve from 4 points.

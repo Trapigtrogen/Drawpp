@@ -1109,6 +1109,11 @@ void DGraphics::text(const std::string& txt, float x, float y)
     text(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(txt),x,y);
 }
 
+void DGraphics::text(const std::string& txt, const DVector& p)
+{
+    text(txt,p.x,p.y);
+}
+
 void DGraphics::text(const std::wstring& txt, float x, float y)
 {
     if(!properties.font.valid())
@@ -1252,6 +1257,11 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
     glDisableVertexAttribArray(rect_shader_tpos_loc);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void DGraphics::text(const std::wstring& txt, const DVector& p)
+{
+    text(txt,p.x,p.y);
 }
 
 vec2f bezier_bezierCubic(vec2f a, vec2f b, vec2f c, vec2f d, float t)
