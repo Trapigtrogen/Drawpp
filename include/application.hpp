@@ -15,13 +15,17 @@ class Application
 {
 public:
 
-    ///\ingroup drawpp_application_api
+    ///\addtogroup drawpp_application_api
+    ///@{
+
     ///\brief Construct an application 
+    ///
+    ///Only once instance of Application is allowed to exist while the program is running.
+    ///Attempting to instantiate multiple Applications will crash the program.
     Application(int width = 200, int height = 200, const char* title = "Title");
 
     ~Application();
 
-    ///\ingroup drawpp_application_api
     ///\brief Run the application
     ///
     ///If you don't need the draw function, you can pass a nullptr as the draw function.
@@ -58,6 +62,8 @@ public:
 
     ///\brief Set the MouseDragged callback
     void setMouseDragged(std::function<void()>);
+
+    ///@}
 
 
     ///\brief Change the application window size
