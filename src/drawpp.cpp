@@ -434,8 +434,21 @@ DImage loadImage(const std::string& fileName)
     return DImage::loadImage(fileName);
 }
 
-DImage createImage(unsigned char* pixels, int width, int height)
+DImage createImage(unsigned char* pixelData, int width, int height)
 {
+	unsigned char* pixels = new unsigned char[width*height*4];
+	for(int i = 0; i < width*height*4; i++)
+	{
+		pixels[i] = pixelData[i];
+	}
+
+    return DImage::createImage(pixels, width, height);
+}
+
+DImage createImage(std::vector<Color>* pixelData, int width, int height)
+{
+    unsigned char* pixels = new unsigned char[width*height*4];
+
     return DImage::createImage(pixels, width, height);
 }
 

@@ -8,7 +8,7 @@ float nscale = 1.3f;
 
 bool updateNoise = true;
 
-unsigned char* pixels = new unsigned char[100 * 100 * 4];
+unsigned char pixels[100 * 100 * 4];
 DImage noiseTex;
 
 void setup()
@@ -46,7 +46,6 @@ void draw(float)
                 pixels[y * 100 + x + 3] = 255;				        // ALPHA
             }
         }
-
         noiseTex = createImage(pixels, 100, 100);
         image(noiseTex, 0, 0, width, height);
 
