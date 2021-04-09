@@ -5,6 +5,7 @@ DImage emptyImg;
 DImage bg_img;
 
 unsigned char* pixels = new unsigned char[100 * 100 * 4];
+std::vector<Color> pixelsVec;
 
 void setup() 
 {
@@ -15,15 +16,20 @@ void setup()
 
 	for (int x = 0; x < 100 * 4; x += 4)
 	{
-		for (int y = 0; y < 100*4; y+=4)
+		for (int y = 0; y < 100*4; y += 4)
 		{
 			pixels[y * 100 + x] = randomInt(255);			// RED
 			pixels[y * 100 + x + 1] = randomInt(255);		// GREEN
 			pixels[y * 100 + x + 2] = randomInt(255);		// BLUE
-			pixels[y * 100 + x + 3] = 255;				// ALPHA    
+			pixels[y * 100 + x + 3] = 255;					// ALPHA   
+
+			Color col(randomInt(255), randomInt(255), randomInt(255), 255);
+			pixelsVec.push_back(col);
 		}
 	}
-	emptyImg = createImage(pixels, 100, 100);
+	//emptyImg = createImage(pixels, 100, 100);
+	emptyImg = createImage(pixelsVec, 100, 100);
+	//pixelsVec.clear();
 }
 
 void draw(float) 

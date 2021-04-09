@@ -8,7 +8,7 @@ float nscale = 1.3f;
 
 bool updateNoise = true;
 
-unsigned char pixels[100 * 100 * 4];
+unsigned char* pixels = new unsigned char[100 * 100 * 4];
 DImage noiseTex;
 
 void setup()
@@ -25,7 +25,8 @@ void draw(float)
     if (updateNoise) 
     {
         background(0, 0, 0);
-        /* 
+        
+        /* Slow render
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -36,6 +37,7 @@ void draw(float)
         }
         */
 
+        // Render to texture
         for (int x = 0; x < 100 * 4; x += 4)
         {
             for (int y = 0; y < 100 * 4; y += 4)
@@ -49,6 +51,7 @@ void draw(float)
         noiseTex = createImage(pixels, 100, 100);
         image(noiseTex, 0, 0, width, height);
 
+        // Controls text
         fill(255, 255, 255);
         text("Seed: " + std::to_string(seed) + "\nOctaves: " + std::to_string(octaves) + "\nScale: " + std::to_string(nscale), 30, 30);
         text("Controls:\nR - Random seed\nE - Previous seed\nT - Next seed\nW - Octaves up\nS - Octaves down\nD - Scale up\nA - Scale down", 30, 150);

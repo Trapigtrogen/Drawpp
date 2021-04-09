@@ -445,9 +445,16 @@ DImage createImage(unsigned char* pixelData, int width, int height)
     return DImage::createImage(pixels, width, height);
 }
 
-DImage createImage(std::vector<Color>* pixelData, int width, int height)
+DImage createImage(std::vector<Color> pixelData, int width, int height)
 {
     unsigned char* pixels = new unsigned char[width*height*4];
+    for (size_t i = 0; i < pixelData.size(); i++)
+    {
+        pixels[4 * i] = pixelData.at(i).red();
+        pixels[4 * i + 1] = pixelData.at(i).green();
+        pixels[4 * i + 2] = pixelData.at(i).blue();
+        pixels[4 * i + 3] = pixelData.at(i).alpha();
+    }
 
     return DImage::createImage(pixels, width, height);
 }
