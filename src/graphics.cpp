@@ -911,7 +911,7 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
     glDisableVertexAttribArray(image_shader_tpos_loc);
 }
 
-void DGraphics::image(const DImage& img, const DVector& p, const DVector s)
+void DGraphics::image(const DImage& img, const DVector& p, const DVector& s)
 {
     image(img,p.x,p.y,s.x,s.y);
 }

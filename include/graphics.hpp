@@ -133,11 +133,11 @@ public:
 
 
     ///\brief Fill target with \p grey color
-    void background(float gray );
+    void background(float grey );
 
 
     ///\brief Fill target with \p grey color using \p alpha
-    void background(float gray, float alpha);
+    void background(float grey, float alpha);
 
 
     ///\brief Fill target with \p image
@@ -167,11 +167,11 @@ public:
 
 
     ///\brief Set stroke color to \p grey
-    void stroke(float gray );
+    void stroke(float grey );
 
 
     ///\brief Set stroke color to \p grey with \p alpha
-    void stroke(float gray, float alpha);
+    void stroke(float grey, float alpha);
 
     
     ///\brief Set stroke color 
@@ -260,32 +260,32 @@ public:
     Color color(float v1, float v2, float v3, float alpha);
 
 
-    ///\brief Get the red component of \p c
-    float red(Color c);
+    ///\brief Get the red component of \p col
+    float red(Color col);
 
 
-    ///\brief Get the green component of \p c
-    float green(Color c);
+    ///\brief Get the green component of \p col
+    float green(Color col);
 
 
-    ///\brief Get the blue component of \p c
-    float blue(Color c);
+    ///\brief Get the blue component of \p col
+    float blue(Color col);
 
 
-    ///\brief Get the alpha component of \p c
-    float alpha(Color c);
+    ///\brief Get the alpha component of \p col
+    float alpha(Color col);
 
 
-    ///\brief Get the saturation value of \p c
-    float saturation(Color c);
+    ///\brief Get the saturation value of \p col
+    float saturation(Color col);
 
     
-    ///\brief Get the hue value of \p c
-    float hue(Color c);
+    ///\brief Get the hue value of \p col
+    float hue(Color col);
 
 
-    ///\brief Get the brightness value of \p c
-    float brightness(Color c);
+    ///\brief Get the brightness value of \p col
+    float brightness(Color col);
 
 
     ///\brief Disable fill
@@ -513,20 +513,20 @@ public:
     void point(const DVector& p);
 
 
-    ///\brief Draw image \p img at ( \p x, \p y )
-    void image(const DImage& img, float x, float y );
+    ///\brief Draw image \p image at ( \p x, \p y )
+    void image(const DImage& image, float x, float y );
 
 
-    ///\brief Draw image \p img at \p p
-    void image(const DImage& img, const DVector& p);
+    ///\brief Draw image \p image at \p p
+    void image(const DImage& image, const DVector& p);
 
 
-    ///\brief Draw image \p img at ( \p x, \p y ), resized to ( \p w, \p h)
-    void image(const DImage& img, float x, float y, float w, float h);
+    ///\brief Draw image \p image at ( \p x, \p y ), resized to ( \p w, \p h)
+    void image(const DImage& image, float x, float y, float w, float h);
 
 
-    ///\brief Draw image \p img at \p p, resized to \p s
-    void image(const DImage& img, const DVector& p, const DVector s);
+    ///\brief Draw image \p image at \p p, resized to \p s
+    void image(const DImage& image, const DVector& p, const DVector& s);
 
 
     ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)

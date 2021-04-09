@@ -14,10 +14,14 @@ class DGraphics;
 class Application
 {
 public:
+
+    ///\ingroup drawpp_application_api
+    ///\brief Construct an application 
     Application(int width = 200, int height = 200, const char* title = "Title");
 
     ~Application();
 
+    ///\ingroup drawpp_application_api
     ///\brief Run the application
     ///
     ///If you don't need the draw function, you can pass a nullptr as the draw function.
@@ -80,15 +84,28 @@ public:
 
     ///\brief Enable or disable VSync
     void setVSync(bool vsync);
+
+
+    ///\brief Exit application after current cycle
     void exit();
 
+
+    ///\brief Get a reference to the default draw target
     DGraphics& graphics_object();
+
+
+    ///\brief Get the current window width
     int getWidth() const;
+
+
+    ///\brief Get the current window height
     int getHeight() const;
+
+    
     bool graphicsExists() const;
 
 
-    ///\private
+    ///\brief Get a pointer to the application singleton
     static Application* GetInstance();
 
 

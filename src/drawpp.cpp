@@ -444,9 +444,19 @@ void image(const DImage& image, float x, float y)
     Application::GetInstance()->graphics_object().image(image,x,y);
 }
 
+void image(const DImage& image, const DVector& p)
+{
+    Application::GetInstance()->graphics_object().image(image,p);
+}
+
 void image(const DImage& image, float x, float y, float width, float height)
 {
     Application::GetInstance()->graphics_object().image(image,x,y,width,height);
+}
+
+void image(const DImage& image, const DVector& p, const DVector s)
+{
+    Application::GetInstance()->graphics_object().image(image,p,s);
 }
 
 void background(const DImage& image)
@@ -498,9 +508,19 @@ void rect(float x, float y, float w, float h)
     Application::GetInstance()->graphics_object().rect(x,y,w,h);
 }
 
+void rect(const DVector& p, const DVector& s)
+{
+    Application::GetInstance()->graphics_object().rect(p,s);
+}
+
 void rect(float x, float y, float w, float h, float r)
 {
     Application::GetInstance()->graphics_object().rect(x,y,w,h,r);
+}
+
+void rect(const DVector& p, const DVector& s, float radii)
+{
+    Application::GetInstance()->graphics_object().rect(p,s,radii);
 }
 
 void rect(float x, float y, float w, float h, float tl, float tr, float br, float bl)
@@ -508,9 +528,19 @@ void rect(float x, float y, float w, float h, float tl, float tr, float br, floa
     Application::GetInstance()->graphics_object().rect(x,y,w,h,tl,tr,br,bl);
 }
 
+void rect(const DVector& p, const DVector& s, float tl, float tr, float br, float bl)
+{
+    Application::GetInstance()->graphics_object().rect(p,s,tl,tr,br,bl);
+}
+
 void square(float x, float y, float size)
 {
     Application::GetInstance()->graphics_object().square(x,y,size);
+}
+
+void square(const DVector& p, float size)
+{
+    Application::GetInstance()->graphics_object().square(p,size);
 }
 
 void circle(float x, float y, float radius)
@@ -518,9 +548,19 @@ void circle(float x, float y, float radius)
     Application::GetInstance()->graphics_object().circle(x,y,radius);
 }
 
+void circle(const DVector& p, float radius)
+{
+    Application::GetInstance()->graphics_object().circle(p,radius);
+}
+
 void ellipse(float x, float y, float width, float height)
 {
     Application::GetInstance()->graphics_object().ellipse(x,y,width,height);
+}
+
+void ellipse(const DVector& p, const DVector& s)
+{
+    Application::GetInstance()->graphics_object().ellipse(p,s);
 }
 
 void line(float x1, float y1, float x2, float y2)
