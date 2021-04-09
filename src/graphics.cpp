@@ -708,9 +708,19 @@ void DGraphics::ellipse(float x, float y, float sizex, float sizey)
     glDisableVertexAttribArray(ellipse_shader_tpos_loc);
 }
 
+void DGraphics::ellipse(const DVector& p, const DVector& s)
+{
+    ellipse(p.x,p.y,s.x,s.y);
+}
+
 void DGraphics::circle(float x, float y, float size)
 {
     ellipse(x,y,size*2,size*2);
+}
+
+void DGraphics::circle(const DVector& p, float size)
+{
+    circle(p.x,p.y,size);
 }
 
 void DGraphics::rect(float x, float y, float sizex, float sizey)
@@ -718,9 +728,19 @@ void DGraphics::rect(float x, float y, float sizex, float sizey)
     rect(x,y,sizex,sizey,0,0,0,0);
 }
 
+void DGraphics::rect(const DVector& p, const DVector& s)
+{
+    rect(p.x,p.y,s.x,s.y);
+}
+
 void DGraphics::rect(float x, float y, float sizex, float sizey, float radii)
 {
     rect(x,y,sizex,sizey,radii,radii,radii,radii);
+}
+
+void DGraphics::rect(const DVector& p, const DVector& s, float radii)
+{
+    rect(p.x,p.y,s.x,s.y,radii);
 }
 
 void DGraphics::rect(float x, float y, float sizex, float sizey, float tl, float tr, float br, float bl)
@@ -753,9 +773,19 @@ void DGraphics::rect(float x, float y, float sizex, float sizey, float tl, float
     glDisableVertexAttribArray(rect_shader_tpos_loc);
 }
 
+void DGraphics::rect(const DVector& p, const DVector& s, float tl, float tr, float br, float bl)
+{
+    rect(p.x,p.y,s.x,s.y,tl,tr,br,bl);
+}
+
 void DGraphics::square(float x, float y, float size)
 {
     rect(x,y,size,size);
+}
+
+void DGraphics::square(const DVector& p, float size)
+{
+    square(p.x,p.y,size);
 }
 
 void DGraphics::triangle(float x1, float y1, float x2, float y2, float x3, float y3)
@@ -843,6 +873,11 @@ void DGraphics::image(const DImage& img, float x, float y)
     image(img,x,y,img.m_width,img.m_height);
 }
 
+void DGraphics::image(const DImage& img, const DVector& p)
+{
+    image(img,p.x,p.y);
+}
+
 void DGraphics::image(const DImage& img, float x, float y, float w, float h)
 {
     glUseProgram(image_shader->getId());
@@ -874,6 +909,11 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
 
     glDisableVertexAttribArray(image_shader_vpos_loc);
     glDisableVertexAttribArray(image_shader_tpos_loc);
+}
+
+void DGraphics::image(const DImage& img, const DVector& p, const DVector s)
+{
+    image(img,p.x,p.y,s.x,s.y);
 }
 
 void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)

@@ -437,24 +437,48 @@ public:
     void ellipse(float x, float y, float sizex, float sizey );
 
 
-    ///\brief Draw a circle at ( \p x, \p y ), with radius \p size
-    void circle(float x, float y, float size);
+    ///\brief Draw an ellipse at \p p, with size \p s
+    void ellipse(const DVector& p, const DVector& s);
+
+
+    ///\brief Draw a circle at ( \p x, \p y ), with radius \p radius
+    void circle(float x, float y, float radius);
+
+
+    ///\brief Draw a circle at \p p, with radius \p radius
+    void circle(const DVector& p, float radius);
 
 
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey )
     void rect(float x, float y, float sizex, float sizey );
 
 
+    ///\brief Draw a rectangle at \p p, with size \p s
+    void rect(const DVector& p, const DVector& s);
+
+
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey ), and with corners rounded by \p radii
     void rect(float x, float y, float sizex, float sizey, float radii);
+
+    
+    ///\brief Draw a rectangle at \p p, with size \p s, and with corners rounded by \p radii
+    void rect(const DVector& p, const DVector& s, float radii);
 
 
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey ), and with corners rounded by \p tl, \p tr, \p br and \p bl
     void rect(float x, float y, float sizex, float sizey, float tl, float tr, float br, float bl);
 
 
+    ///\brief Draw a rectangle at \p p, with size \p s, and with corners rounded by \p tl, \p tr, \p br and \p bl
+    void rect(const DVector& p, const DVector& s, float tl, float tr, float br, float bl);
+
+
     ///\brief Draw a square at ( \p x, \p y ), with \p size
     void square(float x, float y, float size);
+
+
+    ///\brief Draw a square at \p p, with \p size
+    void square(const DVector& p, float size);
 
 
     ///\brief Draw a triangle from points ( \p x1, \p y1), ( \p x2, \p y2) and ( \p x3, \p y3)
@@ -493,8 +517,16 @@ public:
     void image(const DImage& img, float x, float y );
 
 
+    ///\brief Draw image \p img at \p p
+    void image(const DImage& img, const DVector& p);
+
+
     ///\brief Draw image \p img at ( \p x, \p y ), resized to ( \p w, \p h)
     void image(const DImage& img, float x, float y, float w, float h);
+
+
+    ///\brief Draw image \p img at \p p, resized to \p s
+    void image(const DImage& img, const DVector& p, const DVector s);
 
 
     ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)
