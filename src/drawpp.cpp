@@ -22,6 +22,11 @@ void exit()
     Application::GetInstance()->exit();
 }
 
+void cursor(CursorStyle c)
+{
+    Application::GetInstance()->setCursor(c);
+}
+
 void frameRate(int fps)
 {
     Application::GetInstance()->setFrameRate(fps);

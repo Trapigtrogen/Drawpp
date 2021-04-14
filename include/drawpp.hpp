@@ -13,6 +13,9 @@ void exit();
 void frameRate(int fps);
 void vSync(bool state);
 
+///\copydoc Application::setCursor(CursorStyle)
+void cursor(CursorStyle c);
+
 // Window
 void size(int width, int height);
 void setResizable(bool);

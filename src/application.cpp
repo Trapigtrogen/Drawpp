@@ -230,6 +230,11 @@ void Application::exit()
     quit_flag = true;
 }
 
+void Application::setCursor(CursorStyle c)
+{
+    glfwSetCursor(window->GetHandle(),std_cursors[c]);
+}
+
 DGraphics& Application::graphics_object()
 {
     return *graphics;
@@ -272,6 +277,11 @@ bool Application::init_application()
     glfwSetCursorPosCallback(   window->GetHandle(),&Input::mousemov_callback);
     glfwSetWindowCloseCallback( window->GetHandle(),&windowclose_cb);
 
+    std_cursors.push_back(glfwCreateStandardCursor(GLFW_ARROW_CURSOR));
+    std_cursors.push_back(glfwCreateStandardCursor(GLFW_HAND_CURSOR));
+    std_cursors.push_back(glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR));
+    std_cursors.push_back(glfwCreateStandardCursor(GLFW_IBEAM_CURSOR));
+
     graphics = std::unique_ptr<DGraphics>(new DGraphics(window->properties.width,window->properties.height));
     shader = new Shader(Shader::loadShadersFromString(quad_shader_v,quad_shader_f));
     vertpos_attrib = glGetAttribLocation(shader->getId(),"pos");
@@ -300,6 +310,11 @@ void Application::cleanup_application()
     if(cleanup_func)
     {
         cleanup_func();
+    }
+
+    for(auto c : std_cursors)
+    {
+        glfwDestroyCursor(c);
     }
 
     window->Cleanup();

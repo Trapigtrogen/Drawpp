@@ -3,12 +3,22 @@
 
 #include <cstdint>
 #include <functional>
+#include <vector>
 #include <memory>
 #include <random.hpp>
 #include <noise.hpp>
 
 class Window;
 class DGraphics;
+class GLFWcursor;
+
+enum CursorStyle
+{
+    ARROW,
+    HAND,
+    CROSS,
+    TEXT,
+};
 
 ///Application class is the core of the program
 class Application
@@ -48,6 +58,9 @@ public:
     void setVSync(bool vsync);
     void exit();
 
+    ///\brief Set the cursor style
+    void setCursor(CursorStyle c);
+
     DGraphics& graphics_object();
     int getWidth() const;
     int getHeight() const;
@@ -74,6 +87,8 @@ private:
     std::function<void(float)> draw_func = nullptr;
     std::function<void()> setup_func = nullptr;
     std::function<void()> cleanup_func = nullptr;
+
+    std::vector<GLFWcursor*> std_cursors;
 
     static Application* instance;
 };
