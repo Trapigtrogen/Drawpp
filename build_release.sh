@@ -89,6 +89,8 @@ cp ../include/shader.hpp ./include/
 cp ../include/shape.hpp ./include/
 cp ../include/vector3.hpp ./include/
 cp ../include/font.hpp ./include/
+cp ../include/path.hpp ./include/
+cp ../include/constants.hpp ./include/
 
 echo "Combining libraries..."
 # combine libraries
