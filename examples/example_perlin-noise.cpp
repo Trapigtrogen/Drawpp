@@ -1,12 +1,13 @@
 #include <drawpp.hpp>
 
 // Starting values for the perlin noise generator
+
 // Window will be sized 1000px * 1000px
 // We need this information when we are fitting the final texture to fill the whole window
 int window_height = 1000;
 int window_width = 1000;
 
-// The size of perlin noise will be 100px * 100px
+// The size of perlin noise will be 512px * 512px
 int gen_height = 512;
 int gen_width = 512;
 
@@ -19,9 +20,12 @@ int seed = 1;
 // Scale affects the contrast of high and low values
 float nscale = 1.3f;
 
-// Create pixeldata and empty texture
+// Create pixeldata and empty texture remember to multiply by amount of channels per pixel (r,g,b,a) = 4
 unsigned char* pixeldata = new unsigned char[gen_width * gen_height * 4];
 DImage noiseTex;
+
+// pixeldata for alt. method
+std::vector<Color> pixels;
 
 void setup()
 {
@@ -40,23 +44,43 @@ void draw(float)
     // Render perlin noise data to texture
 
     // Go through every x,y coordinate of perlin noise data
-    // Multiplier 4 is the amount of channels we need for the image (r,g,b,a)
-    for (int y = 0; y < gen_height * 4; y += 4)
+    for (int y = 0; y < gen_height; y++)
     {
-        for (int x = 0; x < gen_width * 4; x += 4)
+        for (int x = 0; x < gen_width; x++)
         {
             // Here we're just going to put same value to each color channel of the pixel to get the grayscaled image
+            // Multiplier 4 is added to both coordinates because as said previously the image has 4 channels per pixel
+            // Noise values are normalized meaning they go from 0 to 1 so noise value is multiplied by maximum color value
 
-            pixeldata[y * gen_width + x] = noise(x/4,y/4) * 255;			// RED
-            pixeldata[y * gen_width + x + 1] = noise(x/4, y/4) * 255;		// GREEN
-            pixeldata[y * gen_width + x + 2] = noise(x/4, y/4) * 255;		// BLUE
-            pixeldata[y * gen_width + x + 3] = 255;				    // ALPHA
+            pixeldata[y * 4 * gen_width + x * 4] = noise(x,y) * 255;			// RED
+            pixeldata[y * 4 * gen_width + x * 4  + 1] = noise(x, y) * 255;		// GREEN
+            pixeldata[y * 4 * gen_width + x * 4  + 2] = noise(x, y) * 255;		// BLUE
+            pixeldata[y * 4 * gen_width + x * 4  + 3] = 255;				    // ALPHA
         }
     }
     // Create texture with pixel data
     noiseTex = createImage(pixeldata, gen_width, gen_height);
     // Render said texture to fill whole window
     image(noiseTex, 0, 0, window_width, window_height);
+
+
+
+    // Alternative but much slower way to render custom data to image (better suitable for setup)
+    /*
+    for (int y = 0; y < gen_height; y++)
+    {
+        for (int x = 0; x < gen_width; x++)
+        {
+            Color col(noise(x, y) * 255, noise(x, y) * 255, noise(x, y) * 255, 255);
+            pixels.push_back(col);
+        }
+    }
+    noiseTex = createImage(pixels, gen_width, gen_height);
+    image(noiseTex, 0, 0, window_width, window_height);
+    // Remember to remove pixels if you plan to reuse the same vector
+    pixels.clear();
+    */
+
 
 
     // Print some helpful text on the screen

@@ -6,8 +6,7 @@ DImage bg_img;
 
 int imageW = 100;
 int imageH = 100;
-int channels = 4;
-unsigned char* pixels = new unsigned char[imageW * imageH * channels];
+unsigned char* pixels = new unsigned char[imageW * imageH * 4];
 std::vector<Color> pixelsVec;
 
 void setup() 
@@ -26,14 +25,14 @@ void draw(float)
 	image(bg_img, 500, 300, 100, 100);
 
 
-	for (int x = 0; x < imageW * channels; x += channels)
+	for (int y = 0; y < imageW; y++)
 	{
-		for (int y = 0; y < imageH * channels; y += channels)
+		for (int x = 0; x < imageH; x++)
 		{
-			pixels[y * imageW + x] = randomInt(255);			// RED
-			pixels[y * imageW + x + 1] = randomInt(255);		// GREEN
-			pixels[y * imageW + x + 2] = randomInt(255);		// BLUE
-			pixels[y * imageW + x + 3] = 255;					// ALPHA
+			pixels[y * 4 * imageW + x * 4] = randomInt(255);			// RED
+			pixels[y * 4 * imageW + x * 4 + 1] = randomInt(255);		// GREEN
+			pixels[y * 4 * imageW + x * 4 + 2] = randomInt(255);		// BLUE
+			pixels[y * 4 * imageW + x * 4 + 3] = 255;					// ALPHA
 
 			Color col(randomInt(255), randomInt(255), randomInt(255), 255);
 			pixelsVec.push_back(col);
