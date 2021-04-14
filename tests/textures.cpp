@@ -16,6 +16,15 @@ void setup()
 	bg_img = loadImage("assets/bg_img.jpg");
 
 	emptyImg = loadImage("non-existing imagefile"); // Error but no crash
+}
+
+void draw(float) 
+{
+	background(bg_img);
+	imageMode(CORNER);
+	image(img, 0, 0, 300, 300);
+	image(bg_img, 500, 300, 100, 100);
+
 
 	for (int x = 0; x < imageW * channels; x += channels)
 	{
@@ -32,17 +41,8 @@ void setup()
 	}
 	//emptyImg = createImage(pixels, imageW, imageH); // Create from char* pixel data
 	emptyImg = createImage(pixelsVec, imageW, imageH); // Create from vector of Colors
-	pixelsVec.clear();
-}
-
-void draw(float) 
-{
-	background(bg_img);
-	imageMode(CORNER);
-	image(img, 0, 0, 300, 300);
-	image(bg_img, 500, 300, 100, 100);
-
 	image(emptyImg, 400, 400, 200, 200);
+	pixelsVec.clear();
 }
 
 int main()
