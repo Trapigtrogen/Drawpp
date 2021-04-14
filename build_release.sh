@@ -85,7 +85,6 @@ cp ../include/keys.hpp ./include/
 cp ../include/matrix4.hpp ./include/
 cp ../include/noise.hpp ./include/
 cp ../include/random.hpp ./include/
-cp ../include/shader.hpp ./include/
 cp ../include/shape.hpp ./include/
 cp ../include/vector3.hpp ./include/
 cp ../include/font.hpp ./include/

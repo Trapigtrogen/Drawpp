@@ -627,20 +627,20 @@ void bezier(const DVector& p1, const DVector& p2, const DVector& cp)
 
 // Shader
 
-Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader)
-{
-    return Shader::loadShadersFromFile(vertexShader, fregmentShader);
-}
-
-Shader loadShadersFromString(const char* vertexShader, const char* fregmentShader)
-{
-    return Shader::loadShadersFromString(vertexShader, fregmentShader);
-}
-
-Shader loadShadersDefault()
-{
-    return Shader::loadShadersDefault();
-}
+//Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader)
+//{
+//    return Shader::loadShadersFromFile(vertexShader, fregmentShader);
+//}
+//
+//Shader loadShadersFromString(const char* vertexShader, const char* fregmentShader)
+//{
+//    return Shader::loadShadersFromString(vertexShader, fregmentShader);
+//}
+//
+//Shader loadShadersDefault()
+//{
+//    return Shader::loadShadersDefault();
+//}
 
 
 // Transform

@@ -3,7 +3,6 @@
 #include <application.hpp>
 #include <keys.hpp>
 #include <image.hpp>
-#include <shader.hpp>
 #include <color.hpp>
 #include <graphics.hpp>
 #include <shape.hpp>
@@ -549,9 +548,9 @@ void background(const DImage& image);
 
 
 // Shader
-Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader);
-Shader loadShadersFromString(const char* vertexShader, const char* fregmentShader);
-Shader loadShadersDefault();
+//Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader);
+//Shader loadShadersFromString(const char* vertexShader, const char* fregmentShader);
+//Shader loadShadersDefault();
 
 
 ///\defgroup drawpp_transform_api Transform
