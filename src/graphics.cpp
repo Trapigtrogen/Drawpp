@@ -1087,7 +1087,7 @@ void DGraphics::shape(const DShape& s, float x, float y, float w, float h)
         //Need more testing, but problem seems to be with the draw call.
         #if 0
         
-        generate_cubic_bezier_path(reinterpret_cast<const vec2f*>(pt.points.data()),pt.points.size(),4);
+        generate_cubic_bezier_path(reinterpret_cast<const vec2f*>(pt.points.data()),pt.points.size(),x,-y,w,h,4);
         render_bezier_buffer();
 
         #else
@@ -1333,7 +1333,7 @@ vec2f bezier_bezierQuadratic(vec2f p0, vec2f p1,vec2f p2, float t)
 
 //stride = bytes between elements in array
 //for example, if you cast a DVector array to vec2f array here, you want stride of 4 (sizeof(DVector)-sizeof(vec2f))
-void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t count, unsigned int stride)
+void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t count, float xoff, float yoff, float xscale, float yscale, unsigned int stride)
 {
     bezier_buffer.clear();
 
@@ -1355,10 +1355,15 @@ void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t co
         c = *reinterpret_cast<const vec2f*>(dataptr+=offset);
         d = *reinterpret_cast<const vec2f*>(dataptr+=offset);
 
-        a.y = -a.y;
-        b.y = -b.y;
-        c.y = -c.y;
-        d.y = -d.y;
+        a.y = -a.y * yscale + yoff;
+        b.y = -b.y * yscale + yoff;
+        c.y = -c.y * yscale + yoff;
+        d.y = -d.y * yscale + yoff;
+
+        a.x = a.x * xscale + xoff;
+        b.x = b.x * xscale + xoff;
+        c.x = c.x * xscale + xoff;
+        d.x = d.x * xscale + xoff;
 
         t -= 1.0;
 
@@ -1371,7 +1376,7 @@ void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t co
     bezier_buffer.push_back(bezier_bezierCubic(a,b,c,d,1.0));
 }
 
-void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_t count, unsigned int stride)
+void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_t count, float xoff, float yoff, float xscale, float yscale, unsigned int stride)
 {
     bezier_buffer.clear();
 
@@ -1391,10 +1396,13 @@ void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_
         p1 = *reinterpret_cast<const vec2f*>(dataptr+=offset);
         p2 = *reinterpret_cast<const vec2f*>(dataptr+=offset);
 
-        p0.y = -p0.y;
-        p1.y = -p1.y;
-        p2.y = -p2.y;
+        p0.y = -p0.y * yscale + yoff;
+        p1.y = -p1.y * yscale + yoff;
+        p2.y = -p2.y * yscale + yoff;
 
+        p0.x = p0.x * xscale + xoff;
+        p1.x = p1.x * xscale + xoff;
+        p2.x = p2.x * xscale + xoff;
 
         t -= 1.0;
         while(t < 1.0)

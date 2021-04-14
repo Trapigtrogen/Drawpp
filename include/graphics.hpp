@@ -602,9 +602,9 @@ private:
 
     //expects curves to have 1 common point
     //stride = bytes between elements in array
-    void generate_cubic_bezier_path(const struct vec2f* points, size_t count, unsigned int stride = 0);
+    void generate_cubic_bezier_path(const struct vec2f* points, size_t count, float xoff = 0, float yoff = 0, float xscale = 1.0, float yscale = 1.0, unsigned int stride = 0);
 
-    void generate_quadratic_bezier_path(const struct vec2f* points, size_t count, unsigned int stride = 0);
+    void generate_quadratic_bezier_path(const struct vec2f* points, size_t count, float xoff = 0, float yoff = 0, float xscale = 1.0, float yscale = 1.0, unsigned int stride = 0);
 
     void render_bezier_buffer();
 
