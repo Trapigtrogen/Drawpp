@@ -11,7 +11,7 @@
 static const std::wstring default_charset = L" aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXy"
 "YzZ1234567890!\"@#$%&/{([)]=}?\\+^'*-_.:,;<>|";
 
-_DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
+DFont_impl* DFont_impl::load_font(void* _face, const FontOptions& options)
 {
     std::wstring charset = options.charset;
     charset.insert(charset.begin(),L'\0');
@@ -73,7 +73,7 @@ _DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
 
     uint8_t* bitmap = new uint8_t[width*height]();
 
-    std::unordered_map<wchar_t,_DFont_impl::Char> data;
+    std::unordered_map<wchar_t,DFont_impl::Char> data;
 
     int loaded_valid = 0;
 
@@ -160,7 +160,7 @@ _DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
         cc.tx_height /= height;
     }
 
-    _DFont_impl* result = new _DFont_impl;
+    DFont_impl* result = new DFont_impl;
 
     result->chars = std::move(data);
     result->font_face = _face;
@@ -180,7 +180,7 @@ _DFont_impl* _DFont_impl::load_font(void* _face, const FontOptions& options)
     return result;
 }
 
-_DFont_impl::~_DFont_impl()
+DFont_impl::~DFont_impl()
 {
     FT_Done_Face(reinterpret_cast<FT_Face>(font_face));
     delete[] font_data;
@@ -188,7 +188,7 @@ _DFont_impl::~_DFont_impl()
     glDeleteTextures(1,&texture_id);
 }
 
-bool _DFont_impl::load_additional_char(wchar_t c)
+bool DFont_impl::load_additional_char(wchar_t c)
 {
     FT_Face face = reinterpret_cast<FT_Face>(font_face);
 
@@ -319,7 +319,7 @@ bool _DFont_impl::load_additional_char(wchar_t c)
     return true;
 }
 
-void _DFont_impl::load_all_chars()
+void DFont_impl::load_all_chars()
 {
     FT_Face face = reinterpret_cast<FT_Face>(font_face);
 
@@ -525,7 +525,7 @@ void _DFont_impl::load_all_chars()
     loaded_chars += loaded_valid;
 }
 
-void _DFont_impl::apply_texture()
+void DFont_impl::apply_texture()
 {
     if(texture_id != 0)
     {
@@ -560,7 +560,7 @@ void _DFont_impl::apply_texture()
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void _DFont_impl::init_lib()
+void DFont_impl::init_lib()
 {
     if(lib_ptr == nullptr)
     {
@@ -609,7 +609,7 @@ DFont DFont::load(const std::string& filename, const FontOptions& options)
 
     FT_Face face;
 
-    int err = FT_New_Memory_Face(reinterpret_cast<FT_Library>(_DFont_impl::lib_ptr),data,l,0,&face);
+    int err = FT_New_Memory_Face(reinterpret_cast<FT_Library>(DFont_impl::lib_ptr),data,l,0,&face);
 
     if(err)
     {
@@ -623,7 +623,7 @@ DFont DFont::load(const std::string& filename, const FontOptions& options)
         return DFont();
     }
 
-    std::shared_ptr<_DFont_impl> font_impl = std::shared_ptr<_DFont_impl>(_DFont_impl::load_font(face,options));
+    std::shared_ptr<DFont_impl> font_impl = std::shared_ptr<DFont_impl>(DFont_impl::load_font(face,options));
     
     if(!font_impl)
     {
@@ -649,7 +649,7 @@ DFont DFont::load(const std::string& filename, const FontOptions& options)
 
 void DFont::init_lib()
 {
-    _DFont_impl::init_lib();
+    DFont_impl::init_lib();
 }
 
 void DFont::ClearCharset(const std::wstring& new_charset)
@@ -668,7 +668,7 @@ void DFont::ClearCharset(const std::wstring& new_charset)
     opt.load_all = false;
     opt.charset = new_charset;
 
-    _DFont_impl* nfont = _DFont_impl::load_font(impl->font_face,opt);
+    DFont_impl* nfont = DFont_impl::load_font(impl->font_face,opt);
 
     if(!nfont)
     {
@@ -680,7 +680,7 @@ void DFont::ClearCharset(const std::wstring& new_charset)
     impl->font_data = nullptr;
     impl->font_face = nullptr;
 
-    impl = std::shared_ptr<_DFont_impl>(nfont);
+    impl = std::shared_ptr<DFont_impl>(nfont);
 }
 
 bool DFont::valid() const
@@ -693,4 +693,4 @@ DFont::operator bool() const
     return valid();
 }
 
-void* _DFont_impl::lib_ptr = nullptr;
+void* DFont_impl::lib_ptr = nullptr;

@@ -2,6 +2,7 @@
 #include <debug.hpp>
 #include <cassert>
 #include <glad/glad.h>
+#include <cstring>
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
@@ -17,22 +18,19 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#include <nanosvg.h>
+#define NANOSVGRAST_IMPLEMENTATION
+#include <nanosvgrast.h>
+
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
 #else
 #pragma warning(pop)
 #endif
 
-unsigned int get_max_units()
-{
-    int value = 0;
-    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&value);
-    return value;
-}
-
 DImage::~DImage() 
 {
-	if(pixels != nullptr) free(pixels);
+	if(m_pixels != nullptr) free(m_pixels);
 	if(m_texture != 0) glDeleteTextures(1, &m_texture);
 }
 
@@ -40,63 +38,63 @@ DImage::DImage() = default;
 
 DImage::DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c)
 {
-    max_texture_units = get_max_units();
-	pixels = _pixels;
+	m_pixels = _pixels;
 	m_texture = _texture;
-	width = w;
-	height = h;
-	channels = c;
+	m_width = w;
+	m_height = h;
+	m_channels = c;
 }
 
 DImage::DImage(const DImage& other) 
 {
-	height = other.height;
-	width = other.width;
-	channels = other.channels;
+	m_height = other.m_height;
+	m_width = other.m_width;
+	m_channels = other.m_channels;
 
-	if(other.pixels != nullptr) 
+	if(other.m_pixels != nullptr) 
 	{
-		pixels = (unsigned char*) malloc(other.width * other.height * other.channels);
-		std::copy(other.pixels, other.pixels + other.width * other.height * other.channels, pixels);
+        unsigned size = other.m_width * other.m_height * other.m_channels;
+		m_pixels = static_cast<unsigned char*>(malloc(size));
+        std::memcpy(m_pixels,other.m_pixels,size);
 	}
 
-	glDeleteTextures(1, &m_texture);
-	m_texture = generateTexture(width, height, pixels);
+	apply();
 }
 
 DImage::DImage(DImage&& other)
 {
-	pixels = other.pixels;
+	m_pixels = other.m_pixels;
 	m_texture = other.m_texture;
-	height = other.height;
-	width = other.width;
-	channels = other.channels;
+	m_height = other.m_height;
+	m_width = other.m_width;
+	m_channels = other.m_channels;
 
-	other.pixels = nullptr;
+	other.m_pixels = nullptr;
 	other.m_texture = 0;
-	other.height = 0;
-	other.width = 0;
-	other.channels = 0;
+	other.m_height = 0;
+	other.m_width = 0;
+	other.m_channels = 0;
 }
 
-DImage& DImage::operator=(DImage& other) 
+DImage& DImage::operator=(const DImage& other) 
 {
 	if(this != &other) 
 	{
-		height = other.height;
-		width = other.width;
-		channels = other.channels;
+		m_height = other.m_height;
+		m_width = other.m_width;
+		m_channels = other.m_channels;
 
-		free(pixels); // Remove old pixels and copy new ones
-        pixels = nullptr;
-		if(other.pixels != nullptr) 
+		free(m_pixels); // Remove old pixels and copy new ones
+        m_pixels = nullptr;
+
+		if(other.m_pixels != nullptr) 
 		{
-			pixels = (unsigned char*) malloc(other.width * other.height * other.channels);
-			std::copy(other.pixels, other.pixels + other.width * other.height * other.channels, pixels);
+            unsigned size = other.m_width * other.m_height * other.m_channels;
+			m_pixels = static_cast<unsigned char*>(malloc(size));
+            std::memcpy(m_pixels,other.m_pixels,size);
 		}
 
-		glDeleteTextures(1, &m_texture);
-		m_texture = generateTexture(width, height, pixels);
+		apply();
 	}
 
 	return *this;
@@ -106,19 +104,19 @@ DImage& DImage::operator=(DImage&& other)
 {
 	if(this != &other) 
 	{
-		free(pixels);
+		free(m_pixels);
 
-		pixels = other.pixels;
+		m_pixels = other.m_pixels;
 		m_texture = other.m_texture;
-		height = other.height;
-		width = other.width;
-		channels = other.channels;
+		m_height = other.m_height;
+		m_width = other.m_width;
+		m_channels = other.m_channels;
 
-		other.pixels = nullptr;
+		other.m_pixels = nullptr;
 		other.m_texture = 0;
-		other.height = 0;
-		other.width = 0;
-		other.channels = 0;
+		other.m_height = 0;
+		other.m_width = 0;
+		other.m_channels = 0;
 	}
 
 	return *this;
@@ -149,6 +147,46 @@ DImage DImage::loadImage(const std::string& fileName)
 	return tmpImg;
 }
 
+DImage DImage::loadSVGImage(const std::string& filename, float scale)
+{
+    NSVGimage* image = nsvgParseFromFile(filename.c_str(), "px", 96);
+
+    if(image == nullptr) 
+	{
+        dbg::error("Failed to load svg image: ", filename);
+        return DImage();
+    }
+
+    NSVGrasterizer* raster = nsvgCreateRasterizer();
+
+    int width = (image->width*scale);
+    int height = (image->height*scale);
+    unsigned int w4 = width*4;
+
+    unsigned char* imgdata = static_cast<unsigned char*>(malloc(w4*height));
+
+    nsvgRasterize(raster,image,0,0,scale,imgdata,width,height,w4);
+
+    //rasterizer creates upside down image for some reason, so flip pixels here
+    unsigned char* tmp = static_cast<unsigned char*>(malloc(w4));
+    unsigned char* last_line = imgdata + (height-1)*w4;
+    for(unsigned i = 0; i < height/2; ++i)
+    {
+        unsigned char* upper = imgdata+i*w4;
+        unsigned char* lower = last_line-i*w4;
+        std::memcpy(tmp,upper,w4);
+        std::memcpy(upper,lower,w4);
+        std::memcpy(lower,tmp,w4);
+    }
+    free(tmp);
+
+    GLuint texture = generateTexture(width,height,imgdata);
+
+    nsvgDelete(image);
+    nsvgDeleteRasterizer(raster);
+
+    return DImage(imgdata,texture,width,height,4);
+}
 
 unsigned int DImage::generateTexture(int width, int height, unsigned char* pixels)
 {
@@ -164,4 +202,43 @@ unsigned int DImage::generateTexture(int width, int height, unsigned char* pixel
 	return m_texture;
 }
 
-unsigned int DImage::max_texture_units = 0;
+int DImage::width() const
+{
+    return m_width;
+}
+
+int DImage::height() const
+{
+    return m_height;
+}
+
+int DImage::channels() const
+{
+    return m_channels;
+}
+
+unsigned char* DImage::pixels()
+{
+    return m_pixels;
+}
+
+const unsigned char* DImage::pixels() const
+{
+    return m_pixels;
+}
+
+void DImage::apply()
+{
+	if(m_texture != 0)
+    {
+        glDeleteTextures(1, &m_texture);
+        m_texture = 0;
+    }
+
+    if(m_pixels != nullptr)
+    {
+        m_texture = generateTexture(m_width,m_height,m_pixels);
+    }
+}
+
+unsigned int DImage::max_texture_units = 32;

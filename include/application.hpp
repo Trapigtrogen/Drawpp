@@ -24,6 +24,14 @@ enum CursorStyle
 class Application
 {
 public:
+
+    ///\addtogroup drawpp_application_api
+    ///@{
+
+    ///\brief Construct an application 
+    ///
+    ///Only once instance of Application is allowed to exist while the program is running.
+    ///Attempting to instantiate multiple Applications will crash the program.
     Application(int width = 200, int height = 200, const char* title = "Title");
 
     ~Application();
@@ -65,6 +73,8 @@ public:
     ///\brief Set the MouseDragged callback
     void setMouseDragged(std::function<void()>);
 
+    ///@}
+
 
     ///\brief Change the application window size
     void size(int width, int height);
@@ -90,18 +100,32 @@ public:
 
     ///\brief Enable or disable VSync
     void setVSync(bool vsync);
+
+
+    ///\brief Exit application after current cycle
     void exit();
+
 
     ///\brief Set the cursor style
     void setCursor(CursorStyle c);
 
+
+    ///\brief Get a reference to the default draw target
     DGraphics& graphics_object();
+
+
+    ///\brief Get the current window width
     int getWidth() const;
+
+
+    ///\brief Get the current window height
     int getHeight() const;
+
+    
     bool graphicsExists() const;
 
 
-    ///\private
+    ///\brief Get a pointer to the application singleton
     static Application* GetInstance();
 
 

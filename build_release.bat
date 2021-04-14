@@ -127,22 +127,18 @@ if not exist include mkdir include
 cd include
 copy "..\..\include\application.hpp"    "application.hpp"
 copy "..\..\include\color.hpp"          "color.hpp"
-::remove debug.hpp dependency from all headers pls
-::copy "..\..\include\debug.hpp"          "debug.hpp"
 copy "..\..\include\drawpp.hpp"         "drawpp.hpp"
 copy "..\..\include\graphics.hpp"       "graphics.hpp"
 copy "..\..\include\image.hpp"          "image.hpp"
-::copy "..\..\include\input.hpp"          "input.hpp"
 copy "..\..\include\keys.hpp"           "keys.hpp"
 copy "..\..\include\matrix4.hpp"        "matrix4.hpp"
 copy "..\..\include\noise.hpp"          "noise.hpp"
 copy "..\..\include\random.hpp"         "random.hpp"
-copy "..\..\include\shader.hpp"         "shader.hpp"
 copy "..\..\include\shape.hpp"          "shape.hpp"
-::copy "..\..\include\time.hpp"           "time.hpp"
 copy "..\..\include\vector3.hpp"        "vector3.hpp"
-copy "..\..\include\font.hpp"        "font.hpp"
-::copy "..\..\include\window.hpp" "window.hpp"
+copy "..\..\include\font.hpp"           "font.hpp"
+copy "..\..\include\path.hpp"           "path.hpp"
+copy "..\..\include\constants.hpp"      "constants.hpp"
 
 cd ..
 
@@ -184,14 +180,20 @@ echo set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)>>CMakeLists.txt
 ::add example files here like this
 echo add_executable(example_buttons example_buttons.cpp)>>CMakeLists.txt
 echo add_executable(example_de-jong-attractor example_de-jong-attractor.cpp)>>CMakeLists.txt
+echo add_executable(example_color_mousewheel example_color_mousewheel.cpp)>>CMakeLists.txt
+echo add_executable(example_draw example_draw.cpp)>>CMakeLists.txt
 
 echo set_property(TARGET>>CMakeLists.txt
 
 ::add example names here to change working dir
 echo example_buttons>>CMakeLists.txt
 echo example_de-jong-attractor>>CMakeLists.txt
+echo example_color_mousewheel>>CMakeLists.txt
+echo example_draw>>CMakeLists.txt
 
 echo PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")>>CMakeLists.txt
+
+::set button example to be the startup project
 echo set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT example_buttons)>>CMakeLists.txt
 
 cd ..

@@ -5,13 +5,13 @@
 #include <string>
 #include <matrix4.hpp>
 #include <color.hpp>
-#include <shape.hpp>
 #include <font.hpp>
 #include <memory>
 
 class DImage;
 class Shader;
 struct DVector;
+class DShape;
 
 enum ColorMode
 {
@@ -133,11 +133,11 @@ public:
 
 
     ///\brief Fill target with \p grey color
-    void background(float gray );
+    void background(float grey );
 
 
     ///\brief Fill target with \p grey color using \p alpha
-    void background(float gray, float alpha);
+    void background(float grey, float alpha);
 
 
     ///\brief Fill target with \p image
@@ -167,11 +167,11 @@ public:
 
 
     ///\brief Set stroke color to \p grey
-    void stroke(float gray );
+    void stroke(float grey );
 
 
     ///\brief Set stroke color to \p grey with \p alpha
-    void stroke(float gray, float alpha);
+    void stroke(float grey, float alpha);
 
     
     ///\brief Set stroke color 
@@ -260,32 +260,32 @@ public:
     Color color(float v1, float v2, float v3, float alpha);
 
 
-    ///\brief Get the red component of \p c
-    float red(Color c);
+    ///\brief Get the red component of \p col
+    float red(Color col);
 
 
-    ///\brief Get the green component of \p c
-    float green(Color c);
+    ///\brief Get the green component of \p col
+    float green(Color col);
 
 
-    ///\brief Get the blue component of \p c
-    float blue(Color c);
+    ///\brief Get the blue component of \p col
+    float blue(Color col);
 
 
-    ///\brief Get the alpha component of \p c
-    float alpha(Color c);
+    ///\brief Get the alpha component of \p col
+    float alpha(Color col);
 
 
-    ///\brief Get the saturation value of \p c
-    float saturation(Color c);
+    ///\brief Get the saturation value of \p col
+    float saturation(Color col);
 
     
-    ///\brief Get the hue value of \p c
-    float hue(Color c);
+    ///\brief Get the hue value of \p col
+    float hue(Color col);
 
 
-    ///\brief Get the brightness value of \p c
-    float brightness(Color c);
+    ///\brief Get the brightness value of \p col
+    float brightness(Color col);
 
 
     ///\brief Disable fill
@@ -437,24 +437,48 @@ public:
     void ellipse(float x, float y, float sizex, float sizey );
 
 
-    ///\brief Draw a circle at ( \p x, \p y ), with radius \p size
-    void circle(float x, float y, float size);
+    ///\brief Draw an ellipse at \p p, with size \p s
+    void ellipse(const DVector& p, const DVector& s);
+
+
+    ///\brief Draw a circle at ( \p x, \p y ), with radius \p radius
+    void circle(float x, float y, float radius);
+
+
+    ///\brief Draw a circle at \p p, with radius \p radius
+    void circle(const DVector& p, float radius);
 
 
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey )
     void rect(float x, float y, float sizex, float sizey );
 
 
+    ///\brief Draw a rectangle at \p p, with size \p s
+    void rect(const DVector& p, const DVector& s);
+
+
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey ), and with corners rounded by \p radii
     void rect(float x, float y, float sizex, float sizey, float radii);
+
+    
+    ///\brief Draw a rectangle at \p p, with size \p s, and with corners rounded by \p radii
+    void rect(const DVector& p, const DVector& s, float radii);
 
 
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey ), and with corners rounded by \p tl, \p tr, \p br and \p bl
     void rect(float x, float y, float sizex, float sizey, float tl, float tr, float br, float bl);
 
 
+    ///\brief Draw a rectangle at \p p, with size \p s, and with corners rounded by \p tl, \p tr, \p br and \p bl
+    void rect(const DVector& p, const DVector& s, float tl, float tr, float br, float bl);
+
+
     ///\brief Draw a square at ( \p x, \p y ), with \p size
     void square(float x, float y, float size);
+
+
+    ///\brief Draw a square at \p p, with \p size
+    void square(const DVector& p, float size);
 
 
     ///\brief Draw a triangle from points ( \p x1, \p y1), ( \p x2, \p y2) and ( \p x3, \p y3)
@@ -489,16 +513,24 @@ public:
     void point(const DVector& p);
 
 
-    ///\brief Draw image \p img at ( \p x, \p y )
-    void image(const DImage& img, float x, float y );
+    ///\brief Draw image \p image at ( \p x, \p y )
+    void image(const DImage& image, float x, float y );
 
 
-    ///\brief Draw image \p img at ( \p x, \p y ), resized to ( \p w, \p h)
-    void image(const DImage& img, float x, float y, float w, float h);
+    ///\brief Draw image \p image at \p p
+    void image(const DImage& image, const DVector& p);
+
+
+    ///\brief Draw image \p image at ( \p x, \p y ), resized to ( \p w, \p h)
+    void image(const DImage& image, float x, float y, float w, float h);
+
+
+    ///\brief Draw image \p image at \p p, resized to \p s
+    void image(const DImage& image, const DVector& p, const DVector& s);
 
 
     ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)
-    void shape(DShape* s, float x, float y, float w, float h);
+    void shape(const DShape& s, float x, float y, float w, float h);
 
 
     ///\brief Draw a quad from points ( \p x1, \p y1 ), ( \p x2, \p y2 ), ( \p x3, \p y3 ) and ( \p x4, \p y4 )
@@ -522,8 +554,18 @@ public:
     void text(const std::string& txt, float x, float y);
 
 
+    ///\brief Draw text at \p p
+    ///
+    ///A font must be set with textFont() before drawing any text.
+    void text(const std::string& txt, const DVector& p);
+
+
     ///\copydoc text(const std::string&,float,float);
     void text(const std::wstring& txt, float x, float y);
+
+
+    ///\copydoc text(const std::string&,const DVector&)
+    void text(const std::wstring& txt, const DVector& p);
 
 
     ///\brief Draw a cubic bezier curve from 4 points.
@@ -559,9 +601,10 @@ private:
     Color get_color(float v1, float v2, float v3, float a);
 
     //expects curves to have 1 common point
-    void generate_cubic_bezier_path(const struct vec2f* points, size_t count);
+    //stride = bytes between elements in array
+    void generate_cubic_bezier_path(const struct vec2f* points, size_t count, float xoff = 0, float yoff = 0, float xscale = 1.0, float yscale = 1.0, unsigned int stride = 0);
 
-    void generate_quadratic_bezier_path(const struct vec2f* points, size_t count);
+    void generate_quadratic_bezier_path(const struct vec2f* points, size_t count, float xoff = 0, float yoff = 0, float xscale = 1.0, float yscale = 1.0, unsigned int stride = 0);
 
     void render_bezier_buffer();
 

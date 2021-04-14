@@ -5,6 +5,7 @@
 #include <input.hpp>
 #include <shader.hpp>
 #include <graphics.hpp>
+#include <image.hpp>
 #include <time.hpp>
 #include <font.hpp>
 #include <chrono>
@@ -292,6 +293,11 @@ bool Application::init_application()
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     
     DFont::init_lib();
+
+    
+
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
+        reinterpret_cast<GLint*>(&DImage::max_texture_units));
 
     graphics->beginDraw();
     

@@ -87,15 +87,14 @@ void mouseClicked()
     }
 }
 
-
 int main()
 {
     // Create the application object
     Application app(1000,1000,"Drawpp example: Buttons");
 
     // Set the mouse click callback
-    app.setMouseClicked(&mouseClicked);
+    app.setMouseClicked(mouseClicked);
 
     // Run the application
-    return app.run(&draw,&setup);
+    return app.run(draw,setup);
 }

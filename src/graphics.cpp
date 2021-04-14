@@ -11,6 +11,8 @@
 #include <cstring>
 #include <locale>
 #include <codecvt>
+#include <shape.hpp>
+#include <shape_impl.hpp>
 #include <constants.hpp>
 
 #include "stb_image_write.h"
@@ -84,7 +86,6 @@ static std::vector<vec2f> bezier_buffer;
 #include <shaders/text_frag.ipp>
 #include <shaders/generic_colored_vert.ipp>
 #include <shaders/generic_colored_frag.ipp>
-
 
 DGraphics::DGraphics(int width, int height)
 {
@@ -328,10 +329,10 @@ void DGraphics::clear()
 
 void DGraphics::background(Color rgba)
 {
-    glClearColor(rgba.red()/properties.color_max1,
-                rgba.green()/properties.color_max2,
-                rgba.blue()/properties.color_max3,
-                rgba.alpha()/properties.color_maxa);
+    glClearColor(rgba.red() / 255.0f,
+                rgba.green() / 255.0f,
+                rgba.blue() / 255.0f,
+                rgba.alpha() / 255.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -707,9 +708,19 @@ void DGraphics::ellipse(float x, float y, float sizex, float sizey)
     glDisableVertexAttribArray(ellipse_shader_tpos_loc);
 }
 
+void DGraphics::ellipse(const DVector& p, const DVector& s)
+{
+    ellipse(p.x,p.y,s.x,s.y);
+}
+
 void DGraphics::circle(float x, float y, float size)
 {
     ellipse(x,y,size*2,size*2);
+}
+
+void DGraphics::circle(const DVector& p, float size)
+{
+    circle(p.x,p.y,size);
 }
 
 void DGraphics::rect(float x, float y, float sizex, float sizey)
@@ -717,9 +728,19 @@ void DGraphics::rect(float x, float y, float sizex, float sizey)
     rect(x,y,sizex,sizey,0,0,0,0);
 }
 
+void DGraphics::rect(const DVector& p, const DVector& s)
+{
+    rect(p.x,p.y,s.x,s.y);
+}
+
 void DGraphics::rect(float x, float y, float sizex, float sizey, float radii)
 {
     rect(x,y,sizex,sizey,radii,radii,radii,radii);
+}
+
+void DGraphics::rect(const DVector& p, const DVector& s, float radii)
+{
+    rect(p.x,p.y,s.x,s.y,radii);
 }
 
 void DGraphics::rect(float x, float y, float sizex, float sizey, float tl, float tr, float br, float bl)
@@ -752,9 +773,19 @@ void DGraphics::rect(float x, float y, float sizex, float sizey, float tl, float
     glDisableVertexAttribArray(rect_shader_tpos_loc);
 }
 
+void DGraphics::rect(const DVector& p, const DVector& s, float tl, float tr, float br, float bl)
+{
+    rect(p.x,p.y,s.x,s.y,tl,tr,br,bl);
+}
+
 void DGraphics::square(float x, float y, float size)
 {
     rect(x,y,size,size);
+}
+
+void DGraphics::square(const DVector& p, float size)
+{
+    square(p.x,p.y,size);
 }
 
 void DGraphics::triangle(float x1, float y1, float x2, float y2, float x3, float y3)
@@ -839,7 +870,12 @@ void DGraphics::point(const DVector& p)
 
 void DGraphics::image(const DImage& img, float x, float y)
 {
-    image(img,x,y,img.width,img.height);
+    image(img,x,y,img.m_width,img.m_height);
+}
+
+void DGraphics::image(const DImage& img, const DVector& p)
+{
+    image(img,p.x,p.y);
 }
 
 void DGraphics::image(const DImage& img, float x, float y, float w, float h)
@@ -873,6 +909,11 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
 
     glDisableVertexAttribArray(image_shader_vpos_loc);
     glDisableVertexAttribArray(image_shader_tpos_loc);
+}
+
+void DGraphics::image(const DImage& img, const DVector& p, const DVector& s)
+{
+    image(img,p.x,p.y,s.x,s.y);
 }
 
 void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
@@ -1029,39 +1070,43 @@ void DGraphics::quad(const DVector& p1, const DVector& p2, const DVector& p3, co
     quad(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
 }
 
-void DGraphics::shape(DShape* s, float x, float y, float w, float h)
+void DGraphics::shape(const DShape& s, float x, float y, float w, float h)
 {
-    // If SVG was loaded into this shape its objects has been split to new child shapes
-    // The NULL image indicates that when drawing this shape, only its children should be drawn instead
-    if (s->image != NULL)
+    float we = properties.stroke_weight;
+    Color c = properties.stroke_color;
+
+    properties.stroke_weight = s.impl->strokeWeight;
+    properties.stroke_color = s.impl->strokeColor;
+    DVector posv = {x,y};
+    DVector scalev = {w,h};
+
+    for(const Path& pt : s.impl->paths)
     {
-        // If child of SVG shape was copied this is where it's drawn
-        for (NSVGpath* path = s->image->shapes->paths; path != NULL; path = path->next)
+        //This is supposed to be faster, since there is only a single draw call per path
+        //but instead it can be many times slower.
+        //Need more testing, but problem seems to be with the draw call.
+        #if 1
+        
+        generate_cubic_bezier_path(reinterpret_cast<const vec2f*>(pt.points.data()),pt.points.size(),x,-y,w,h,4);
+        render_bezier_buffer();
+
+        #else
+
+        for (int i = 0; i < pt.points.size()-1; i += 3) 
         {
-            strokeWeight(s->image->shapes->strokeWidth);
-            for (int i = 0; i < path->npts - 1; i += 3) 
-            {
-                float* p = &path->pts[i * 2];
-                bezier(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
-            }
+            const DVector* p = &pt.points[i];
+            bezier(p[0]*scalev+posv,p[3]*scalev+posv,p[1]*scalev+posv,p[2]*scalev+posv);
         }
+
+        #endif
     }
 
-    // Draw childrens
-    for (int i = 0; i < s->getChildCount(); i++)
+    properties.stroke_weight = we;
+    properties.stroke_color = c;
+
+    for(const DShape& ss : s.impl->children)
     {
-        DShape* child = s->getChild(i);
-        if (child->image == NULL) { continue; }
-
-        for (NSVGpath* path = child->image->shapes->paths; path != NULL; path = path->next)
-        {
-
-            for (int i = 0; i < path->npts - 1; i += 3)
-            {
-                float* p = &path->pts[i * 2];
-                bezier(p[0], p[1], p[6], p[7], p[2], p[3], p[4], p[5]);
-            }
-        }
+        shape(ss,x,y,w,h);
     }
 }
 
@@ -1114,6 +1159,11 @@ bool DGraphics::save(const std::string& filename, ImageFormat format) const
 void DGraphics::text(const std::string& txt, float x, float y)
 {
     text(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(txt),x,y);
+}
+
+void DGraphics::text(const std::string& txt, const DVector& p)
+{
+    text(txt,p.x,p.y);
 }
 
 void DGraphics::text(const std::wstring& txt, float x, float y)
@@ -1261,6 +1311,11 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void DGraphics::text(const std::wstring& txt, const DVector& p)
+{
+    text(txt,p.x,p.y);
+}
+
 vec2f bezier_bezierCubic(vec2f a, vec2f b, vec2f c, vec2f d, float t)
 {
     float f1 = 1.0-t;
@@ -1276,7 +1331,9 @@ vec2f bezier_bezierQuadratic(vec2f p0, vec2f p1,vec2f p2, float t)
     return  t1*(t1*p0+t*p1)+t*(t1*p1+t*p2);
 }
 
-void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t count)
+//stride = bytes between elements in array
+//for example, if you cast a DVector array to vec2f array here, you want stride of 4 (sizeof(DVector)-sizeof(vec2f))
+void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t count, float xoff, float yoff, float xscale, float yscale, unsigned int stride)
 {
     bezier_buffer.clear();
 
@@ -1288,12 +1345,25 @@ void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t co
     vec2f b;
     vec2f c;
 
-    for(size_t i = 0; i < count-1; i += 3){
+    size_t offset = stride+sizeof(vec2f);
+    const uint8_t* dataptr = reinterpret_cast<const uint8_t*>(points);
 
-        a = vec2f{points[i].x  ,-points[i].y  };
-        b = vec2f{points[i+1].x,-points[i+1].y};
-        c = vec2f{points[i+2].x,-points[i+2].y};
-        d = vec2f{points[i+3].x,-points[i+3].y};
+    for(size_t i = 0; i < count-1; i += 3)
+    {
+        a = *reinterpret_cast<const vec2f*>(dataptr);
+        b = *reinterpret_cast<const vec2f*>(dataptr+=offset);
+        c = *reinterpret_cast<const vec2f*>(dataptr+=offset);
+        d = *reinterpret_cast<const vec2f*>(dataptr+=offset);
+
+        a.y = -a.y * yscale + yoff;
+        b.y = -b.y * yscale + yoff;
+        c.y = -c.y * yscale + yoff;
+        d.y = -d.y * yscale + yoff;
+
+        a.x = a.x * xscale + xoff;
+        b.x = b.x * xscale + xoff;
+        c.x = c.x * xscale + xoff;
+        d.x = d.x * xscale + xoff;
 
         t -= 1.0;
 
@@ -1306,8 +1376,7 @@ void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t co
     bezier_buffer.push_back(bezier_bezierCubic(a,b,c,d,1.0));
 }
 
-
-void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_t count)
+void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_t count, float xoff, float yoff, float xscale, float yscale, unsigned int stride)
 {
     bezier_buffer.clear();
 
@@ -1318,11 +1387,22 @@ void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_
     vec2f p1;
     vec2f p2;
 
+    size_t offset = stride+sizeof(vec2f);
+    const uint8_t* dataptr = reinterpret_cast<const uint8_t*>(points);
+
     for(size_t i = 0; i < count-1; i += 2)
     {
-        p0 = vec2f{points[i].x  ,-points[i].y  };
-        p1 = vec2f{points[i+1].x,-points[i+1].y};
-        p2 = vec2f{points[i+2].x,-points[i+2].y};
+        p0 = *reinterpret_cast<const vec2f*>(dataptr);
+        p1 = *reinterpret_cast<const vec2f*>(dataptr+=offset);
+        p2 = *reinterpret_cast<const vec2f*>(dataptr+=offset);
+
+        p0.y = -p0.y * yscale + yoff;
+        p1.y = -p1.y * yscale + yoff;
+        p2.y = -p2.y * yscale + yoff;
+
+        p0.x = p0.x * xscale + xoff;
+        p1.x = p1.x * xscale + xoff;
+        p2.x = p2.x * xscale + xoff;
 
         t -= 1.0;
         while(t < 1.0)
@@ -1349,19 +1429,30 @@ void DGraphics::render_bezier_buffer()
 
     mesh.push_back(bezier_buffer[0] + s_dist);
     mesh.push_back(bezier_buffer[0] - s_dist);
-    mesh.push_back(bezier_buffer[1] + s_dist);
-    mesh.push_back(bezier_buffer[1] - s_dist);
+
+    vec2f last_dir = dir;
 
     for(unsigned i = 1; i < bezier_buffer.size()-1; ++i)
     {
         dir = (bezier_buffer[i+1] - bezier_buffer[i]);
         dir = dir / dir.len();
-        normal = {-dir.y,dir.x};
+        vec2f ddir = vec2f::lerp(dir, last_dir,0.5);
+        normal = {-ddir.y,ddir.x};
         s_dist = (normal * stroke2);
 
-        mesh.push_back(bezier_buffer[i+1] + s_dist);
-        mesh.push_back(bezier_buffer[i+1] - s_dist);
+        mesh.push_back(bezier_buffer[i] + s_dist);
+        mesh.push_back(bezier_buffer[i] - s_dist);
+
+        last_dir = dir;
     }
+
+    dir = (bezier_buffer[bezier_buffer.size()-1] - bezier_buffer[bezier_buffer.size()-2]);
+    dir = dir / dir.len();
+    normal = {-dir.y,dir.x};
+    s_dist = (normal * stroke2);
+
+    mesh.push_back(bezier_buffer[bezier_buffer.size()-1] + s_dist);
+    mesh.push_back(bezier_buffer[bezier_buffer.size()-1] - s_dist);
 
     glUseProgram(generic_colored_shader->getId());
 
@@ -1406,7 +1497,7 @@ void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx1, float 
 
 void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2)
 {
-    bezier(p1.x,p2.y,p2.x,p2.y,cp1.x,cp1.y,cp2.x,cp2.y);
+    bezier(p1.x,p1.y,p2.x,p2.y,cp1.x,cp1.y,cp2.x,cp2.y);
 }
 
 void DGraphics::bezier(float x1, float y1, float x2, float y2, float cx, float cy)
@@ -1434,12 +1525,19 @@ GraphicsProperties DGraphics::getStyle()
     return properties;
 }
 
+float to_0range(float v, float max)
+{
+    while ((v += max) < 0);
+    while ((v -= max) > max);
+    return v;
+}
+
 Color DGraphics::get_rgba(float r, float g, float b, float a)
 {
-    r = std::max(0.0f,std::min(properties.color_max1,r));
-    g = std::max(0.0f,std::min(properties.color_max1,g));
-    b = std::max(0.0f,std::min(properties.color_max1,b));
-    a = std::max(0.0f,std::min(properties.color_max1,a));
+    r = to_0range(r,properties.color_max1);
+    g = to_0range(g,properties.color_max2);
+    b = to_0range(b,properties.color_max3);
+    a = to_0range(a,properties.color_maxa);
     
     uint8_t rv = (r / properties.color_max1)*255;
     uint8_t gv = (g / properties.color_max2)*255;
@@ -1460,10 +1558,10 @@ Color DGraphics::get_rgba(float r, float g, float b, float a)
 
 Color DGraphics::get_hsba(float h, float s, float b, float a)
 {
-    h = std::max(0.0f,std::min(properties.color_max1,h));
-    s = std::max(0.0f,std::min(properties.color_max1,s));
-    b = std::max(0.0f,std::min(properties.color_max1,b));
-    a = std::max(0.0f,std::min(properties.color_max1,a));
+    h = to_0range(h,properties.color_max1);
+    s = to_0range(s,properties.color_max2);
+    b = to_0range(b,properties.color_max3);
+    a = to_0range(a,properties.color_maxa);
     
     float hv = h / properties.color_max1;
     float sv = s / properties.color_max2;
