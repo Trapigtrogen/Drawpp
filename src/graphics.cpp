@@ -1083,9 +1083,9 @@ void DGraphics::shape(const DShape& s, float x, float y, float w, float h)
     for(const Path& pt : s.impl->paths)
     {
         //This is supposed to be faster, since there is only a single draw call per path
-        //but instead it's many times slower. 
+        //but instead it can be many times slower.
         //Need more testing, but problem seems to be with the draw call.
-        #if 0
+        #if 1
         
         generate_cubic_bezier_path(reinterpret_cast<const vec2f*>(pt.points.data()),pt.points.size(),x,-y,w,h,4);
         render_bezier_buffer();
