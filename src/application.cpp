@@ -10,6 +10,7 @@
 #include <font.hpp>
 #include <chrono>
 #include <thread>
+#include <cstring>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -236,12 +237,21 @@ void Application::setCursor(CursorStyle c)
     glfwSetCursor(window->GetHandle(),std_cursors[c]);
 }
 
-void Application::setCursor(const DImage& c)
+void Application::setCursor(const DImage& c, int xorigin, int yorigin)
 {
     GLFWimage img;
-    img.height = c.height;
-    img.width = c.width;
-    img.pixels = c.
+    img.height = c.height();
+    img.width = c.width();
+    img.pixels = const_cast<unsigned char*>(c.pixels());
+
+    GLFWcursor* curs = glfwCreateCursor(&img,xorigin,yorigin);
+
+    if(curs)
+    {
+        glfwSetCursor(window->GetHandle(),curs);
+        glfwDestroyCursor(custom_cursor);
+        custom_cursor = curs;
+    }
 }
 
 DGraphics& Application::graphics_object()
@@ -329,6 +339,11 @@ void Application::cleanup_application()
     for(auto c : std_cursors)
     {
         glfwDestroyCursor(c);
+    }
+    
+    if(custom_cursor)
+    {
+        glfwDestroyCursor(custom_cursor);
     }
 
     window->Cleanup();

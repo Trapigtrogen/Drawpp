@@ -11,6 +11,7 @@
 class Window;
 class DGraphics;
 class GLFWcursor;
+class DImage;
 
 enum CursorStyle
 {
@@ -110,6 +111,10 @@ public:
     void setCursor(CursorStyle c);
 
 
+    ///\brief Set the cursor to an image
+    void setCursor(const DImage& c, int xorigin = 0, int yorigin = 0);
+
+
     ///\brief Get a reference to the default draw target
     DGraphics& graphics_object();
 
@@ -154,6 +159,7 @@ private:
     std::function<void()> cleanup_func = nullptr;
 
     std::vector<GLFWcursor*> std_cursors;
+    GLFWcursor* custom_cursor = nullptr;
 
     static Application* instance;
 };

@@ -39,6 +39,10 @@ void vSync(bool state);
 void cursor(CursorStyle c);
 
 
+///\copydoc Application::setCursor(const DImage&,int,int)
+void cursor(const DImage& c, int xorigin = 0, int yorigin = 0);
+
+
 // Window
 
 ///\copydoc Application::size(int,int)
