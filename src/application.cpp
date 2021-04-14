@@ -236,6 +236,14 @@ void Application::setCursor(CursorStyle c)
     glfwSetCursor(window->GetHandle(),std_cursors[c]);
 }
 
+void Application::setCursor(const DImage& c)
+{
+    GLFWimage img;
+    img.height = c.height;
+    img.width = c.width;
+    img.pixels = c.
+}
+
 DGraphics& Application::graphics_object()
 {
     return *graphics;

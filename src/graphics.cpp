@@ -52,6 +52,16 @@ static const float coords_quad[] =
     0.0f, 1.0f, 
 };
 
+static const float coords_img[] = 
+{
+    0.0f, 1.0f,
+    1.0f, 1.0f, 
+    1.0f, 0.0f, 
+    0.0f, 1.0f, 
+    1.0f, 0.0f, 
+    0.0f, 0.0f, 
+};
+
 static float triangle_verts[] = 
 {
     0.0f, 0.0f,
@@ -902,7 +912,7 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
     glEnableVertexAttribArray(image_shader_vpos_loc);
     glEnableVertexAttribArray(image_shader_tpos_loc);
 
-    glVertexAttribPointer(image_shader_tpos_loc,2,GL_FLOAT,false,0, coords_quad);
+    glVertexAttribPointer(image_shader_tpos_loc,2,GL_FLOAT,false,0, coords_img);
     glVertexAttribPointer(image_shader_vpos_loc,2,GL_FLOAT,false,0, primitive_square);
 
     glDrawArrays(GL_TRIANGLES,0,6);

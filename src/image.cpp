@@ -132,7 +132,7 @@ void DImage::bind(unsigned int unit) const
 
 DImage DImage::loadImage(const std::string& fileName) 
 {
-	stbi_set_flip_vertically_on_load(1);
+	stbi_set_flip_vertically_on_load(0);
 
 	int width, height, channels;
 	unsigned char* pixels = stbi_load(fileName.c_str(), &width, &height, &channels, 4);
@@ -168,6 +168,7 @@ DImage DImage::loadSVGImage(const std::string& filename, float scale)
     nsvgRasterize(raster,image,0,0,scale,imgdata,width,height,w4);
 
     //rasterizer creates upside down image for some reason, so flip pixels here
+    /*
     unsigned char* tmp = static_cast<unsigned char*>(malloc(w4));
     unsigned char* last_line = imgdata + (height-1)*w4;
     for(unsigned i = 0; i < height/2; ++i)
@@ -179,6 +180,7 @@ DImage DImage::loadSVGImage(const std::string& filename, float scale)
         std::memcpy(lower,tmp,w4);
     }
     free(tmp);
+    */
 
     GLuint texture = generateTexture(width,height,imgdata);
 
