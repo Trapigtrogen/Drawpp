@@ -43,6 +43,9 @@ void cursor(CursorStyle c);
 void cursor(const DImage& c, int xorigin = 0, int yorigin = 0);
 
 
+///\brief Sleep for \p millis milliseconds
+void delay(unsigned int millis);
+
 // Window
 
 ///\copydoc Application::size(int,int)

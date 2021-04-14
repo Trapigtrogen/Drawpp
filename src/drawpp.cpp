@@ -1,6 +1,8 @@
 #include <application.hpp>
 #include <drawpp.hpp>
 #include <time.hpp>
+#include <chrono>
+#include <thread>
 
 void size(int width, int height)
 {
@@ -40,6 +42,11 @@ void frameRate(int fps)
 void vSync(bool state)
 {
     Application::GetInstance()->setVSync(state);
+}
+
+void delay(unsigned int millis)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(millis));
 }
 
 
