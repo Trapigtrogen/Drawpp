@@ -11,6 +11,14 @@ float vec2f::dot(const vec2f& a, const vec2f& b)
     return a.x*b.x+a.y*b.y;
 }
 
+vec2f vec2f::lerp(const vec2f& a, const vec2f& b, float t)
+{
+    return {
+        a.x + t * (b.x - a.x),
+        a.y + t * (b.y - a.y),
+    };
+}
+
 vec2f vec2f::operator*(float n) const
 {
     return vec2f{x*n,y*n};
