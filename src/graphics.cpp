@@ -1082,11 +1082,23 @@ void DGraphics::shape(const DShape& s, float x, float y, float w, float h)
 
     for(const Path& pt : s.impl->paths)
     {
+        //This is supposed to be faster, since there is only a single draw call per path
+        //but instead it's many times slower. 
+        //Need more testing, but problem seems to be with the draw call.
+        #if 0
+        
+        generate_cubic_bezier_path(reinterpret_cast<const vec2f*>(pt.points.data()),pt.points.size(),4);
+        render_bezier_buffer();
+
+        #else
+
         for (int i = 0; i < pt.points.size()-1; i += 3) 
         {
             const DVector* p = &pt.points[i];
             bezier(p[0]*scalev+posv,p[3]*scalev+posv,p[1]*scalev+posv,p[2]*scalev+posv);
         }
+
+        #endif
     }
 
     properties.stroke_weight = we;
@@ -1319,7 +1331,9 @@ vec2f bezier_bezierQuadratic(vec2f p0, vec2f p1,vec2f p2, float t)
     return  t1*(t1*p0+t*p1)+t*(t1*p1+t*p2);
 }
 
-void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t count)
+//stride = bytes between elements in array
+//for example, if you cast a DVector array to vec2f array here, you want stride of 4 (sizeof(DVector)-sizeof(vec2f))
+void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t count, unsigned int stride)
 {
     bezier_buffer.clear();
 
@@ -1331,12 +1345,20 @@ void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t co
     vec2f b;
     vec2f c;
 
-    for(size_t i = 0; i < count-1; i += 3){
+    size_t offset = stride+sizeof(vec2f);
+    const uint8_t* dataptr = reinterpret_cast<const uint8_t*>(points);
 
-        a = vec2f{points[i].x  ,-points[i].y  };
-        b = vec2f{points[i+1].x,-points[i+1].y};
-        c = vec2f{points[i+2].x,-points[i+2].y};
-        d = vec2f{points[i+3].x,-points[i+3].y};
+    for(size_t i = 0; i < count-1; i += 3)
+    {
+        a = *reinterpret_cast<const vec2f*>(dataptr);
+        b = *reinterpret_cast<const vec2f*>(dataptr+=offset);
+        c = *reinterpret_cast<const vec2f*>(dataptr+=offset);
+        d = *reinterpret_cast<const vec2f*>(dataptr+=offset);
+
+        a.y = -a.y;
+        b.y = -b.y;
+        c.y = -c.y;
+        d.y = -d.y;
 
         t -= 1.0;
 
@@ -1349,7 +1371,7 @@ void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t co
     bezier_buffer.push_back(bezier_bezierCubic(a,b,c,d,1.0));
 }
 
-void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_t count)
+void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_t count, unsigned int stride)
 {
     bezier_buffer.clear();
 
@@ -1360,11 +1382,19 @@ void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_
     vec2f p1;
     vec2f p2;
 
+    size_t offset = stride+sizeof(vec2f);
+    const uint8_t* dataptr = reinterpret_cast<const uint8_t*>(points);
+
     for(size_t i = 0; i < count-1; i += 2)
     {
-        p0 = vec2f{points[i].x  ,-points[i].y  };
-        p1 = vec2f{points[i+1].x,-points[i+1].y};
-        p2 = vec2f{points[i+2].x,-points[i+2].y};
+        p0 = *reinterpret_cast<const vec2f*>(dataptr);
+        p1 = *reinterpret_cast<const vec2f*>(dataptr+=offset);
+        p2 = *reinterpret_cast<const vec2f*>(dataptr+=offset);
+
+        p0.y = -p0.y;
+        p1.y = -p1.y;
+        p2.y = -p2.y;
+
 
         t -= 1.0;
         while(t < 1.0)
@@ -1391,19 +1421,30 @@ void DGraphics::render_bezier_buffer()
 
     mesh.push_back(bezier_buffer[0] + s_dist);
     mesh.push_back(bezier_buffer[0] - s_dist);
-    mesh.push_back(bezier_buffer[1] + s_dist);
-    mesh.push_back(bezier_buffer[1] - s_dist);
+
+    vec2f last_dir = dir;
 
     for(unsigned i = 1; i < bezier_buffer.size()-1; ++i)
     {
         dir = (bezier_buffer[i+1] - bezier_buffer[i]);
         dir = dir / dir.len();
-        normal = {-dir.y,dir.x};
+        vec2f ddir = vec2f::lerp(dir, last_dir,0.5);
+        normal = {-ddir.y,ddir.x};
         s_dist = (normal * stroke2);
 
-        mesh.push_back(bezier_buffer[i+1] + s_dist);
-        mesh.push_back(bezier_buffer[i+1] - s_dist);
+        mesh.push_back(bezier_buffer[i] + s_dist);
+        mesh.push_back(bezier_buffer[i] - s_dist);
+
+        last_dir = dir;
     }
+
+    dir = (bezier_buffer[bezier_buffer.size()-1] - bezier_buffer[bezier_buffer.size()-2]);
+    dir = dir / dir.len();
+    normal = {-dir.y,dir.x};
+    s_dist = (normal * stroke2);
+
+    mesh.push_back(bezier_buffer[bezier_buffer.size()-1] + s_dist);
+    mesh.push_back(bezier_buffer[bezier_buffer.size()-1] - s_dist);
 
     glUseProgram(generic_colored_shader->getId());
 

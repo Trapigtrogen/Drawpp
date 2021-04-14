@@ -601,9 +601,10 @@ private:
     Color get_color(float v1, float v2, float v3, float a);
 
     //expects curves to have 1 common point
-    void generate_cubic_bezier_path(const struct vec2f* points, size_t count);
+    //stride = bytes between elements in array
+    void generate_cubic_bezier_path(const struct vec2f* points, size_t count, unsigned int stride = 0);
 
-    void generate_quadratic_bezier_path(const struct vec2f* points, size_t count);
+    void generate_quadratic_bezier_path(const struct vec2f* points, size_t count, unsigned int stride = 0);
 
     void render_bezier_buffer();
 
