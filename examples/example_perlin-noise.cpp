@@ -7,8 +7,8 @@ int window_height = 1000;
 int window_width = 1000;
 
 // The size of perlin noise will be 100px * 100px
-int gen_height = 100;
-int gen_width = 100;
+int gen_height = 512;
+int gen_width = 512;
 
 // Octaves affect how blurry/smooth the noise is. Can be 1-10
 int octaves = 8;
@@ -20,7 +20,7 @@ int seed = 1;
 float nscale = 1.3f;
 
 // Create pixeldata and empty texture
-unsigned char* pixels = new unsigned char[100 * 100 * 4];
+unsigned char* pixeldata = new unsigned char[gen_width * gen_height * 4];
 DImage noiseTex;
 
 void setup()
@@ -30,31 +30,32 @@ void setup()
 
     // Load font from assets folder to show our text with
     textFont(loadFont("assets/Tuffy.ttf", 30));
+
+    // It's important to resize the noise resolution to be the same you want the image to be
+    noiseMapSize(gen_width, gen_height);
 }
 
 void draw(float)
 {
-    // Set background to black. This also clears previous frame's renders
-    background(0, 0, 0);
-
-        
     // Render perlin noise data to texture
 
     // Go through every x,y coordinate of perlin noise data
-    // multiplier 4 is the amount of channels we need for the image (r,g,b,a)
-    for (int y = 0; y < window_height * 4; y += 4)
+    // Multiplier 4 is the amount of channels we need for the image (r,g,b,a)
+    for (int y = 0; y < gen_height * 4; y += 4)
     {
-        for (int x = 0; x < window_width * 4; x += 4)
+        for (int x = 0; x < gen_width * 4; x += 4)
         {
             // Here we're just going to put same value to each color channel of the pixel to get the grayscaled image
 
-            pixels[y * window_width + x] = noise(x,y) * 255;			// RED
-            pixels[y * window_width + x + 1] = noise(x, y) * 255;		// GREEN
-            pixels[y * window_width + x + 2] = noise(x, y) * 255;		// BLUE
-            pixels[y * window_width + x + 3] = 255;				        // ALPHA
+            pixeldata[y * gen_width + x] = noise(x/4,y/4) * 255;			// RED
+            pixeldata[y * gen_width + x + 1] = noise(x/4, y/4) * 255;		// GREEN
+            pixeldata[y * gen_width + x + 2] = noise(x/4, y/4) * 255;		// BLUE
+            pixeldata[y * gen_width + x + 3] = 255;				    // ALPHA
         }
     }
-    noiseTex = createImage(pixels, window_width, window_height);
+    // Create texture with pixel data
+    noiseTex = createImage(pixeldata, gen_width, gen_height);
+    // Render said texture to fill whole window
     image(noiseTex, 0, 0, window_width, window_height);
 
 
