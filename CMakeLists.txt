@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.13.4)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(OpenGLGraphicsLibrary)
+project(Drawpp)
 
 option(DPP_BUILD_DEBUG "Debug build" OFF)
 option(DPP_BUILD_DOCS "Generate documentation with Doxygen" ON)
@@ -40,14 +40,15 @@ add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    src/color.cpp
                                    src/shape.cpp
                                    src/noise.cpp
-                                   src/font.cpp)
+                                   src/font.cpp
+                                   src/vec2f.cpp)
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 
 if(MSVC)
     target_compile_options(${LIBNAME} PRIVATE /W4)
 else()
-    target_compile_options(${LIBNAME} PRIVATE -Wall -Wextra -Werror)
+    target_compile_options(${LIBNAME} PRIVATE -Wall -Wextra)
 endif()
 
 include_directories(include)

@@ -88,6 +88,9 @@ Color::operator unsigned int () const
 
 Color Color::lerpColor(const Color& from, const Color& to, float percentage) 
 {
+	// Store colormode for later
+	ColorMode origColMode = Application::GetInstance()->graphics_object().getStyle().colormode;
+
 	// Ensure that the values are in the range
 	if(percentage > 1) percentage = 1.0;
 	if(percentage < 0) percentage = 0.0;
@@ -98,7 +101,12 @@ Color Color::lerpColor(const Color& from, const Color& to, float percentage)
 	uint8_t lerpBlue = from.blueVal + percentage * (to.blueVal - from.blueVal);
     uint8_t lerpAlpha = from.alphaVal + percentage * (to.alphaVal - from.alphaVal);
 
-	return Color(lerpRed, lerpGreen, lerpBlue, lerpAlpha);
+	// Change color mode to rgb and restore after color has been created
+	Application::GetInstance()->graphics_object().colorMode(RGB);
+	Color lerpCol(lerpRed, lerpGreen, lerpBlue, lerpAlpha);
+	Application::GetInstance()->graphics_object().colorMode(origColMode);
+
+	return lerpCol;
 }
 
 void Color::RGB2HSB(uint8_t r, uint8_t g, uint8_t b)
@@ -224,19 +232,19 @@ Color Color::HEX2RGB(std::string hexCol)
 			// Compact hex with alpha
 			case 4: 
 				sscanf(hexNum, "%01x%01x%01x%01x", &r, &g, &b, &a);
-				r *= 10;
-				g *= 10;
-				b *= 10;
-				a *= 10;
+				r *= 25;
+				g *= 25;
+				b *= 25;
+				a *= 25;
 				valid = true;
 			break;
 
 			// Compact hex without alpha
 			case 3: 
 				sscanf(hexNum, "%01x%01x%01x", &r, &g, &b);
-				r *= 10;
-				g *= 10;
-				b *= 10;
+				r *= 25;
+				g *= 25;
+				b *= 25;
 				valid = true;
 			break;
 

@@ -8,6 +8,7 @@
 #include <graphics.hpp>
 #include <shape.hpp>
 #include <font.hpp>
+#include <constants.hpp>
 
 void exit();
 void frameRate(int fps);
@@ -23,8 +24,9 @@ void setTitle(const char* title);
 
 // DShape
 // Draws given shape
-//void shape(DShape shape, int x,int  y);
-//void shape(DShape shape, int x, int y, int w, int h);
+void shape(DShape* _shape);
+void shape(DShape* _shape, float x, float  y);
+void shape(DShape* _shape, float x, float y, float w, float h);
 DShape loadShape(std::string filename);
 DShape createShape();
 DShape createShape(DShape::ShapeType type);
@@ -47,6 +49,10 @@ void rect(float x, float y, float w, float h, float tl, float tr, float br, floa
 void square(float x, float y, float size);
 void triangle(float x1, float y1, float x2, float y2, float x3, float y3);
 void triangle(const DVector& p1, const DVector& p2, const DVector& p3);
+void bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2);
+void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2);
+void bezier(float x1, float y1, float x2, float y2, float cx, float cy);
+void bezier(const DVector& p1, const DVector& p2, const DVector& cp);
 
 // Shapes 3D
 void point(int x, int y, int z);
@@ -74,6 +80,7 @@ void clear();
 void noFill();
 void noStroke();
 void noTint();
+void bezierDetail(float d);
 
 // Color
 void fill(Color col);
@@ -99,6 +106,14 @@ void background(float gray);
 void background(float gray, float alpha);
 void background(float v1, float v2, float v3);
 void background(float v1, float v2, float v3, float alpha);
+
+void tint(Color col);
+void tint(Color rgb, float alpha);
+void tint(const char* hexCol);
+void tint(float gray);
+void tint(float gray, float alpha);
+void tint(float v1, float v2, float v3);
+void tint(float v1, float v2, float v3, float alpha);
 
 void colorMode(ColorMode mode);
 void colorMode(ColorMode mode, float max);
@@ -149,6 +164,9 @@ void scale(float x, float y);
 void scale(float x, float y, float z);
 void scale(const DVector& s);
 
+void shearX(float a);
+void shearY(float a);
+
 // Input
 extern char key;
 extern int keyCode;
@@ -181,6 +199,7 @@ void noiseMapSize(int width, int heigth);
 // Push Pop
 void push();
 void pop();
+void applyMatrix(const DMatrix4& m);
 void pushMatrix();
 void popMatrix();
 void pushStyle();

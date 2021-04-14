@@ -158,6 +158,10 @@ void noTint()
     Application::GetInstance()->graphics_object().noTint();
 }
 
+void bezierDetail(float d)
+{
+    Application::GetInstance()->graphics_object().bezierDetail(d);
+}
 
 long long millis()
 {
@@ -299,6 +303,43 @@ void background(float v1, float v2, float v3, float alpha)
     Application::GetInstance()->graphics_object().background(v1, v2, v3, alpha);
 }
 
+void tint(Color col)
+{
+    Application::GetInstance()->graphics_object().tint(col);
+}
+
+void tint(Color rgb, float alpha)
+{
+    Application::GetInstance()->graphics_object().tint(rgb, alpha);
+}
+
+void tint(const char* hexCol)
+{
+    Color col = Color::HEX2RGB((char*)hexCol);
+    Application::GetInstance()->graphics_object().tint(col);
+}
+
+void tint(float gray)
+{
+    Application::GetInstance()->graphics_object().tint(gray);
+}
+
+void tint(float gray, float alpha)
+{
+    Application::GetInstance()->graphics_object().tint(gray, alpha);
+}
+
+void tint(float v1, float v2, float v3)
+{
+    Application::GetInstance()->graphics_object().tint(v1, v2, v3);
+}
+
+void tint(float v1, float v2, float v3, float alpha)
+{
+    Application::GetInstance()->graphics_object().tint(v1, v2, v3, alpha);
+}
+
+
 void colorMode(ColorMode mode)
 {
     Application::GetInstance()->graphics_object().colorMode(mode);
@@ -416,8 +457,21 @@ void background(const DImage& image)
 
 
 // Shapes
+void shape(DShape* _shape) 
+{
+    shape(_shape, 0, 0, 1, 1);
+}
 
-/*
+void shape(DShape* _shape, int x, int  y)
+{
+    shape(_shape, 0, 0, x, y);
+}
+
+void shape(DShape* _shape, float x, float y, float w, float h)
+{
+    Application::GetInstance()->graphics_object().shape(_shape, x, y, w, h);
+}
+
 DShape loadShape(std::string filename) 
 {
     return DShape::loadShape(filename);
@@ -427,14 +481,15 @@ DShape createShape()
 {
     return DShape::createShape();
 }
-*/
 
 DShape createShape(DShape::ShapeType type)
 {
-    return DShape::createShape(type); //DEBUG TEMP
+    return DShape::createShape(type);
 }
 
 //DShape createShape(DShape::ShapeType type, float[] p){}
+
+
 
 void rect(float x, float y, float w, float h)
 {
@@ -505,6 +560,26 @@ void triangle(float x1, float y1, float x2, float y2, float x3, float y3)
 void triangle(const DVector& p1, const DVector& p2, const DVector& p3)
 {
     Application::GetInstance()->graphics_object().triangle(p1,p2,p3);
+}
+
+void bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2)
+{
+    Application::GetInstance()->graphics_object().bezier(x1,y1,x2,y2,cx1,cy1,cx2,cy2);
+}
+
+void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2)
+{
+    Application::GetInstance()->graphics_object().bezier(p1,p2,cp1,cp2);
+}
+
+void bezier(float x1, float y1, float x2, float y2, float cx, float cy)
+{
+    Application::GetInstance()->graphics_object().bezier(x1,y1,x2,y2,cx,cy);
+}
+
+void bezier(const DVector& p1, const DVector& p2, const DVector& cp)
+{
+    Application::GetInstance()->graphics_object().bezier(p1,p2,cp);
 }
 
 
@@ -583,6 +658,16 @@ void scale(const DVector& s)
     Application::GetInstance()->graphics_object().scale(s);
 }
 
+void shearX(float a)
+{
+    Application::GetInstance()->graphics_object().shearX(a);
+}
+
+void shearY(float a)
+{
+    Application::GetInstance()->graphics_object().shearY(a);
+}
+
 
 // Push Pop
 
@@ -594,6 +679,11 @@ void push()
 void pop()
 {
     Application::GetInstance()->graphics_object().pop();
+}
+
+void applyMatrix(const DMatrix4& m)
+{
+    Application::GetInstance()->graphics_object().applyMatrix(m);
 }
 
 void pushMatrix()

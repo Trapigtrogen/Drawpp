@@ -3,7 +3,7 @@
 
 #include <string>
 
-/// Shader class loads the OpenGL shaders
+///\private
 class Shader
 {
 public:

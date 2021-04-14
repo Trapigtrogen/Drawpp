@@ -5,6 +5,7 @@
 #include <string>
 #include <matrix4.hpp>
 #include <color.hpp>
+#include <shape.hpp>
 #include <font.hpp>
 #include <memory>
 
@@ -39,6 +40,7 @@ enum ImageFormat
     BMP,
 };
 
+///\private
 struct GraphicsProperties
 {
     Color last_background_color = {0,0,0};
@@ -59,8 +61,15 @@ struct GraphicsProperties
     PosMode ellipsemode = PosMode::CENTER;
     PosMode imagemode = PosMode::CORNER;
     DFont font;
+    float bezier_detail = 20;
 };
 
+///\brief Graphics class describes a render target
+///
+///All drawing will happen through a DGraphics object. \n
+///Calling the drawpp api drawing functions will relay the call to an internal instance of DGraphics. \n
+///You can create your own instance, and draw to that with the member functions, but make sure to call beginDraw() first, or things will break.
+///When you are done drawing to your own target, remember to call endDraw() before drawing to other targets, or things will break.
 class DGraphics
 {
     friend class Application;
@@ -201,14 +210,34 @@ public:
     void colorMode(ColorMode mode, float max1, float max2, float max3, float maxA);
 
 
-    //void tint(Color rgba);
-    //void tint(Color rgb, float alpha);
-    //void tint(float grey );
-    //void tint(float grey, float alpha);
+    ///\brief Set tint color to \p rgba
+    void tint(Color rgba);
 
-    //affected by colorMode
-    //void tint(float v1, float v2, float v3);
-    //void tint(float v1, float v2, float v3, float alpha);
+
+    ///\brief Set tint color to \p rgb using \p alpha
+    ///
+    ///The alpha component of \p rgb is ignored.
+    void tint(Color rgb, float alpha);
+
+
+    ///\brief Set tint color to \p grey
+    void tint(float grey );
+
+
+    ///\brief Set tint color to \p grey with \p alpha
+    void tint(float grey, float alpha);
+
+
+    ///\brief Set tint color 
+    ///
+    ///ColorMode determines how the values are interpreted.
+    void tint(float v1, float v2, float v3);
+
+    
+    ///\brief Set tint color with \p alpha
+    ///
+    ///ColorMode determines how the values are interpreted.
+    void tint(float v1, float v2, float v3, float alpha);
 
 
     ///\brief Get a color from \p grey
@@ -277,6 +306,13 @@ public:
     ///
     ///To enable tint again, call tint().
     void noTint();
+
+
+    ///\brief Set bezier curve detail
+    ///
+    ///Higher detail will result in smoother lines, but will quickly tank performance. \n
+    ///Default detail value is 20.
+    void bezierDetail(float d);
 
 
     ///\brief Set the font which will be used for drawing text
@@ -352,15 +388,21 @@ public:
     ///\brief Scale view by \p x and \p y
     void scale(float x, float y );
 
-
     
     ///\brief Scale view by \p x, \p y and \p z
     void scale(float x, float y, float z);
 
-
     
     ///\brief Scale view by \p s
     void scale(const DVector& s);
+
+
+    ///\brief Shear in the X direction by \p a
+    void shearX(float a);
+
+
+    ///\brief Shear in the Y direction by \p a
+    void shearY(float a);
 
 
     ///\brief Push current transformations, and style properties to the stack
@@ -369,6 +411,10 @@ public:
 
     ///\brief Pop transformations, and style properties from the stack
     void pop();
+
+
+    ///\brief Multiply the transform matrix by \p m
+    void applyMatrix(const DMatrix4& m);
 
 
     ///\brief Push current transformations to the stack
@@ -451,6 +497,10 @@ public:
     void image(const DImage& img, float x, float y, float w, float h);
 
 
+    ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)
+    void shape(DShape* s, float x, float y, float w, float h);
+
+
     ///\brief Draw a quad from points ( \p x1, \p y1 ), ( \p x2, \p y2 ), ( \p x3, \p y3 ) and ( \p x4, \p y4 )
     void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
 
@@ -476,6 +526,22 @@ public:
     void text(const std::wstring& txt, float x, float y);
 
 
+    ///\brief Draw a cubic bezier curve from 4 points.
+    void bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2);
+
+
+    ///\brief Draw a cubic bezier curve from 4 points.
+    void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2);
+
+
+    ///\brief Draw a quadratic bezier curve from 3 points
+    void bezier(float x1, float y1, float x2, float y2, float cx, float cy);
+
+
+    ///\brief Draw a quadratic bezier curve from 3 points
+    void bezier(const DVector& p1, const DVector& p2, const DVector& cp);
+
+
     GraphicsProperties getStyle();
 
 private:
@@ -492,6 +558,13 @@ private:
     //Get rgba color from the components
     Color get_color(float v1, float v2, float v3, float a);
 
+    //expects curves to have 1 common point
+    void generate_cubic_bezier_path(const struct vec2f* points, size_t count);
+
+    void generate_quadratic_bezier_path(const struct vec2f* points, size_t count);
+
+    void render_bezier_buffer();
+
     //void set_current();
 
     //Initialize the shaders used by this graphics object
@@ -502,7 +575,7 @@ private:
     GraphicsProperties properties;
 
     //is this needed?
-    //DMatrix4 transform_mat = DMatrix4::identity();
+    DMatrix4 transform_mat = DMatrix4::identity();
 
     //View transformations
     DMatrix4 view_mat;
@@ -514,7 +587,7 @@ private:
     std::stack<GraphicsProperties> property_stack;
 
     //Target framebuffer info
-    unsigned int buffer_id = -1;
+    unsigned int buffer_id = static_cast<unsigned int>(-1);
     unsigned int texture_id = 0;
     unsigned int buffer_width = 0;
     unsigned int buffer_height = 0;
@@ -527,7 +600,7 @@ private:
     int ellipse_shader_strokeWeight_loc;
     int ellipse_shader_strokeColor_loc;
     int ellipse_shader_fillColor_loc;
-    //int ellipse_shader_transform_loc;
+    int ellipse_shader_transform_loc;
     int ellipse_shader_view_loc;
     int ellipse_shader_posmode_loc;
     int ellipse_shader_vpos_loc;
@@ -539,7 +612,7 @@ private:
     int rect_shader_strokeWeight_loc;
     int rect_shader_strokeColor_loc;
     int rect_shader_fillColor_loc;
-    //int rect_shader_transform_loc;
+    int rect_shader_transform_loc;
     int rect_shader_view_loc;
     int rect_shader_posmode_loc;
     int rect_shader_radii_loc;
@@ -552,6 +625,7 @@ private:
     int triangle_shader_strokeColor_loc;
     int triangle_shader_fillColor_loc;
     int triangle_shader_bpos_loc;
+    int triangle_shader_transform_loc;
     int triangle_shader_view_loc;
     int triangle_shader_vpos_loc;
 
@@ -560,6 +634,7 @@ private:
     int line_shader_points_loc;
     int line_shader_strokeWeight_loc;
     int line_shader_strokeColor_loc;
+    int line_shader_transform_loc;
     int line_shader_view_loc;
     int line_shader_cap_loc;
     int line_shader_vpos_loc;
@@ -568,29 +643,41 @@ private:
     //Shader used to draw images
     std::unique_ptr<Shader> image_shader;
     int image_shader_offset_loc;
+    int image_shader_tint_loc;
+    int image_shader_use_tint_loc;
     int image_shader_posmode_loc;
     int image_shader_tex_loc;
+    int image_shader_transform_loc;
     int image_shader_view_loc;
     int image_shader_vpos_loc;
     int image_shader_tpos_loc;
 
-    //Shader used to draw triangles
+    //Shader used to draw quads
     std::unique_ptr<Shader> quad_shader;
     int quad_shader_strokeWeight_loc;
     int quad_shader_strokeColor_loc;
     int quad_shader_fillColor_loc;
     int quad_shader_bpos_loc;
+    int quad_shader_transform_loc;
     int quad_shader_view_loc;
     int quad_shader_vpos_loc;
 
+    //Shader used to draw text
     std::unique_ptr<Shader> text_shader;
-    int text_shader_offset_loc;
     int text_shader_texture_loc;
     int text_shader_posmode_loc;
     int text_shader_fillColor_loc;
+    int text_shader_transform_loc;
     int text_shader_view_loc;
     int text_shader_vpos_loc;
     int text_shader_tpos_loc;
+
+    //Shader used to draw text
+    std::unique_ptr<Shader> generic_colored_shader;
+    int generic_colored_shader_color_loc;
+    int generic_colored_shader_transform_loc;
+    int generic_colored_shader_view_loc;
+    int generic_colored_shader_vpos_loc;
 };
 
 #endif

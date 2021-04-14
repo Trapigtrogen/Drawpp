@@ -2,8 +2,8 @@
 #define DPP_FONT_IMPL_H
 
 #include <unordered_map>
-//#include <memory>
 
+///\private
 struct _DFont_impl
 {
     struct Char

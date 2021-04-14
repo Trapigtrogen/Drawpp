@@ -1,6 +1,7 @@
 #include <vector3.hpp>
 #include <cmath>
 #include <application.hpp>
+#include <constants.hpp>
 
 DVector::DVector():x(0),y(0),z(0){}
 DVector::DVector(float n):x(n),y(n),z(n){}
@@ -47,10 +48,9 @@ DVector& DVector::random2D(DVector& target)
     return random2D(target,Application::GetInstance()->random);
 }
 
-///TODO: replace high with 2pi constant once it exists
 DVector& DVector::random2D(DVector& target, Random& gen)
 {
-    float angle = gen.randomFloat01() * 6.283185307179f;
+    float angle = gen.randomFloat01() * TWO_PI;
 
     return target.set(fromAngle(angle));
 }
@@ -71,10 +71,9 @@ DVector& DVector::random3D(DVector& target)
     return random3D(target,Application::GetInstance()->random);
 }
 
-///TODO: replace high with 2pi constant once it exists
 DVector& DVector::random3D(DVector& target, Random& gen)
 {
-    float angle = gen.randomFloat(0.0f,6.283185307179f);
+    float angle = gen.randomFloat(0.0f,TWO_PI);
     float _z = gen.randomFloat(-1.0f, 1.0f);
     float p = std::sqrt(1 - _z*_z);
 

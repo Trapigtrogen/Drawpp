@@ -3,7 +3,7 @@
 
 #include <random>
 
-///\brief Random number generation
+///\brief Random number generator
 class Random
 {
 public:

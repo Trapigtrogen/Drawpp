@@ -53,8 +53,8 @@ float a = 2.0, b = 5.0, c = 3.5, d = 2.0;
 // setup is called once before the application loop starts
 void setup()
 {
-    // Set stroke weight to zero, because we don't want any stroke
-    strokeWeight(0);
+    // We don't want any stroke, so turn it off
+    noStroke();
 }
 
 // draw is called once every frame
