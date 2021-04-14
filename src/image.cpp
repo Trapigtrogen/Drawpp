@@ -108,6 +108,7 @@ DImage& DImage::operator=(DImage&& other)
 	if(this != &other) 
 	{
 		free(pixels);
+		glDeleteTextures(1, &m_texture);
 
 		pixels = other.pixels;
 		m_texture = other.m_texture;

@@ -429,7 +429,7 @@ std::string hex(Color col, int num)
 
 // Image
 
-DImage loadImage(const std::string& fileName) 
+DImage loadImage(const std::string& fileName)
 {
     return DImage::loadImage(fileName);
 }
