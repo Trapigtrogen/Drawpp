@@ -193,11 +193,8 @@ void Application::size(int width, int height)
     window->properties.width_hint = width>-1?width:window->properties.width_hint;
     window->properties.height_hint = height>-1?height:window->properties.height_hint;
 
-    if(window->properties.resizable)
-    {
-        resize_window(window->properties.width_hint,window->properties.height_hint,nullptr);
-        window->properties.fullscreen = false;
-    }
+    resize_window(window->properties.width_hint,window->properties.height_hint,nullptr);
+    window->properties.fullscreen = false;
 }
 
 void Application::setFullscreen(int monitor)
@@ -257,14 +254,6 @@ void Application::resize_window(int width, int height, void* monitor)
     else
     {
         glfwSetWindowSize(window->GetHandle(),width,height);
-    }
-}
-
-void Application::setResizable(bool state)
-{
-    if(!started)
-    {
-        window->properties.resizable = state;
     }
 }
 

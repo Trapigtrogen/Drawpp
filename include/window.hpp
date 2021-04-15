@@ -15,7 +15,6 @@ public:
         int height_hint = 300;
         int width = 300;
         int height = 300;
-        bool resizable = false;
         bool fullscreen = false;
         void* fullscreen_monitor = nullptr;
     };

@@ -87,12 +87,6 @@ public:
     void setFullscreen(int monitor);
 
 
-    ///\brief Set the allowance of resizing
-    ///
-    ///Only effective in setup.
-    void setResizable(bool);
-
-
     ///\brief Set the application window title
     void setTitle(const char* title);
 

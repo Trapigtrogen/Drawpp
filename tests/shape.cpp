@@ -11,7 +11,6 @@ DImage img2;
 
 void setup() 
 {
-    setResizable(true);
     size(1000, 1000);
     setTitle("Vertex Shaping");
 
