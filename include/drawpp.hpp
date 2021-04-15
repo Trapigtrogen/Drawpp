@@ -59,6 +59,8 @@ void setResizable(bool);
 ///\copydoc Application::setTitle(const char*)
 void setTitle(const char* title);
 
+///\brief Is the application window currently focused
+extern bool focused;
 
 // End group drawpp_application_api
 ///@}

@@ -64,9 +64,16 @@ int vertpos_attrib = 0;
 int texc_attrib = 0;
 int tex_uniform = 0;
 
+bool focused;
+
 void windowclose_cb(GLFWwindow*)
 {
     Application::GetInstance()->exit();
+}
+
+void window_focus_callback(GLFWwindow*,int f)
+{
+    focused = f;
 }
 
 Application::Application(int width, int height, const char* title)
@@ -290,11 +297,12 @@ bool Application::init_application()
         return false;
     }
 
-    glfwSetKeyCallback(         window->GetHandle(),&Input::keyboard_callback);
-    glfwSetMouseButtonCallback( window->GetHandle(),&Input::mousebtn_callback);
-    glfwSetScrollCallback(      window->GetHandle(),&Input::mousewhl_callback);
-    glfwSetCursorPosCallback(   window->GetHandle(),&Input::mousemov_callback);
-    glfwSetWindowCloseCallback( window->GetHandle(),&windowclose_cb);
+    glfwSetKeyCallback(         window->GetHandle(),Input::keyboard_callback);
+    glfwSetMouseButtonCallback( window->GetHandle(),Input::mousebtn_callback);
+    glfwSetScrollCallback(      window->GetHandle(),Input::mousewhl_callback);
+    glfwSetCursorPosCallback(   window->GetHandle(),Input::mousemov_callback);
+    glfwSetWindowCloseCallback( window->GetHandle(),windowclose_cb);
+    glfwSetWindowFocusCallback( window->GetHandle(),window_focus_callback);
 
     std_cursors.push_back(glfwCreateStandardCursor(GLFW_ARROW_CURSOR));
     std_cursors.push_back(glfwCreateStandardCursor(GLFW_HAND_CURSOR));
