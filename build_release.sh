@@ -57,13 +57,13 @@ else
 
 fi
 
-# Update GLFW
-git submodule update --init --recursive
+# Update GLFW and Freetype
+git submodule update --recursive
 
 cd ./release
 
 # CMake and build
-cmake .. -DDPP_BUILD_DOCS=$incDoc -DPP_BUILD_TESTS=OFF -DPP_BUILD_EXAMPLES=ON -DPP_BUILD_DEBUG=$debugBuild
+cmake .. -DDPP_BUILD_DOCS=$incDoc -DPP_BUILD_TESTS=$debugBuild -DPP_BUILD_EXAMPLES=OFF -DPP_BUILD_DEBUG=$debugBuild
 make || { echo "Build failed. Exiting.."; exit 1; }
 
 
@@ -91,14 +91,17 @@ cp ../include/vector3.hpp ./include/
 cp ../include/font.hpp ./include/
 
 echo "Combining libraries..."
-# combine libraries
-mkdir lib1 && cd lib1 && ar -x ../lib/libDrawpp.a
-cd ..
-mkdir lib2 && cd lib2 && ar -x ../external/glfw/src/libglfw3.a
-cd ..
-mkdir lib3 && cd lib3 && ar -x ../external/freetype/libfreetype.a
-cd ..
-ar -qc libDrawpp.a ./lib1/*.o ./lib2/*.o ./lib3/*.o
+# Create temp script
+echo "create libDrawpp.a">libCombiner.mri
+echo "addlib lib/libDrawpp.a">>libCombiner.mri
+echo "addlib external/freetype/libfreetype.a">>libCombiner.mri
+echo "addlib external/glfw/src/libglfw3.a">>libCombiner.mri
+echo "save">>libCombiner.mri
+echo "end">>libCombiner.mri
+# combine using script
+ar -M <libCombiner.mri
+# Remove script
+rm libCombiner.mri
 
 # move tests to main folder
 if [ -d ./bin/tests ] && [ $debugBuild = "ON" ]; then
@@ -135,19 +138,14 @@ done
 # FINAL CLEANUP:
 
 echo "final cleanup..."
-rm -rf ./bin
-
-# Remove temp folders
-rm -rf ./lib1
-rm -rf ./lib2
-rm -rf ./lib3
+#rm -rf ./bin
 
 # Remove library folders
-rm -rf ./lib
-rm -rf ./external
+#rm -rf ./lib
+#rm -rf ./external
 
 # remove other unnecessary folders
-rm -rf ./CMakeFiles
-rm -rf ./tests
+#rm -rf ./CMakeFiles
+#rm -rf ./tests
 
 echo "Done!"
