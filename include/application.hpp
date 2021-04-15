@@ -115,6 +115,10 @@ public:
     void setCursor(const DImage& c, int xorigin = 0, int yorigin = 0);
 
 
+    ///\brief Hide the cursor
+    void hideCursor();
+
+
     ///\brief Get a reference to the default draw target
     DGraphics& graphics_object();
 

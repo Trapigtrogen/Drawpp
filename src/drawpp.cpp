@@ -34,6 +34,11 @@ void cursor(const DImage& c, int xorigin, int yorigin)
     Application::GetInstance()->setCursor(c,xorigin,yorigin);
 }
 
+void noCursor()
+{
+    Application::GetInstance()->hideCursor();
+}
+
 void frameRate(int fps)
 {
     Application::GetInstance()->setFrameRate(fps);

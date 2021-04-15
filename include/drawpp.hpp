@@ -43,6 +43,10 @@ void cursor(CursorStyle c);
 void cursor(const DImage& c, int xorigin = 0, int yorigin = 0);
 
 
+///\copydoc Application::hideCursor()
+void noCursor();
+
+
 ///\brief Sleep for \p millis milliseconds
 void delay(unsigned int millis);
 

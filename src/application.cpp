@@ -138,7 +138,7 @@ int Application::run(std::function<void(float)> draw,
         draw_buffer();
 
         glfwSwapBuffers(window->GetHandle());
-        
+
         ++frameCount;
     }
 
@@ -245,6 +245,7 @@ void Application::exit()
 void Application::setCursor(CursorStyle c)
 {
     glfwSetCursor(window->GetHandle(),std_cursors[c]);
+    glfwSetInputMode(window->GetHandle(),GLFW_CURSOR,GLFW_CURSOR_NORMAL);
 }
 
 void Application::setCursor(const DImage& c, int xorigin, int yorigin)
@@ -261,7 +262,13 @@ void Application::setCursor(const DImage& c, int xorigin, int yorigin)
         glfwSetCursor(window->GetHandle(),curs);
         glfwDestroyCursor(custom_cursor);
         custom_cursor = curs;
+        glfwSetInputMode(window->GetHandle(),GLFW_CURSOR,GLFW_CURSOR_NORMAL);
     }
+}
+
+void Application::hideCursor()
+{
+    glfwSetInputMode(window->GetHandle(),GLFW_CURSOR,GLFW_CURSOR_HIDDEN);
 }
 
 DGraphics& Application::graphics_object()
