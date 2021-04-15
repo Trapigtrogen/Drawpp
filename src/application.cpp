@@ -65,6 +65,7 @@ int texc_attrib = 0;
 int tex_uniform = 0;
 
 bool focused;
+unsigned long long frameCount;
 
 void windowclose_cb(GLFWwindow*)
 {
@@ -137,6 +138,8 @@ int Application::run(std::function<void(float)> draw,
         draw_buffer();
 
         glfwSwapBuffers(window->GetHandle());
+        
+        ++frameCount;
     }
 
     cleanup_application();
