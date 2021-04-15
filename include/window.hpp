@@ -11,11 +11,13 @@ public:
     struct WindowProperties
     {
         const char* title = "Drawpp Application";
-        int width_hint = 200;
-        int height_hint = 200;
-        int width = 200;
-        int height = 200;
+        int width_hint = 300;
+        int height_hint = 300;
+        int width = 300;
+        int height = 300;
         bool resizable = false;
+        bool fullscreen = false;
+        void* fullscreen_monitor = nullptr;
     };
 
     GLFWwindow* GetHandle();

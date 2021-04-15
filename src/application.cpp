@@ -192,14 +192,70 @@ void Application::size(int width, int height)
 {
     window->properties.width_hint = width>-1?width:window->properties.width_hint;
     window->properties.height_hint = height>-1?height:window->properties.height_hint;
-    
-    if(window && window->properties.resizable)
-    {
-        window->properties.width    = window->properties.width_hint;
-        window->properties.height   = window->properties.height_hint;
 
-        graphics = std::unique_ptr<DGraphics>(new DGraphics(window->properties.width,window->properties.height));
-        
+    if(window->properties.resizable)
+    {
+        resize_window(window->properties.width_hint,window->properties.height_hint,nullptr);
+        window->properties.fullscreen = false;
+    }
+}
+
+void Application::setFullscreen(int monitor)
+{
+    int num_monitors;
+    GLFWmonitor** monitors = glfwGetMonitors(&num_monitors);
+
+    if(monitor >= num_monitors || monitor < 0)
+    {
+        monitor = 0;
+    }
+
+    GLFWmonitor* monitor_handle = monitors[monitor];
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor_handle);
+
+    window->properties.fullscreen = true;
+    window->properties.fullscreen_monitor = monitor_handle;
+
+    resize_window(mode->width,mode->height,monitor_handle);
+}
+
+void Application::resize_window(int width, int height, void* monitor)
+{
+    GLFWmonitor* monitor_handle = static_cast<GLFWmonitor*>(monitor);
+
+    window->properties.width  = width;
+    window->properties.height = height;
+
+    std::unique_ptr<DGraphics> ngraphics = 
+        std::unique_ptr<DGraphics>(new DGraphics(window->properties.width,window->properties.height));
+    
+    ngraphics->properties = graphics->properties;
+    ngraphics->property_stack = graphics->property_stack;
+    ngraphics->transform_mat = graphics->transform_mat;
+    ngraphics->matrix_stack = graphics->matrix_stack;
+
+    graphics = std::move(ngraphics);
+
+    if(!monitor_handle && window->properties.fullscreen)
+    {
+        GLFWmonitor* cur_mon = static_cast<GLFWmonitor*>(window->properties.fullscreen_monitor);
+        int mx,my;
+        glfwGetMonitorPos(cur_mon,&mx,&my);
+        const GLFWvidmode* mode = glfwGetVideoMode(cur_mon);
+
+        window->properties.fullscreen_monitor = nullptr;
+        glfwSetWindowMonitor(window->GetHandle(), 
+                             monitor_handle,
+                             mx + (mode->width-width)/2,
+                             my + (mode->height-height)/2,
+                             width,height,GLFW_DONT_CARE);
+    }
+    else if(monitor_handle)
+    {
+        glfwSetWindowMonitor(window->GetHandle(), monitor_handle, 0,0, width,height,GLFW_DONT_CARE);
+    }
+    else
+    {
         glfwSetWindowSize(window->GetHandle(),width,height);
     }
 }
@@ -302,9 +358,25 @@ bool Application::graphicsExists() const
 
 bool Application::init_application()
 {
-    if(!window->Init())
+    if (!window->Init())
     {
         return false;
+    }
+
+    shader = new Shader(Shader::loadShadersFromString(quad_shader_v,quad_shader_f));
+    vertpos_attrib = glGetAttribLocation(shader->getId(),"pos");
+    texc_attrib = glGetAttribLocation(shader->getId(),"texpos");
+    tex_uniform = glGetUniformLocation(shader->getId(),"texture");
+    
+    graphics = std::unique_ptr<DGraphics>(
+            new DGraphics(
+                window->properties.width,
+                window->properties.height
+            ));
+            
+    if(setup_func)
+    {
+        setup_func();
     }
 
     glfwSetKeyCallback(         window->GetHandle(),Input::keyboard_callback);
@@ -318,19 +390,11 @@ bool Application::init_application()
     std_cursors.push_back(glfwCreateStandardCursor(GLFW_HAND_CURSOR));
     std_cursors.push_back(glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR));
     std_cursors.push_back(glfwCreateStandardCursor(GLFW_IBEAM_CURSOR));
-
-    graphics = std::unique_ptr<DGraphics>(new DGraphics(window->properties.width,window->properties.height));
-    shader = new Shader(Shader::loadShadersFromString(quad_shader_v,quad_shader_f));
-    vertpos_attrib = glGetAttribLocation(shader->getId(),"pos");
-    texc_attrib = glGetAttribLocation(shader->getId(),"texpos");
-    tex_uniform = glGetUniformLocation(shader->getId(),"texture");
-
+    
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     
     DFont::init_lib();
-
-    
 
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
         reinterpret_cast<GLint*>(&DImage::max_texture_units));
@@ -339,11 +403,6 @@ bool Application::init_application()
     
     Time::Reset();
     
-    if(setup_func)
-    {
-        setup_func();
-    }
-
     return true;
 }
 
@@ -380,7 +439,7 @@ void Application::draw_buffer()
     glBindFramebuffer(GL_FRAMEBUFFER,0);
     glViewport(0,0,window->properties.width,window->properties.height);
 
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     //bind shader, texture, and draw quad with the texture

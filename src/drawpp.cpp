@@ -9,6 +9,11 @@ void size(int width, int height)
     Application::GetInstance()->size(width,height);
 }
 
+void fullScreen(int monitor)
+{
+    Application::GetInstance()->setFullscreen(monitor);
+}
+
 void setTitle(const char* title)
 {
     Application::GetInstance()->setTitle(title);

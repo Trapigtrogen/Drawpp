@@ -56,6 +56,9 @@ void delay(unsigned int millis);
 void size(int width, int height);
 
 
+///\copydoc Application::setFullscreen()
+void fullScreen(int monitor);
+
 ///\copydoc Application::setResizable(bool)
 void setResizable(bool);
 

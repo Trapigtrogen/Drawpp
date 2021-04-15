@@ -81,6 +81,12 @@ public:
     void size(int width, int height);
 
 
+    ///\brief Set the application to fullscreen mode
+    ///
+    ///\p monitor is the zero-based index of the display to use.
+    void setFullscreen(int monitor);
+
+
     ///\brief Set the allowance of resizing
     ///
     ///Only effective in setup.
@@ -148,6 +154,7 @@ public:
 private:
     bool init_application();
     void cleanup_application();
+    void resize_window(int width, int height, void* monitor);
 
     float min_delta = -1;
 
