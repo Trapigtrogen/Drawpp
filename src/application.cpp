@@ -339,12 +339,6 @@ int Application::getHeight() const
     return -1;
 }
 
-bool Application::graphicsExists() const
-{
-    if(graphics != nullptr) return true;
-    return false;
-}
-
 bool Application::init_application()
 {
     if (!window->Init())
