@@ -298,7 +298,7 @@ void Application::setCursor(const DImage& c, int xorigin, int yorigin)
     GLFWimage img;
     img.height = c.height();
     img.width = c.width();
-    img.pixels = const_cast<unsigned char*>(c.pixels());
+    img.pixels = const_cast<unsigned char*>(reinterpret_cast<const unsigned char*>(c.pixels()));
 
     GLFWcursor* curs = glfwCreateCursor(&img,xorigin,yorigin);
 

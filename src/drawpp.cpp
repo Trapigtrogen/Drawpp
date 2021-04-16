@@ -291,8 +291,7 @@ void background(Color col) {
 
 void background(const char* hexCol) 
 {
-    Color col = Color::HEX2RGB((char*)hexCol);
-    Application::GetInstance()->graphics_object().background(col);
+    Application::GetInstance()->graphics_object().background(Color(hexCol));
 }
 
 void background(Color rgb, float alpha)
@@ -332,8 +331,7 @@ void tint(Color rgb, float alpha)
 
 void tint(const char* hexCol)
 {
-    Color col = Color::HEX2RGB((char*)hexCol);
-    Application::GetInstance()->graphics_object().tint(col);
+    Application::GetInstance()->graphics_object().tint(Color(hexCol));
 }
 
 void tint(float gray)

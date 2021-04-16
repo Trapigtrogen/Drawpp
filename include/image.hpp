@@ -3,6 +3,8 @@
 
 #include <string>
 
+class Color;
+
 ///  DImage is an object that textures can be loaded to from image or pixel set
 class DImage
 {
@@ -42,11 +44,14 @@ public:
 
 
     ///\brief Get the pixel array of this image
-    unsigned char* pixels();
+    Color* pixels();
 
 
     ///\copydoc pixels()
-    const unsigned char* pixels() const;
+    const Color* pixels() const;
+
+    Color& operator[](size_t index);
+    const Color& operator[](size_t index) const;
 
 
     ///\brief Push the pixel array to the gpu

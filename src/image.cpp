@@ -3,6 +3,7 @@
 #include <cassert>
 #include <glad/glad.h>
 #include <cstring>
+#include <color.hpp>
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
@@ -219,15 +220,26 @@ int DImage::channels() const
     return m_channels;
 }
 
-unsigned char* DImage::pixels()
+Color* DImage::pixels()
 {
-    return m_pixels;
+    return reinterpret_cast<Color*>(m_pixels);
 }
 
-const unsigned char* DImage::pixels() const
+const Color* DImage::pixels() const
 {
-    return m_pixels;
+    return reinterpret_cast<Color*>(m_pixels);
 }
+
+Color& DImage::operator[](size_t index)
+{
+    return pixels()[index];
+}
+
+const Color& DImage::operator[](size_t index) const
+{
+    return pixels()[index];
+}
+
 
 void DImage::apply()
 {
