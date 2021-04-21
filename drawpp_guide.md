@@ -23,7 +23,8 @@ On the command line, this is done with the command `mkdir build`.<br>
 
 Next, navigate into the build directory with `cd build`.<br>
 Now, run CMake, with `cmake ..`.<br>
-If your build folder is elsewhere, you should replace the `..`, with the path to the project folder.<br>
+If your build folder is elsewhere, you should replace the `..`, with the path to the project directory.<br>
+If you want to configure the project, you can do that by adding `-D<option-name>=<state>`, where `state` is either `ON` or `OFF`. The option names can be found in the `CMakeLists.txt` file, near the beginning.<br><br>
 
 If you are using CMake-gui, you should put the project directory path to the `Where is the source code` field, and the build directory path to the `Where to build the binaries` field.<br>
 When those are set, press the `Configure` button to configure the project, though you don't have to, if you are fine with the default options. If you do want to configure the project, only the options beginning with DPP_ should be modified.<br>
