@@ -3,7 +3,7 @@
 
 #include <random>
 
-///\brief Random number generation
+///\brief Random number generator
 class Random
 {
 public:
@@ -23,19 +23,19 @@ public:
     void randomSeed(int seed);
 
 
-    ///\brief Generate a int in range [0,\p high]
+    ///\brief Generate an int in range [0, \p high ]
     int randomInt(int high);
 
 
-    ///\brief Generate a int in range [\p low,\p high]
+    ///\brief Generate an int in range [ \p low, \p high ]
     int randomInt(int low, int high);
 
 
-    ///\brief Generate a float in range [0.0,1.0]
+    ///\brief Generate a float in range [ 0.0, 1.0 )
     float randomFloat01();
 
 
-    ///\brief Generate a float in range [\p low,\p high]
+    ///\brief Generate a float in range [ \p low, \p high )
     float randomFloat(float low, float high);
 
 

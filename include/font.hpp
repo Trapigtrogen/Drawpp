@@ -27,7 +27,7 @@ struct FontOptions
     bool load_all = false;
 };
 
-struct _DFont_impl;
+struct DFont_impl;
 
 ///Font class
 class DFont
@@ -69,11 +69,10 @@ public:
     DFont& operator=(const DFont&) = default;
     DFont& operator=(DFont&&) = default;
 
-
 private:
     static void init_lib();
     
-    std::shared_ptr<_DFont_impl> impl;
+    std::shared_ptr<DFont_impl> impl;
 };
 
 

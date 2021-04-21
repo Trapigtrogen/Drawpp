@@ -8,6 +8,7 @@ struct GLFWwindow;
 
 //Add option for no repeat
 
+///\private
 class Input
 {
 public:

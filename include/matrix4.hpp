@@ -11,6 +11,7 @@ enum Axis
     Z
 };
 
+///\brief A basic 4x4 matrix class
 class DMatrix4
 {
 public:

@@ -2,9 +2,9 @@
 #define DPP_FONT_IMPL_H
 
 #include <unordered_map>
-//#include <memory>
 
-struct _DFont_impl
+///\private
+struct DFont_impl
 {
     struct Char
     {
@@ -20,13 +20,13 @@ struct _DFont_impl
         float advance_y;    //unused
     };
 
-    _DFont_impl() = default;
-    _DFont_impl(const _DFont_impl&) = delete;
-    ~_DFont_impl();
+    DFont_impl() = default;
+    DFont_impl(const DFont_impl&) = delete;
+    ~DFont_impl();
     
     //Load a font from a font face. This should be used to initialize a font
     //Returns nullptr on failure
-    static _DFont_impl* load_font(void* face, const struct FontOptions& options);
+    static DFont_impl* load_font(void* face, const struct FontOptions& options);
 
     //Initialize the freetype library
     static void init_lib();
