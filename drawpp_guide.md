@@ -13,15 +13,32 @@ Beginners guide to Drawpp
 
 ## <a id="build">Building the library</a> 
 
-This is how you build the drawpp library, and generate documentation. <br>
-*Not implemented*
+<br>To build the library, you will be using CMake (at least version 3.13.4). You can do this using CMake-gui, or on the command line.<br>
 
+Before that though, you should run `git submodule update --init --recursive`, to make sure all submodules are present.<br>
+
+Now, you will need to create a directory where the build will be generated. In this example we'll create a directory called `build`, right in the drawpp project directory.<br>
+
+On the command line, this is done with the command `mkdir build`.<br>
+
+Next, navigate into the build directory with `cd build`.<br>
+Now, run CMake, with `cmake ..`.<br>
+If your build folder is elsewhere, you should replace the `..`, with the path to the project folder.<br>
+
+If you are using CMake-gui, you should put the project directory path to the `Where is the source code` field, and the build directory path to the `Where to build the binaries` field.<br>
+When those are set, press the `Configure` button to configure the project, though you don't have to, if you are fine with the default options. If you do want to configure the project, only the options beginning with DPP_ should be modified.<br>
+To generate the build files, press the `Generate` button, and select your generator.<br><br>
+
+
+At this point, if you are on Windows, you will find a Visual Studio project called `Drawpp.sln`, in the `build` directory. You can go ahead and build it using Visual Studio.<br>
+
+On Linux, makefiles will have been generated into the `build` directory, and you can build the library with the `make` command.<br>
 
 <br>
 
 ## <a id="release">Generating a release</a>
 
-Generating a release is done with `build_release` script. On Windows, use the batch version, on Linux, use the shell version. The script will ask you for some options for the release. If you don't care about those, you can generate a default release by passing -f flag to the script.<br>
+<br>Generating a release is done with `build_release` script. On Windows, use the batch version, on Linux, use the shell version. The script will ask you for some options for the release. If you don't care about those, you can generate a default release by passing -f flag to the script.<br>
 
 #### <a id="release_prerequisites">Prerequisites</a>
 
