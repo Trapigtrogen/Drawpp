@@ -4,6 +4,7 @@ Beginners guide to Drawpp
 ## Table of contents
 - [Building the library](#build)
 - [Generating a release](#release)
+    - [Prerequisites](#release_prerequisites)
 - [Simple application](#simpleapp)
 - [Setup and cleanup](#setupcleanup)
 
@@ -20,9 +21,16 @@ This is how you build the drawpp library, and generate documentation. <br>
 
 ## <a id="release">Generating a release</a>
 
-This is how you generate a release of the drawpp library.<br>
-*Not implemented*
+Generating a release is done with `build_release` script. On Windows, use the batch version, on Linux, use the shell version. The script will ask you for some options for the release. If you don't care about those, you can generate a default release by passing -f flag to the script.<br>
 
+#### <a id="release_prerequisites">Prerequisites</a>
+
+Both versions of the script require you to have CMake (at least version 3.13.4), and git installed on your system.<br>
+If you need to generate the documentation, you must have Doxygen installed on your system.<br>
+
+On Windows, you will need Visual Studio.<br>
+
+On Linux, you must have the development packages for you distribution. These can be installed using the `install_dependencies.sh` script.<br>
 
 <br>
 
