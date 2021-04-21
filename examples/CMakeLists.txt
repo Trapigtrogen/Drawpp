@@ -9,8 +9,8 @@ endif (NOT MSVC)
 
 include_directories(include)
 
-add_executable(example_de-jong-attractor example_de-jong-attractor.cpp)
-add_executable(example_buttons example_buttons.cpp)
+add_executable(example_de-jong-attractor de-jong-attractor.cpp)
+add_executable(example_buttons buttons.cpp)
 
 if (MSVC)
     add_dependencies(example_de-jong-attractor ${PROJECT_NAME})
@@ -23,4 +23,4 @@ else ()
     file(COPY "${CMAKE_SOURCE_DIR}/examples/assets" DESTINATION "${CMAKE_BINARY_DIR}/bin/examples")
 endif (MSVC)
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/examples)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/examples)add_executable(example_buttons buttons.cpp)
