@@ -36,24 +36,22 @@ DImage::~DImage()
 
 DImage::DImage() = default;
 
-DImage::DImage(unsigned char* _pixels, unsigned int _texture, int w, int h, int c)
+DImage::DImage(unsigned char* _pixels, unsigned int _texture, int w, int h)
 {
 	m_pixels = _pixels;
 	m_texture = _texture;
 	m_width = w;
 	m_height = h;
-	m_channels = c;
 }
 
 DImage::DImage(const DImage& other) 
 {
 	m_height = other.m_height;
 	m_width = other.m_width;
-	m_channels = other.m_channels;
 
 	if(other.m_pixels != nullptr) 
 	{
-        unsigned size = other.m_width * other.m_height * other.m_channels;
+        unsigned size = other.m_width * other.m_height * 4;
 		m_pixels = static_cast<unsigned char*>(malloc(size));
         std::memcpy(m_pixels,other.m_pixels,size);
 	}
@@ -67,13 +65,11 @@ DImage::DImage(DImage&& other)
 	m_texture = other.m_texture;
 	m_height = other.m_height;
 	m_width = other.m_width;
-	m_channels = other.m_channels;
 
 	other.m_pixels = nullptr;
 	other.m_texture = 0;
 	other.m_height = 0;
 	other.m_width = 0;
-	other.m_channels = 0;
 }
 
 DImage& DImage::operator=(const DImage& other) 
@@ -82,14 +78,13 @@ DImage& DImage::operator=(const DImage& other)
 	{
 		m_height = other.m_height;
 		m_width = other.m_width;
-		m_channels = other.m_channels;
 
 		free(m_pixels); // Remove old pixels and copy new ones
         m_pixels = nullptr;
 
 		if(other.m_pixels != nullptr) 
 		{
-            unsigned size = other.m_width * other.m_height * other.m_channels;
+            unsigned size = other.m_width * other.m_height * 4;
 			m_pixels = static_cast<unsigned char*>(malloc(size));
             std::memcpy(m_pixels,other.m_pixels,size);
 		}
@@ -110,13 +105,11 @@ DImage& DImage::operator=(DImage&& other)
 		m_texture = other.m_texture;
 		m_height = other.m_height;
 		m_width = other.m_width;
-		m_channels = other.m_channels;
 
 		other.m_pixels = nullptr;
 		other.m_texture = 0;
 		other.m_height = 0;
 		other.m_width = 0;
-		other.m_channels = 0;
 	}
 
 	return *this;
@@ -136,13 +129,13 @@ DImage DImage::loadImage(const std::string& fileName)
 
 	int width, height, channels;
 	unsigned char* pixels = stbi_load(fileName.c_str(), &width, &height, &channels, 4);
-    channels = 4;
+
 	if(pixels == NULL)
 		dbg::error(("Image data not found: " + fileName).c_str());
 
 	GLuint m_texture = generateTexture(width, height, pixels);
 
-	DImage tmpImg(pixels, m_texture, width, height, channels);
+	DImage tmpImg(pixels, m_texture, width, height);
 
 	return tmpImg;
 }
@@ -167,27 +160,12 @@ DImage DImage::loadSVGImage(const std::string& filename, float scale)
 
     nsvgRasterize(raster,image,0,0,scale,imgdata,width,height,w4);
 
-    //rasterizer creates upside down image for some reason, so flip pixels here
-    /*
-    unsigned char* tmp = static_cast<unsigned char*>(malloc(w4));
-    unsigned char* last_line = imgdata + (height-1)*w4;
-    for(unsigned i = 0; i < height/2; ++i)
-    {
-        unsigned char* upper = imgdata+i*w4;
-        unsigned char* lower = last_line-i*w4;
-        std::memcpy(tmp,upper,w4);
-        std::memcpy(upper,lower,w4);
-        std::memcpy(lower,tmp,w4);
-    }
-    free(tmp);
-    */
-
     GLuint texture = generateTexture(width,height,imgdata);
 
     nsvgDelete(image);
     nsvgDeleteRasterizer(raster);
 
-    return DImage(imgdata,texture,width,height,4);
+    return DImage(imgdata,texture,width,height);
 }
 
 unsigned int DImage::generateTexture(int width, int height, unsigned char* pixels)
@@ -212,11 +190,6 @@ int DImage::width() const
 int DImage::height() const
 {
     return m_height;
-}
-
-int DImage::channels() const
-{
-    return m_channels;
 }
 
 unsigned char* DImage::pixels()
