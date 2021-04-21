@@ -357,11 +357,6 @@ bool Application::init_application()
                 window->properties.height
             ));
             
-    if(setup_func)
-    {
-        setup_func();
-    }
-
     glfwSetKeyCallback(         window->GetHandle(),Input::keyboard_callback);
     glfwSetMouseButtonCallback( window->GetHandle(),Input::mousebtn_callback);
     glfwSetScrollCallback(      window->GetHandle(),Input::mousewhl_callback);
@@ -385,6 +380,11 @@ bool Application::init_application()
     graphics->beginDraw();
     
     Time::Reset();
+
+    if(setup_func)
+    {
+        setup_func();
+    }
     
     return true;
 }
