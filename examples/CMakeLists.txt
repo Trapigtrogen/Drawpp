@@ -23,4 +23,4 @@ else ()
     file(COPY "${CMAKE_SOURCE_DIR}/examples/assets" DESTINATION "${CMAKE_BINARY_DIR}/bin/examples")
 endif (MSVC)
 
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/examples)add_executable(example_buttons buttons.cpp)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/examples)
