@@ -6,13 +6,7 @@
 //#include <graphics.hpp>
 #include <cstring>
 
-Color::Color() 
-{
-	alpha = 255;
-	red = 255;
-	green = 255;
-	blue = 255;
-}
+Color::Color() = default;
 
 Color::Color(const HSBColor& c)
 {
@@ -275,13 +269,7 @@ char* Color::DItoa(int val, int base)
 }
 
 
-HSBColor::HSBColor() 
-{
-	hue = 0;
-	saturation = 100;
-	brightness = 100;
-    alpha = 100;
-}
+HSBColor::HSBColor() = default;
 
 HSBColor::HSBColor(const Color& c)
 {
@@ -330,7 +318,7 @@ HSBColor HSBColor::lerpColor(const HSBColor& from, const HSBColor& to, float per
 	return HSBColor(lerpHue,lerpSat,lerpBr,lerpAlpha);
 }
 
-std::string hex(const HSBColor& col, int num)
+std::string HSBColor::hex(const HSBColor& col, int num)
 {
     return Color::hex(col,num);
 }

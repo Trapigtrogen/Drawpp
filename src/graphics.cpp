@@ -1564,7 +1564,7 @@ Color DGraphics::get_hsba(float h, float s, float b, float a)
     float bv = (b / properties.color_max3) * 100.0f;
     float av = (a / properties.color_maxa) * 100.0f;
 
-    return HSBColor(hv,sv,bv,av);
+    return HSBColor(hv,sv,bv,av).rgb();
 }
 
 Color DGraphics::get_color(float v1, float v2, float v3, float a)

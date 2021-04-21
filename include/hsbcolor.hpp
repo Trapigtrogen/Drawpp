@@ -12,7 +12,7 @@ public:
 
     ///\brief Create an empty Color object
     ///
-    /// Values can be loaded later from another one using operator=
+    ///Default color is opaque white
     HSBColor();
 
 
@@ -20,15 +20,15 @@ public:
     HSBColor(const Color& c);
 
 
-    ///\brief Create a Color object with \p v1, \p v2 and \p v3 and optional p alpha value
+    ///\brief Create a Color object with \p h, \p s and \p b and optional p alpha value
     ///
-    /// values 1,2,3 are rgb/hsb depending on mode, aplha is non-transparent by default
-    HSBColor(float v1, float v2, float v3, float alpha = 1.0);
+    ///Alpha is non-transparent by default
+    HSBColor(float h, float s, float b, float alpha = 1.0);
 
 
     ///\brief Create a Color object using string containing the hex value
     ///
-    /// Correct formats are \#RGB, \#RGBA, \#RRGGBB and \#RRGGBBAA and they must include the '#'
+    ///Correct formats are \#RGB, \#RGBA, \#RRGGBB and \#RRGGBBAA and they must include the '#'
     HSBColor(const std::string& hexCol);
 
 
@@ -55,10 +55,10 @@ public:
     ///\copydoc Color::hex(const Color&,int)
     static std::string hex(const HSBColor& col, int num = 8);
 
-    float hue;
-    float saturation;
-    float brightness;
-    float alpha;
+    float hue = 0;
+    float saturation = 0;
+    float brightness = 100;
+    float alpha = 100;
 
 private:
 
