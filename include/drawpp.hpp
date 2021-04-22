@@ -799,16 +799,18 @@ void pushMatrix();
 void popMatrix();
 
 
+// End group drawpp_transform_api
+///@}
+
+
 ///\copydoc DGraphics::pushStyle()
+///\ingroup drawpp_drawing_properties_api
 void pushStyle();
 
 
 ///\copydoc DGraphics::popStyle()
+///\ingroup drawpp_drawing_properties_api
 void popStyle();
-
-
-// End group drawpp_transform_api
-///@}
 
 
 ///\defgroup drawpp_time_api Time
