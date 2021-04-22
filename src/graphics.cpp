@@ -114,7 +114,7 @@ DGraphics::DGraphics(int width, int height)
     glBindTexture(GL_TEXTURE_2D,texture_id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,buffer_width,buffer_height,0,GL_RGB,GL_UNSIGNED_BYTE,NULL);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,buffer_width,buffer_height,0,GL_RGBA,GL_UNSIGNED_BYTE,NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture_id,0);
@@ -326,15 +326,10 @@ void DGraphics::stroke(float v1, float v2, float v3, float alpha)
 
 void DGraphics::clear()
 {
+    glDisable(GL_BLEND);
     glClearColor(0.0,0.0,0.0,0.0);
-    int f1,f2;
-    glGetIntegerv(GL_BLEND_SRC_ALPHA,&f1);
-    glGetIntegerv(GL_BLEND_DST_ALPHA,&f2);
-
-    glBlendFunc(GL_ZERO,GL_SRC_ALPHA);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    glBlendFunc(f1,f2);
+    glEnable(GL_BLEND);
 }
 
 void DGraphics::background(Color rgba)
@@ -1124,10 +1119,10 @@ bool DGraphics::save(const std::string& filename, ImageFormat format) const
 {
     if(buffer_id == static_cast<unsigned int>(-1) || buffer_height == 0 || buffer_width == 0) return false;
 
-    unsigned char* data = new unsigned char[buffer_width*buffer_height*3];
+    unsigned char* data = new unsigned char[buffer_width*buffer_height*4];
     glBindTexture(GL_TEXTURE_2D,texture_id);
 
-    glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_UNSIGNED_BYTE,data);
+    glGetTexImage(GL_TEXTURE_2D,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
     int result = 0;
 
@@ -1138,25 +1133,25 @@ bool DGraphics::save(const std::string& filename, ImageFormat format) const
         case ImageFormat::PNG:
         {
             std::string name = filename + ".png";
-            result = stbi_write_png(name.data(),buffer_width,buffer_height,3,data,buffer_width*3);
+            result = stbi_write_png(name.data(),buffer_width,buffer_height,4,data,buffer_width*4);
             break;
         }
         case ImageFormat::JPG:
         {
             std::string name = filename + ".jpg";
-            result = stbi_write_jpg(name.data(),buffer_width,buffer_height,3,data,100);
+            result = stbi_write_jpg(name.data(),buffer_width,buffer_height,4,data,100);
             break;
         }
         case ImageFormat::TGA:
         {
             std::string name = filename + ".tga";
-            result = stbi_write_tga(name.data(),buffer_width,buffer_height,3,data);
+            result = stbi_write_tga(name.data(),buffer_width,buffer_height,4,data);
             break;
         }
         case ImageFormat::BMP:
         {
             std::string name = filename + ".bmp";
-            result = stbi_write_bmp(name.data(),buffer_width,buffer_height,3,data);
+            result = stbi_write_bmp(name.data(),buffer_width,buffer_height,4,data);
             break;
         }
     }
