@@ -156,7 +156,7 @@ app.run(draw,setup,cleanup);
 
 ## <a id="drawing_functions">Drawing functions</a>
 
-<br>The Drawpp library provides several drawing functions. All of them have two overloads, one where the position and size parameters are floats, and one where they are vectors.<br>
+<br>The Drawpp library provides several drawing functions. All of them have at least two overloads, one where the position and size parameters are floats, and one where they are vectors.<br>
 
 When deciding where to draw, note that the coordinate (0,0) is in the upper left corner of the window. The X coordinate increases to the right, and the Y coordinate increases down.<br>
 
@@ -176,3 +176,20 @@ Here is a list of the drawing functions, not including their overloads. A full l
 - image()
 - background()
 - clear()
+
+#### Example
+
+<br>You can use the drawing functions anywhere, after the application has been started. This example will draw a rectangle on a green background.<br>
+
+
+```cpp
+void draw(float t)
+{
+    background(colors::green);
+
+    rect(100,100,300,500);
+}
+```
+
+<br>Here, the first two parameters for the ***rect*** call are it's position, and the next two are it's size.<br>
+The parameter for the ***background*** call, is a color constant provided by the library. The ***background*** function will fill the whole window with the given color.
