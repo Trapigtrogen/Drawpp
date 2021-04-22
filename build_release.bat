@@ -127,6 +127,7 @@ if not exist include mkdir include
 cd include
 copy "..\..\include\application.hpp"    "application.hpp"
 copy "..\..\include\color.hpp"          "color.hpp"
+copy "..\..\include\hsbcolor.hpp"       "hsbcolor.hpp"
 copy "..\..\include\drawpp.hpp"         "drawpp.hpp"
 copy "..\..\include\graphics.hpp"       "graphics.hpp"
 copy "..\..\include\image.hpp"          "image.hpp"

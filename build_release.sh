@@ -78,6 +78,7 @@ mkdir include
 
 cp ../include/application.hpp ./include/
 cp ../include/color.hpp ./include/
+cp ../include/hsbcolor.hpp ./include/
 cp ../include/drawpp.hpp ./include/
 cp ../include/graphics.hpp ./include/
 cp ../include/image.hpp ./include/
