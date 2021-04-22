@@ -109,10 +109,10 @@ rm libCombiner.mri
 
 
 # TESTS:
+rm -r ./tests
 # move tests to main folder
 if [ -d ./bin/tests ] && [ $debugBuild = "ON" ]; then
     echo "Copying tests over..."
-    rm -r ./tests
     mv ./bin/tests ./
 fi
 
