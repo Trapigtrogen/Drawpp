@@ -276,6 +276,6 @@ Position mode ***CENTER***, means that the origin is in the center.<br>
 ***pushMatrix()*** will push the current transform matrix onto the transform stack. You can then freely call the transformation functions, and at any point, restore the pushed matrix with ***popMatrix()***. <br>
 Same logic applies to the properties, with ***pushStyle()*** and ***popStyle()***.<br>
 
-Additionally, if you want to save both at the same time, you can call ***pus()***, and then ***pop()*** to restore them.<br>
+Additionally, if you want to save both at the same time, you can call ***push()***, and then ***pop()*** to restore them.<br>
 
 The stacks are persistent between cycles.
