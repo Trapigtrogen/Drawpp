@@ -9,18 +9,21 @@ endif (NOT MSVC)
 
 include_directories(include)
 
-add_executable(example_de-jong-attractor de-jong-attractor.cpp)
-add_executable(example_buttons buttons.cpp)
+# Add all example source files as executables
+file( GLOB_RECURSE my_c_list RELATIVE ${CMAKE_SOURCE_DIR} "*.cpp")
+foreach( file_path ${my_c_list} )
+    string( REPLACE ".cpp" "" new_name ${file_path} )
+    get_filename_component( filename ${new_name} NAME )
+    add_executable( example_${filename} ${filename}.cpp )
 
-if (MSVC)
-    add_dependencies(example_de-jong-attractor ${PROJECT_NAME})
-    add_dependencies(example_buttons ${PROJECT_NAME})
-    
-    set_property(TARGET example_de-jong-attractor
-                        example_buttons
-                 PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/examples")
-else ()
+    if (MSVC)
+        add_dependencies(example_${filename} ${PROJECT_NAME})
+        set_property(TARGET example_${filename} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/examples")
+    endif (MSVC)
+endforeach()
+
+if (NOT MSVC)
     file(COPY "${CMAKE_SOURCE_DIR}/examples/assets" DESTINATION "${CMAKE_BINARY_DIR}/bin/examples")
-endif (MSVC)
+endif (NOT MSVC)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin/examples)
