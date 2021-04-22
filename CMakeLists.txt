@@ -42,7 +42,8 @@ add_library(${LIBNAME} STATIC src/drawpp.cpp
                                    src/noise.cpp
                                    src/font.cpp
                                    src/vec2f.cpp
-                                   src/path.cpp)
+                                   src/path.cpp
+                                   src/colors.cpp)
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 
