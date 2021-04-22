@@ -9,8 +9,9 @@ endif (NOT MSVC)
 
 include_directories(include)
 
-file( GLOB_RECURSE my_c_list RELATIVE ${CMAKE_SOURCE_DIR} "*.cpp")
-foreach( file_path ${my_c_list} )
+# Add all test source files as executables
+file( GLOB_RECURSE source_list RELATIVE ${CMAKE_SOURCE_DIR} "*.cpp")
+foreach( file_path ${source_list} )
     string( REPLACE ".cpp" "" new_name ${file_path} )
     get_filename_component( filename ${new_name} NAME )
     add_executable( test_${filename} ${filename}.cpp )
