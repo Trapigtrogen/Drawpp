@@ -7,6 +7,7 @@ Beginners guide to Drawpp
     - [Prerequisites](#release_prerequisites)
 - [Simple application](#simpleapp)
 - [Setup and cleanup](#setupcleanup)
+- [Drawing functions](#drawing_functions)
 
 
 <br>
@@ -17,7 +18,7 @@ Beginners guide to Drawpp
 
 Before that though, you should run `git submodule update --init --recursive`, to make sure all submodules are present.<br>
 
-Now, you will need to create a directory where the build will be generated. In this example we'll create a directory called `build`, right in the drawpp project directory.<br>
+Now, you will need to create a directory where the build will be generated. In this example we'll create a directory called `build`, right in the Drawpp project directory.<br>
 
 On the command line, this is done with the command `mkdir build`.<br>
 
@@ -54,7 +55,7 @@ On Linux, you must have the development packages for you distribution. These can
 
 ## <a id="simpleapp">Simple application</a>
 
-<br>When creating an application with the drawpp library, you will first have to include the main header in your file.<br>
+<br>When creating an application with the Drawpp library, you will first have to include the main header in your file.<br>
 
 ```cpp
 #include "drawpp.hpp"
@@ -122,7 +123,7 @@ int main()
 
 ## <a id="setupcleanup">Setup and cleanup</a>
 
-<br>Often you need to initialize some things at the beginning of your program. Normally you would do that in the beginning of the main function, but when using the drawpp library, we strongly recommend you do all initializing in a setup function. This is because a lot of things need the application to be running to work.<br>
+<br>Often you need to initialize some things at the beginning of your program. Normally you would do that in the beginning of the main function, but when using the Drawpp library, we strongly recommend you do all initializing in a setup function. This is because a lot of things need the application to be running to work.<br>
 
 Here is an example of a setup function:<br>
 
@@ -150,3 +151,28 @@ app.run(draw,setup,cleanup);
 ```
 
 <br>The cleanup function will be called right after the draw loop had exited.<br>
+
+<br>
+
+## <a id="drawing_functions">Drawing functions</a>
+
+<br>The Drawpp library provides several drawing functions. All of them have two overloads, one where the position and size parameters are floats, and one where they are vectors.<br>
+
+When deciding where to draw, note that the coordinate (0,0) is in the upper left corner of the window. The X coordinate increases to the right, and the Y coordinate increases down.<br>
+
+Here is a list of the drawing functions, not including their overloads. A full list, and detailed descriptions can be found in the generated documentation.
+
+- shape()
+- circle()
+- ellipse()
+- line()
+- point()
+- quad()
+- rect()
+- square()
+- triangle()
+- bezier()
+- text()
+- image()
+- background()
+- clear()
