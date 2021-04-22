@@ -24,24 +24,10 @@ else ()
     set(LIBDIR ${CMAKE_BINARY_DIR}/lib)
 endif (MSVC)
 
-add_library(${LIBNAME} STATIC src/drawpp.cpp
-                                   external/glad/src/glad.c
-                                   src/application.cpp
-                                   src/window.cpp
-                                   src/input.cpp
-                                   src/window.cpp
-                                   src/matrix4.cpp
-                                   src/vector3.cpp
-                                   src/random.cpp
-                                   src/graphics.cpp
-                                   src/time.cpp
-                                   src/shader.cpp
-                                   src/image.cpp
-                                   src/color.cpp
-                                   src/shape.cpp
-                                   src/noise.cpp
-                                   src/font.cpp
-                                   src/vec2f.cpp)
+# Add all source files
+file( GLOB_RECURSE source_list RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
+add_library(${LIBNAME} STATIC external/glad/src/glad.c ${source_list})
+
 set_target_properties(${LIBNAME} PROPERTIES 
                         ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 
