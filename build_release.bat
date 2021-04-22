@@ -66,6 +66,9 @@ goto query_plat
 :update_modules
 git submodule update --init --recursive
 
+:: Clear old release
+if exist release RMDIR release /S /Q
+
 if not exist release\_dpp_tmp_release_build mkdir release\_dpp_tmp_release_build
 
 cd release\_dpp_tmp_release_build
@@ -183,8 +186,6 @@ for /r %%f in (*.cpp) do (
 	SET startupFile=%%~nf
 )
 
-echo %startupFile%
-
 
 :: Add every source file to targets
 echo set_property(TARGET>>CMakeLists.txt
@@ -193,7 +194,7 @@ for /r %%f in (*.cpp) do (
 )
 
 echo PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")>>CMakeLists.txt
-echo set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT %startupFile%)>>CMakeLists.txt
+echo set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT example_%startupFile%)>>CMakeLists.txt
 
 cd ..
 
