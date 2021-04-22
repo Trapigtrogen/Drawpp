@@ -8,6 +8,7 @@ Beginners guide to Drawpp
 - [Simple application](#simpleapp)
 - [Setup and cleanup](#setupcleanup)
 - [Drawing functions](#drawing_functions)
+- [Drawing properties](#drawing_properties)
 
 
 <br>
@@ -192,4 +193,50 @@ void draw(float t)
 ```
 
 <br>Here, the first two parameters for the ***rect*** call are it's position, and the next two are it's size.<br>
-The parameter for the ***background*** call, is a color constant provided by the library. The ***background*** function will fill the whole window with the given color.
+The parameter for the ***background*** call, is a color constant provided by the library. The ***background*** function will fill the whole window with the given color.<br>
+
+<br>
+
+## <a id="drawing_properties">Drawing properties</a>
+
+<br>When drawing, there are some options you can change. These options will determine how things are drawn.<br>
+Some of the functions listed have several overloads, details of which you can loop up in the generated documentation.<br>
+
+- fill()
+    - Set the fill color, which will be used when drawing primitives.
+- stroke()
+    - Set the stroke color, which will be used when drawing primitives.
+- tint()
+    - Set the tint color, which will be used when drawing images.
+- noFill()
+    - Disable filling entirely.
+    - By default, filling is enabled.
+- noStroke()
+    - Disable stroke entirely.
+    - By default, stroke is enabled.
+- noTint()
+    - Disable tint entirely.
+    - By default, tint is disabled.
+- strokeWeight()
+    - Set the stroke thickness, which will be used when drawing primitives and lines.
+- strokeCap()
+    - Set the stroke cap style. This affects lines and points.
+    - By default, stroke cap style is round.
+- bezierDetail()
+    - Set the amount of detail to be used, when drawing bézier curves.
+- rectMode()
+    - Set the position mode which will be used for rectangles and squares.
+    - By default, rect mode is corner.
+- ellipseMode()
+    - Set the position mode which will be used for ellipses and circles.
+    - By default, rect mode is center.
+- imageMode()
+    - Set the position mode which will be used for images.
+    - By default, rect mode is corner.
+- textFont()
+    - Set the font which will be used for drawing text.
+    - By default, no font is set, so to draw text, you must first set a font.
+
+
+<br>Position modes dictate what is considered the origin of the thing being drawn. Position mode ***CORNER*** means that the origin is in the upper left corner. For example, were you to draw a square in the coordinates (100,100), the upper left corner of the square, will be in the position (100,100).<br>
+Position mode ***CENTER***, means that the origin is in the center.
