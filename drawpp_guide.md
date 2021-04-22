@@ -9,6 +9,8 @@ Beginners guide to Drawpp
 - [Setup and cleanup](#setupcleanup)
 - [Drawing functions](#drawing_functions)
 - [Drawing properties](#drawing_properties)
+- [Transforms](#drawing_transforms)
+- [Stacks](#stacks)
 
 
 <br>
@@ -200,7 +202,7 @@ The parameter for the ***background*** call, is a color constant provided by the
 ## <a id="drawing_properties">Drawing properties</a>
 
 <br>When drawing, there are some options you can change. These options will determine how things are drawn.<br>
-Some of the functions listed have several overloads, details of which you can loop up in the generated documentation.<br>
+Some of the functions listed have several overloads, details of which you can look up in the generated documentation.<br>
 
 - fill()
     - Set the fill color, which will be used when drawing primitives.
@@ -239,4 +241,41 @@ Some of the functions listed have several overloads, details of which you can lo
 
 
 <br>Position modes dictate what is considered the origin of the thing being drawn. Position mode ***CORNER*** means that the origin is in the upper left corner. For example, were you to draw a square in the coordinates (100,100), the upper left corner of the square, will be in the position (100,100).<br>
-Position mode ***CENTER***, means that the origin is in the center.
+Position mode ***CENTER***, means that the origin is in the center.<br>
+
+
+<br>
+
+## <a id="drawing_transforms">Transforms</a>
+
+<br>On their own, the drawing functions can't for example draw rotated shapes. To achieve this, you can use the transform functions.<br>
+
+- translate()
+    - Displaces the scene by the given amounts.
+- rotate()
+    - Rotates the scene by the given angle (radians), around the origin.
+- scale()
+    - Scales the scene by the given amounts.
+- shearX()
+    - Shears the scene in the X-axis.
+- shearY()
+    - Shears the scene in the Y-axis.
+- applyMatrix()
+    - Multiply the current transform matrix by your own.
+
+
+<br>It should be noted, that the transformations don't affect already drawn elements. Only the calls after the transformation will be affected. The transform matrix is also reset after every loop cycle.<br>
+
+
+<br>
+
+## <a id="stacks">Stacks</a>
+
+<br>Sometimes you may want to save transformations or properties between between drawing calls. This can be done with the transform stack, and property stack. To use them, you can call ***pushMatrix()*** and ***popMatrix()***, and ***pushStyle()*** and ***popStyle()***.<br>
+
+***pushMatrix()*** will push the current transform matrix onto the transform stack. You can then freely call the transformation functions, and at any point, restore the pushed matrix with ***popMatrix()***. <br>
+Same logic applies to the properties, with ***pushStyle()*** and ***popStyle()***.<br>
+
+Additionally, if you want to save both at the same time, you can call ***pus()***, and then ***pop()*** to restore them.<br>
+
+The stacks are persistent between cycles.
