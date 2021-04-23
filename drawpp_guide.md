@@ -2,21 +2,21 @@ Beginners guide to Drawpp
 ===
 
 ## Table of contents
-- [Building the library](#build)
-- [Generating a release](#release)
-    - [Prerequisites](#release_prerequisites)
-- [Simple application](#simpleapp)
-- [Setup and cleanup](#setupcleanup)
-- [Drawing functions](#drawing_functions)
-- [Drawing properties](#drawing_properties)
-- [Transforms](#drawing_transforms)
+- [Building the library](#building-the-library)
+- [Generating a release](#generating-a-release)
+    - [Prerequisites](#prerequisites)
+- [Simple application](#simple-application)
+- [Setup and cleanup](#setup-and-cleanup)
+- [Drawing functions](#drawing-functions)
+- [Drawing properties](#drawing-properties)
+- [Transforms](#transforms)
 - [Stacks](#stacks)
 - [Input](#input)
 - [Colors](#colors)
 
 <br>
 
-## <a id="build">Building the library</a> 
+## <a id="building-the-library">Building the library</a> 
 
 <br>To build the library, you will be using CMake (at least version 3.13.4). You can do this using CMake-gui, or on the command line.<br>
 
@@ -42,11 +42,11 @@ On Linux, makefiles will have been generated into the `build` directory, and you
 
 <br>
 
-## <a id="release">Generating a release</a>
+## <a id="generating-a-release">Generating a release</a>
 
 <br>Generating a release is done with `build_release` script. On Windows, use the batch version, on Linux, use the shell version. The script will ask you for some options for the release. If you don't care about those, you can generate a default release by passing -f flag to the script.<br>
 
-#### <a id="release_prerequisites">Prerequisites</a>
+#### <a id="prerequisites">Prerequisites</a>
 
 Both versions of the script require you to have CMake (at least version 3.13.4), and git installed on your system.<br>
 If you need to generate the documentation, you must have Doxygen installed on your system.<br>
@@ -57,7 +57,7 @@ On Linux, you must have the development packages for you distribution. These can
 
 <br>
 
-## <a id="simpleapp">Simple application</a>
+## <a id="simple-application">Simple application</a>
 
 <br>When creating an application with the Drawpp library, you will first have to include the main header in your file.<br>
 
@@ -125,7 +125,7 @@ int main()
 
 <br>
 
-## <a id="setupcleanup">Setup and cleanup</a>
+## <a id="setup-and-cleanup">Setup and cleanup</a>
 
 <br>Often you need to initialize some things at the beginning of your program. Normally you would do that in the beginning of the main function, but when using the Drawpp library, we strongly recommend you do all initializing in a setup function. This is because a lot of things need the application to be running to work.<br>
 
@@ -158,7 +158,7 @@ app.run(draw,setup,cleanup);
 
 <br>
 
-## <a id="drawing_functions">Drawing functions</a>
+## <a id="drawing-functions">Drawing functions</a>
 
 <br>The Drawpp library provides several drawing functions. All of them have at least two overloads, one where the position and size parameters are floats, and one where they are vectors.<br>
 
@@ -200,7 +200,7 @@ The parameter for the ***background*** call, is a color constant provided by the
 
 <br>
 
-## <a id="drawing_properties">Drawing properties</a>
+## <a id="drawing-properties">Drawing properties</a>
 
 <br>When drawing, there are some options you can change. These options will determine how things are drawn.<br>
 Some of the functions listed have several overloads, details of which you can look up in the generated documentation.<br>
@@ -247,7 +247,7 @@ Position mode ***CENTER***, means that the origin is in the center.<br>
 
 <br>
 
-## <a id="drawing_transforms">Transforms</a>
+## <a id="transforms">Transforms</a>
 
 <br>On their own, the drawing functions can't for example draw rotated shapes. To achieve this, you can use the transform functions.<br>
 
