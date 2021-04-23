@@ -22,7 +22,8 @@ We provide scripts for building releases.\
 Windows script 'build-release.bat' assumes you have cmake and Visual Studio installed.\
 On Linux there's 'install-dependencies.sh' which installs dependencies using you distro's package manager. 'build-release.sh' for building the release.
 
-Release folder will be created and deployed program will be build there.
+Release folder will be created and deployed program will be build there.\
+External libraries are automatically combined to the releaseable Drawpp library
 
 ## Manual
 
@@ -62,3 +63,5 @@ make
 \
 The build tests and examples will be in graphics-library/build/bin folder\
 And library in graphics-library/build/lib folder
+
+If you want to merge external libraries into the releaseable Drawpp library use `ar -M <combine.mri` in build directory

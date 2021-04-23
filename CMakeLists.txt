@@ -60,13 +60,15 @@ if (MSVC)
     set(LIB_PATH ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.lib)
 else ()
     set(LIB_PATH ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a)
-#else()
-#    file(GENERATE OUTPUT ${CMAKE_BINARY_DIR}/combine.ar CONTENT "CREATE ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a
-#ADDLIB $<TARGET_FILE:glfw>
-#ADDLIB $<TARGET_FILE:${PROJECT_NAME}_tmp>
-#SAVE
-#END")
-#
+
+    file(GENERATE OUTPUT ${CMAKE_BINARY_DIR}/combine CONTENT 
+"create lib${PROJECT_NAME}.a
+addlib lib/lib${PROJECT_NAME}.a
+addlib external/freetype/libfreetype.a
+addlib external/glfw/src/libglfw3.a
+save
+end")
+    
 #    add_custom_target(${PROJECT_NAME} ALL
 #                    COMMAND ar -M <combine.ar
 #                    COMMAND ar -s ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a

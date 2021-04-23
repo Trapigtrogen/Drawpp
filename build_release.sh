@@ -94,19 +94,11 @@ cp ../include/vector3.hpp ./include/
 cp ../include/font.hpp ./include/
 cp ../include/constants.hpp ./include/
 
-
 echo "Combining libraries..."
-# Create temp script
-echo "create libDrawpp.a">libCombiner.mri
-echo "addlib lib/libDrawpp.a">>libCombiner.mri
-echo "addlib external/freetype/libfreetype.a">>libCombiner.mri
-echo "addlib external/glfw/src/libglfw3.a">>libCombiner.mri
-echo "save">>libCombiner.mri
-echo "end">>libCombiner.mri
-# combine using script
-ar -M <libCombiner.mri
+# combine libraries using script
+ar -M <combine
 # Remove script
-rm libCombiner.mri
+rm combine
 
 
 # TESTS:
