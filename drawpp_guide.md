@@ -11,6 +11,7 @@ Beginners guide to Drawpp
 - [Drawing properties](#drawing_properties)
 - [Transforms](#drawing_transforms)
 - [Stacks](#stacks)
+- [Input](#input)
 
 
 <br>
@@ -278,4 +279,88 @@ Same logic applies to the properties, with ***pushStyle()*** and ***popStyle()**
 
 Additionally, if you want to save both at the same time, you can call ***push()***, and then ***pop()*** to restore them.<br>
 
-The stacks are persistent between cycles.
+The stacks are persistent between cycles.<br>
+
+
+<br>
+
+## <a id="input">Input</a>
+
+<br>The library provides several callbacks and variables for input handling. The callbacks must be assigned before running the application. For example, if we want to know when a keyboard key was pressed, we would create a function called ***keyPressed***, and then assign the callback like this:<br>
+
+
+
+```cpp
+void main()
+{
+    Application app(500,500);
+
+    // Here we assign the keyPressed callback
+    app.setKeyPressed(keyPressed);
+
+    return app.run(draw);
+}
+```
+
+<br>Here is a list of all the available input callbacks:
+- keyPressed
+- keyReleased
+- mouseClicked
+- mousePressed
+- mouseReleased
+- mouseWheel
+- mouseMoved
+- mouseDragged
+
+<br>Of all of these, only mouseWheel takes any parameters. It will take one float, which will be the distance the mouse wheel was scrolled. The direction of the scroll can be interpreted from the sign of the value.<br>
+
+In addition to the input callbacks, you also have some variables at your disposal:
+- key
+    - The last keyboard key that was pressed.
+    - If the keyboard key cannot be represented as an ascii character, key will be equal to CODED (or 0).
+- keyCode
+    - Keycode of the last keyboard key that was pressed.
+    - This will always hold the proper keycode, even if key is CODED
+- mouseButton
+    - Id of the last mouse button to be pressed or released.
+- mouseX
+    - Latest mouse X position.
+- mouseY
+    - Latest mouse Y position.
+- pmouseX
+    - Previous mouse X position.
+- pmouseY
+    - Previous mouse Y position.
+- pfmouseX
+    - Last mouse X position of the previous cycle.
+- pfmouseY
+    - Last mouse Y position of the previous cycle.
+
+<br>Here is an example:<br>
+
+
+```cpp
+void keyPressed()
+{
+    if(key == 'a')
+    {
+        puts("Pressed a");
+    }
+    else if(key == VK_ESC)
+    {
+        exit();
+    }
+}
+
+void main()
+{
+    Application app(500,500);
+
+    app.setKeyPressed(keyPressed);
+
+    return app.run(draw);
+}
+```
+
+<br>Above, in the keyPressed function, we check if the key 'a' was pressed, and if so, print "Pressed a". If instead of 'a', 'escape' was pressed, we quit the application. Note that we compare escape with VK_ESC. Since escape is an ascii character, we could compare it with '\0x1B', 0x1B, '\033' or 27 as well. But VK_ESC is much easier to remember and understand, so prefer using it.<br>
+You can also test the alphanumeric keys with for example VK_A, but in this case whether you use 'a' or VK_A, doesn't really make a difference in understanding the code. Note however that only lowercase character literals will work, so for example 'A' is invalid.<br>
