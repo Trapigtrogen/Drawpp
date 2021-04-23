@@ -16,6 +16,8 @@ Beginners guide to Drawpp
 - [Time](#time)
 - [Random](#random)
 - [Noise](#noise)
+- [File loading](#file-loading)
+- [Miscellaneous](#miscellaneous)
 
 <br>
 
@@ -488,4 +490,64 @@ If you need multiple generators, you can use the Random class. It will also have
 - noiseMapSize()
     - Change the size of the generated noise.
 
-As with random numbers, you can have multiple noise generators using the Noise class.<br>
+As with random numbers, you can have multiple noise generators by using the Noise class.<br>
+
+
+<br>
+
+## <a id="file-loading">File loading<a/>
+
+<br>If you want images, or fonts, you need to load them from files. Here are the functions for that:
+
+- loadImage()
+    - Loads an image from the given path.
+    - Supported formats are: png, jpg, bmp, tga, psd, pnm, ppm and pgm.
+- loadSVGImage()
+    - Loads an SVG image from the given path.
+- loadFont()
+    - Loads a font from the given path.
+    - Supported formats: ttf, otf, pfa, pfb and cef.
+    - See generated documentation for details.
+- loadShape()
+    - Loads an SVG file from the given path, as a shape.
+
+
+<br>
+
+## <a id="miscellaneous">Miscellaneous</a>
+
+<br>Here are various functions you can use for different things:
+
+- exit()
+    - Quit the application.
+    - Calling this will not immediately exit, instead, the application will terminate after the current cycle is complete.
+- frameRate()
+    - Set the maximum framerate the application can run at.
+- vSync()
+    - Enable or disable vsync.
+- cursor()
+    - Set the mouse cursor to an icon of your choice.
+    - You can either use one of the icons provided by the system, or your own.
+    - The system icons are: ARROW, HAND, CROSS and TEXT.
+- noCursor()
+    - Hide the cursor.
+- size()
+    - Resize the window.
+- fullScreen()
+    - Set the application to fullscreen mode.
+    - fullScreen takes one int as a parameter, which will be the id of the monitor you want to use.
+    - To exit fullscreen mode, call size()
+- setTitle()
+    - Set the window title.
+- delay()
+    - Stop the application for a number of milliseconds.
+- save()
+    - Save a screenshot to the given path.
+
+
+<br>In addition to these functions, there is also a couple of variables:
+
+- focused
+    - true if the application window is currently focused, false otherwise
+- frameCount
+    - The number of rendered frames that have been displayed since application startup.
