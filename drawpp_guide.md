@@ -18,6 +18,7 @@ Beginners guide to Drawpp
 - [Noise](#noise)
 - [File loading](#file-loading)
 - [Miscellaneous](#miscellaneous)
+- [Offscreen drawing](#offscreen-drawing)
 
 <br>
 
@@ -435,7 +436,7 @@ The library also provides a small number of colors in the ***colors*** namespace
 <br>In the draw function, you already have the delta time at your disposal, but you may want some additional information about time. Here is a list of time related functions:
 
 - millis()
-    - Get the number of milliseconds since last global timer reset. 
+    - Get the number of milliseconds since last counter reset. 
 - second()
     - Get the current second of the system clock.
 - minute()
@@ -536,7 +537,7 @@ As with random numbers, you can have multiple noise generators by using the Nois
 - fullScreen()
     - Set the application to fullscreen mode.
     - fullScreen takes one int as a parameter, which will be the id of the monitor you want to use.
-    - To exit fullscreen mode, call size()
+    - To exit fullscreen mode, call size().
 - setTitle()
     - Set the window title.
 - delay()
@@ -551,3 +552,31 @@ As with random numbers, you can have multiple noise generators by using the Nois
     - true if the application window is currently focused, false otherwise
 - frameCount
     - The number of rendered frames that have been displayed since application startup.
+
+
+<br>
+
+## <a id="offscreen-drawing">Offscreen drawing</a>
+
+
+<br>If you want to draw to a different draw target than the application window, you can use the DGraphics class.<br>
+You can take a look at the generated documentation for details, but DGraphics has all of the drawing and color related functions mentioned previously.<br>
+When you draw to a DGraphics target, you must first call ***beginDraw()***, and when you are finished, call ***endDraw()***.<br>
+
+Here is an example:<br>
+
+```cpp
+DGraphics mytarget;
+
+void draw(float t)
+{
+    mytarget.beginDraw();
+
+    mytarget.background(colors::tan);
+    mytarget.strokeWeight(20);
+    mytarget.rect(100,100,200,300);
+    mytarget.line(300,400,400,100);
+    
+    mytarget.endDraw();
+}
+```
