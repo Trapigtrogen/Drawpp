@@ -12,7 +12,7 @@ Beginners guide to Drawpp
 - [Transforms](#drawing_transforms)
 - [Stacks](#stacks)
 - [Input](#input)
-
+- [Colors](#colors)
 
 <br>
 
@@ -320,7 +320,7 @@ In addition to the input callbacks, you also have some variables at your disposa
     - If the keyboard key cannot be represented as an ascii character, key will be equal to CODED (or 0).
 - keyCode
     - Keycode of the last keyboard key that was pressed.
-    - This will always hold the proper keycode, even if key is CODED
+    - This will always hold the proper keycode, even if key is CODED.
 - mouseButton
     - Id of the last mouse button to be pressed or released.
 - mouseX
@@ -364,3 +364,43 @@ void main()
 
 <br>Above, in the keyPressed function, we check if the key 'a' was pressed, and if so, print "Pressed a". If instead of 'a', 'escape' was pressed, we quit the application. Note that we compare escape with VK_ESC. Since escape is an ascii character, we could compare it with '\0x1B', 0x1B, '\033' or 27 as well. But VK_ESC is much easier to remember and understand, so prefer using it.<br>
 You can also test the alphanumeric keys with for example VK_A, but in this case whether you use 'a' or VK_A, doesn't really make a difference in understanding the code. Note however that only lowercase character literals will work, so for example 'A' is invalid.<br>
+
+
+<br>
+
+## <a id="colors">Colors</a>
+
+<br>For colors, we have the Color, and HSBColor classes.<br>
+
+The Color class will hold four 8 bit values, representing the red, green, blue and alpha channels. Every channel will be in range 0 - 255.<br>
+The HSBColor class will hold four floating point values, representing the hue, saturation, brightness, and alpha components. The hue is in range 0 - 360, and the other components are in range 0 - 100.<br>
+
+You can use these classes to work with colors, but if you want more flexibility, you can use the ***color()*** function.<br>
+Using it, you can set your own ranges for color components. By default, it will interpret the passed values as RGBA, in range 0 - 255.<br>
+
+To change the ranges, and between RGB and HSB modes, use the ***colorMode()*** function.
+The first parameter is always either RGB, or HSB, and the subsequent parameters will dictate the ranges for the components. See details in the generated documentation.<br>
+
+The library also provides a small number of colors in the ***colors*** namespace:
+- red
+- green
+- blue
+- yellow
+- orange
+- cyan
+- purple
+- brown
+- magenta
+- pink
+- violet
+- maroon
+- turquoise
+- lime
+- teal
+- indigo
+- tan
+- olive
+- indigo
+- black
+- white
+- grey
