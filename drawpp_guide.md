@@ -561,7 +561,7 @@ As with random numbers, you can have multiple noise generators by using the Nois
 
 <br>If you want to draw to a different draw target than the application window, you can use the DGraphics class.<br>
 You can take a look at the generated documentation for details, but DGraphics has all of the drawing and color related functions mentioned previously.<br>
-When you draw to a DGraphics target, you must first call ***beginDraw()***, and when you are finished, call ***endDraw()***.<br>
+When you draw to a DGraphics target, you must first call ***beginDraw()***, and when you are finished, call ***endDraw()***. Between them, you must not draw to any other target, or things will break.<br>
 
 Here is an example:<br>
 
@@ -576,7 +576,13 @@ void draw(float t)
     mytarget.strokeWeight(20);
     mytarget.rect(100,100,200,300);
     mytarget.line(300,400,400,100);
-    
+
     mytarget.endDraw();
 }
 ```
+
+<br>All transforms, styles, stacks and everything else, are specific to a target. Meaning that, if you were to call ***strokeWeight(10)***, the stroke weight of ***mytarget*** would not be affected.<br>
+
+Now, after drawing to your custom target, you can either save it to a file with its ***save()*** member function, or convert it to an image with ***toImage()***.<br>
+
+Once again, remember to initialize your draw target in the ***setup()*** function, and not before that.<br>
