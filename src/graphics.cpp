@@ -3,7 +3,6 @@
 #include <shader.hpp>
 #include <glad/glad.h>
 #include <debug.hpp>
-#include <image.hpp>
 #include <vector3.hpp>
 #include <font.hpp>
 #include <font_impl.h>
@@ -149,7 +148,7 @@ DGraphics::~DGraphics()
 void DGraphics::init_shaders()
 {
     //ellipse_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f));
-    ellipse_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f)));
+    ellipse_shader = std::shared_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,ellipse_shader_f)));
     
     ellipse_shader_offset_loc = glGetUniformLocation(ellipse_shader->getId(),"offset");
     ellipse_shader_strokeWeight_loc = glGetUniformLocation(ellipse_shader->getId(),"strokeWeight");
@@ -163,7 +162,7 @@ void DGraphics::init_shaders()
 
 
     //rect_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,rect_shader_f));
-    rect_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,rect_shader_f)));
+    rect_shader = std::shared_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,rect_shader_f)));
     
     rect_shader_offset_loc = glGetUniformLocation(rect_shader->getId(),"offset");
     rect_shader_strokeWeight_loc = glGetUniformLocation(rect_shader->getId(),"strokeWeight");
@@ -177,7 +176,7 @@ void DGraphics::init_shaders()
     rect_shader_tpos_loc = glGetAttribLocation(rect_shader->getId(),"texpos");
 
     //triangle_shader = std::make_unique<Shader>(Shader::loadShadersFromString(triangle_shader_v,triangle_shader_f));
-    triangle_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(triangle_shader_v,triangle_shader_f)));
+    triangle_shader = std::shared_ptr<Shader>(new Shader(Shader::loadShadersFromString(triangle_shader_v,triangle_shader_f)));
 
     triangle_shader_strokeWeight_loc = glGetUniformLocation(triangle_shader->getId(),"strokeWeight");
     triangle_shader_strokeColor_loc = glGetUniformLocation(triangle_shader->getId(),"strokeColor");                                             
@@ -188,7 +187,7 @@ void DGraphics::init_shaders()
     triangle_shader_vpos_loc = glGetAttribLocation(triangle_shader->getId(),"pos");
 
     //line_shader = std::make_unique<Shader>(Shader::loadShadersFromString(line_shader_v,line_shader_f));
-    line_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(line_shader_v,line_shader_f)));
+    line_shader = std::shared_ptr<Shader>(new Shader(Shader::loadShadersFromString(line_shader_v,line_shader_f)));
 
     line_shader_points_loc = glGetUniformLocation(line_shader->getId(),"points");
     line_shader_strokeWeight_loc = glGetUniformLocation(line_shader->getId(),"strokeWeight");
@@ -200,7 +199,7 @@ void DGraphics::init_shaders()
     line_shader_vpos_loc = glGetAttribLocation(line_shader->getId(),"pos");
 
     //image_shader = std::make_unique<Shader>(Shader::loadShadersFromString(generic_shader_v,image_shader_f));
-    image_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,image_shader_f)));
+    image_shader = std::shared_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_shader_v,image_shader_f)));
  
     image_shader_offset_loc = glGetUniformLocation(image_shader->getId(),"offset");
     image_shader_tint_loc = glGetUniformLocation(image_shader->getId(),"tint");
@@ -213,7 +212,7 @@ void DGraphics::init_shaders()
     image_shader_vpos_loc = glGetAttribLocation(image_shader->getId(),"pos");
 
     //quad_shader = std::make_unique<Shader>(Shader::loadShadersFromString(triangle_shader_v,quad_shader_f));
-    quad_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(triangle_shader_v,quad_shader_f)));
+    quad_shader = std::shared_ptr<Shader>(new Shader(Shader::loadShadersFromString(triangle_shader_v,quad_shader_f)));
 
     quad_shader_strokeWeight_loc = glGetUniformLocation(quad_shader->getId(),"strokeWeight");
     quad_shader_strokeColor_loc = glGetUniformLocation(quad_shader->getId(),"strokeColor");                                             
@@ -223,7 +222,7 @@ void DGraphics::init_shaders()
     quad_shader_bpos_loc = glGetUniformLocation(quad_shader->getId(),"bpos");
     quad_shader_vpos_loc = glGetAttribLocation(quad_shader->getId(),"pos");
 
-    text_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(text_shader_v,text_shader_f)));
+    text_shader = std::shared_ptr<Shader>(new Shader(Shader::loadShadersFromString(text_shader_v,text_shader_f)));
                                       
     text_shader_fillColor_loc = glGetUniformLocation(text_shader->getId(),"fillColor");
     text_shader_transform_loc = glGetUniformLocation(text_shader->getId(),"transform");
@@ -233,7 +232,7 @@ void DGraphics::init_shaders()
     text_shader_vpos_loc = glGetAttribLocation(text_shader->getId(),"pos");
     text_shader_tpos_loc = glGetAttribLocation(text_shader->getId(),"texpos");
 
-    generic_colored_shader = std::unique_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_colored_shader_v,generic_colored_shader_f)));
+    generic_colored_shader = std::shared_ptr<Shader>(new Shader(Shader::loadShadersFromString(generic_colored_shader_v,generic_colored_shader_f)));
                                       
     generic_colored_shader_color_loc = glGetUniformLocation(generic_colored_shader->getId(),"color");
     generic_colored_shader_transform_loc = glGetUniformLocation(generic_colored_shader->getId(),"transform");
@@ -1528,6 +1527,134 @@ void DGraphics::bezier(const DVector& p1, const DVector& p2, const DVector& cp)
 GraphicsProperties DGraphics::getStyle()
 {
     return properties;
+}
+
+DImage DGraphics::toImage() const
+{
+    unsigned char* data = new unsigned char[buffer_width*buffer_height*4];
+    glBindTexture(GL_TEXTURE_2D,texture_id);
+
+    glGetTexImage(GL_TEXTURE_2D,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+
+    unsigned w4 = buffer_width*4;
+    unsigned char* tmp = static_cast<unsigned char*>(malloc(w4*sizeof(unsigned char)));
+    unsigned char* end = data + (buffer_height-1)*w4;
+
+    for(unsigned i = 0; i < buffer_height/2; ++i)
+    {
+        unsigned char* first = data+(w4*i);
+        unsigned char* last = end-(w4*i);
+        std::memcpy(tmp,first,w4);
+        std::memcpy(first,last,w4);
+        std::memcpy(last,tmp,w4);
+    }
+    free(tmp);
+
+    unsigned int texid = DImage::generateTexture(buffer_width,buffer_height,data);
+
+    return DImage(data,texid,buffer_width,buffer_height);
+}
+
+DGraphics& DGraphics::operator=(DGraphics&& other)
+{
+    if(buffer_id != static_cast<unsigned int>(-1))
+    {
+        glDeleteFramebuffers(1,&buffer_id);
+    }
+
+    if(texture_id != 0)
+    {
+        glDeleteTextures(1,&texture_id);
+    }
+
+    buffer_id = other.buffer_id;
+    texture_id = other.texture_id;
+    buffer_width = other.buffer_width;
+    buffer_height = other.buffer_height;
+    type = other.type;
+    format = other.format;
+
+    other.buffer_id = static_cast<unsigned int>(-1);
+    other.texture_id = 0;
+
+    properties = std::move(other.properties);
+    transform_mat = other.transform_mat;
+    view_mat = other.view_mat;
+    matrix_stack = std::move(other.matrix_stack);
+    property_stack = std::move(other.property_stack);
+
+    ellipse_shader = std::move(other.ellipse_shader);
+    rect_shader = std::move(other.rect_shader);
+    triangle_shader = std::move(other.triangle_shader);
+    line_shader = std::move(other.line_shader);
+    image_shader = std::move(other.image_shader);
+    quad_shader = std::move(other.quad_shader);
+    text_shader = std::move(other.text_shader);
+    generic_colored_shader = std::move(other.generic_colored_shader);
+    
+    ellipse_shader_offset_loc = other.ellipse_shader_offset_loc;
+    ellipse_shader_strokeWeight_loc = other.ellipse_shader_strokeWeight_loc;
+    ellipse_shader_strokeColor_loc = other.ellipse_shader_strokeColor_loc;
+    ellipse_shader_fillColor_loc = other.ellipse_shader_fillColor_loc;
+    ellipse_shader_transform_loc = other.ellipse_shader_transform_loc;
+    ellipse_shader_view_loc = other.ellipse_shader_view_loc;
+    ellipse_shader_posmode_loc = other.ellipse_shader_posmode_loc;
+    ellipse_shader_vpos_loc = other.ellipse_shader_vpos_loc;
+    ellipse_shader_tpos_loc = other.ellipse_shader_tpos_loc;
+    rect_shader_offset_loc = other.rect_shader_offset_loc;
+    rect_shader_strokeWeight_loc = other.rect_shader_strokeWeight_loc;
+    rect_shader_strokeColor_loc = other.rect_shader_strokeColor_loc;
+    rect_shader_fillColor_loc = other.rect_shader_fillColor_loc;
+    rect_shader_transform_loc = other.rect_shader_transform_loc;
+    rect_shader_view_loc = other.rect_shader_view_loc;
+    rect_shader_posmode_loc = other.rect_shader_posmode_loc;
+    rect_shader_radii_loc = other.rect_shader_radii_loc;
+    rect_shader_vpos_loc = other.rect_shader_vpos_loc;
+    rect_shader_tpos_loc = other.rect_shader_tpos_loc;
+    triangle_shader_strokeWeight_loc = other.triangle_shader_strokeWeight_loc;
+    triangle_shader_strokeColor_loc = other.triangle_shader_strokeColor_loc;
+    triangle_shader_fillColor_loc = other.triangle_shader_fillColor_loc;
+    triangle_shader_bpos_loc = other.triangle_shader_bpos_loc;
+    triangle_shader_transform_loc = other.triangle_shader_transform_loc;
+    triangle_shader_view_loc = other.triangle_shader_view_loc;
+    triangle_shader_vpos_loc = other.triangle_shader_vpos_loc;
+    line_shader_points_loc = other.line_shader_points_loc;
+    line_shader_strokeWeight_loc = other.line_shader_strokeWeight_loc;
+    line_shader_strokeColor_loc = other.line_shader_strokeColor_loc;
+    line_shader_transform_loc = other.line_shader_transform_loc;
+    line_shader_view_loc = other.line_shader_view_loc;
+    line_shader_cap_loc = other.line_shader_cap_loc;
+    line_shader_vpos_loc = other.line_shader_vpos_loc;
+    line_shader_tpos_loc = other.line_shader_tpos_loc;
+    image_shader_offset_loc = other.image_shader_offset_loc;
+    image_shader_tint_loc = other.image_shader_tint_loc;
+    image_shader_use_tint_loc = other.image_shader_use_tint_loc;
+    image_shader_posmode_loc = other.image_shader_posmode_loc;
+    image_shader_tex_loc = other.image_shader_tex_loc;
+    image_shader_transform_loc = other.image_shader_transform_loc;
+    image_shader_view_loc = other.image_shader_view_loc;
+    image_shader_vpos_loc = other.image_shader_vpos_loc;
+    image_shader_tpos_loc = other.image_shader_tpos_loc;
+    quad_shader_strokeWeight_loc = other.quad_shader_strokeWeight_loc;
+    quad_shader_strokeColor_loc = other.quad_shader_strokeColor_loc;
+    quad_shader_fillColor_loc = other.quad_shader_fillColor_loc;
+    quad_shader_bpos_loc = other.quad_shader_bpos_loc;
+    quad_shader_transform_loc = other.quad_shader_transform_loc;
+    quad_shader_view_loc = other.quad_shader_view_loc;
+    quad_shader_vpos_loc = other.quad_shader_vpos_loc;
+    text_shader_texture_loc = other.text_shader_texture_loc;
+    text_shader_posmode_loc = other.text_shader_posmode_loc;
+    text_shader_fillColor_loc = other.text_shader_fillColor_loc;
+    text_shader_transform_loc = other.text_shader_transform_loc;
+    text_shader_view_loc = other.text_shader_view_loc;
+    text_shader_vpos_loc = other.text_shader_vpos_loc;
+    text_shader_tpos_loc = other.text_shader_tpos_loc;
+    generic_colored_shader_color_loc = other.generic_colored_shader_color_loc;
+    generic_colored_shader_transform_loc = other.generic_colored_shader_transform_loc;
+    generic_colored_shader_view_loc = other.generic_colored_shader_view_loc;
+    generic_colored_shader_vpos_loc = other.generic_colored_shader_vpos_loc;
+
+    return *this;
 }
 
 float to_0range(float v, float max)

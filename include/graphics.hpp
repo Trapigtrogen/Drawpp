@@ -7,6 +7,7 @@
 #include <color.hpp>
 #include <font.hpp>
 #include <memory>
+#include <image.hpp>
 
 class DImage;
 class Shader;
@@ -76,6 +77,8 @@ class DGraphics
 public:
 
     ~DGraphics();
+
+    DGraphics() = default;
 
     ///\brief Create a DGraphics object with a \p width by \p height frame
     DGraphics(int width, int height);
@@ -584,7 +587,14 @@ public:
     void bezier(const DVector& p1, const DVector& p2, const DVector& cp);
 
 
+    ///\brief Create an image from the contents of this draw target
+    DImage toImage() const;
+
+
     GraphicsProperties getStyle();
+
+
+    DGraphics& operator=(DGraphics&& other);
 
 private:
 
@@ -638,7 +648,7 @@ private:
     int format = -1;
 
     //Shader used to draw ellipses
-    std::unique_ptr<Shader> ellipse_shader;
+    std::shared_ptr<Shader> ellipse_shader;
     int ellipse_shader_offset_loc;
     int ellipse_shader_strokeWeight_loc;
     int ellipse_shader_strokeColor_loc;
@@ -650,7 +660,7 @@ private:
     int ellipse_shader_tpos_loc;
 
     //Shader used to draw rectangles
-    std::unique_ptr<Shader> rect_shader;
+    std::shared_ptr<Shader> rect_shader;
     int rect_shader_offset_loc;
     int rect_shader_strokeWeight_loc;
     int rect_shader_strokeColor_loc;
@@ -663,7 +673,7 @@ private:
     int rect_shader_tpos_loc;
 
     //Shader used to draw triangles
-    std::unique_ptr<Shader> triangle_shader;
+    std::shared_ptr<Shader> triangle_shader;
     int triangle_shader_strokeWeight_loc;
     int triangle_shader_strokeColor_loc;
     int triangle_shader_fillColor_loc;
@@ -673,7 +683,7 @@ private:
     int triangle_shader_vpos_loc;
 
     //Shader used to draw lines
-    std::unique_ptr<Shader> line_shader;
+    std::shared_ptr<Shader> line_shader;
     int line_shader_points_loc;
     int line_shader_strokeWeight_loc;
     int line_shader_strokeColor_loc;
@@ -684,7 +694,7 @@ private:
     int line_shader_tpos_loc;
 
     //Shader used to draw images
-    std::unique_ptr<Shader> image_shader;
+    std::shared_ptr<Shader> image_shader;
     int image_shader_offset_loc;
     int image_shader_tint_loc;
     int image_shader_use_tint_loc;
@@ -696,7 +706,7 @@ private:
     int image_shader_tpos_loc;
 
     //Shader used to draw quads
-    std::unique_ptr<Shader> quad_shader;
+    std::shared_ptr<Shader> quad_shader;
     int quad_shader_strokeWeight_loc;
     int quad_shader_strokeColor_loc;
     int quad_shader_fillColor_loc;
@@ -706,7 +716,7 @@ private:
     int quad_shader_vpos_loc;
 
     //Shader used to draw text
-    std::unique_ptr<Shader> text_shader;
+    std::shared_ptr<Shader> text_shader;
     int text_shader_texture_loc;
     int text_shader_posmode_loc;
     int text_shader_fillColor_loc;
@@ -716,7 +726,7 @@ private:
     int text_shader_tpos_loc;
 
     //Shader used to draw text
-    std::unique_ptr<Shader> generic_colored_shader;
+    std::shared_ptr<Shader> generic_colored_shader;
     int generic_colored_shader_color_loc;
     int generic_colored_shader_transform_loc;
     int generic_colored_shader_view_loc;
