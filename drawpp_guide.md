@@ -13,6 +13,9 @@ Beginners guide to Drawpp
 - [Stacks](#stacks)
 - [Input](#input)
 - [Colors](#colors)
+- [Time](#time)
+- [Random](#random)
+- [Noise](#noise)
 
 <br>
 
@@ -372,16 +375,16 @@ You can also test the alphanumeric keys with for example VK_A, but in this case 
 
 <br>For colors, we have the Color, and HSBColor classes.<br>
 
-The Color class will hold four 8 bit values, representing the red, green, blue and alpha channels. Every channel will be in range 0 - 255.<br>
-The HSBColor class will hold four floating point values, representing the hue, saturation, brightness, and alpha components. The hue is in range 0.0 - 360.0, and the other components are in range 0.0 - 100.0.<br>
+The Color class will hold four 8 bit values, representing the red, green, blue and alpha channels. Every channel will be in range [0, 255].<br>
+The HSBColor class will hold four floating point values, representing the hue, saturation, brightness, and alpha components. The hue is in range [0.0, 360.0], and the other components are in range [0.0, 100.0].<br>
 
 You can use these classes to work with colors, but if you want more flexibility, you can use the ***color()*** function.<br>
-Using it, you can set your own ranges for color components. By default, it will interpret the passed values as RGBA, in range 0 - 255.<br>
+Using it, you can set your own ranges for color components. By default, it will interpret the passed values as RGBA, in range [0, 255].<br>
 
 To change the ranges, and between RGB and HSB modes, use the ***colorMode()*** function.
 The first parameter is always either RGB, or HSB, and the subsequent parameters will dictate the ranges for the components. See details in the generated documentation.<br>
 
-Whatever ranges you set, the Color object created will still have its values in the range 0 - 255.<br>
+Whatever ranges you set, the Color object created will still have its values in the range [0, 255].<br>
 If you want to extract the components from a Color object, in the ranges you have defined, you can use the following functions:
 - red()
 - green()
@@ -393,7 +396,7 @@ If you want to extract the components from a Color object, in the ranges you hav
 
 These functions all take a Color object as a parameter.<br>
 
-Sometimes you may want to mix colors together. For this, you we have the ***lerpColor()*** function. You pass it two colors, and a t-value. The t-value should be in range 0.0 - 1.0, and will dictate the amount of either color in the result.<br>
+Sometimes you may want to mix colors together. For this, you we have the ***lerpColor()*** function. You pass it two colors, and a t-value. The t-value should be in range [0.0, 1.0], and will dictate the amount of either color in the result.<br>
 
 If you want to use a hex value in the form of a string to define your colors, you can call the constructor of the Color object with your string.<br>
 If you need to convert a color back into a hex string, you can use the ***hex()*** function.<br>
@@ -421,3 +424,68 @@ The library also provides a small number of colors in the ***colors*** namespace
 - black
 - white
 - grey
+
+
+<br>
+
+## <a id="time">Time</a>
+
+<br>In the draw function, you already have the delta time at your disposal, but you may want some additional information about time. Here is a list of time related functions:
+
+- millis()
+    - Get the number of milliseconds since last global timer reset. 
+- second()
+    - Get the current second of the system clock.
+- minute()
+    - Get the current minute of the system clock.
+- hour()
+    - Get the current hour of the system clock.
+- day()
+    - Get the current day of the system clock.
+- month()
+    - Get the current month of the system clock.
+- year()
+    - Get the current year of the system clock.
+- timeReset()
+    - Resets the millisecond counter.
+
+
+<br>
+
+## <a id="random">Random</a>
+
+<br>Often you will need random numbers. Here are some functions you can use to generate them:
+
+- randomInt()
+    - Generate a random integer in the given range.
+- randomFloat()
+    - Generate a random float in the given range.
+- randomGaussian()
+    - Generate a float in a gaussian distribution.
+    - The mean for the distribution is 0.0, and standard deviation is 1.0.
+- randomSeed()
+    - Set a new seed for the random number generator.
+
+If you need multiple generators, you can use the Random class. It will also have the above functions, and in fact, the above functions are using an instance of Random in the background. The Random class also has a convenience function ***randomFloat01()***, which will generate a random float in [0.0, 1.0) range.<br>
+
+
+<br>
+
+## <a id="noise">Noise</a>
+
+<br>If you need procedural 1D or 2D noise, you can these functions:
+
+- noise()
+    - Get a value from the given coordinate.
+- noiseSeed()
+    - Set a new seed for the noise.
+- noiseScale()
+    - Set a new scale for the noise.
+    - This is 1.3 by default.
+- noiseDetails()
+    - Set the amount of detail in the noise.
+    - This is 8 by default.
+- noiseMapSize()
+    - Change the size of the generated noise.
+
+As with random numbers, you can have multiple noise generators using the Noise class.<br>
