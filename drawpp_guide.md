@@ -373,13 +373,30 @@ You can also test the alphanumeric keys with for example VK_A, but in this case 
 <br>For colors, we have the Color, and HSBColor classes.<br>
 
 The Color class will hold four 8 bit values, representing the red, green, blue and alpha channels. Every channel will be in range 0 - 255.<br>
-The HSBColor class will hold four floating point values, representing the hue, saturation, brightness, and alpha components. The hue is in range 0 - 360, and the other components are in range 0 - 100.<br>
+The HSBColor class will hold four floating point values, representing the hue, saturation, brightness, and alpha components. The hue is in range 0.0 - 360.0, and the other components are in range 0.0 - 100.0.<br>
 
 You can use these classes to work with colors, but if you want more flexibility, you can use the ***color()*** function.<br>
 Using it, you can set your own ranges for color components. By default, it will interpret the passed values as RGBA, in range 0 - 255.<br>
 
 To change the ranges, and between RGB and HSB modes, use the ***colorMode()*** function.
 The first parameter is always either RGB, or HSB, and the subsequent parameters will dictate the ranges for the components. See details in the generated documentation.<br>
+
+Whatever ranges you set, the Color object created will still have its values in the range 0 - 255.<br>
+If you want to extract the components from a Color object, in the ranges you have defined, you can use the following functions:
+- red()
+- green()
+- blue()
+- alpha()
+- hue()
+- saturation()
+- brightness()
+
+These functions all take a Color object as a parameter.<br>
+
+Sometimes you may want to mix colors together. For this, you we have the ***lerpColor()*** function. You pass it two colors, and a t-value. The t-value should be in range 0.0 - 1.0, and will dictate the amount of either color in the result.<br>
+
+If you want to use a hex value in the form of a string to define your colors, you can call the constructor of the Color object with your string.<br>
+If you need to convert a color back into a hex string, you can use the ***hex()*** function.<br>
 
 The library also provides a small number of colors in the ***colors*** namespace:
 - red
