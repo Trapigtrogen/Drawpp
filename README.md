@@ -1,10 +1,12 @@
-Processing style graphic library for c++ using OpenGL. Support for Windows and Linux desktops and Raspberry Pi 3 upwards
+Processing style graphic library for c++ using OpenGL. Support for Windows and Linux desktops and Raspberry Pi 3 upwards.\
+Linux: X11 only. Wayland works mostly but support for it isn't prioritized right now.
 
 # Features
 * Draw lines and basic shapes
 * Render Image as texture
 * Shape class with GameObject like parent-child hierarcy
   * Load SVG to shape (currently draws only the outlines)
+  * SVG to texture for full image
 * Color API
 * Random API
 * Perlin noise generator
@@ -26,6 +28,8 @@ Release folder will be created and deployed program will be build there.\
 External libraries are automatically combined to the releaseable Drawpp library
 
 ## Manual
+The build tests and examples will be in graphics-library/build/bin folder\
+And library in graphics-library/build/lib folder
 
 ### Windows
 Use CMake-gui 
@@ -59,9 +63,4 @@ cd build
 cmake ..
 make
 ```
-\
-\
-The build tests and examples will be in graphics-library/build/bin folder\
-And library in graphics-library/build/lib folder
-
 If you want to merge external libraries into the releaseable Drawpp library use `ar -M <combine.mri` in build directory
