@@ -532,6 +532,22 @@ public:
     void image(const DImage& image, const DVector& p, const DVector& s);
 
 
+    ///\brief Draw target at ( \p x, \p y )
+    void image(const DGraphics& target, float x, float y );
+
+
+    ///\brief Draw target at \p p
+    void image(const DGraphics& target, const DVector& p);
+
+
+    ///\brief Draw target at ( \p x, \p y ), resized to ( \p w, \p h)
+    void image(const DGraphics& target, float x, float y, float w, float h);
+
+
+    ///\brief Draw target at \p p, resized to \p s
+    void image(const DGraphics& target, const DVector& p, const DVector& s);
+
+
     ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)
     void shape(const DShape& s, float x, float y, float w, float h);
 
@@ -617,6 +633,8 @@ private:
     void generate_quadratic_bezier_path(const struct vec2f* points, size_t count, float xoff = 0, float yoff = 0, float xscale = 1.0, float yscale = 1.0, unsigned int stride = 0);
 
     void render_bezier_buffer();
+
+    void render_texture(unsigned int texture, float x, float y, float width, float height, bool flip = false);
 
     //void set_current();
 

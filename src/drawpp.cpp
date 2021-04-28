@@ -481,6 +481,26 @@ void image(const DImage& image, const DVector& p, const DVector s)
     Application::GetInstance()->graphics_object().image(image,p,s);
 }
 
+void image(const DGraphics& target, float x, float y )
+{
+    Application::GetInstance()->graphics_object().image(target,x,y);
+}
+
+void image(const DGraphics& target, const DVector& p)
+{
+    Application::GetInstance()->graphics_object().image(target,p);
+}
+
+void image(const DGraphics& target, float x, float y, float w, float h)
+{
+    Application::GetInstance()->graphics_object().image(target,x,y,w,h);
+}
+
+void image(const DGraphics& target, const DVector& p, const DVector& s)
+{
+    Application::GetInstance()->graphics_object().image(target,p,s);
+}
+
 void background(const DImage& image)
 {
     Application::GetInstance()->graphics_object().background(image);

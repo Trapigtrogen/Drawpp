@@ -539,6 +539,7 @@ std::string hex(Color col, int num);
 ///\copydoc DImage::loadImage(const std::string&)
 DImage loadImage(const std::string& fileName);
 
+
 ///\ingroup drawpp_loaders_api
 ///\copydoc DImage::loadSVGImage(const std::string&,float)
 DImage loadSVGImage(const std::string& filename, float scale = 1.0f);
@@ -561,6 +562,22 @@ void image(const DImage& image, float x, float y, float width, float height);
 
 ///\copydoc DGraphics::image(const DImage&,const DVector&,const DVector&)
 void image(const DImage& image, const DVector& p, const DVector s);
+
+
+///\copydoc DGraphics::image(const DGraphics&,float,float)
+void image(const DGraphics& target, float x, float y );
+
+
+///\copydoc DGraphics::image(const DGraphics&,const DVector&)
+void image(const DGraphics& target, const DVector& p);
+
+
+///\copydoc DGraphics::image(const DGraphics&,float,float,float,float)
+void image(const DGraphics& target, float x, float y, float w, float h);
+
+
+///\copydoc DGraphics::image(const DGraphics&,const DVector&,const DVector&)
+void image(const DGraphics& target, const DVector& p, const DVector& s);
 
 
 ///\copydoc DGraphics::background(const DImage&)

@@ -13,6 +13,7 @@
 #include <shape.hpp>
 #include <shape_impl.hpp>
 #include <constants.hpp>
+#include <application.hpp>
 
 #include "stb_image_write.h"
 
@@ -29,6 +30,16 @@ static const float primitive_square[] =
     0.0f, -1.0f,
     1.0f,  0.0f,
     0.0f,  0.0f,
+};
+
+static const float primitive_square_flipped[] = 
+{
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, -1.0f,
+    0.0f, 0.0f,
+    1.0f, -1.0f,
+    0.0f, -1.0f,
 };
 
 static const float primitive_square_line[] = 
@@ -250,7 +261,7 @@ void DGraphics::beginDraw()
 
 void DGraphics::endDraw()
 {
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glBindFramebuffer(GL_FRAMEBUFFER,Application::GetInstance()->graphics_object().buffer_id);
 }
 
 void DGraphics::fill(Color rgba)
@@ -872,20 +883,10 @@ void DGraphics::point(const DVector& p)
     line(p,p);
 }
 
-void DGraphics::image(const DImage& img, float x, float y)
-{
-    image(img,x,y,img.m_width,img.m_height);
-}
-
-void DGraphics::image(const DImage& img, const DVector& p)
-{
-    image(img,p.x,p.y);
-}
-
-void DGraphics::image(const DImage& img, float x, float y, float w, float h)
+void DGraphics::render_texture(unsigned int texture, float x, float y, float width, float height, bool flip)
 {
     glUseProgram(image_shader->getId());
-    glUniform4f(image_shader_offset_loc,x,y,w,h);
+    glUniform4f(image_shader_offset_loc,x,y,width,height);
    
     glUniformMatrix4fv(image_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(image_shader_view_loc,1,GL_FALSE,view_mat.values);
@@ -900,14 +901,24 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
                                           properties.tint_color.alpha()/255.0f);
     }
 
-    img.bind(0);
+    glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
     glUniform1i(image_shader_tex_loc,0);
 
     glEnableVertexAttribArray(image_shader_vpos_loc);
     glEnableVertexAttribArray(image_shader_tpos_loc);
 
     glVertexAttribPointer(image_shader_tpos_loc,2,GL_FLOAT,false,0, coords_img);
-    glVertexAttribPointer(image_shader_vpos_loc,2,GL_FLOAT,false,0, primitive_square);
+
+    if(!flip)
+    {
+        glVertexAttribPointer(image_shader_vpos_loc,2,GL_FLOAT,false,0, primitive_square);
+    }
+    else
+    {
+        glVertexAttribPointer(image_shader_vpos_loc,2,GL_FLOAT,false,0, primitive_square_flipped);
+    }
 
     glDrawArrays(GL_TRIANGLES,0,6);
 
@@ -915,9 +926,44 @@ void DGraphics::image(const DImage& img, float x, float y, float w, float h)
     glDisableVertexAttribArray(image_shader_tpos_loc);
 }
 
+void DGraphics::image(const DImage& img, float x, float y)
+{
+    image(img,x,y,img.m_width,img.m_height);
+}
+
+void DGraphics::image(const DImage& img, const DVector& p)
+{
+    image(img,p.x,p.y);
+}
+
+void DGraphics::image(const DImage& img, float x, float y, float w, float h)
+{
+    render_texture(img.m_texture,x,y,w,h);
+}
+
 void DGraphics::image(const DImage& img, const DVector& p, const DVector& s)
 {
     image(img,p.x,p.y,s.x,s.y);
+}
+
+void DGraphics::image(const DGraphics& target, float x, float y )
+{
+    image(target,x,y,target.buffer_width,target.buffer_height);
+}
+
+void DGraphics::image(const DGraphics& target, const DVector& p)
+{
+    image(target,p.x,p.y,target.buffer_width,target.buffer_height);
+}
+
+void DGraphics::image(const DGraphics& target, float x, float y, float w, float h)
+{
+    render_texture(target.texture_id,x,y,w,h,true);
+}
+
+void DGraphics::image(const DGraphics& target, const DVector& p, const DVector& s)
+{
+    image(target,p.x,p.y,s.x,s.y);
 }
 
 void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
