@@ -583,6 +583,6 @@ void draw(float t)
 
 <br>All transforms, styles, stacks and everything else, are specific to a target. Meaning that, if you were to call ***strokeWeight(10)***, the stroke weight of ***mytarget*** would not be affected.<br>
 
-Now, after drawing to your custom target, you can either save it to a file with its ***save()*** member function, or convert it to an image with ***toImage()***.<br>
+Now, after drawing to your custom target, you can save it to a file with its ***save()*** member function, or convert it to an image with ***toImage()***. You can also draw it to another target without converting it first, with the ***image()*** function. You might want to do that for example in a case where you will redraw the offscreen target every frame, as converting to image is a relative expensive process.<br>
 
 Once again, remember to initialize your draw target in the ***setup()*** function, and not before that.<br>
