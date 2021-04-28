@@ -4,6 +4,7 @@
 #include <keys.hpp>
 #include <image.hpp>
 #include <color.hpp>
+#include <colors.hpp>
 #include <graphics.hpp>
 #include <shape.hpp>
 #include <font.hpp>

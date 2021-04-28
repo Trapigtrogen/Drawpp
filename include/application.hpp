@@ -129,10 +129,7 @@ public:
 
     ///\brief Get the current window height
     int getHeight() const;
-
     
-    bool graphicsExists() const;
-
 
     ///\brief Get a pointer to the application singleton
     static Application* GetInstance();

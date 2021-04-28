@@ -272,7 +272,7 @@ void DGraphics::fill(Color rgba)
 
 void DGraphics::fill(Color rgb, float alpha)
 {
-    properties.fill_color = Color(rgb.red(),rgb.green(),rgb.blue(),alpha);
+    properties.fill_color = Color(rgb.red,rgb.green,rgb.blue,uint8_t(alpha / properties.color_maxa));
     properties.use_fill = true;
 }
 
@@ -307,7 +307,7 @@ void DGraphics::stroke(Color rgba)
 
 void DGraphics::stroke(Color rgb, float alpha)
 {
-    properties.stroke_color = Color(rgb.red(),rgb.green(),rgb.blue(),alpha);
+    properties.stroke_color = Color(rgb.red,rgb.green,rgb.blue,alpha);
     properties.use_stroke = true;
 }
 
@@ -344,16 +344,16 @@ void DGraphics::clear()
 
 void DGraphics::background(Color rgba)
 {
-    glClearColor(rgba.red() / 255.0f,
-                rgba.green() / 255.0f,
-                rgba.blue() / 255.0f,
-                rgba.alpha() / 255.0f);
+    glClearColor(rgba.red / 255.0f,
+                rgba.green / 255.0f,
+                rgba.blue / 255.0f,
+                rgba.alpha / 255.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void DGraphics::background(Color rgb, float alpha)
 {
-    background(Color(rgb.red(),rgb.green(),rgb.blue(),alpha));
+    background(Color(rgb.red,rgb.green,rgb.blue,alpha));
 }
 
 void DGraphics::background(float gray)
@@ -423,7 +423,7 @@ void DGraphics::tint(Color rgba)
 
 void DGraphics::tint(Color rgb, float alpha)
 {
-    properties.tint_color = Color(rgb.red(),rgb.green(),rgb.blue(),alpha);
+    properties.tint_color = Color(rgb.red,rgb.green,rgb.blue,alpha);
     properties.use_tint = true;
 }
 
@@ -461,12 +461,7 @@ Color DGraphics::color(float grey, float alpha)
     uint8_t v = (grey / properties.color_max1) * 255;
     uint8_t a = (alpha / properties.color_maxa) * 255;
 
-    // Color uses main target colormode
-    // Gotta do this to use local colormode
-    Color r;
-    std::memset(reinterpret_cast<uint8_t*>(&r)+1,v,3);
-    reinterpret_cast<uint8_t*>(&r)[0] = a;
-    r.RGB2HSB(v,v,v);
+    Color r(v, v, v, a);
 
     return r;
 }
@@ -483,37 +478,37 @@ Color DGraphics::color(float v1, float v2, float v3, float alpha)
 
 float DGraphics::red(Color c)
 {
-    return (c.red() / 255.0f) * properties.color_max1;
+    return (c.red / 255.0f) * properties.color_max1;
 }
 
 float DGraphics::green(Color c)
 {
-    return (c.green() / 255.0f) * properties.color_max2;
+    return (c.green / 255.0f) * properties.color_max2;
 }
 
 float DGraphics::blue(Color c)
 {
-    return (c.blue() / 255.0f) * properties.color_max3;
+    return (c.blue / 255.0f) * properties.color_max3;
 }
 
 float DGraphics::alpha(Color c)
 {
-    return (c.alpha() / 255.0f) * properties.color_maxa;
+    return (c.alpha / 255.0f) * properties.color_maxa;
 }
 
 float DGraphics::hue(Color c)
 {
-    return (c.hue() / 255.0f) * properties.color_max1;
+    return (c.hsb().hue / 255.0f) * properties.color_max1;
 }
 
 float DGraphics::saturation(Color c)
 {
-    return (c.saturation() / 255.0f) * properties.color_max2;
+    return (c.hsb().saturation / 255.0f) * properties.color_max2;
 }
 
 float DGraphics::brightness(Color c)
 {
-    return (c.brightness() / 255.0f) * properties.color_max3;
+    return (c.hsb().brightness / 255.0f) * properties.color_max3;
 }
 
 void DGraphics::bezierDetail(float d)
@@ -699,14 +694,14 @@ void DGraphics::ellipse(float x, float y, float sizex, float sizey)
     glUseProgram(ellipse_shader->getId());
     glUniform4f(ellipse_shader_offset_loc,x,y,sizex,sizey);
     glUniform1f(ellipse_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
-    glUniform4f(ellipse_shader_strokeColor_loc,properties.stroke_color.red()/255.0f,
-                                                                    properties.stroke_color.green()/255.0f,
-                                                                    properties.stroke_color.blue()/255.0f,
-                                                                    properties.stroke_color.alpha()/255.0f);
-    glUniform4f(ellipse_shader_fillColor_loc,properties.fill_color.red()/255.0f,
-                                                                    properties.fill_color.green()/255.0f,
-                                                                    properties.fill_color.blue()/255.0f,
-                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniform4f(ellipse_shader_strokeColor_loc,properties.stroke_color.red/255.0f,
+                                                                    properties.stroke_color.green/255.0f,
+                                                                    properties.stroke_color.blue/255.0f,
+                                                                    properties.stroke_color.alpha/255.0f);
+    glUniform4f(ellipse_shader_fillColor_loc,properties.fill_color.red/255.0f,
+                                                                    properties.fill_color.green/255.0f,
+                                                                    properties.fill_color.blue/255.0f,
+                                                                    properties.use_fill?properties.fill_color.alpha/255.0f:0.0f);
     glUniformMatrix4fv(ellipse_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(ellipse_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(ellipse_shader_posmode_loc,properties.ellipsemode);
@@ -764,14 +759,14 @@ void DGraphics::rect(float x, float y, float sizex, float sizey, float tl, float
     glUniform4f(rect_shader_offset_loc,x,y,sizex,sizey);
     glUniform4f(rect_shader_radii_loc,tl,tr,br,bl);
     glUniform1f(rect_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
-    glUniform4f(rect_shader_strokeColor_loc,properties.stroke_color.red()/255.0f,
-                                                                    properties.stroke_color.green()/255.0f,
-                                                                    properties.stroke_color.blue()/255.0f,
-                                                                    properties.stroke_color.alpha()/255.0f);
-    glUniform4f(rect_shader_fillColor_loc,properties.fill_color.red()/255.0f,
-                                                                    properties.fill_color.green()/255.0f,
-                                                                    properties.fill_color.blue()/255.0f,
-                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniform4f(rect_shader_strokeColor_loc,properties.stroke_color.red/255.0f,
+                                                                    properties.stroke_color.green/255.0f,
+                                                                    properties.stroke_color.blue/255.0f,
+                                                                    properties.stroke_color.alpha/255.0f);
+    glUniform4f(rect_shader_fillColor_loc,properties.fill_color.red/255.0f,
+                                                                    properties.fill_color.green/255.0f,
+                                                                    properties.fill_color.blue/255.0f,
+                                                                    properties.use_fill?properties.fill_color.alpha/255.0f:0.0f);
     glUniformMatrix4fv(rect_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniformMatrix4fv(rect_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniform1i(rect_shader_posmode_loc,properties.rectmode);
@@ -815,14 +810,14 @@ void DGraphics::triangle(float x1, float y1, float x2, float y2, float x3, float
     glUseProgram(triangle_shader->getId());
     glUniform1f(triangle_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
     glUniform1fv(triangle_shader_bpos_loc,6,triangle_verts);
-    glUniform4f(triangle_shader_strokeColor_loc,properties.stroke_color.red()/255.0f,
-                                                                    properties.stroke_color.green()/255.0f,
-                                                                    properties.stroke_color.blue()/255.0f,
-                                                                    properties.stroke_color.alpha()/255.0f);
-    glUniform4f(triangle_shader_fillColor_loc,properties.fill_color.red()/255.0f,
-                                                                    properties.fill_color.green()/255.0f,
-                                                                    properties.fill_color.blue()/255.0f,
-                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniform4f(triangle_shader_strokeColor_loc,properties.stroke_color.red/255.0f,
+                                                                    properties.stroke_color.green/255.0f,
+                                                                    properties.stroke_color.blue/255.0f,
+                                                                    properties.stroke_color.alpha/255.0f);
+    glUniform4f(triangle_shader_fillColor_loc,properties.fill_color.red/255.0f,
+                                                                    properties.fill_color.green/255.0f,
+                                                                    properties.fill_color.blue/255.0f,
+                                                                    properties.use_fill?properties.fill_color.alpha/255.0f:0.0f);
                                                                     
     glUniformMatrix4fv(triangle_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(triangle_shader_view_loc,1,GL_FALSE,view_mat.values);
@@ -847,10 +842,10 @@ void DGraphics::line(float x1, float y1, float x2, float y2)
     glUseProgram(line_shader->getId());
     glUniform1f(line_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
     glUniform4f(line_shader_points_loc,x1,y1,x2,y2);
-    glUniform4f(line_shader_strokeColor_loc,properties.stroke_color.red()/255.0f,
-                                                                    properties.stroke_color.green()/255.0f,
-                                                                    properties.stroke_color.blue()/255.0f,
-                                                                    properties.stroke_color.alpha()/255.0f);
+    glUniform4f(line_shader_strokeColor_loc,properties.stroke_color.red/255.0f,
+                                                                    properties.stroke_color.green/255.0f,
+                                                                    properties.stroke_color.blue/255.0f,
+                                                                    properties.stroke_color.alpha/255.0f);
     glUniformMatrix4fv(line_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(line_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(line_shader_cap_loc,properties.strokecap);
@@ -895,10 +890,10 @@ void DGraphics::render_texture(unsigned int texture, float x, float y, float wid
     glUniform1i(image_shader_use_tint_loc,properties.use_tint);
     if(properties.use_tint)
     {
-        glUniform4f(image_shader_tint_loc,properties.tint_color.red()/255.0f,
-                                          properties.tint_color.green()/255.0f,
-                                          properties.tint_color.blue()/255.0f,
-                                          properties.tint_color.alpha()/255.0f);
+        glUniform4f(image_shader_tint_loc,properties.tint_color.red/255.0f,
+                                          properties.tint_color.green/255.0f,
+                                          properties.tint_color.blue/255.0f,
+                                          properties.tint_color.alpha/255.0f);
     }
 
     glActiveTexture(GL_TEXTURE0);
@@ -1096,14 +1091,14 @@ void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3,
     glUseProgram(quad_shader->getId());
     glUniform1f(quad_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
     glUniform1fv(quad_shader_bpos_loc,12,quad_verts);
-    glUniform4f(quad_shader_strokeColor_loc,properties.stroke_color.red()/255.0f,
-                                                                    properties.stroke_color.green()/255.0f,
-                                                                    properties.stroke_color.blue()/255.0f,
-                                                                    properties.stroke_color.alpha()/255.0f);
-    glUniform4f(quad_shader_fillColor_loc,properties.fill_color.red()/255.0f,
-                                                                    properties.fill_color.green()/255.0f,
-                                                                    properties.fill_color.blue()/255.0f,
-                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniform4f(quad_shader_strokeColor_loc,properties.stroke_color.red/255.0f,
+                                                                    properties.stroke_color.green/255.0f,
+                                                                    properties.stroke_color.blue/255.0f,
+                                                                    properties.stroke_color.alpha/255.0f);
+    glUniform4f(quad_shader_fillColor_loc,properties.fill_color.red/255.0f,
+                                                                    properties.fill_color.green/255.0f,
+                                                                    properties.fill_color.blue/255.0f,
+                                                                    properties.use_fill?properties.fill_color.alpha/255.0f:0.0f);
     glUniformMatrix4fv(quad_shader_view_loc,1,GL_FALSE,view_mat.values);
 
     glEnableVertexAttribArray(quad_shader_vpos_loc);
@@ -1335,10 +1330,10 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
     }
 
     glUseProgram(text_shader->getId());
-    glUniform4f(text_shader_fillColor_loc,properties.fill_color.red()/255.0f,
-                                                                    properties.fill_color.green()/255.0f,
-                                                                    properties.fill_color.blue()/255.0f,
-                                                                    properties.use_fill?properties.fill_color.alpha()/255.0f:0.0f);
+    glUniform4f(text_shader_fillColor_loc,properties.fill_color.red/255.0f,
+                                                                    properties.fill_color.green/255.0f,
+                                                                    properties.fill_color.blue/255.0f,
+                                                                    properties.use_fill?properties.fill_color.alpha/255.0f:0.0f);
     glUniformMatrix4fv(text_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(text_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniform1i(text_shader_posmode_loc,properties.rectmode);
@@ -1508,10 +1503,10 @@ void DGraphics::render_bezier_buffer()
 
     glUniformMatrix4fv(generic_colored_shader_view_loc,1,GL_FALSE,view_mat.values);
     glUniformMatrix4fv(generic_colored_shader_transform_loc,1,GL_FALSE,transform_mat.values);
-    glUniform4f(generic_colored_shader_color_loc,properties.stroke_color.red()/255.0f,
-                                                properties.stroke_color.green()/255.0f,
-                                                properties.stroke_color.blue()/255.0f,
-                                                properties.stroke_color.alpha()/255.0f);
+    glUniform4f(generic_colored_shader_color_loc,properties.stroke_color.red/255.0f,
+                                                properties.stroke_color.green/255.0f,
+                                                properties.stroke_color.blue/255.0f,
+                                                properties.stroke_color.alpha/255.0f);
 
 
     glEnableVertexAttribArray(generic_colored_shader_vpos_loc);
@@ -1722,16 +1717,7 @@ Color DGraphics::get_rgba(float r, float g, float b, float a)
     uint8_t bv = (b / properties.color_max3)*255;
     uint8_t av = (a / properties.color_maxa)*255;
 
-    Color rc;
-    reinterpret_cast<uint8_t*>(&rc)[0] = av;
-    reinterpret_cast<uint8_t*>(&rc)[1] = rv;
-    reinterpret_cast<uint8_t*>(&rc)[2] = gv;
-    reinterpret_cast<uint8_t*>(&rc)[3] = bv;
-    rc.RGB2HSB(rv,gv,bv);
-
-    return rc;
-
-    //return Color(rv,gv,bv,av);
+    return Color(rv,gv,bv,av);
 }
 
 Color DGraphics::get_hsba(float h, float s, float b, float a)
@@ -1741,56 +1727,12 @@ Color DGraphics::get_hsba(float h, float s, float b, float a)
     b = to_0range(b,properties.color_max3);
     a = to_0range(a,properties.color_maxa);
     
-    float hv = h / properties.color_max1;
-    float sv = s / properties.color_max2;
-    float bv = b / properties.color_max3;
-    float av = a / properties.color_maxa;
+    float hv = (h / properties.color_max1) * 360.0f;
+    float sv = (s / properties.color_max2) * 100.0f;
+    float bv = (b / properties.color_max3) * 100.0f;
+    float av = (a / properties.color_maxa) * 100.0f;
 
-    float tr=0, tg=0, tb=0;
-
-    if(hv < 0.33333f)
-    {
-        tr = (0.33333f - hv) / 0.16666f;
-        tg = hv / 0.16666f;
-        tb = 0;
-    }
-    else if(hv < 0.66666f)
-    {
-        tr = 0;
-        tg = (0.66666f - hv) / 0.16666f;
-        tb = (hv - 0.33333f) / 0.16666f;
-    } 
-    else
-    {
-        tr = (hv - 0.66666f) / 0.16666f;
-        tg = 0;
-        tb = (1.0f - hv) / 0.16666f;
-    }
-
-    tr = std::min(tr,1.0f);
-    tg = std::min(tg,1.0f);
-    tb = std::min(tb,1.0f);
-
-    uint8_t r =  (1 - sv + sv * tr) * bv * 255;
-    uint8_t g =  (1 - sv + sv * tg) * bv * 255;
-    uint8_t bb = (1 - sv + sv * tb) * bv * 255;
-    uint8_t aa = av * 255;
-
-    Color rc;
-    reinterpret_cast<uint8_t*>(&rc)[0] = aa;
-    reinterpret_cast<uint8_t*>(&rc)[1] = r;
-    reinterpret_cast<uint8_t*>(&rc)[2] = g;
-    reinterpret_cast<uint8_t*>(&rc)[3] = bb;
-
-    //rc.RGB2HSB(r,g,bb);
-    float* hsb = reinterpret_cast<float*>(reinterpret_cast<uint8_t*>(&rc)+4);
-    hsb[0] = hv * 360;
-    hsb[1] = sv * 100;
-    hsb[2] = bv * 100;
-
-    return rc;
-
-    //return Color(r,g,bb,aa);
+    return HSBColor(hv,sv,bv,av).rgb();
 }
 
 Color DGraphics::get_color(float v1, float v2, float v3, float a)
