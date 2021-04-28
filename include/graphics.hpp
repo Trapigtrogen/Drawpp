@@ -13,6 +13,7 @@ class DImage;
 class Shader;
 struct DVector;
 class DShape;
+class DFilter;
 
 enum ColorMode
 {
@@ -607,6 +608,10 @@ public:
     DImage toImage() const;
 
 
+    ///\brief Apply a filter to this target
+    void filter(const DFilter& f);
+
+
     GraphicsProperties getStyle();
 
 
@@ -664,6 +669,9 @@ private:
     unsigned int buffer_height = 0;
     int type = -1;
     int format = -1;
+
+    unsigned int filter_buffer_id = static_cast<unsigned int>(-1);
+    unsigned int filter_texture_id = 0;
 
     //Shader used to draw ellipses
     std::shared_ptr<Shader> ellipse_shader;

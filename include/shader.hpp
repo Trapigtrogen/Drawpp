@@ -6,6 +6,7 @@
 ///\private
 class Shader
 {
+    friend class DFilter;
 public:
     // Use default
 	Shader();
@@ -26,7 +27,7 @@ public:
     std::string shaderFSrc;
 
 private:
-    std::string readShaderFile(const char* filename);
+    static std::string readShaderFile(const char* filename);
     unsigned int compileShader(unsigned int shader_type, const char* shader_source);
     void createShaderProgram();
 

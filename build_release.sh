@@ -92,6 +92,7 @@ cp ../include/vector3.hpp ./include/
 cp ../include/font.hpp ./include/
 cp ../include/path.hpp ./include/
 cp ../include/constants.hpp ./include/
+cp ../include/filter.hpp ./include/
 
 echo "Combining libraries..."
 # combine libraries

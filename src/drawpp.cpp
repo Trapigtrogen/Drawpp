@@ -504,6 +504,10 @@ void background(const DImage& image)
     Application::GetInstance()->graphics_object().background(image);
 }
 
+void filter(const DFilter& f)
+{
+    Application::GetInstance()->graphics_object().filter(f);
+}
 
 
 // Shapes

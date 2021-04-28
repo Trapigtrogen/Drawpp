@@ -141,6 +141,7 @@ copy "..\..\include\vector3.hpp"        "vector3.hpp"
 copy "..\..\include\font.hpp"           "font.hpp"
 copy "..\..\include\path.hpp"           "path.hpp"
 copy "..\..\include\constants.hpp"      "constants.hpp"
+copy "..\..\include\filter.hpp"         "filter.hpp"
 
 cd ..
 

@@ -9,6 +9,7 @@
 #include <shape.hpp>
 #include <font.hpp>
 #include <constants.hpp>
+#include <filter.hpp>
 
 
 ///\file
@@ -584,6 +585,9 @@ void image(const DGraphics& target, const DVector& p, const DVector& s);
 ///\copydoc DGraphics::background(const DImage&)
 void background(const DImage& image);
 
+
+///Apply a filter to the window
+void filter(const DFilter& f);
 
 // End group drawpp_drawing_api
 ///@}

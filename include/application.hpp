@@ -24,6 +24,7 @@ enum CursorStyle
 ///Application class is the core of the program
 class Application
 {
+    friend class DGraphics;
 public:
 
     ///\addtogroup drawpp_application_api
@@ -162,6 +163,11 @@ private:
 
     std::vector<GLFWcursor*> std_cursors;
     GLFWcursor* custom_cursor = nullptr;
+
+    class Shader* application_shader;
+    int application_shader_vertpos_attrib = 0;
+    int application_shader_texc_attrib = 0;
+    int application_shader_tex_uniform = 0;
 
     static Application* instance;
 };

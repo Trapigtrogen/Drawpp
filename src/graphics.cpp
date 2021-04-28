@@ -14,6 +14,8 @@
 #include <shape_impl.hpp>
 #include <constants.hpp>
 #include <application.hpp>
+#include <filter.hpp>
+#include <filter_impl.hpp>
 
 #include "stb_image_write.h"
 
@@ -40,6 +42,26 @@ static const float primitive_square_flipped[] =
     0.0f, 0.0f,
     1.0f, -1.0f,
     0.0f, -1.0f,
+};
+
+static const float view_vertex[] = 
+{
+    -1.0f,  1.0f,
+     1.0f,  1.0f,
+     1.0f, -1.0f,
+    -1.0f,  1.0f,
+     1.0f, -1.0f,
+    -1.0f, -1.0f,
+};
+
+static const float coords_view[] = 
+{
+    0.0f, 1.0f,
+    1.0f, 1.0f, 
+    1.0f, 0.0f, 
+    0.0f, 1.0f, 
+    1.0f, 0.0f, 
+    0.0f, 0.0f, 
 };
 
 static const float primitive_square_line[] = 
@@ -116,10 +138,9 @@ DGraphics::DGraphics(int width, int height)
 
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &prev_buffer);
 
+    //create primary buffer
     glGenFramebuffers(1,&buffer_id);
-
     glBindFramebuffer(GL_FRAMEBUFFER, buffer_id);
-
     glGenTextures(1,&texture_id);
     glBindTexture(GL_TEXTURE_2D,texture_id);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -131,7 +152,24 @@ DGraphics::DGraphics(int width, int height)
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
-        dbg::error("Failed to create framebuffer");
+        dbg::error("Failed to create primary framebuffer");
+    }
+
+    //create secondary buffer for filter rendering
+    glGenFramebuffers(1,&filter_buffer_id);
+    glBindFramebuffer(GL_FRAMEBUFFER, filter_buffer_id);
+    glGenTextures(1,&filter_texture_id);
+    glBindTexture(GL_TEXTURE_2D,filter_texture_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,buffer_width,buffer_height,0,GL_RGBA,GL_UNSIGNED_BYTE,NULL);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,filter_texture_id,0);
+
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        dbg::error("Failed to create secondary framebuffer");
     }
 
     glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
@@ -153,6 +191,16 @@ DGraphics::~DGraphics()
     if(texture_id != 0)
     {
         glDeleteTextures(1,&texture_id);
+    }
+
+    if(filter_buffer_id != static_cast<unsigned int >(-1))
+    {
+        glDeleteFramebuffers(1,&filter_buffer_id);
+    }
+
+    if(filter_texture_id != 0)
+    {
+        glDeleteTextures(1,&filter_texture_id);
     }
 }
 
@@ -1594,6 +1642,56 @@ DImage DGraphics::toImage() const
     unsigned int texid = DImage::generateTexture(buffer_width,buffer_height,data);
 
     return DImage(data,texid,buffer_width,buffer_height);
+}
+
+void DGraphics::filter(const DFilter& f)
+{
+    if(!f.impl)
+    {
+        return;
+    }
+    
+    glBindFramebuffer(GL_FRAMEBUFFER,filter_buffer_id);
+
+    glUseProgram(f.impl->shader.getId());
+    glUniform2f(f.impl->source_size_location,buffer_width,buffer_height);
+
+    glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    glUniform1i(f.impl->source_location,0);
+
+    glEnableVertexAttribArray(f.impl->vertex_pos_location);
+
+    glVertexAttribPointer(f.impl->vertex_pos_location,2,GL_FLOAT,false,0, view_vertex);
+    
+    glDrawArrays(GL_TRIANGLES,0,6);
+
+    glDisableVertexAttribArray(f.impl->vertex_pos_location);
+
+    glBindFramebuffer(GL_FRAMEBUFFER,buffer_id);
+
+
+    clear();
+
+    glUseProgram(Application::GetInstance()->application_shader->getId());
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,filter_texture_id);
+    glUniform1i(Application::GetInstance()->application_shader_tex_uniform,0);
+
+    glEnableVertexAttribArray(Application::GetInstance()->application_shader_vertpos_attrib);
+    glEnableVertexAttribArray(Application::GetInstance()->application_shader_texc_attrib);
+
+    glVertexAttribPointer(Application::GetInstance()->application_shader_texc_attrib,2,GL_FLOAT,false,0, coords_view);
+    glVertexAttribPointer(Application::GetInstance()->application_shader_vertpos_attrib,2,GL_FLOAT,false,0, view_vertex);
+
+    glDrawArrays(GL_TRIANGLES,0,6);
+
+    glDisableVertexAttribArray(Application::GetInstance()->application_shader_vertpos_attrib);
+    glDisableVertexAttribArray(Application::GetInstance()->application_shader_texc_attrib);
+    
+    glBindTexture(GL_TEXTURE_2D,0);
 }
 
 DGraphics& DGraphics::operator=(DGraphics&& other)

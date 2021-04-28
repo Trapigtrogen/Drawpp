@@ -16,17 +16,17 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-float quad_coords[] = 
+static float quad_coords[] = 
 {
-    -1.0f, -1.0f, 0.0f,
-     1.0f, -1.0f, 0.0f,
-     1.0f,  1.0f, 0.0f,
-    -1.0f, -1.0f, 0.0f,
-     1.0f,  1.0f, 0.0f,
-    -1.0f,  1.0f, 0.0f,
+    -1.0f, -1.0f,
+     1.0f, -1.0f,
+     1.0f,  1.0f,
+    -1.0f, -1.0f,
+     1.0f,  1.0f,
+    -1.0f,  1.0f,
 };
 
-float quadtex_coords[] = 
+static float quadtex_coords[] = 
 {
     0.0f, 0.0f,
     1.0f, 0.0f, 
@@ -36,19 +36,19 @@ float quadtex_coords[] =
     0.0f, 1.0f, 
 };
 
-const char* quad_shader_v = R"(#version 100
+static const char* quad_shader_v = R"(#version 100
 precision mediump float;
-attribute vec3 pos;
+attribute vec2 pos;
 attribute vec2 texpos;
 varying vec2 texc;
 void main()
 {
     texc = texpos;
-    gl_Position = vec4(pos,1.0);
+    gl_Position = vec4(pos,0.0,1.0);
 }
 )";
 
-const char* quad_shader_f = R"(#version 100
+static const char* quad_shader_f = R"(#version 100
 precision mediump float;
 uniform sampler2D texture;
 varying vec2 texc;
@@ -58,11 +58,6 @@ void main()
     gl_FragColor = texture2D(texture,texc);
 }
 )";
-
-Shader* shader = nullptr;
-int vertpos_attrib = 0;
-int texc_attrib = 0;
-int tex_uniform = 0;
 
 bool focused;
 unsigned long long frameCount;
@@ -346,10 +341,10 @@ bool Application::init_application()
         return false;
     }
 
-    shader = new Shader(Shader::loadShadersFromString(quad_shader_v,quad_shader_f));
-    vertpos_attrib = glGetAttribLocation(shader->getId(),"pos");
-    texc_attrib = glGetAttribLocation(shader->getId(),"texpos");
-    tex_uniform = glGetUniformLocation(shader->getId(),"texture");
+    application_shader = new Shader(Shader::loadShadersFromString(quad_shader_v,quad_shader_f));
+    application_shader_vertpos_attrib = glGetAttribLocation(application_shader->getId(),"pos");
+    application_shader_texc_attrib = glGetAttribLocation(application_shader->getId(),"texpos");
+    application_shader_tex_uniform = glGetUniformLocation(application_shader->getId(),"texture");
     
     graphics = std::unique_ptr<DGraphics>(
             new DGraphics(
@@ -426,22 +421,22 @@ void Application::draw_buffer()
     glClear(GL_COLOR_BUFFER_BIT);
 
     //bind shader, texture, and draw quad with the texture
-    glUseProgram(shader->getId());
+    glUseProgram(application_shader->getId());
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,graphics->get_texture_id());
-    glUniform1i(tex_uniform,0);
+    glUniform1i(application_shader_tex_uniform,0);
 
-    glEnableVertexAttribArray(vertpos_attrib);
-    glEnableVertexAttribArray(texc_attrib);
+    glEnableVertexAttribArray(application_shader_vertpos_attrib);
+    glEnableVertexAttribArray(application_shader_texc_attrib);
 
-    glVertexAttribPointer(texc_attrib,2,GL_FLOAT,false,0, quadtex_coords);
-    glVertexAttribPointer(vertpos_attrib,3,GL_FLOAT,false,0, quad_coords);
+    glVertexAttribPointer(application_shader_texc_attrib,2,GL_FLOAT,false,0, quadtex_coords);
+    glVertexAttribPointer(application_shader_vertpos_attrib,2,GL_FLOAT,false,0, quad_coords);
 
     glDrawArrays(GL_TRIANGLES,0,6);
 
-    glDisableVertexAttribArray(vertpos_attrib);
-    glDisableVertexAttribArray(texc_attrib);
+    glDisableVertexAttribArray(application_shader_vertpos_attrib);
+    glDisableVertexAttribArray(application_shader_texc_attrib);
     
     glBindTexture(GL_TEXTURE_2D,0);
 
