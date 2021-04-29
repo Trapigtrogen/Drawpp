@@ -50,8 +50,8 @@ cmake ..
 
 ### Linux
 You need to install your distripution's development packages:
-* __Arch__ `sudo pacman -Sy base-devel git cmake`
-* __Debian__/__Raspberry Pi OS__  `sudo apt-get -y install g++ git cmake libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev`\
+* __Arch__ `sudo pacman -Sy base-devel git cmake doxygen --needed --noconfirm`
+* __Debian__/__Raspberry Pi OS__  `sudo apt-get -y install g++ git cmake doxygen libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev`\
 On Raspberry Pi make sure that you have using Legacy OpenGL driver from `sudo raspi-config` -> Advanced options -> GL Driver -> Legacy - Original non-GL desktop driver
 
 Type following in the terminal:
