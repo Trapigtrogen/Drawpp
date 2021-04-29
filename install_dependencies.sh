@@ -76,10 +76,10 @@ else
 fi
 
 if [ "$manager" = "aptitude" ]; then
-    sudo apt-get update && sudo apt-get -y install\
+    sudo apt-get update && sudo apt-get -y install doxygen git cmake sed\
                 g++ libxcursor-dev libxrandr-dev libxinerama-dev\
                 libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev
 
 else
-    sudo pacman  -Sy base-devel --needed --noconfirm
+    sudo pacman -Sy git cmake doxygen base-devel --needed --noconfirm
 fi
