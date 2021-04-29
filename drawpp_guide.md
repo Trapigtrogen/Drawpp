@@ -19,6 +19,7 @@ Beginners guide to Drawpp
 - [File loading](#file-loading)
 - [Miscellaneous](#miscellaneous)
 - [Offscreen drawing](#offscreen-drawing)
+- [Filters](#filters)
 
 <br>
 
@@ -560,7 +561,6 @@ As with random numbers, you can have multiple noise generators by using the Nois
 
 ## <a id="offscreen-drawing">Offscreen drawing</a>
 
-
 <br>If you want to draw to a different draw target than the application window, you can use the DGraphics class.<br>
 You can take a look at the generated documentation for details, but DGraphics has all of the drawing and color related functions mentioned previously.<br>
 When you draw to a DGraphics target, you must first call ***beginDraw()***, and when you are finished, call ***endDraw()***. Between them, you must not draw to any other target, or things will break.<br>
@@ -588,3 +588,91 @@ void draw(float t)
 Now, after drawing to your custom target, you can save it to a file with its ***save()*** member function, or convert it to an image with ***toImage()***. You can also draw it to another target without converting it first, with the ***image()*** function. You might want to do that for example in a case where you will redraw the offscreen target every frame, as converting to image is a relative expensive process.<br>
 
 Once again, remember to initialize your draw target in the ***setup()*** function, and not before that.<br>
+
+
+<br>
+
+## <a  id="filters">Filters</a>
+
+<br>You can apply post-processing effects to your drawings with filters. There are some filters provided by the Drawpp library, and you can create your own as well.<br>
+
+To use the provided filters, call the ***filter()*** function, with the filter you want to apply, and an optional parameter.<br>Here are couple example:<br>
+
+```cpp
+
+void draw(float)
+{
+    filter(INVERT);
+    filter(PIXELATE,5);
+}
+```
+
+<br>Here is a full list of the provided filters:<br>
+
+- PIXELATE
+    - Pixelates the target.
+    - Takes the pixel scale as a parameter.
+- INVERT
+    - Inverts the colors in the target.
+- GREY
+    - Greyscales the image.
+- THRESHOLD
+    - Takes a threshold value as a parameter (in range [0.0, 1.0]).
+    - Will first greyscale the image, and then turn all colors below the threshold to black, and the rest to white.
+
+<br>If you want to make your own filter, you can do that with the ***loadFilter()***, and ***loadFilterFromFile()*** functions. The former takes the filter source code as a string, and the latter will load it from a file.<br>
+
+The filters are written in glsl 1.0.0, and you can read the documentation of that if you want to learn more.<br>In the filter however, you don't need to create anything else except for the ***main()*** function. You can also use a couple of uniforms provided by the library. Here is a list:<br>
+
+- source
+    - sampler2D
+    - This is the image which the filter is applied to.
+- source_size
+    - vec2
+    - Source image size.
+
+<br>Note also, that the uniform name ***pos*** is reserved by the library. You can still have a variable called pos, but it cannot be a uniform.<br>
+
+If you need uniforms in your filter, you can add them into the glsl source. To set their values in runtime, you need to pass a initializer function to the ***filter()*** call, which will do the required OpenGL calls. This function must take one parameter of type unsigned int, which will be the shader program id for the filter. You don't have to use it, but the function signature must match. For this, you need to include glad.h in your source code.<br>
+
+Here is an example of a custom filter, recreating the pixelate effect:
+
+```cpp
+#include <drawpp.hpp>
+#include <glad.h>
+
+DFilter pixelate;
+int pixelate_scale_location;
+
+float pixel_scale = 10;
+
+void setup()
+{
+    pixelate = loadFilter(R"(
+        uniform float scale;
+        void main()
+        {
+            vec2 pos = gl_FragCoord.xy/source_size;
+            pos -= mod(pos, vec2(scale) / source_size);
+            gl_FragColor = texture2D(source, pos);
+        }
+    )");
+
+    glGetUniformLocation(pixelate.getProgram(),"scale");
+}
+
+void draw(float)
+{
+    filter(pixelate,[=](unsigned int p){
+        gluniform1f(pixelate_scale_location,pixel_scale);
+    });
+}
+
+int main()
+{
+    Application app(1000,1000);
+    return app.run(draw,setup);
+}
+```
+
+<br>
