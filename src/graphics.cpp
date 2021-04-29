@@ -1712,6 +1712,23 @@ void DGraphics::filter(filters f, float param)
                 });
             break;
         }
+
+        case filters::TRESHOLD:
+        {
+            int treshold_loc = Application::GetInstance()->stock_filters_treshold_value_location;
+            filter(Application::GetInstance()->stock_filters[f],[=](unsigned int p)
+                {
+                    glUniform1f(treshold_loc,param);
+                });
+            break;
+        }
+
+        case filters::INVERT:
+        case filters::GREY:
+        {
+            filter(Application::GetInstance()->stock_filters[f]);
+            break;
+        }
     }
 }
 

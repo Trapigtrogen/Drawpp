@@ -395,12 +395,12 @@ bool Application::init_application()
 
 void Application::init_filters()
 {
-    constexpr unsigned int num_filters = 1;
+    //should be the number of items in filters enum
+    constexpr unsigned int num_filters = 4;
 
-    //size should be the number of items in filters enum
     stock_filters = new DFilter[num_filters];
 
-    stock_filters[0] = DFilter::loadFilter(R"(
+    stock_filters[filters::PIXELATE] = DFilter::loadFilter(R"(
     uniform float scale;
     void main()
     {
@@ -412,6 +412,42 @@ void Application::init_filters()
     stock_filters_pixelate_scale_location = 
         glGetUniformLocation(stock_filters[0].getProgram(),"scale");
 
+
+    stock_filters[filters::INVERT] = DFilter::loadFilter(R"(
+    void main()
+    {
+        gl_FragColor = vec4(vec3(1.0) - texture2D(source, gl_FragCoord.xy/source_size).rgb,1.0);
+    })");
+
+
+    stock_filters[filters::GREY] = DFilter::loadFilter(R"(
+    void main()
+    {
+        vec3 col = texture2D(source, gl_FragCoord.xy/source_size).rgb;
+        float val = (col.x + col.y + col.z)/3.0;
+        gl_FragColor = vec4(vec3(val),1.0);
+    })");
+
+
+    stock_filters[filters::TRESHOLD] = DFilter::loadFilter(R"(
+    uniform float treshold;
+    void main()
+    {
+        vec3 col = texture2D(source, gl_FragCoord.xy/source_size).rgb;
+        float val = (col.x + col.y + col.z)/3.0;
+
+        if(val <= treshold)
+        {
+            gl_FragColor = vec4(vec3(0.0),1.0);
+        }
+        else
+        {
+            gl_FragColor = vec4(1.0);
+        }
+    })");
+
+    stock_filters_treshold_value_location = 
+        glGetUniformLocation(stock_filters[filters::TRESHOLD].getProgram(),"treshold");
 }
 
 void Application::cleanup_application()
@@ -447,7 +483,7 @@ void Application::draw_buffer()
     glBindFramebuffer(GL_FRAMEBUFFER,0);
     glViewport(0,0,window->properties.width,window->properties.height);
 
-    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     //bind shader, texture, and draw quad with the texture
