@@ -95,11 +95,13 @@ void noiseDetails(int lod)
     Application::GetInstance()->noise.setOctaves(lod);
 }
 
+/* Pointless as falloff is not changeable in noise as for now
 void noiseDetails(int lod, float falloff)
 {
     Application::GetInstance()->noise.setOctaves(lod);
     Application::GetInstance()->noise.setFalloff(falloff);
 }
+*/
 
 void noiseMapSize(int width, int heigth) 
 {

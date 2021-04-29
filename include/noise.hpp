@@ -32,16 +32,16 @@ public:
 
 	///\brief Set the amount of layers of noise
 	/// Default is 8
-	void setOctaves(int lod) { nOctaves = lod; }
+	void setOctaves(int lod);
 
 	///\brief Set the cap between layers
 	/// Default is 0.5 which means halving every frame
-	void setFalloff(float foff) { falloff = foff; }
+	void setFalloff(float foff);
 
 	///\brief Set noise scale 
 	/// Default is 1.3
 	/// Lower value means stronger curve and higher make it smoother
-	void setScale(float _scale) { scale = _scale; }
+	void setScale(float _scale);
 
 	int width() { return outputWidth; }
 	int height() { return outputHeight; }

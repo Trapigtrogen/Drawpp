@@ -152,3 +152,24 @@ void Noise::createPerlin2D(int nWidth, int nHeight, float scale)
 		}
 	}
 }
+
+void Noise::setOctaves(int lod)
+{ 
+	nOctaves = lod;
+	createPerlin1D(outputWidth, scale);
+	createPerlin2D(outputWidth, outputHeight, scale);
+}
+
+void Noise::setFalloff(float foff)
+{
+	falloff = foff;
+	createPerlin1D(outputWidth, scale);
+	createPerlin2D(outputWidth, outputHeight, scale);
+}
+
+void Noise::setScale(float _scale)
+{
+	scale = _scale;
+	createPerlin1D(outputWidth, scale);
+	createPerlin2D(outputWidth, outputHeight, scale);
+}

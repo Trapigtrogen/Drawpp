@@ -106,8 +106,6 @@ void keyPressed()
         octaves++; 
         // Set the new value to the noise generator
         noiseDetails(octaves);
-        // Regenerate the noise by setting the same seed
-        noiseSeed(seed);
     }
 
     // Octaves down by 1
@@ -115,7 +113,6 @@ void keyPressed()
     {
         octaves--;
         noiseDetails(octaves);
-        noiseSeed(seed);
     }
 
     // Scale up by 0.1
@@ -123,7 +120,6 @@ void keyPressed()
     {
         nscale += 0.1f;
         noiseScale(nscale);
-        noiseSeed(seed);
     }
 
     // Scale down by 0.1
@@ -131,9 +127,7 @@ void keyPressed()
     {
         nscale -= 0.1f;
         noiseScale(nscale);
-        noiseSeed(seed);
     }
-
 
     // Seed settings
 
