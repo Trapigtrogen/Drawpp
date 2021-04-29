@@ -6,7 +6,7 @@ enum filters
     PIXELATE = 0,
     INVERT = 1,
     GREY = 2,
-    TRESHOLD = 3,
+    THRESHOLD = 3,
 };
 
 #endif

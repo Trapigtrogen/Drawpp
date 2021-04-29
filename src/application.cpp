@@ -429,14 +429,14 @@ void Application::init_filters()
     })");
 
 
-    stock_filters[filters::TRESHOLD] = DFilter::loadFilter(R"(
-    uniform float treshold;
+    stock_filters[filters::THRESHOLD] = DFilter::loadFilter(R"(
+    uniform float threshold;
     void main()
     {
         vec3 col = texture2D(source, gl_FragCoord.xy/source_size).rgb;
         float val = (col.x + col.y + col.z)/3.0;
 
-        if(val <= treshold)
+        if(val <= threshold)
         {
             gl_FragColor = vec4(vec3(0.0),1.0);
         }
@@ -447,7 +447,7 @@ void Application::init_filters()
     })");
 
     stock_filters_treshold_value_location = 
-        glGetUniformLocation(stock_filters[filters::TRESHOLD].getProgram(),"treshold");
+        glGetUniformLocation(stock_filters[filters::THRESHOLD].getProgram(),"threshold");
 }
 
 void Application::cleanup_application()
