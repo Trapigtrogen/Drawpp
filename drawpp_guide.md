@@ -484,12 +484,14 @@ If you need multiple generators, you can use the Random class. It will also have
     - Set a new seed for the noise.
 - noiseScale()
     - Set a new scale for the noise.
+    - Affects the intensivity of the value spikes.
     - This is 1.3 by default.
 - noiseDetails()
     - Set the amount of detail in the noise.
+    - Affect the blurriness of the map.
     - This is 8 by default.
 - noiseMapSize()
-    - Change the size of the generated noise.
+    - Change the size/resolution of the generated noise.
 
 As with random numbers, you can have multiple noise generators by using the Noise class.<br>
 
