@@ -14,7 +14,8 @@
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
+#include <glad.h>
+#include <filter.h>
 
 static float quad_coords[] = 
 {
@@ -138,6 +139,12 @@ int Application::run(std::function<void(float)> draw,
     }
 
     cleanup_application();
+
+    delete[] stock_filters;
+    delete application_shader;
+
+    glfwDestroyCursor(custom_cursor);
+    custom_cursor = nullptr;
 
     return 0;
 }
@@ -351,6 +358,8 @@ bool Application::init_application()
                 window->properties.width,
                 window->properties.height
             ));
+
+    init_filters();
             
     glfwSetKeyCallback(         window->GetHandle(),Input::keyboard_callback);
     glfwSetMouseButtonCallback( window->GetHandle(),Input::mousebtn_callback);
@@ -382,6 +391,27 @@ bool Application::init_application()
     }
     
     return true;
+}
+
+void Application::init_filters()
+{
+    constexpr unsigned int num_filters = 1;
+
+    //size should be the number of items in filters enum
+    stock_filters = new DFilter[num_filters];
+
+    stock_filters[0] = DFilter::loadFilter(R"(
+    uniform float scale;
+    void main()
+    {
+        vec2 pos = gl_FragCoord.xy/source_size;
+        pos -= mod(pos, vec2(scale) / source_size);
+        gl_FragColor = texture2D(source, pos);
+    })");
+
+    stock_filters_pixelate_scale_location = 
+        glGetUniformLocation(stock_filters[0].getProgram(),"scale");
+
 }
 
 void Application::cleanup_application()

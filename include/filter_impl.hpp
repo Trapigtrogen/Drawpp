@@ -4,6 +4,7 @@
 #include <string>
 #include <shader.hpp>
 
+///\private
 struct DFilter_impl
 {
     bool init(const std::string& filterSource);

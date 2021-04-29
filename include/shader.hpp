@@ -17,7 +17,7 @@ public:
 
     Shader& operator=(Shader&& other);
 
-	int getId() const { return id; }
+	unsigned int getId() const { return id; }
 
     static Shader loadShadersFromFile(const char* vsFile, const char* fsFile);
     static Shader loadShadersFromString(const char* vsStr, const char* fsStr);

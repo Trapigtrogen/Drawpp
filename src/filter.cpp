@@ -1,6 +1,6 @@
 #include <filter.hpp>
 #include <filter_impl.hpp>
-#include <glad/glad.h>
+#include <glad.h>
 #include <debug.hpp>
 
 
@@ -50,6 +50,10 @@ bool DFilter_impl::init(const std::string& filterSource)
     return true;
 }
 
+unsigned int DFilter::getProgram() const
+{
+    return impl->shader.getId();
+}
 
 const std::string DFilter_impl::fragment_stub = R"(
     #version 100

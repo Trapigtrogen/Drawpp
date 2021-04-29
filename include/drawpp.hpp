@@ -586,11 +586,26 @@ void image(const DGraphics& target, const DVector& p, const DVector& s);
 void background(const DImage& image);
 
 
-///Apply a filter to the window
-void filter(const DFilter& f);
+///\brief Apply a filter to the window
+void filter(const DFilter& f, std::function<void(unsigned int)> initializer = nullptr);
+
+
+///\brief Apply a filter to the window
+void filter(filters f, float param = 0);
+
 
 // End group drawpp_drawing_api
 ///@}
+
+
+///\ingroup drawpp_loaders_api
+///\copydoc DFilter::loadFilter(const std::string&)
+DFilter loadFilter(const std::string& filterSource);
+
+
+///\ingroup drawpp_loaders_api
+///\copydoc DFilter::loadFile(const std::string&)
+DFilter loadFilterFromFile(const std::string& filename);
 
 
 // Shader

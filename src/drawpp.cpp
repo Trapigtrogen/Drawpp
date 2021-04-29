@@ -504,9 +504,25 @@ void background(const DImage& image)
     Application::GetInstance()->graphics_object().background(image);
 }
 
-void filter(const DFilter& f)
+void filter(const DFilter& f, std::function<void(unsigned int)> initializer)
 {
-    Application::GetInstance()->graphics_object().filter(f);
+    Application::GetInstance()->graphics_object().filter(f,initializer);
+}
+
+void filter(filters f, float param)
+{
+    Application::GetInstance()->graphics_object().filter(f,param);
+}
+
+
+DFilter loadFilter(const std::string& filterSource)
+{
+    return DFilter::loadFilter(filterSource);
+}
+
+DFilter loadFilterFromFile(const std::string& filename)
+{
+    return DFilter::loadFile(filename);
 }
 
 

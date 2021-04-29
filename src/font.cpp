@@ -4,7 +4,7 @@
 #include <font.hpp>
 #include <font_impl.h>
 #include <debug.hpp>
-#include <glad/glad.h>
+#include <glad.h>
 #include <string>
 #include <algorithm>
 

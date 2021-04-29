@@ -125,6 +125,8 @@ copy "_dpp_tmp_release_build\lib\Drawpp.lib" "Drawpp.lib"
 
 if not exist include mkdir include
 cd include
+if not exist KHR mkdir KHR
+
 copy "..\..\include\application.hpp"    "application.hpp"
 copy "..\..\include\color.hpp"          "color.hpp"
 copy "..\..\include\hsbcolor.hpp"       "hsbcolor.hpp"
@@ -142,6 +144,10 @@ copy "..\..\include\font.hpp"           "font.hpp"
 copy "..\..\include\path.hpp"           "path.hpp"
 copy "..\..\include\constants.hpp"      "constants.hpp"
 copy "..\..\include\filter.hpp"         "filter.hpp"
+copy "..\..\include\filters.hpp"        "filters.hpp"
+
+copy "..\..\external\glad\include\glad\glad.h"          "glad.h"
+copy "..\..\external\glad\include\KHR\khrplatform.h"    "KHR/khrplatform.h"
 
 cd ..
 

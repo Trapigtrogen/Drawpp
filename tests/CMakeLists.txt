@@ -9,6 +9,7 @@ endif (NOT MSVC)
 
 
 include_directories(include)
+include_directories(external/glad/include/glad)
 
 add_executable(test_window window.cpp)
 add_executable(test_textures textures.cpp)

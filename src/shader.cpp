@@ -1,6 +1,6 @@
 #include <shader.hpp>
 #include <debug.hpp>
-#include <glad/glad.h>
+#include <glad.h>
 #include <vector>
 #include <fstream>
 #include <debug.hpp>

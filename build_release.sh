@@ -75,6 +75,7 @@ rm ./Makefile
 echo "Copying headers over..."
 # copy include files
 mkdir include
+mkdir include/KHR
 
 cp ../include/application.hpp ./include/
 cp ../include/color.hpp ./include/
@@ -93,6 +94,10 @@ cp ../include/font.hpp ./include/
 cp ../include/path.hpp ./include/
 cp ../include/constants.hpp ./include/
 cp ../include/filter.hpp ./include/
+cp ../include/filters.hpp ./include/
+
+cp ../external/glad/include/glad/glad.h ./include/
+cp ../external/glad/include/KHR/khrplatform.h ./include/KHR/
 
 echo "Combining libraries..."
 # combine libraries

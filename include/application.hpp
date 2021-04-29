@@ -12,6 +12,7 @@ class Window;
 class DGraphics;
 class GLFWcursor;
 class DImage;
+class DFilter;
 
 enum CursorStyle
 {
@@ -145,6 +146,7 @@ public:
 
 private:
     bool init_application();
+    void init_filters();
     void cleanup_application();
     void resize_window(int width, int height, void* monitor);
 
@@ -168,6 +170,9 @@ private:
     int application_shader_vertpos_attrib = 0;
     int application_shader_texc_attrib = 0;
     int application_shader_tex_uniform = 0;
+
+    DFilter* stock_filters = nullptr;
+    int stock_filters_pixelate_scale_location;
 
     static Application* instance;
 };

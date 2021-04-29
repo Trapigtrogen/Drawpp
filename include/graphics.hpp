@@ -8,6 +8,8 @@
 #include <font.hpp>
 #include <memory>
 #include <image.hpp>
+#include <functional>
+#include <filters.hpp>
 
 class DImage;
 class Shader;
@@ -609,7 +611,11 @@ public:
 
 
     ///\brief Apply a filter to this target
-    void filter(const DFilter& f);
+    void filter(const DFilter& f, std::function<void(unsigned int)> initializer = nullptr);
+
+
+    ///\brief Apply a filter to this target
+    void filter(filters f, float param = 0);
 
 
     GraphicsProperties getStyle();

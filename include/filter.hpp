@@ -20,6 +20,10 @@ public:
     ///\brief Load a filter from a file
     static DFilter loadFile(const std::string& filename);
 
+
+    ///\brief Get the shader program id
+    unsigned int getProgram() const;
+
 private:
     std::shared_ptr<DFilter_impl> impl;
 };

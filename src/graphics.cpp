@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <graphics.hpp>
 #include <shader.hpp>
-#include <glad/glad.h>
+#include <glad.h>
 #include <debug.hpp>
 #include <vector3.hpp>
 #include <font.hpp>
@@ -1644,7 +1644,7 @@ DImage DGraphics::toImage() const
     return DImage(data,texid,buffer_width,buffer_height);
 }
 
-void DGraphics::filter(const DFilter& f)
+void DGraphics::filter(const DFilter& f, std::function<void(unsigned int)> initializer)
 {
     if(!f.impl)
     {
@@ -1653,13 +1653,18 @@ void DGraphics::filter(const DFilter& f)
     
     glBindFramebuffer(GL_FRAMEBUFFER,filter_buffer_id);
 
-    glUseProgram(f.impl->shader.getId());
+    glUseProgram(f.getProgram());
+
     glUniform2f(f.impl->source_size_location,buffer_width,buffer_height);
 
     glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture_id);
-
     glUniform1i(f.impl->source_location,0);
+
+    if(initializer)
+    {
+        initializer(f.getProgram());
+    }
 
     glEnableVertexAttribArray(f.impl->vertex_pos_location);
 
@@ -1692,6 +1697,22 @@ void DGraphics::filter(const DFilter& f)
     glDisableVertexAttribArray(Application::GetInstance()->application_shader_texc_attrib);
     
     glBindTexture(GL_TEXTURE_2D,0);
+}
+
+void DGraphics::filter(filters f, float param)
+{
+    switch (f)
+    {
+        case filters::PIXELATE:
+        {
+            int scale_loc = Application::GetInstance()->stock_filters_pixelate_scale_location;
+            filter(Application::GetInstance()->stock_filters[f],[=](unsigned int p)
+                {
+                    glUniform1f(scale_loc,param);
+                });
+            break;
+        }
+    }
 }
 
 DGraphics& DGraphics::operator=(DGraphics&& other)

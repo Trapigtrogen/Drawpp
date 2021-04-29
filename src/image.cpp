@@ -1,7 +1,7 @@
 #include <image.hpp>
 #include <debug.hpp>
 #include <cassert>
-#include <glad/glad.h>
+#include <glad.h>
 #include <cstring>
 #include <color.hpp>
 
