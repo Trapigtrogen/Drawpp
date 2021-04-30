@@ -11,7 +11,7 @@ int window_width = 1000;
 int gen_height = 512;
 int gen_width = 512;
 
-// Octaves affect how blurry/smooth the noise is. Can be 1-10
+// Octaves affect how blurry/smooth the noise is
 int octaves = 8;
 
 // Seed determines the output of the pseudo-random function
@@ -20,6 +20,7 @@ int seed = 1;
 // Scale affects the contrast of high and low values
 float nscale = 1.3f;
 
+// Falloff affects the zoom level
 float falloff = 0.5;
 
 // Image where we'll draw the noise
@@ -95,7 +96,7 @@ void setup()
     noiseSeed(1);
 
     // Initialize the image
-    noiseTex = DImage(gen_width,gen_height);
+    noiseTex = DImage(gen_width, gen_height);
 
     // Set font color to white
     fill(255, 255, 255);
