@@ -193,7 +193,7 @@ float noise(int x, int y);
 void noiseSeed(int x);
 void noiseScale(float scale);
 void noiseDetails(int lod);
-//void noiseDetails(int lod, float falloff);
+void noiseDetails(int lod, float falloff);
 void noiseMapSize(int width, int heigth);
 
 // Push Pop

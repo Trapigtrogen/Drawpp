@@ -90,7 +90,11 @@ void Noise::createPerlin1D(int nCount, float scale)
 
 		for(int o = 0; o < nOctaves; o++)
 		{
-			int nPitch = nCount >> o;
+			int nPitch = nCount;
+			for (int i = 0; i < o; i++)
+			{
+				nPitch = nPitch * falloff;
+			}
 			int nSample1 = x;
 			if(nPitch != 0)
 			{
@@ -114,7 +118,7 @@ void Noise::createPerlin1D(int nCount, float scale)
 
 void Noise::createPerlin2D(int nWidth, int nHeight, float scale)
 {
-	for(int x = 0; x < nWidth; x++) 	
+	for(int x = 0; x < nWidth; x++)
 	{
 		for(int y = 0; y < nHeight; y++) 		
 		{
@@ -122,9 +126,13 @@ void Noise::createPerlin2D(int nWidth, int nHeight, float scale)
 			float fScaleAcc = 0.0f;
 			float fScale = 1.0f;
 
-			for(int o = 0; o < nOctaves; o++) 		
+			for(int o = 0; o < nOctaves; o++)
 			{
-				int nPitch = nWidth >> o;
+				int nPitch = nWidth;
+				for (int i = 0; i < o; i++)
+				{
+					nPitch = nPitch * falloff;
+				}
 				int nSampleX1 = x;
 				int nSampleY1 = y;
 				if(nPitch != 0) 

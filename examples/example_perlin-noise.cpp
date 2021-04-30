@@ -20,6 +20,8 @@ int seed = 1;
 // Scale affects the contrast of high and low values
 float nscale = 1.3f;
 
+float falloff = 0.5;
+
 // Create pixeldata and empty texture remember to multiply by amount of channels per pixel (r,g,b,a) = 4
 unsigned char* pixeldata = new unsigned char[gen_width * gen_height * 4];
 DImage noiseTex;
@@ -89,9 +91,9 @@ void draw(float)
     fill(255, 255, 255);
 
     // Print current values
-    text("Seed: " + std::to_string(seed) + "\nOctaves: " + std::to_string(octaves) + "\nScale: " + std::to_string(nscale), 30, 30);
+    text("Seed: " + std::to_string(seed) + "\nOctaves: " + std::to_string(octaves) + "\nScale: " + std::to_string(nscale) + "\nFalloff: " + std::to_string(falloff), 30, 30);
     // Print controls 
-    text("Controls:\nR - Random seed\nE - Previous seed\nT - Next seed\nW - Octaves up\nS - Octaves down\nD - Scale up\nA - Scale down", 30, 150);
+    text("Controls:\nR - Random seed\nE - Previous seed\nT - Next seed\nW - Octaves up\nS - Octaves down\nD - Scale up\nA - Scale down\nX - Falloff up\nZ - Falloff down", 30, 170);
 }
 
 // Key press events
@@ -127,6 +129,20 @@ void keyPressed()
     {
         nscale -= 0.1f;
         noiseScale(nscale);
+    }
+
+    // falloff up by 0.1
+    else if (key == VK_X)
+    {
+        falloff += 0.1f;
+        noiseDetails(octaves, falloff);
+    }
+
+    // Scale down by 0.1
+    else if (key == VK_Z)
+    {
+        falloff -= 0.1f;
+        noiseDetails(octaves, falloff);
     }
 
     // Seed settings
