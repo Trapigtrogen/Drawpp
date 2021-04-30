@@ -1,10 +1,17 @@
 #include <application.hpp>
 #include <drawpp.hpp>
 #include <time.hpp>
+#include <chrono>
+#include <thread>
 
 void size(int width, int height)
 {
     Application::GetInstance()->size(width,height);
+}
+
+void fullScreen(int monitor)
+{
+    Application::GetInstance()->setFullscreen(monitor);
 }
 
 void setTitle(const char* title)
@@ -12,14 +19,24 @@ void setTitle(const char* title)
     Application::GetInstance()->setTitle(title);
 }
 
-void setResizable(bool state)
-{
-    Application::GetInstance()->setResizable(state);
-}
-
 void exit()
 {
     Application::GetInstance()->exit();
+}
+
+void cursor(CursorStyle c)
+{
+    Application::GetInstance()->setCursor(c);
+}
+
+void cursor(const DImage& c, int xorigin, int yorigin)
+{
+    Application::GetInstance()->setCursor(c,xorigin,yorigin);
+}
+
+void noCursor()
+{
+    Application::GetInstance()->hideCursor();
 }
 
 void frameRate(int fps)
@@ -30,6 +47,11 @@ void frameRate(int fps)
 void vSync(bool state)
 {
     Application::GetInstance()->setVSync(state);
+}
+
+void delay(unsigned int millis)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(millis));
 }
 
 
@@ -269,8 +291,7 @@ void background(Color col) {
 
 void background(const char* hexCol) 
 {
-    Color col = Color::HEX2RGB((char*)hexCol);
-    Application::GetInstance()->graphics_object().background(col);
+    Application::GetInstance()->graphics_object().background(Color(hexCol));
 }
 
 void background(Color rgb, float alpha)
@@ -310,8 +331,7 @@ void tint(Color rgb, float alpha)
 
 void tint(const char* hexCol)
 {
-    Color col = Color::HEX2RGB((char*)hexCol);
-    Application::GetInstance()->graphics_object().tint(col);
+    Application::GetInstance()->graphics_object().tint(Color(hexCol));
 }
 
 void tint(float gray)
@@ -459,9 +479,19 @@ DImage createImage(std::vector<Color> pixelData, int width, int height)
     return DImage::createImage(pixels, width, height);
 }
 
+DImage loadSVGImage(const std::string& filename, float scale)
+{
+    return DImage::loadSVGImage(filename,scale);
+}
+
 void image(const DImage& image, float x, float y)
 {
     Application::GetInstance()->graphics_object().image(image,x,y);
+}
+
+void image(const DImage& image, const DVector& p)
+{
+    Application::GetInstance()->graphics_object().image(image,p);
 }
 
 void image(const DImage& image, float x, float y, float width, float height)
@@ -469,34 +499,81 @@ void image(const DImage& image, float x, float y, float width, float height)
     Application::GetInstance()->graphics_object().image(image,x,y,width,height);
 }
 
+void image(const DImage& image, const DVector& p, const DVector s)
+{
+    Application::GetInstance()->graphics_object().image(image,p,s);
+}
+
+void image(const DGraphics& target, float x, float y )
+{
+    Application::GetInstance()->graphics_object().image(target,x,y);
+}
+
+void image(const DGraphics& target, const DVector& p)
+{
+    Application::GetInstance()->graphics_object().image(target,p);
+}
+
+void image(const DGraphics& target, float x, float y, float w, float h)
+{
+    Application::GetInstance()->graphics_object().image(target,x,y,w,h);
+}
+
+void image(const DGraphics& target, const DVector& p, const DVector& s)
+{
+    Application::GetInstance()->graphics_object().image(target,p,s);
+}
+
 void background(const DImage& image)
 {
     Application::GetInstance()->graphics_object().background(image);
 }
 
+void filter(const DFilter& f, std::function<void(unsigned int)> initializer)
+{
+    Application::GetInstance()->graphics_object().filter(f,initializer);
+}
+
+void filter(filters f, float param)
+{
+    Application::GetInstance()->graphics_object().filter(f,param);
+}
+
+
+DFilter loadFilter(const std::string& filterSource)
+{
+    return DFilter::loadFilter(filterSource);
+}
+
+DFilter loadFilterFromFile(const std::string& filename)
+{
+    return DFilter::loadFile(filename);
+}
 
 
 // Shapes
-void shape(DShape* _shape) 
+void shape(const DShape& _shape) 
 {
-    shape(_shape, 0, 0, 1, 1);
+    Application::GetInstance()->graphics_object().shape(_shape, 0, 0, 1, 1);
 }
 
-void shape(DShape* _shape, int x, int  y)
+void shape(const DShape& _shape, float x, float  y)
 {
-    shape(_shape, 0, 0, x, y);
+    //shape(_shape, 0, 0, x, y);
+    Application::GetInstance()->graphics_object().shape(_shape, x,y,1,1);
 }
 
-void shape(DShape* _shape, float x, float y, float w, float h)
+void shape(const DShape& _shape, float x, float y, float w, float h)
 {
     Application::GetInstance()->graphics_object().shape(_shape, x, y, w, h);
 }
 
-DShape loadShape(std::string filename) 
+DShape loadShape(const std::string& filename) 
 {
     return DShape::loadShape(filename);
 }
 
+/*
 DShape createShape()
 {
     return DShape::createShape();
@@ -506,7 +583,7 @@ DShape createShape(DShape::ShapeType type)
 {
     return DShape::createShape(type);
 }
-
+*/
 //DShape createShape(DShape::ShapeType type, float[] p){}
 
 
@@ -516,9 +593,19 @@ void rect(float x, float y, float w, float h)
     Application::GetInstance()->graphics_object().rect(x,y,w,h);
 }
 
+void rect(const DVector& p, const DVector& s)
+{
+    Application::GetInstance()->graphics_object().rect(p,s);
+}
+
 void rect(float x, float y, float w, float h, float r)
 {
     Application::GetInstance()->graphics_object().rect(x,y,w,h,r);
+}
+
+void rect(const DVector& p, const DVector& s, float radii)
+{
+    Application::GetInstance()->graphics_object().rect(p,s,radii);
 }
 
 void rect(float x, float y, float w, float h, float tl, float tr, float br, float bl)
@@ -526,9 +613,19 @@ void rect(float x, float y, float w, float h, float tl, float tr, float br, floa
     Application::GetInstance()->graphics_object().rect(x,y,w,h,tl,tr,br,bl);
 }
 
+void rect(const DVector& p, const DVector& s, float tl, float tr, float br, float bl)
+{
+    Application::GetInstance()->graphics_object().rect(p,s,tl,tr,br,bl);
+}
+
 void square(float x, float y, float size)
 {
     Application::GetInstance()->graphics_object().square(x,y,size);
+}
+
+void square(const DVector& p, float size)
+{
+    Application::GetInstance()->graphics_object().square(p,size);
 }
 
 void circle(float x, float y, float radius)
@@ -536,9 +633,19 @@ void circle(float x, float y, float radius)
     Application::GetInstance()->graphics_object().circle(x,y,radius);
 }
 
+void circle(const DVector& p, float radius)
+{
+    Application::GetInstance()->graphics_object().circle(p,radius);
+}
+
 void ellipse(float x, float y, float width, float height)
 {
     Application::GetInstance()->graphics_object().ellipse(x,y,width,height);
+}
+
+void ellipse(const DVector& p, const DVector& s)
+{
+    Application::GetInstance()->graphics_object().ellipse(p,s);
 }
 
 void line(float x1, float y1, float x2, float y2)
@@ -605,20 +712,20 @@ void bezier(const DVector& p1, const DVector& p2, const DVector& cp)
 
 // Shader
 
-Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader)
-{
-    return Shader::loadShadersFromFile(vertexShader, fregmentShader);
-}
-
-Shader loadShadersFromString(const char* vertexShader, const char* fregmentShader)
-{
-    return Shader::loadShadersFromString(vertexShader, fregmentShader);
-}
-
-Shader loadShadersDefault()
-{
-    return Shader::loadShadersDefault();
-}
+//Shader loadShadersFromFile(const char* vertexShader, const char* fregmentShader)
+//{
+//    return Shader::loadShadersFromFile(vertexShader, fregmentShader);
+//}
+//
+//Shader loadShadersFromString(const char* vertexShader, const char* fregmentShader)
+//{
+//    return Shader::loadShadersFromString(vertexShader, fregmentShader);
+//}
+//
+//Shader loadShadersDefault()
+//{
+//    return Shader::loadShadersDefault();
+//}
 
 
 // Transform

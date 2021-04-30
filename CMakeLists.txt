@@ -39,6 +39,7 @@ endif()
 
 include_directories(include)
 include_directories(external/glad/include)
+include_directories(external/glad/include/glad)
 include_directories(external/glfw/include)
 include_directories(external/stb)
 include_directories(external/nanosvg)

@@ -128,12 +128,11 @@ void draw(float)
     }
 }
 
-
 int main()
 {
     // Create the application object
     Application app(W_WIDTH,W_HEIGHT,"Drawpp example: Peter de Jong Attractor");
 
     // Run the application
-    return app.run(&draw,&setup);
+    return app.run(draw,setup);
 }

@@ -128,8 +128,12 @@ copy "_dpp_tmp_release_build\lib\Drawpp.lib" "Drawpp.lib"
 
 if not exist include mkdir include
 cd include
+if not exist KHR mkdir KHR
+
 copy "..\..\include\application.hpp"    "application.hpp"
 copy "..\..\include\color.hpp"          "color.hpp"
+copy "..\..\include\hsbcolor.hpp"       "hsbcolor.hpp"
+copy "..\..\include\colors.hpp"         "colors.hpp"
 copy "..\..\include\drawpp.hpp"         "drawpp.hpp"
 copy "..\..\include\graphics.hpp"       "graphics.hpp"
 copy "..\..\include\image.hpp"          "image.hpp"
@@ -137,11 +141,16 @@ copy "..\..\include\keys.hpp"           "keys.hpp"
 copy "..\..\include\matrix4.hpp"        "matrix4.hpp"
 copy "..\..\include\noise.hpp"          "noise.hpp"
 copy "..\..\include\random.hpp"         "random.hpp"
-copy "..\..\include\shader.hpp"         "shader.hpp"
 copy "..\..\include\shape.hpp"          "shape.hpp"
 copy "..\..\include\vector3.hpp"        "vector3.hpp"
-copy "..\..\include\font.hpp"        	"font.hpp"
-copy "..\..\include\font.hpp"        	"constants.hpp"
+copy "..\..\include\font.hpp"           "font.hpp"
+copy "..\..\include\path.hpp"           "path.hpp"
+copy "..\..\include\constants.hpp"      "constants.hpp"
+copy "..\..\include\filter.hpp"         "filter.hpp"
+copy "..\..\include\filters.hpp"        "filters.hpp"
+
+copy "..\..\external\glad\include\glad\glad.h"          "glad.h"
+copy "..\..\external\glad\include\KHR\khrplatform.h"    "KHR/khrplatform.h"
 
 cd ..
 
@@ -180,13 +189,11 @@ echo link_libraries(msvcrtd.lib)>>CMakeLists.txt
 
 echo include_directories(${CMAKE_SOURCE_DIR}/../include)>>CMakeLists.txt
 echo set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)>>CMakeLists.txt
-
 :: Add every source file to CMakeLists
 for /r %%f in (*.cpp) do (
     echo add_executable^(example_%%~nf %%~nxf^)>>CMakeLists.txt
 	SET startupFile=%%~nf
 )
-
 
 :: Add every source file to targets
 echo set_property(TARGET>>CMakeLists.txt

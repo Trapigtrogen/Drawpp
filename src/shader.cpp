@@ -1,6 +1,6 @@
 #include <shader.hpp>
 #include <debug.hpp>
-#include <glad/glad.h>
+#include <glad.h>
 #include <vector>
 #include <fstream>
 #include <debug.hpp>
@@ -21,8 +21,8 @@ Shader::Shader(Shader&& other)
     id = other.id;
     other.id = 0;
 
-    shaderVSrc = other.shaderVSrc;
-    shaderFSrc = other.shaderFSrc;
+    shaderVSrc = std::move(other.shaderVSrc);
+    shaderFSrc = std::move(other.shaderFSrc);
 }
 
 Shader& Shader::operator=(Shader&& other)
@@ -32,8 +32,8 @@ Shader& Shader::operator=(Shader&& other)
         id = other.id;
         other.id = 0;
 
-        shaderVSrc = other.shaderVSrc;
-        shaderFSrc = other.shaderFSrc;
+        shaderVSrc = std::move(other.shaderVSrc);
+        shaderFSrc = std::move(other.shaderFSrc);
     }
 
     return *this;
@@ -44,8 +44,8 @@ Shader Shader::loadShadersFromFile(const char* vsFile, const char* fsFile)
     Shader tmpShader;
 
     // Load shader files
-    tmpShader.shaderVSrc = tmpShader.readShaderFile(vsFile);
-    tmpShader.shaderFSrc = tmpShader.readShaderFile(fsFile);
+    tmpShader.shaderVSrc = readShaderFile(vsFile);
+    tmpShader.shaderFSrc = readShaderFile(fsFile);
 
     tmpShader.createShaderProgram();
 

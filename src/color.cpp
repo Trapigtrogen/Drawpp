@@ -1,157 +1,77 @@
 #include <color.hpp>
-#include <application.hpp>
+#include <hsbcolor.hpp>
+//#include <application.hpp>
 #include <debug.hpp>
 #include <algorithm>
-#include <graphics.hpp>
+//#include <graphics.hpp>
 #include <cstring>
 
-Color::Color() 
+Color::Color() = default;
+
+Color::Color(const HSBColor& c)
 {
-	alphaVal = 255;
-	redVal = 255;
-	greenVal = 255;
-	blueVal = 255;
-	hueVal = 0;
-	saturationVal = 100;
-	brightnessVal = 100;
+    HSB2RGB(c.hue,c.saturation,c.brightness,c.alpha);
 }
 
-Color::Color(float v1, float v2, float v3, float alpha)
+Color::Color(uint8_t v1, uint8_t v2, uint8_t v3, uint8_t a)
 {
-	// Use RGB mode when the graphics do not exist yet
-	// This is to prevent crashing
-	if(!Application::GetInstance()->graphicsExists())
-	{
-		redVal = v1;
-		greenVal = v2;
-		blueVal = v3;
-		RGB2HSB(v1, v2, v3);
-	}
-	else if(Application::GetInstance()->graphics_object().getStyle().colormode == RGB)
-	{
-		redVal = v1;
-		greenVal = v2;
-		blueVal = v3;
-		RGB2HSB(v1, v2, v3);
-	}
-	else
-	{
-		hueVal = v1;
-		saturationVal = v2;
-		brightnessVal = v3;
-		HSB2RGB(v1, v2, v3);
-	}
-	alphaVal = alpha;
+    red = v1;
+    green = v2;
+    blue = v3;
+	alpha = a;
 }
 
 Color::Color(unsigned int c)
 {
-    alphaVal = c >> 24;
-    redVal = (c & 0x00FF0000) >> 16;
-    greenVal = (c & 0x0000FF00) >> 8;
-    blueVal = c & 0x000000FF;
-    RGB2HSB(redVal,greenVal,blueVal);
+    alpha = c >> 24;
+    red = (c & 0x00FF0000) >> 16;
+    green = (c & 0x0000FF00) >> 8;
+    blue = c & 0x000000FF;
 }
 
-Color::Color(std::string hexCol) 
+Color::Color(const std::string& hexCol) 
 {
-	Color temp = HEX2RGB((char*)hexCol.c_str());
-	redVal = temp.red();
-	greenVal = temp.green();
-	blueVal = temp.blue();
-	alphaVal = temp.alpha();
-	hueVal = temp.hue();
-	saturationVal = temp.saturation();
-	brightnessVal = temp.brightness();
-}
-
-Color& Color::operator=(const Color& other) 
-{
-	if(this != &other)
-	{
-		alphaVal = other.alphaVal;
-		redVal = other.redVal;
-		greenVal = other.greenVal;
-		blueVal = other.blueVal;
-		hueVal = other.hueVal;
-		saturationVal = other.saturationVal;
-		brightnessVal = other.brightnessVal;
-	}
-
-	return *this;
+	*this = HEX2RGB(hexCol.c_str());
 }
 
 Color::operator unsigned int () const
 {
-    return ((alphaVal << 24) | (redVal << 16) | (greenVal << 8) | blueVal);
+    return ((alpha << 24) | (red << 16) | (green << 8) | blue);
+}   
+
+Color& Color::operator=(const HSBColor& other)
+{
+    return *this = Color(other);
+}
+
+HSBColor Color::hsb() const
+{
+    return HSBColor(*this);
 }
 
 Color Color::lerpColor(const Color& from, const Color& to, float percentage) 
 {
-	// Store colormode for later
-	ColorMode origColMode = Application::GetInstance()->graphics_object().getStyle().colormode;
-
 	// Ensure that the values are in the range
 	if(percentage > 1) percentage = 1.0;
 	if(percentage < 0) percentage = 0.0;
 
 	// Lerp values
-	uint8_t lerpRed = from.redVal + percentage * (to.redVal - from.redVal);
-	uint8_t lerpGreen = from.greenVal + percentage * (to.greenVal - from.greenVal);
-	uint8_t lerpBlue = from.blueVal + percentage * (to.blueVal - from.blueVal);
-    uint8_t lerpAlpha = from.alphaVal + percentage * (to.alphaVal - from.alphaVal);
-
-	// Change color mode to rgb and restore after color has been created
-	Application::GetInstance()->graphics_object().colorMode(RGB);
-	Color lerpCol(lerpRed, lerpGreen, lerpBlue, lerpAlpha);
-	Application::GetInstance()->graphics_object().colorMode(origColMode);
-
-	return lerpCol;
+	uint8_t lerpRed = from.red + percentage * (to.red - from.red);
+	uint8_t lerpGreen = from.green + percentage * (to.green - from.green);
+	uint8_t lerpBlue = from.blue + percentage * (to.blue - from.blue);
+    uint8_t lerpAlpha = from.alpha + percentage * (to.alpha - from.alpha);
+	return Color(lerpRed,lerpGreen,lerpBlue,lerpAlpha);
 }
 
-void Color::RGB2HSB(uint8_t r, uint8_t g, uint8_t b)
+void Color::HSB2RGB(float h, float s, float b, float a)
 {
-	double themin, themax, delta;
-	float hue, saturation, brightness;
-
-	themin = std::min(r, std::min(g, b));
-	themax = std::max(r, std::max(g, b));
-	delta = themax - themin;
-	brightness = themax;
-	saturation = 0;
-	if(themax > 0)
-		saturation = delta / themax;
-	hue = 0;
-	if(delta > 0) {
-		if(themax == r && themax != g)
-			hue += (g - b) / delta;
-		if(themax == g && themax != b)
-			hue += (2 + (b - r) / delta);
-		if(themax == b && themax != r)
-			hue += (4 + (r - g) / delta);
-		hue *= 60;
-	}
-
-	hueVal = hue;
-	saturationVal = saturation * 100; // to make it percentages
-	brightnessVal = brightness;
-}
-
-void Color::HSB2RGB(float h, float s, float b)
-{
-	double hh, p, q, t, ff;
+	float hh, p, q, t, ff;
+	float r, g, bb;
 	long i;
-	uint8_t red, green, blue;
 
 	float ss = s / 100; // percentages to 0-1
 
-	if(ss <= 0.0)  // < is bogus, just shuts up warnings
-	{
-		redVal = b;
-		greenVal = b;
-		blueVal = b;
-		return;
-	}
+	
 	hh = h;
 	if(hh >= 360.0) hh = 0.0;
 	hh /= 60.0;
@@ -163,45 +83,46 @@ void Color::HSB2RGB(float h, float s, float b)
 
 	switch(i) {
 		case 0:
-		red = b;
-		green = t;
-		blue = p;
+		r = b;
+		g = t;
+		bb = p;
 		break;
 		case 1:
-		red = q;
-		green = b;
-		blue = p;
+		r = q;
+		g = b;
+		bb = p;
 		break;
 		case 2:
-		red = p;
-		green = b;
-		blue = t;
+		r = p;
+		g = b;
+		bb = t;
 		break;
 
 		case 3:
-		red = p;
-		green = q;
-		blue = b;
+		r = p;
+		g = q;
+		bb = b;
 		break;
 		case 4:
-		red = t;
-		green = p;
-		blue = b;
+		r = t;
+		g = p;
+		bb = b;
 		break;
 		case 5:
 		default:
-		red = b;
-		green = p;
-		blue = q;
+		r = b;
+		g = p;
+		bb = q;
 		break;
 	}
 
-	redVal = red;
-	greenVal = green;
-	blueVal = blue;
+    red   =  r * 2.551;
+    green =  g * 2.551;
+    blue  = bb * 2.551;
+    alpha =  a * 2.551;
 }
 
-Color Color::HEX2RGB(std::string hexCol) 
+Color Color::HEX2RGB(const char* hexCol)
 {
 	bool valid = false;
 	int r, g, b;
@@ -211,27 +132,29 @@ Color Color::HEX2RGB(std::string hexCol)
 	if(hexCol[0] == '#')
 	{
 		// remove '#' from color string
-		hexCol.erase(0, 1);
-		char* hexNum = new char;
-		strcpy(hexNum, hexCol.c_str());
-
-		switch(hexCol.size())
+		//hexCol.erase(0, 1);
+        ++hexCol;
+		//char* hexNum = new char;
+		//strcpy(hexNum, hexCol);
+        
+        //switch(hexCol.size())
+		switch(strlen(hexCol))
 		{
 			// Full hex with alpha
 			case 8:
-				sscanf(hexNum, "%02x%02x%02x%02x", &r, &g, &b, &a);
+				sscanf(hexCol, "%02x%02x%02x%02x", &r, &g, &b, &a);
 				valid = true;
 			break;
 
 			// Full hex without alpha
 			case 6: 
-				sscanf(hexNum, "%02x%02x%02x", &r, &g, &b);
+				sscanf(hexCol, "%02x%02x%02x", &r, &g, &b);
 				valid = true;
 			break;
 
 			// Compact hex with alpha
 			case 4: 
-				sscanf(hexNum, "%01x%01x%01x%01x", &r, &g, &b, &a);
+				sscanf(hexCol, "%01x%01x%01x%01x", &r, &g, &b, &a);
 				r *= 25;
 				g *= 25;
 				b *= 25;
@@ -241,7 +164,7 @@ Color Color::HEX2RGB(std::string hexCol)
 
 			// Compact hex without alpha
 			case 3: 
-				sscanf(hexNum, "%01x%01x%01x", &r, &g, &b);
+				sscanf(hexCol, "%01x%01x%01x", &r, &g, &b);
 				r *= 25;
 				g *= 25;
 				b *= 25;
@@ -267,12 +190,12 @@ Color Color::HEX2RGB(std::string hexCol)
 	return Color(0);
 }
 
-std::string Color::hex(Color col, int num)
+std::string Color::hex(const Color& col, int num)
 {
-	uint8_t r = col.redVal;
-	uint8_t g = col.greenVal;
-	uint8_t b = col.blueVal;
-	uint8_t a = col.alphaVal;
+	uint8_t r = col.red;
+	uint8_t g = col.green;
+	uint8_t b = col.blue;
+	uint8_t a = col.alpha;
 
 	std::string result = "#"; // final result
 
@@ -310,7 +233,13 @@ std::string Color::hex(Color col, int num)
 	}
 
 	// Convert to upper case for fanciness points
-	std::transform(result.begin(), result.end(), result.begin(), [] (unsigned char c) { return std::toupper(c); });
+	std::transform(result.begin(), 
+                   result.end(), 
+                   result.begin(), 
+                   [] (unsigned char c) 
+                    { 
+                       return std::toupper(c); 
+                    });
 	return  result;
 }
 
@@ -337,4 +266,87 @@ char* Color::DItoa(int val, int base)
 		buf[i] = "0123456789abcdef"[val % base];
 	}
 	return &buf[i + 1];
+}
+
+
+HSBColor::HSBColor() = default;
+
+HSBColor::HSBColor(const Color& c)
+{
+    RGB2HSB(c.red,c.green,c.blue,c.alpha);
+}
+
+HSBColor::HSBColor(float v1, float v2, float v3, float a)
+{
+    hue = v1;
+    saturation = v2;
+    brightness = v3;
+	alpha = a;
+}
+
+HSBColor::HSBColor(const std::string& hexCol) 
+{
+	*this = Color::HEX2RGB(hexCol.c_str());
+}
+
+HSBColor::operator unsigned int () const
+{
+    return rgb();
+}
+
+HSBColor& HSBColor::operator=(const Color& other)
+{
+    return *this = HSBColor(other);
+}
+
+Color HSBColor::rgb() const
+{
+    return Color(*this);
+}
+
+HSBColor HSBColor::lerpColor(const HSBColor& from, const HSBColor& to, float percentage)
+{
+    // Ensure that the values are in the range
+	if(percentage > 1) percentage = 1.0;
+	if(percentage < 0) percentage = 0.0;
+
+	// Lerp values
+	float lerpHue = from.hue + percentage * (to.hue - from.hue);
+	float lerpSat = from.saturation + percentage * (to.saturation - from.saturation);
+	float lerpBr = from.brightness + percentage * (to.brightness - from.brightness);
+    float lerpAlpha = from.alpha + percentage * (to.alpha - from.alpha);
+	return HSBColor(lerpHue,lerpSat,lerpBr,lerpAlpha);
+}
+
+std::string HSBColor::hex(const HSBColor& col, int num)
+{
+    return Color::hex(col,num);
+}
+
+void HSBColor::RGB2HSB(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+	float themin, themax, delta;
+
+	themin = std::min(r, std::min(g, b));
+	themax = std::max(r, std::max(g, b));
+	delta = themax - themin;
+	brightness = themax;
+	saturation = 0;
+	if(themax > 0)
+		saturation = delta / themax;
+	hue = 0;
+	if(delta > 0) {
+		if(themax == r && themax != g)
+			hue += (g - b) / delta;
+		if(themax == g && themax != b)
+			hue += (2 + (b - r) / delta);
+		if(themax == b && themax != r)
+			hue += (4 + (r - g) / delta);
+		hue *= 60;
+	}
+
+	hue = hue;
+	saturation = saturation * 100.0f; // to make it percentages
+	brightness = brightness/2.55f;
+    alpha = a / 2.55f;
 }

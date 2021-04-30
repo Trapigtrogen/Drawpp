@@ -351,6 +351,7 @@ DVector DVector::operator+(const DVector& vec) const { return DVector(x+vec.x,y+
 DVector DVector::operator-(const DVector& vec) const { return DVector(x-vec.x,y-vec.y,z-vec.z); }
 DVector DVector::operator-()                   const { return DVector(-x,-y,-z); }
 DVector DVector::operator*(float n)            const { return DVector(x*n,y*n,z*n); }
+DVector DVector::operator*(const DVector& vec) const { return DVector(x*vec.x,y*vec.y,z*vec.z); }
 DVector DVector::operator/(float n)            const { return DVector(x/n,y/n,z/n); }
 
 DVector& DVector::operator= (const DVector& vec) { return set(vec); }

@@ -8,6 +8,7 @@ else ()
 endif (NOT MSVC)
 
 include_directories(include)
+include_directories(external/glad/include/glad)
 
 # Add all test source files as executables
 file( GLOB_RECURSE source_list RELATIVE ${CMAKE_SOURCE_DIR} "*.cpp")

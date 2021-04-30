@@ -3,17 +3,38 @@
 
 #include <cstdint>
 #include <functional>
+#include <vector>
 #include <memory>
 #include <random.hpp>
 #include <noise.hpp>
 
 class Window;
 class DGraphics;
+class GLFWcursor;
+class DImage;
+class DFilter;
+
+enum CursorStyle
+{
+    ARROW,
+    HAND,
+    CROSS,
+    TEXT,
+};
 
 ///Application class is the core of the program
 class Application
 {
+    friend class DGraphics;
 public:
+
+    ///\addtogroup drawpp_application_api
+    ///@{
+
+    ///\brief Construct an application 
+    ///
+    ///Only once instance of Application is allowed to exist while the program is running.
+    ///Attempting to instantiate multiple Applications will crash the program.
     Application(int width = 200, int height = 200, const char* title = "Title");
 
     ~Application();
@@ -55,15 +76,17 @@ public:
     ///\brief Set the MouseDragged callback
     void setMouseDragged(std::function<void()>);
 
+    ///@}
+
 
     ///\brief Change the application window size
     void size(int width, int height);
 
 
-    ///\brief Set the allowance of resizing
+    ///\brief Set the application to fullscreen mode
     ///
-    ///Only effective in setup.
-    void setResizable(bool);
+    ///\p monitor is the zero-based index of the display to use.
+    void setFullscreen(int monitor);
 
 
     ///\brief Set the application window title
@@ -80,15 +103,37 @@ public:
 
     ///\brief Enable or disable VSync
     void setVSync(bool vsync);
+
+
+    ///\brief Exit application after current cycle
     void exit();
 
+
+    ///\brief Set the cursor style
+    void setCursor(CursorStyle c);
+
+
+    ///\brief Set the cursor to an image
+    void setCursor(const DImage& c, int xorigin = 0, int yorigin = 0);
+
+
+    ///\brief Hide the cursor
+    void hideCursor();
+
+
+    ///\brief Get a reference to the default draw target
     DGraphics& graphics_object();
+
+
+    ///\brief Get the current window width
     int getWidth() const;
+
+
+    ///\brief Get the current window height
     int getHeight() const;
-    bool graphicsExists() const;
+    
 
-
-    ///\private
+    ///\brief Get a pointer to the application singleton
     static Application* GetInstance();
 
 
@@ -101,7 +146,9 @@ public:
 
 private:
     bool init_application();
+    void init_filters();
     void cleanup_application();
+    void resize_window(int width, int height, void* monitor);
 
     float min_delta = -1;
 
@@ -115,6 +162,18 @@ private:
     std::function<void(float)> draw_func = nullptr;
     std::function<void()> setup_func = nullptr;
     std::function<void()> cleanup_func = nullptr;
+
+    std::vector<GLFWcursor*> std_cursors;
+    GLFWcursor* custom_cursor = nullptr;
+
+    class Shader* application_shader;
+    int application_shader_vertpos_attrib = 0;
+    int application_shader_texc_attrib = 0;
+    int application_shader_tex_uniform = 0;
+
+    DFilter* stock_filters = nullptr;
+    int stock_filters_pixelate_scale_location;
+    int stock_filters_treshold_value_location;
 
     static Application* instance;
 };

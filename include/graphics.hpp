@@ -5,13 +5,17 @@
 #include <string>
 #include <matrix4.hpp>
 #include <color.hpp>
-#include <shape.hpp>
 #include <font.hpp>
 #include <memory>
+#include <image.hpp>
+#include <functional>
+#include <filters.hpp>
 
 class DImage;
 class Shader;
 struct DVector;
+class DShape;
+class DFilter;
 
 enum ColorMode
 {
@@ -77,6 +81,8 @@ public:
 
     ~DGraphics();
 
+    DGraphics() = default;
+
     ///\brief Create a DGraphics object with a \p width by \p height frame
     DGraphics(int width, int height);
 
@@ -133,11 +139,11 @@ public:
 
 
     ///\brief Fill target with \p grey color
-    void background(float gray );
+    void background(float grey );
 
 
     ///\brief Fill target with \p grey color using \p alpha
-    void background(float gray, float alpha);
+    void background(float grey, float alpha);
 
 
     ///\brief Fill target with \p image
@@ -167,11 +173,11 @@ public:
 
 
     ///\brief Set stroke color to \p grey
-    void stroke(float gray );
+    void stroke(float grey );
 
 
     ///\brief Set stroke color to \p grey with \p alpha
-    void stroke(float gray, float alpha);
+    void stroke(float grey, float alpha);
 
     
     ///\brief Set stroke color 
@@ -260,32 +266,32 @@ public:
     Color color(float v1, float v2, float v3, float alpha);
 
 
-    ///\brief Get the red component of \p c
-    float red(Color c);
+    ///\brief Get the red component of \p col
+    float red(Color col);
 
 
-    ///\brief Get the green component of \p c
-    float green(Color c);
+    ///\brief Get the green component of \p col
+    float green(Color col);
 
 
-    ///\brief Get the blue component of \p c
-    float blue(Color c);
+    ///\brief Get the blue component of \p col
+    float blue(Color col);
 
 
-    ///\brief Get the alpha component of \p c
-    float alpha(Color c);
+    ///\brief Get the alpha component of \p col
+    float alpha(Color col);
 
 
-    ///\brief Get the saturation value of \p c
-    float saturation(Color c);
+    ///\brief Get the saturation value of \p col
+    float saturation(Color col);
 
     
-    ///\brief Get the hue value of \p c
-    float hue(Color c);
+    ///\brief Get the hue value of \p col
+    float hue(Color col);
 
 
-    ///\brief Get the brightness value of \p c
-    float brightness(Color c);
+    ///\brief Get the brightness value of \p col
+    float brightness(Color col);
 
 
     ///\brief Disable fill
@@ -437,24 +443,48 @@ public:
     void ellipse(float x, float y, float sizex, float sizey );
 
 
-    ///\brief Draw a circle at ( \p x, \p y ), with radius \p size
-    void circle(float x, float y, float size);
+    ///\brief Draw an ellipse at \p p, with size \p s
+    void ellipse(const DVector& p, const DVector& s);
+
+
+    ///\brief Draw a circle at ( \p x, \p y ), with radius \p radius
+    void circle(float x, float y, float radius);
+
+
+    ///\brief Draw a circle at \p p, with radius \p radius
+    void circle(const DVector& p, float radius);
 
 
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey )
     void rect(float x, float y, float sizex, float sizey );
 
 
+    ///\brief Draw a rectangle at \p p, with size \p s
+    void rect(const DVector& p, const DVector& s);
+
+
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey ), and with corners rounded by \p radii
     void rect(float x, float y, float sizex, float sizey, float radii);
+
+    
+    ///\brief Draw a rectangle at \p p, with size \p s, and with corners rounded by \p radii
+    void rect(const DVector& p, const DVector& s, float radii);
 
 
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey ), and with corners rounded by \p tl, \p tr, \p br and \p bl
     void rect(float x, float y, float sizex, float sizey, float tl, float tr, float br, float bl);
 
 
+    ///\brief Draw a rectangle at \p p, with size \p s, and with corners rounded by \p tl, \p tr, \p br and \p bl
+    void rect(const DVector& p, const DVector& s, float tl, float tr, float br, float bl);
+
+
     ///\brief Draw a square at ( \p x, \p y ), with \p size
     void square(float x, float y, float size);
+
+
+    ///\brief Draw a square at \p p, with \p size
+    void square(const DVector& p, float size);
 
 
     ///\brief Draw a triangle from points ( \p x1, \p y1), ( \p x2, \p y2) and ( \p x3, \p y3)
@@ -489,16 +519,40 @@ public:
     void point(const DVector& p);
 
 
-    ///\brief Draw image \p img at ( \p x, \p y )
-    void image(const DImage& img, float x, float y );
+    ///\brief Draw image \p image at ( \p x, \p y )
+    void image(const DImage& image, float x, float y );
 
 
-    ///\brief Draw image \p img at ( \p x, \p y ), resized to ( \p w, \p h)
-    void image(const DImage& img, float x, float y, float w, float h);
+    ///\brief Draw image \p image at \p p
+    void image(const DImage& image, const DVector& p);
+
+
+    ///\brief Draw image \p image at ( \p x, \p y ), resized to ( \p w, \p h)
+    void image(const DImage& image, float x, float y, float w, float h);
+
+
+    ///\brief Draw image \p image at \p p, resized to \p s
+    void image(const DImage& image, const DVector& p, const DVector& s);
+
+
+    ///\brief Draw target at ( \p x, \p y )
+    void image(const DGraphics& target, float x, float y );
+
+
+    ///\brief Draw target at \p p
+    void image(const DGraphics& target, const DVector& p);
+
+
+    ///\brief Draw target at ( \p x, \p y ), resized to ( \p w, \p h)
+    void image(const DGraphics& target, float x, float y, float w, float h);
+
+
+    ///\brief Draw target at \p p, resized to \p s
+    void image(const DGraphics& target, const DVector& p, const DVector& s);
 
 
     ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)
-    void shape(DShape* s, float x, float y, float w, float h);
+    void shape(const DShape& s, float x, float y, float w, float h);
 
 
     ///\brief Draw a quad from points ( \p x1, \p y1 ), ( \p x2, \p y2 ), ( \p x3, \p y3 ) and ( \p x4, \p y4 )
@@ -522,8 +576,18 @@ public:
     void text(const std::string& txt, float x, float y);
 
 
+    ///\brief Draw text at \p p
+    ///
+    ///A font must be set with textFont() before drawing any text.
+    void text(const std::string& txt, const DVector& p);
+
+
     ///\copydoc text(const std::string&,float,float);
     void text(const std::wstring& txt, float x, float y);
+
+
+    ///\copydoc text(const std::string&,const DVector&)
+    void text(const std::wstring& txt, const DVector& p);
 
 
     ///\brief Draw a cubic bezier curve from 4 points.
@@ -542,7 +606,22 @@ public:
     void bezier(const DVector& p1, const DVector& p2, const DVector& cp);
 
 
+    ///\brief Create an image from the contents of this draw target
+    DImage toImage() const;
+
+
+    ///\brief Apply a filter to this target
+    void filter(const DFilter& f, std::function<void(unsigned int)> initializer = nullptr);
+
+
+    ///\brief Apply a filter to this target
+    void filter(filters f, float param = 0);
+
+
     GraphicsProperties getStyle();
+
+
+    DGraphics& operator=(DGraphics&& other);
 
 private:
 
@@ -559,11 +638,14 @@ private:
     Color get_color(float v1, float v2, float v3, float a);
 
     //expects curves to have 1 common point
-    void generate_cubic_bezier_path(const struct vec2f* points, size_t count);
+    //stride = bytes between elements in array
+    void generate_cubic_bezier_path(const struct vec2f* points, size_t count, float xoff = 0, float yoff = 0, float xscale = 1.0, float yscale = 1.0, unsigned int stride = 0);
 
-    void generate_quadratic_bezier_path(const struct vec2f* points, size_t count);
+    void generate_quadratic_bezier_path(const struct vec2f* points, size_t count, float xoff = 0, float yoff = 0, float xscale = 1.0, float yscale = 1.0, unsigned int stride = 0);
 
     void render_bezier_buffer();
+
+    void render_texture(unsigned int texture, float x, float y, float width, float height, bool flip = false);
 
     //void set_current();
 
@@ -594,8 +676,11 @@ private:
     int type = -1;
     int format = -1;
 
+    unsigned int filter_buffer_id = static_cast<unsigned int>(-1);
+    unsigned int filter_texture_id = 0;
+
     //Shader used to draw ellipses
-    std::unique_ptr<Shader> ellipse_shader;
+    std::shared_ptr<Shader> ellipse_shader;
     int ellipse_shader_offset_loc;
     int ellipse_shader_strokeWeight_loc;
     int ellipse_shader_strokeColor_loc;
@@ -607,7 +692,7 @@ private:
     int ellipse_shader_tpos_loc;
 
     //Shader used to draw rectangles
-    std::unique_ptr<Shader> rect_shader;
+    std::shared_ptr<Shader> rect_shader;
     int rect_shader_offset_loc;
     int rect_shader_strokeWeight_loc;
     int rect_shader_strokeColor_loc;
@@ -620,7 +705,7 @@ private:
     int rect_shader_tpos_loc;
 
     //Shader used to draw triangles
-    std::unique_ptr<Shader> triangle_shader;
+    std::shared_ptr<Shader> triangle_shader;
     int triangle_shader_strokeWeight_loc;
     int triangle_shader_strokeColor_loc;
     int triangle_shader_fillColor_loc;
@@ -630,7 +715,7 @@ private:
     int triangle_shader_vpos_loc;
 
     //Shader used to draw lines
-    std::unique_ptr<Shader> line_shader;
+    std::shared_ptr<Shader> line_shader;
     int line_shader_points_loc;
     int line_shader_strokeWeight_loc;
     int line_shader_strokeColor_loc;
@@ -641,7 +726,7 @@ private:
     int line_shader_tpos_loc;
 
     //Shader used to draw images
-    std::unique_ptr<Shader> image_shader;
+    std::shared_ptr<Shader> image_shader;
     int image_shader_offset_loc;
     int image_shader_tint_loc;
     int image_shader_use_tint_loc;
@@ -653,7 +738,7 @@ private:
     int image_shader_tpos_loc;
 
     //Shader used to draw quads
-    std::unique_ptr<Shader> quad_shader;
+    std::shared_ptr<Shader> quad_shader;
     int quad_shader_strokeWeight_loc;
     int quad_shader_strokeColor_loc;
     int quad_shader_fillColor_loc;
@@ -663,7 +748,7 @@ private:
     int quad_shader_vpos_loc;
 
     //Shader used to draw text
-    std::unique_ptr<Shader> text_shader;
+    std::shared_ptr<Shader> text_shader;
     int text_shader_texture_loc;
     int text_shader_posmode_loc;
     int text_shader_fillColor_loc;
@@ -673,7 +758,7 @@ private:
     int text_shader_tpos_loc;
 
     //Shader used to draw text
-    std::unique_ptr<Shader> generic_colored_shader;
+    std::shared_ptr<Shader> generic_colored_shader;
     int generic_colored_shader_color_loc;
     int generic_colored_shader_transform_loc;
     int generic_colored_shader_view_loc;

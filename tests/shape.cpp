@@ -6,9 +6,11 @@ DShape shape2; // no image. child of 3
 DShape shape3; // 2 custom named element image
 DShape shape4; // empty image
 
+DImage img;
+DImage img2;
+
 void setup() 
 {
-    setResizable(true);
     size(1000, 1000);
     setTitle("Vertex Shaping");
 
@@ -25,31 +27,35 @@ void setup()
     printf("Loading image (multiple elements) to shape3...\n\n");
     shape3 = loadShape("assets/bot1.svg");
 
+    
     // Naming
-    shape1.name = "shape1";
-    shape2.name = "shape2";
-    shape3.name = "shape3";
-    shape4.name = "shape4";
+    shape1.name() = "shape1";
+    shape2.name() = "shape2";
+    shape3.name() = "shape3";
+    shape4.name() = "shape4";
 
+    
     // Manual childing tests 
-    shape1.addChild(&shape4); // DEBUG TODO(?): Get rid of "&"
+    shape1.addChild(shape4);
 
     // Count shape1 children
     int childSize = shape1.getChildCount();
     std::cout << "Shape1 has " << childSize << " children \nThey are:\n";
     for(int i = 0; i < childSize; ++i)
     {
-        std::cout << shape1.getChild(i)->name << "\n";
+        std::cout << shape1.getChild(i).name() << "\n";
     }
     printf("\n\n\n");
 
     shape2 = shape1.getChild(0);
-    shape2 = shape3.getChild("star");
-    std::cout << "shape2 name: " << shape2.name << "\n";
     
-    // Find parent
-    std::cout << "shape2 parent: " << shape2.getParent()->name << "\n";
-
+    int sh_ix = shape3.findChild("star");
+    if (sh_ix >= 0)
+    {
+        shape2 = shape3.getChild(sh_ix);
+    }
+    std::cout << "shape2 name: " << shape2.name() << "\n";
+    
     printf("\n\n\n");
 
     // Count shape3 children
@@ -57,16 +63,22 @@ void setup()
     std::cout << "Shape3 has " << childSize << " children \nThey are:\n";
     for(int i = 0; i < childSize; ++i)
     {
-        std::cout << shape3.getChild(i)->name << "\n";
+        std::cout << shape3.getChild(i).name() << "\n";
     }
+
+    // Load svg as an image
+    img = loadSVGImage("assets/bot1.svg");
+
+    img2 = img;
 }
 
 void draw(float) 
 {
     background(255,255,255);
-    strokeWeight(3);
-    shape(&shape3, 10.0f, 10.0f, 400.0f, 500.0f);
-    shape(&shape1, 10.0f, 10.0f, 400.0f, 500.0f);
+    shape(shape3, 10.0f, 10.0f);
+    shape(shape1, 10.0f, 10.0f,2,1);
+    image(img, 20 + img.width(), 10);
+    image(img2, 30 + img.width()*2, 10);
 }
 
 int main() 

@@ -90,10 +90,10 @@ int main()
     Application app(1000,1000,"Drawpp example: Draw");
 
     // Set the input callbacks
-    app.setMouseDragged(&mouseDragged);
-    app.setMouseWheel(&mouseWheel);
-    app.setKeyPressed(&keyPressed);
+    app.setMouseDragged(mouseDragged);
+    app.setMouseWheel(mouseWheel);
+    app.setKeyPressed(keyPressed);
 
     // Run the application
-    return app.run(&draw,&setup);
+    return app.run(draw,setup);
 }

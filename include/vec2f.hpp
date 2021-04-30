@@ -8,6 +8,7 @@ struct vec2f
 
     float len();
     static float dot(const vec2f& a, const vec2f& b);
+    static vec2f lerp(const vec2f& a, const vec2f& b, float t);
 
     vec2f operator*(float n) const;
     vec2f operator/(float n) const;
