@@ -98,14 +98,14 @@ int main()
 Application app(500,500,"Drawpp application");
 ```
 
-<br>Now all that's left is to start the application. This can be done with the member function ***run***. It will take as parameters, the loop function we created earlier, and some optional parameters which we'll look at in the next section. The ***run*** function will also return an error code, so we can use that as the return value from main.<br>
+<br>Now all that's left is to start the application. This can be done with the member function ***run()***. It will take as parameters, the loop function we created earlier, and some optional parameters which we'll look at in the next section. The ***run()*** function will also return an error code, so we can use that as the return value from main.<br>
 
 
 ```cpp
 return app.run(draw);
 ```
 
-<br>Lastly, so that we don't have to look at a back screen, put a call to the ***background*** function inside of the *draw* function. The ***background*** function will color the window with the color we give it.<br>
+<br>Lastly, so that we don't have to look at a back screen, put a call to the ***background()*** function inside of the *draw* function. The ***background()*** function will color the window with the color we give it.<br>
 
 
 ```cpp
@@ -145,7 +145,7 @@ void setup()
 }
 ```
 
-<br> There, we call the ***strokeWeight*** function. Were you to call it in main, before starting the application, the program would probably crash. The ***strokeWeight*** function will set the thickness of a stroke, or a line that will be draw.<br>
+<br> There, we call the ***strokeWeight()*** function. Were you to call it in main, before starting the application, the program would probably crash. The ***strokeWeight()*** function will set the thickness of a stroke, or a line that will be drawn.<br>
 
 To run the setup function, you should give it as a parameter to the *app.run* function, when starting up your application:<br>
 
@@ -202,8 +202,8 @@ void draw(float t)
 }
 ```
 
-<br>Here, the first two parameters for the ***rect*** call are it's position, and the next two are it's size.<br>
-The parameter for the ***background*** call, is a color constant provided by the library. The ***background*** function will fill the whole window with the given color.<br>
+<br>Here, the first two parameters for the ***rect()*** call are it's position, and the next two are it's size.<br>
+The parameter for the ***background()*** call, is a color constant provided by the library. The ***background()*** function will fill the whole window with the given color.<br>
 
 <br>
 
@@ -584,7 +584,7 @@ void draw(float t)
 }
 ```
 
-<br>All transforms, styles, stacks and everything else, are specific to a target. Meaning that, if you were to call ***strokeWeight(10)***, the stroke weight of ***mytarget*** would not be affected.<br>
+<br>All transforms, styles, stacks and everything else, are specific to a target. Meaning that, if you were to call ***strokeWeight(10)*** globally, the stroke weight of ***mytarget*** would not be affected.<br>
 
 Now, after drawing to your custom target, you can save it to a file with its ***save()*** member function, or convert it to an image with ***toImage()***. You can also draw it to another target without converting it first, with the ***image()*** function. You might want to do that for example in a case where you will redraw the offscreen target every frame, as converting to image is a relative expensive process.<br>
 
@@ -686,4 +686,4 @@ In any case, here are explanations of the functions used in the above example:<b
     - Takes a uniform location, and a float value as parameters.
     - Will set the uniform at the location, to the value.
 
-The scale uniform location is cached because the operation of getting it is not very cheap. This is fine, because the location will not change, unless you recompile the filter. In newer version of GLSL ES it's possible to set the uniform location explicitly in the shader, but we can't do that here.<br>
+The scale uniform location is cached because the operation of getting it is not very cheap. This is fine, because the location will not change, unless you recompile the filter. In newer versions of GLSL ES it's possible to set the uniform location explicitly in the shader, but we can't do that here.<br>
