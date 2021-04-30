@@ -623,7 +623,7 @@ void draw(float)
 
 <br>If you want to make your own filter, you can do that with the ***loadFilter()***, and ***loadFilterFromFile()*** functions. The former takes the filter source code as a string, and the latter will load it from a file.<br>
 
-The filters are written in GLSL 1.0.0, and you can read the documentation of that if you want to learn more.<br>In the filter however, you don't need to create anything else except for the ***main()*** function. You can also use a couple of uniforms provided by the library. Here is a list:<br>
+The filters are written in GLSL ES 1.0.0, and you can read the documentation of that if you want to learn more.<br>In the filter however, you don't need to create anything else except for the ***main()*** function. You can also use a couple of uniforms provided by the library. Here is a list:<br>
 
 - source
     - sampler2D
@@ -634,7 +634,7 @@ The filters are written in GLSL 1.0.0, and you can read the documentation of tha
 
 <br>Note also, that the uniform name ***pos*** is reserved by the library. You can still have a variable called pos, but it cannot be a uniform.<br>
 
-If you need uniforms in your filter, you can add them into the GLSL source. To set their values in runtime, you need to pass a initializer function to the ***filter()*** call, which will do the required OpenGL calls. This function must take one parameter of type unsigned int, which will be the shader program id for the filter. You don't have to use it, but the function signature must match. For all this, you need to include glad.h in your source code.<br>
+If you need uniforms in your filter, you can add them into the GLSL ES source. To set their values in runtime, you need to pass a initializer function to the ***filter()*** call, which will do the required OpenGL calls. This function must take one parameter of type unsigned int, which will be the shader program id for the filter. You don't have to use it, but the function signature must match. For all this, you need to include glad.h in your source code.<br>
 
 Here is an example of a custom filter, recreating the pixelate effect:
 
@@ -676,7 +676,7 @@ int main()
 }
 ```
 
-<br>Ideally, if you are creating your own filters, and setting uniforms in them, you'd be familiar with GLSL and the OpenGL API.<br>
+<br>Ideally, if you are creating your own filters, and setting uniforms in them, you'd be familiar with GLSL ES and the OpenGL API.<br>
 In any case, here are explanations of the functions used in the above example:<br>
 
 - glGetUniformLocation()
@@ -686,4 +686,4 @@ In any case, here are explanations of the functions used in the above example:<b
     - Takes a uniform location, and a float value as parameters.
     - Will set the uniform at the location, to the value.
 
-The scale uniform location is cached because the operation of getting it is not very cheap. This is fine, because the location will not change, unless you recompile the filter. In newer version of GLSL it's possible to set the uniform location explicitly in the shader, but we can't do that here.<br>
+The scale uniform location is cached because the operation of getting it is not very cheap. This is fine, because the location will not change, unless you recompile the filter. In newer version of GLSL ES it's possible to set the uniform location explicitly in the shader, but we can't do that here.<br>
