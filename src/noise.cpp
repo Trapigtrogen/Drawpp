@@ -69,14 +69,17 @@ void Noise::randomSeed2D()
 
 float Noise::pNoise(unsigned int x)
 {
-	if(x > static_cast<unsigned int>(outputWidth)) x -= outputWidth;
+	//if(x > static_cast<unsigned int>(outputWidth)) x -= outputWidth;
+    x %= static_cast<unsigned int>(outputWidth);
 	return perlinNoise1D[x];
 }
 
 float Noise::pNoise(unsigned int x, unsigned int y)
 {
-	if(x > static_cast<unsigned int>(outputWidth)) x -= outputWidth;
-	if(y > static_cast<unsigned int>(outputHeight)) y -= outputHeight;
+	//if(x > static_cast<unsigned int>(outputWidth)) x -= outputWidth;
+	//if(y > static_cast<unsigned int>(outputHeight)) y -= outputHeight;
+    x %= static_cast<unsigned int>(outputWidth);
+    y %= static_cast<unsigned int>(outputHeight);
 	return perlinNoise2D[y * outputWidth + x];
 }
 
