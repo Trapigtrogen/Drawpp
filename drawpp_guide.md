@@ -489,8 +489,9 @@ If you need multiple generators, you can use the Random class. It will also have
     - This is 1.3 by default.
 - noiseDetails()
     - Set the amount of detail in the noise.
-    - Affect the blurriness of the map.
-    - This is 8 by default.
+    - Two parameters: Octaves and falloff.
+    - Octaves affect the blurriness of the map and falloff affects the zoom.
+    - Octaves is 8 by default. Falloff is 0.5.
 - noiseMapSize()
     - Change the size/resolution of the generated noise.
 
