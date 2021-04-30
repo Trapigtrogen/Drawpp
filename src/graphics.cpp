@@ -5,7 +5,7 @@
 #include <debug.hpp>
 #include <vector3.hpp>
 #include <font.hpp>
-#include <font_impl.h>
+#include <font_impl.hpp>
 #include <vec2f.hpp>
 #include <cstring>
 #include <locale>

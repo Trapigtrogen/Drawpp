@@ -2,6 +2,7 @@
 #define DPP_FONT_IMPL_H
 
 #include <unordered_map>
+#include <cstdint>
 
 ///\private
 struct DFont_impl

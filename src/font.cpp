@@ -2,7 +2,7 @@
 #include FT_FREETYPE_H
 
 #include <font.hpp>
-#include <font_impl.h>
+#include <font_impl.hpp>
 #include <debug.hpp>
 #include <glad.h>
 #include <string>

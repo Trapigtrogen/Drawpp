@@ -21,6 +21,7 @@ if (MSVC)
     add_dependencies(example_de-jong-attractor ${PROJECT_NAME})
     add_dependencies(example_buttons ${PROJECT_NAME})
     add_dependencies(example_draw ${PROJECT_NAME})
+    add_dependencies(example_perlin-noise ${PROJECT_NAME})
     add_dependencies(example_color_mousewheel ${PROJECT_NAME})
     add_dependencies(example_custom_filter ${PROJECT_NAME})
     
