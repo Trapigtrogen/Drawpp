@@ -489,8 +489,9 @@ If you need multiple generators, you can use the Random class. It will also have
     - This is 1.3 by default.
 - noiseDetails()
     - Set the amount of detail in the noise.
-    - Affect the blurriness of the map.
-    - This is 8 by default.
+    - Two parameters: Octaves and falloff.
+    - Octaves affect the blurriness of the map and falloff affects the zoom.
+    - Octaves is 8 by default. Falloff is 0.5.
 - noiseMapSize()
     - Change the size/resolution of the generated noise.
 
@@ -685,4 +686,4 @@ In any case, here are explanations of the functions used in the above example:<b
     - Takes a uniform location, and a float value as parameters.
     - Will set the uniform at the location, to the value.
 
-The scale uniform location is cached because the operation of getting it is not very cheap. This is fine, because the location will not change, unless you recompile the filter. In newer version of GLSL it's possible to set the uniform location explicitly in the shader, but we can't do that here.
+The scale uniform location is cached because the operation of getting it is not very cheap. This is fine, because the location will not change, unless you recompile the filter. In newer version of GLSL it's possible to set the uniform location explicitly in the shader, but we can't do that here.<br>
