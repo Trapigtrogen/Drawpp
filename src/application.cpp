@@ -97,7 +97,14 @@ int Application::run(std::function<void(float)> draw,
                       std::function<void()> setup,
                       std::function<void()> cleanup)
 {
-    draw_func = draw;
+    if(!draw)
+    {
+        draw_func = [](float f){};
+    }
+    else
+    {
+        draw_func = draw;
+    }
     setup_func = setup;
     cleanup_func = cleanup;
 

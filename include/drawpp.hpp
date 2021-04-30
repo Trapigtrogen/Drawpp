@@ -537,18 +537,27 @@ std::string hex(Color col, int num);
 
 // Image
 
-///\ingroup drawpp_loaders_api
+///\addtogroup drawpp_loaders_api
+///@{
+
 ///\copydoc DImage::loadImage(const std::string&)
 DImage loadImage(const std::string& fileName);
 
 
-DImage createImage(unsigned char* pixelData, int width, int height);
+///\copydoc DImage::loadSVGImage(const std::string&,float)
+DImage loadSVGImage(const std::string& filename, float scale = 1.0f);
+
+
+///\copydoc DImage::createImage(Color*,int,int)
+DImage createImage(Color* pixelData, int width, int height);
+
+
+///\copydoc DImage::createImage(Color*,int,int)
 DImage createImage(std::vector<Color> pixelData, int width, int height);
 
 
-///\ingroup drawpp_loaders_api
-///\copydoc DImage::loadSVGImage(const std::string&,float)
-DImage loadSVGImage(const std::string& filename, float scale = 1.0f);
+// End group drawpp_loaders_api
+///@}
 
 
 ///\addtogroup drawpp_drawing_api

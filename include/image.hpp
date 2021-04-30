@@ -16,6 +16,11 @@ public:
 	DImage();
 	~DImage();
 
+
+    ///\brief Create an empty white image of size ( \p width, \p height )
+    DImage(int width, int height);
+
+
 	DImage(const DImage&);
 	DImage(DImage&& other);
 
@@ -28,7 +33,7 @@ public:
 
 
 	///\brief Create custom image with \p pixels
-	static DImage createImage(unsigned char* pixels, int width, int height);
+	static DImage createImage(Color* pixels, int width, int height);
     
 
     ///\brief Load an image from an svg file
@@ -59,16 +64,16 @@ public:
 
 private:
 
-    unsigned char* m_pixels = nullptr;
+    Color* m_pixels = nullptr;
 	int m_width = 0;
 	int m_height = 0;
 	unsigned int m_texture = 0;
 
     static unsigned int max_texture_units;
 
-	DImage(unsigned char* _pixels, unsigned int _texture, int w, int h);
+	DImage(Color* _pixels, unsigned int _texture, int w, int h);
 	void bind(unsigned int unit) const;
-	static unsigned int generateTexture(int w, int h, unsigned char* pixels);
+	static unsigned int generateTexture(int w, int h, Color* pixels);
 };
 
 #endif

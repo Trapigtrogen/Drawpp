@@ -1620,19 +1620,19 @@ GraphicsProperties DGraphics::getStyle()
 
 DImage DGraphics::toImage() const
 {
-    unsigned char* data = new unsigned char[buffer_width*buffer_height*4];
-    glBindTexture(GL_TEXTURE_2D,texture_id);
+    unsigned w4 = buffer_width*4;
+    Color* data = static_cast<Color*>(malloc(w4*buffer_height));
 
+    glBindTexture(GL_TEXTURE_2D,texture_id);
     glGetTexImage(GL_TEXTURE_2D,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
-    unsigned w4 = buffer_width*4;
-    unsigned char* tmp = static_cast<unsigned char*>(malloc(w4*sizeof(unsigned char)));
-    unsigned char* end = data + (buffer_height-1)*w4;
+    Color* tmp = static_cast<Color*>(malloc(w4));
+    Color* end = data + (buffer_height-1)*w4;
 
     for(unsigned i = 0; i < buffer_height/2; ++i)
     {
-        unsigned char* first = data+(w4*i);
-        unsigned char* last = end-(w4*i);
+        Color* first = data+(w4*i);
+        Color* last = end-(w4*i);
         std::memcpy(tmp,first,w4);
         std::memcpy(first,last,w4);
         std::memcpy(last,tmp,w4);

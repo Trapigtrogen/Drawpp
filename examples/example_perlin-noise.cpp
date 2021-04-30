@@ -22,46 +22,33 @@ float nscale = 1.3f;
 
 float falloff = 0.5;
 
-// Create pixeldata and empty texture remember to multiply by amount of channels per pixel (r,g,b,a) = 4
-unsigned char* pixeldata = new unsigned char[gen_width * gen_height * 4];
+// Image where we'll draw the noise
 DImage noiseTex;
 
 // pixeldata for alt. method
-std::vector<Color> pixels;
+//std::vector<Color> pixels;
 
-void setup()
-{
-    // Set window's title
-    setTitle("Perlin noise");
 
-    // Load font from assets folder to show our text with
-    textFont(loadFont("assets/Tuffy.ttf", 30));
-
-    // It's important to resize the noise resolution to be the same you want the image to be
-    noiseMapSize(gen_width, gen_height);
-}
-
-void draw(float)
+void draw()
 {
     // Render perlin noise data to texture
 
     // Go through every x,y coordinate of perlin noise data
-    for (int y = 0; y < gen_height; y++)
+    for (int y = 0; y < gen_height; ++y)
     {
-        for (int x = 0; x < gen_width; x++)
+        for (int x = 0; x < gen_width; ++x)
         {
-            // Here we're just going to put same value to each color channel of the pixel to get the grayscaled image
-            // Multiplier 4 is added to both coordinates because as said previously the image has 4 channels per pixel
             // Noise values are normalized meaning they go from 0 to 1 so noise value is multiplied by maximum color value
+            unsigned char col = noise(x,y) * 255;
 
-            pixeldata[y * 4 * gen_width + x * 4] = noise(x,y) * 255;			// RED
-            pixeldata[y * 4 * gen_width + x * 4  + 1] = noise(x, y) * 255;		// GREEN
-            pixeldata[y * 4 * gen_width + x * 4  + 2] = noise(x, y) * 255;		// BLUE
-            pixeldata[y * 4 * gen_width + x * 4  + 3] = 255;				    // ALPHA
+            // Here we're just going to put same value to each color channel of the pixel to get the grayscaled image
+            noiseTex[y * gen_width + x] = Color(col,col,col);
         }
     }
-    // Create texture with pixel data
-    noiseTex = createImage(pixeldata, gen_width, gen_height);
+
+    // Apply the new pixels
+    noiseTex.apply();
+
     // Render said texture to fill whole window
     image(noiseTex, 0, 0, window_width, window_height);
 
@@ -87,13 +74,34 @@ void draw(float)
 
     // Print some helpful text on the screen
 
-    // Set font color to white
-    fill(255, 255, 255);
-
     // Print current values
     text("Seed: " + std::to_string(seed) + "\nOctaves: " + std::to_string(octaves) + "\nScale: " + std::to_string(nscale) + "\nFalloff: " + std::to_string(falloff), 30, 30);
     // Print controls 
     text("Controls:\nR - Random seed\nE - Previous seed\nT - Next seed\nW - Octaves up\nS - Octaves down\nD - Scale up\nA - Scale down\nX - Falloff up\nZ - Falloff down", 30, 170);
+}
+
+void setup()
+{
+    // Set window's title
+    setTitle("Perlin noise");
+
+    // Load font from assets folder to show our text with
+    textFont(loadFont("assets/Tuffy.ttf", 30));
+
+    // It's important to resize the noise resolution to be the same you want the image to be
+    noiseMapSize(gen_width, gen_height);
+
+    // Initialize noise seed to 1
+    noiseSeed(1);
+
+    // Initialize the image
+    noiseTex = DImage(gen_width,gen_height);
+
+    // Set font color to white
+    fill(255, 255, 255);
+
+    // Manually call draw once here in the beginning
+    draw();
 }
 
 // Key press events
@@ -169,6 +177,9 @@ void keyPressed()
         // Regenerate the noise by setting the new seed
         noiseSeed(seed);
     }
+
+    // Manually call draw here, only when a key is pressed
+    draw();
 }
 
 int main()
@@ -179,6 +190,6 @@ int main()
     // Set the key press callback
     app.setKeyPressed(keyPressed);
 
-    // Run the application
-    return app.run(draw,setup);
+    // Run the application, without a draw function
+    return app.run(nullptr,setup);
 }

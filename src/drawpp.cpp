@@ -454,29 +454,14 @@ DImage loadImage(const std::string& fileName)
     return DImage::loadImage(fileName);
 }
 
-DImage createImage(unsigned char* pixelData, int width, int height)
+DImage createImage(Color* pixelData, int width, int height)
 {
-	unsigned char* pixels = new unsigned char[width*height*4];
-	for(int i = 0; i < width*height*4; i++)
-	{
-		pixels[i] = pixelData[i];
-	}
-
-    return DImage::createImage(pixels, width, height);
+    return DImage::createImage(pixelData, width, height);
 }
 
 DImage createImage(std::vector<Color> pixelData, int width, int height)
 {
-    unsigned char* pixels = new unsigned char[width*height*4];
-    for (size_t i = 0; i < pixelData.size(); i++)
-    {
-        pixels[4 * i] = pixelData.at(i).red();
-        pixels[4 * i + 1] = pixelData.at(i).green();
-        pixels[4 * i + 2] = pixelData.at(i).blue();
-        pixels[4 * i + 3] = pixelData.at(i).alpha();
-    }
-
-    return DImage::createImage(pixels, width, height);
+    return DImage::createImage(pixelData.data(), width, height);
 }
 
 DImage loadSVGImage(const std::string& filename, float scale)

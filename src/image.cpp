@@ -37,7 +37,25 @@ DImage::~DImage()
 
 DImage::DImage() = default;
 
-DImage::DImage(unsigned char* _pixels, unsigned int _texture, int w, int h)
+DImage::DImage(int width, int height)
+{
+    m_width = width;
+    m_height = height;
+
+    m_pixels = static_cast<Color*>(malloc(width * height * 4));
+
+    for(unsigned i = 0; i < width*height; ++i)
+    {
+        (m_pixels + i)->red     = 255;
+        (m_pixels + i)->green   = 255;
+        (m_pixels + i)->blue    = 255;
+        (m_pixels + i)->alpha   = 255;
+    }
+
+    m_texture = generateTexture(width, height, m_pixels);
+}
+
+DImage::DImage(Color* _pixels, unsigned int _texture, int w, int h)
 {
 	m_pixels = _pixels;
 	m_texture = _texture;
@@ -53,7 +71,7 @@ DImage::DImage(const DImage& other)
 	if(other.m_pixels != nullptr) 
 	{
         unsigned size = other.m_width * other.m_height * 4;
-		m_pixels = static_cast<unsigned char*>(malloc(size));
+		m_pixels = static_cast<Color*>(malloc(size));
         std::memcpy(m_pixels,other.m_pixels,size);
 	}
 
@@ -86,7 +104,7 @@ DImage& DImage::operator=(const DImage& other)
 		if(other.m_pixels != nullptr) 
 		{
             unsigned size = other.m_width * other.m_height * 4;
-			m_pixels = static_cast<unsigned char*>(malloc(size));
+			m_pixels = static_cast<Color*>(malloc(size));
             std::memcpy(m_pixels,other.m_pixels,size);
 		}
 
@@ -100,12 +118,8 @@ DImage& DImage::operator=(DImage&& other)
 {
 	if(this != &other) 
 	{
-<<<<<<< HEAD
-		free(pixels);
-		glDeleteTextures(1, &m_texture);
-=======
-		free(m_pixels);
->>>>>>> graphics
+		if (m_pixels != nullptr) free(m_pixels);
+		if (m_texture != 0) glDeleteTextures(1, &m_texture);
 
 		m_pixels = other.m_pixels;
 		m_texture = other.m_texture;
@@ -134,7 +148,7 @@ DImage DImage::loadImage(const std::string& fileName)
 	stbi_set_flip_vertically_on_load(0);
 
 	int width, height, channels;
-	unsigned char* pixels = stbi_load(fileName.c_str(), &width, &height, &channels, 4);
+	Color* pixels = reinterpret_cast<Color*>(stbi_load(fileName.c_str(), &width, &height, &channels, 4));
 
 	if(pixels == NULL)
 		dbg::error(("Image data not found: " + fileName).c_str());
@@ -162,9 +176,9 @@ DImage DImage::loadSVGImage(const std::string& filename, float scale)
     int height = (image->height*scale);
     unsigned int w4 = width*4;
 
-    unsigned char* imgdata = static_cast<unsigned char*>(malloc(w4*height));
+    Color* imgdata = static_cast<Color*>(malloc(w4*height));
 
-    nsvgRasterize(raster,image,0,0,scale,imgdata,width,height,w4);
+    nsvgRasterize(raster,image,0,0,scale,reinterpret_cast<unsigned char*>(imgdata),width,height,w4);
 
     GLuint texture = generateTexture(width,height,imgdata);
 
@@ -174,17 +188,20 @@ DImage DImage::loadSVGImage(const std::string& filename, float scale)
     return DImage(imgdata,texture,width,height);
 }
 
-DImage DImage::createImage(unsigned char* pixels, int width, int height)
+DImage DImage::createImage(Color* pixelData, int width, int height)
 {
+    unsigned size = width * height * 4;
+    Color* pixels = static_cast<Color*>(malloc(size));
+    std::memcpy(pixels,pixelData,size);
+
 	GLuint m_texture = generateTexture(width, height, pixels);
 
-	DImage tmpImg(pixels, m_texture, width, height, 4);
+	DImage tmpImg(pixels, m_texture, width, height);
 
 	return tmpImg;
 }
 
-
-unsigned int DImage::generateTexture(int width, int height, unsigned char* pixels)
+unsigned int DImage::generateTexture(int width, int height, Color* pixels)
 {
 	unsigned int m_texture;
 	glGenTextures(1, &m_texture);
