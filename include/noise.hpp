@@ -11,7 +11,7 @@ public:
 	/// Can be used for example when screen size changes
 	void initNoise();
 
-	///\brief Resize noise map to match window size
+	///\brief Resize noise map
 	void resize(int width, int height);
 
 	~Noise() = default;
