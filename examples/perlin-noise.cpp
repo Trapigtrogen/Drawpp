@@ -50,7 +50,7 @@ void draw()
     noiseTex.apply();
 
     // Render said texture to fill whole window
-    image(noiseTex, 0, 0, window_width, window_height);
+    background(noiseTex);
 
 
 
