@@ -910,6 +910,10 @@ void timeReset();
 bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG);
 
 
+///\ingroup drwapp_misc_api
+///\copydoc DGraphics::saveFrame(const std::string&,ImageFormat)const
+bool saveFrame(const std::string& basename, ImageFormat format = ImageFormat::PNG);
+
 // End group drawpp_function_api
 ///@}
 

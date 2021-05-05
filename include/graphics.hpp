@@ -565,9 +565,27 @@ public:
 
     ///\brief Save target pixels to a file as an image
     ///
-    ///\p filename should not include the extenstion, as it will be added according to \p format.
+    ///\p filename should not include the extension, as it will be added according to \p format.
     ///\return success
     bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG) const;
+
+
+    ///\brief Save target pixels to a file sequence as an image
+    ///
+    ///When called, will save the target as \p basename, and append a frame number to it. \n
+    ///By default, the the frame number will be separated from the base name by an underscore, 
+    ///and will be padded with zeroes. Only 5 zeroes will be padded. 
+    ///If the frame number does not fit into 5 digits, there will be no padding. \n \n
+    ///
+    ///You can set your own format for the frame numbering of files, by including 1 or more '#' in \p basename. 
+    ///They will be replaced by the frame number, and padded with zeros. In this case, if the frame number does 
+    ///not fit into the given space, the save will fail. If you have multiple separated globs of '#' in \p basename,
+    ///the first one is used for the frame number. \n 
+    ///For example, "screen-###-##", could become "screen-123-##.png" \n \n
+    ///
+    ///\p filename should not include the extension, as it will be added according to \p format.
+    ///\return success
+    bool saveFrame(const std::string& basename, ImageFormat format = ImageFormat::PNG) const;
 
 
     ///\brief Draw text at ( \p x, \p y )

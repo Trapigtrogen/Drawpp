@@ -823,6 +823,11 @@ bool save(const std::string& filename, ImageFormat format)
     return Application::GetInstance()->graphics_object().save(filename,format);
 }
 
+bool saveFrame(const std::string& basename, ImageFormat format)
+{
+    return Application::GetInstance()->graphics_object().saveFrame(basename,format);
+}
+
 // Font and text
 
 DFont loadFont(const std::string& filename, int size, float row_spacing, float char_spacing)

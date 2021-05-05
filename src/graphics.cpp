@@ -16,6 +16,8 @@
 #include <application.hpp>
 #include <filter.hpp>
 #include <filter_impl.hpp>
+#include <sstream>
+#include <iomanip>
 
 #include "stb_image_write.h"
 
@@ -114,6 +116,8 @@ static float quad_verts[] =
 static std::vector<float> txt_vert_buffer;
 static std::vector<float> txt_texc_buffer;
 static std::vector<vec2f> bezier_buffer;
+
+extern unsigned long long frameCount;
 
 #include <shaders/generic_vert.ipp>
 #include <shaders/ellipse_frag.ipp>
@@ -1247,6 +1251,63 @@ bool DGraphics::save(const std::string& filename, ImageFormat format) const
     delete[] data;
 
     return result == 1;
+}
+
+bool DGraphics::saveFrame(const std::string& basename, ImageFormat format) const
+{
+    bool custom = false;
+    unsigned i = 0;
+    for(; i < basename.size(); ++i)
+    {
+        if(basename[i] == '#')
+        {
+            custom = true;
+            break;
+        }
+    }
+
+    std::stringstream ns;
+
+    if(!custom)
+    {
+        ns << basename;
+        ns << '_';
+        ns << std::setfill('0') << std::setw(5);
+        ns << frameCount;
+    }
+    else
+    {
+        unsigned st = i;
+
+        for(; i < basename.size(); ++i)
+        {
+            if(basename[i] != '#')
+            {
+                break;
+            }
+        }
+
+        unsigned long long frameN = frameCount;
+        int d = 0;
+        while (frameN) {
+            frameN /= 10;
+            d++;
+        }
+
+        unsigned count = i - st;
+
+        if(d > count)
+        {
+            return false;
+        }
+
+        ns << std::string(basename.begin(),basename.begin()+st);
+        ns << std::setfill('0') << std::setw(count);
+        ns << frameCount;
+        ns << std::string(basename.begin()+st+count,basename.end());
+    }
+
+    return save(ns.str(),format);
 }
 
 void DGraphics::text(const std::string& txt, float x, float y)
