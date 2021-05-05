@@ -15,7 +15,6 @@ static const char* ellipse_shader_f = R"(
 
     void main()
     {
-/*
         vec2 tc = abs(texc*2.0 - 1.0);
         float l = length(tc);
 
@@ -45,41 +44,6 @@ static const char* ellipse_shader_f = R"(
         else
         {
             discard;
-        }
-*/
-
-
-        // Other
-        vec2 tc = abs(texc*2.0 - 1.0);
-
-        float x = tc.x;
-        float y = tc.y;
-        float radius = x * x + y * y;
-        if( radius > 1.0 ) discard;
-
-        radius = sqrt( radius );
-
-        float radiusH = 1.0 - (strokeWeight+1.0) / offset.z;
-        float radiusV = 1.0 - (strokeWeight+1.0) / offset.w;
-        float radiusAverage = (radiusH + radiusV) * 0.5;
-
-        float minRadius = 0.0;
-        x = abs( x );
-        y = abs( y );
-        if( x > y ) {
-            minRadius = mix( radiusH, radiusAverage, y / x );
-        }
-        else {
-            minRadius = mix( radiusV, radiusAverage, x / y );
-        }
-
-        if( radius < minRadius ) 
-        {
-            gl_FragColor = fillColor;
-        }
-        else
-        {
-            gl_FragColor = strokeColor;
         }
     }
 )";
