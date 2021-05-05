@@ -544,6 +544,13 @@ As with random numbers, you can have multiple noise generators by using the Nois
     - To exit fullscreen mode, call size().
 - setTitle()
     - Set the window title.
+- setLocation()
+    - Set the application window location.
+    - Location is relative to the top left corner of the primary monitor.
+- getMonitorWidth()
+    - Get the pixel width of a given monitor.
+- getMonitorHeight()
+    - Get the pixel height of a given monitor. 
 - delay()
     - Stop the application for a number of milliseconds.
 - save()
