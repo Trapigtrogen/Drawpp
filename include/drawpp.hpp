@@ -66,6 +66,18 @@ void fullScreen(int monitor);
 void setTitle(const char* title);
 
 
+///\copydoc Application::setLocation(int,int)
+void setLocation(int x, int y);
+
+
+///\copydoc Application::getMonitorWidth(int)
+int getMonitorWidth(int monitor);
+
+
+///\copydoc Application::getMonitorHeight(int)
+int getMonitorHeight(int monitor);
+
+
 ///\brief Is the application window currently focused
 extern bool focused;
 

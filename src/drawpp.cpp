@@ -54,6 +54,21 @@ void delay(unsigned int millis)
     std::this_thread::sleep_for(std::chrono::milliseconds(millis));
 }
 
+void setLocation(int x, int y)
+{
+    Application::GetInstance()->setLocation(x,y);
+}
+
+int getMonitorWidth(int monitor)
+{
+    return Application::GetInstance()->getMonitorWidth(monitor);
+}
+
+int getMonitorHeight(int monitor)
+{
+    return Application::GetInstance()->getMonitorHeight(monitor);
+}
+
 
 // Random
 

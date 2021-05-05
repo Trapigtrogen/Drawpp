@@ -121,6 +121,20 @@ public:
     void hideCursor();
 
 
+    ///\brief Set the window location
+    ///
+    ///(0,0) is at the top-left corner of the primary monitor
+    void setLocation(int x, int y);
+
+
+    ///\brief Get the pixel width of a monitor
+    int getMonitorWidth(int monitor);
+
+
+    ///\brief Get the pixel height of a monitor
+    int getMonitorHeight(int monitor);
+
+
     ///\brief Get a reference to the default draw target
     DGraphics& graphics_object();
 
