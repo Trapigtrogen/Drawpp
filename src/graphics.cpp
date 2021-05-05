@@ -1148,6 +1148,7 @@ void DGraphics::quad(float x1, float y1, float x2, float y2, float x3, float y3,
                                                                     properties.fill_color.blue/255.0f,
                                                                     properties.use_fill?properties.fill_color.alpha/255.0f:0.0f);
     glUniformMatrix4fv(quad_shader_view_loc,1,GL_FALSE,view_mat.values);
+    glUniformMatrix4fv(quad_shader_transform_loc, 1, GL_FALSE, transform_mat.values);
 
     glEnableVertexAttribArray(quad_shader_vpos_loc);
 
