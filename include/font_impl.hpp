@@ -32,6 +32,9 @@ struct DFont_impl
     //Initialize the freetype library
     static void init_lib();
 
+    //Cleanup the freetype library
+    static void cleanup_lib();
+
     //Load a character into the bitmap and texture
     bool load_additional_char(wchar_t c);
 

@@ -14,7 +14,7 @@ public:
 	///\brief Resize noise map
 	void resize(int width, int height);
 
-	~Noise() = default;
+	~Noise();
 
 	///\brief Set noise seed manually
 	/// Also recreates noise
@@ -43,10 +43,13 @@ public:
 	/// Lower value means stronger curve and higher make it smoother
 	void setScale(float _scale);
 
-	int width() { return outputWidth; }
-	int height() { return outputHeight; }
 
-	float* perlinNoise2D = nullptr;
+    ///\brief Get the current noise width
+	int width() { return outputWidth; }
+
+
+    ///\brief Get the current noise height
+	int height() { return outputHeight; }
 
 private:
 	int nOctaves = 8;
@@ -59,6 +62,7 @@ private:
 	float* noiseSeed1D = nullptr;
 	float* noiseSeed2D = nullptr;
 	float* perlinNoise1D = nullptr;
+	float* perlinNoise2D = nullptr;
 
 	void randomSeed1D();
 	void randomSeed2D();
