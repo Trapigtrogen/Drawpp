@@ -555,6 +555,10 @@ As with random numbers, you can have multiple noise generators by using the Nois
     - Stop the application for a number of milliseconds.
 - save()
     - Save a screenshot to the given path.
+- saveFrame()
+    - Save a screenshot to a given path, with the frame number appended.
+    - Appended frame number will be padded with zeros to up to 5 digits.
+    - Make your own format by using '#' characters in the path to mark the place for the frame number.
 
 
 <br>In addition to these functions, there is also a couple of variables:
