@@ -326,6 +326,7 @@ void DGraphics::beginDraw()
 
 void DGraphics::endDraw()
 {
+    glDisable(GL_SCISSOR_TEST);
     glBindFramebuffer(GL_FRAMEBUFFER,Application::GetInstance()->graphics_object().buffer_id);
 }
 
