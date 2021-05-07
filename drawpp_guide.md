@@ -315,15 +315,29 @@ void main()
 
 <br>Here is a list of all the available input callbacks:
 - keyPressed
+    - Called every time a keyboard key is pressed.
+    - Use the *key* and *keyCode* variables to get the key that was pressed.
 - keyReleased
+    - Called every time a keyboard key is released.
+    - Use the *key* and *keyCode* variables to get the key that was released.
 - mouseClicked
+    - Called when a mouse button is pressed down, and then released.
+    - Use the *mouseButton* variable to get the button that was clicked.
 - mousePressed
+    - Called every time a mouse button is pressed.
+    - Use the *mouseButton* variable to get the button that was pressed.
 - mouseReleased
+    - Called every time a mouse button is released.
+    - Use the *mouseButton* variable to get the button that was released.
 - mouseWheel
+    - Called every time the mouse wheel is moved.
+    - Takes one float as parameter, which will be the distance the mouse wheel was scrolled. The direction of the scroll can be interpreted from the sign of the value.
 - mouseMoved
+    - Called every time the mouse is moved, and no mouse buttons are being pressed.
 - mouseDragged
+    - Called every time the mouse is moved, while a mouse button is pressed.
 
-<br>Of all of these, only mouseWheel takes any parameters. It will take one float, which will be the distance the mouse wheel was scrolled. The direction of the scroll can be interpreted from the sign of the value.<br>
+<br>Of all of these, only mouseWheel takes any parameters.<br>
 
 In addition to the input callbacks, you also have some variables at your disposal:
 - key
