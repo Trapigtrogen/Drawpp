@@ -175,6 +175,16 @@ void noTint()
     Application::GetInstance()->graphics_object().noTint();
 }
 
+void clip(int x1, int y1, int x2, int y2)
+{
+    Application::GetInstance()->graphics_object().clip(x1,y1,x2,y2);
+}
+
+void noClip()
+{
+    Application::GetInstance()->graphics_object().noClip();
+}
+
 void bezierDetail(float d)
 {
     Application::GetInstance()->graphics_object().bezierDetail(d);

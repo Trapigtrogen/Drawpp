@@ -310,6 +310,14 @@ void noTint();
 void bezierDetail(float d);
 
 
+///\copydoc DGraphics::clip(int,int,int,int)
+void clip(int x1, int y1, int x2, int y2);
+
+
+///\copydoc DGraphics::noClip()
+void noClip();
+
+
 // End group drawpp_drawing_properties_api
 ///@}
 

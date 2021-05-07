@@ -66,6 +66,8 @@ struct GraphicsProperties
     PosMode imagemode = PosMode::CORNER;
     DFont font;
     float bezier_detail = 20;
+    bool use_clip = false;
+    int clip_x1, clip_x2, clip_y1, clip_y2;
 };
 
 ///\brief Graphics class describes a render target
@@ -634,6 +636,16 @@ public:
 
     ///\brief Apply a filter to this target
     void filter(filters f, float param = 0);
+
+
+    ///\brief Restrict drawing area to a rectangle
+    ///
+    ///Top-left corner of the rectangle is at ( \p x1, \p y1 ), and its size is ( \p x2, \p y2 ).
+    void clip(int x1, int y1, int x2, int y2);
+
+
+    ///\brief Disable clipping.
+    void noClip();
 
 
     GraphicsProperties getStyle();

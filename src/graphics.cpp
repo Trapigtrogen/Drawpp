@@ -309,6 +309,19 @@ void DGraphics::beginDraw()
     transform_mat = DMatrix4::identity();
     glBindFramebuffer(GL_FRAMEBUFFER,buffer_id);
     glViewport(0,0,buffer_width,buffer_height);
+
+    if(properties.use_clip)
+    {
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(properties.clip_x1,
+                buffer_height-properties.clip_y1-properties.clip_y2,
+                properties.clip_x2,
+                properties.clip_y2);
+    }
+    else
+    {
+        glDisable(GL_SCISSOR_TEST);
+    }
 }
 
 void DGraphics::endDraw()
@@ -1791,6 +1804,24 @@ void DGraphics::filter(filters f, float param)
             break;
         }
     }
+}
+
+void DGraphics::clip(int x1, int y1, int x2, int y2)
+{
+    properties.use_clip = true;
+    properties.clip_x1 = x1;
+    properties.clip_x2 = x2;
+    properties.clip_y1 = y1;
+    properties.clip_y2 = y2;
+
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(x1,buffer_height-y1-y2,x2,y2);
+}
+
+void DGraphics::noClip()
+{
+    properties.use_clip = false;
+    glDisable(GL_SCISSOR_TEST);
 }
 
 DGraphics& DGraphics::operator=(DGraphics&& other)
