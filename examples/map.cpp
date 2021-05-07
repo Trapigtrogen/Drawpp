@@ -5,9 +5,6 @@
 // The size of perlin noise will be 512px * 512px
 int gen_height = 512;
 int gen_width = 512;
-// Image where we'll draw the noise
-DImage grassTex;
-DImage waterTex;
 
 // Camera
 float zoomlevel = 0.7f;
@@ -40,11 +37,19 @@ std::vector<House*> houses;
 std::vector<House*> houses2;
 
 
+// Textures
+// 
+// Environment
+DImage grassTex;
+DImage waterTex;
+DImage bushTex;
+DImage treeTex;
 // Cars
 DImage carYellow;
 DImage carRed;
 DImage carBlue;
 DImage carGreen;
+
 
 // Select random car
 DImage* randomCar()
@@ -101,6 +106,10 @@ void setup()
     carRed = loadSVGImage("assets/map/carRed.svg");
     carBlue = loadSVGImage("assets/map/carBlue.svg");
     carGreen = loadSVGImage("assets/map/carGreen.svg");
+
+    // Load bush and tree textures
+    bushTex = loadImage("assets/map/bush.png");
+    treeTex = loadImage("assets/map/tree.png");
 
     // Create houses with random coloured walls
     // They need to be created in setup and stored so they kep their colour instead of getting new colour every frame
@@ -361,6 +370,9 @@ void draw(float deltaTime)
     fill(0,255,0,100);
     noStroke();
     rect(-1500, 500, 2000, 2000);
+
+    image( treeTex, -1500, 500, treeTex.width(), treeTex.height() );
+    image( bushTex, -1300, 600, bushTex.width(), bushTex.height() );
 
 }
 
