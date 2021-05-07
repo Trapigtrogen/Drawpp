@@ -1,4 +1,6 @@
 #include <drawpp.hpp>
+#include <algorithm> // std::min
+
 // perlin noise settings
 // The size of perlin noise will be 512px * 512px
 int gen_height = 512;
@@ -14,6 +16,16 @@ int cameraY = -100;
 float cameraSpeed = 10;
 bool shouldMoveCamera = false;
 
+// Animation settings
+
+// One second timer for all animations to sync
+// Gives that pixel game feeling
+float animationTimer = 0;
+
+// Water animation movement amount
+int waterMovement = 0;
+
+
 // House settings
 struct House
 {
@@ -23,7 +35,9 @@ struct House
     int stores;
 };
 int gap = 10;
+int defaultBorder = 0; // 0, 3 and 7 give nice different visual
 std::vector<House*> houses;
+std::vector<House*> houses2;
 
 
 // Cars
@@ -31,12 +45,11 @@ DImage carYellow;
 DImage carRed;
 DImage carBlue;
 DImage carGreen;
-DImage carSports;
 
 // Select random car
 DImage* randomCar()
 {
-    int ri = randomInt(4);
+    int ri = randomInt(3);
     switch (ri)
     {
     case 0:
@@ -51,12 +64,8 @@ DImage* randomCar()
         return &carRed;
         break;
 
-    case 3:
-        return &carGreen;
-        break;
-
     default:
-        return &carSports;
+        return &carGreen;
         break;
     }
 }
@@ -70,6 +79,7 @@ float carTimer2 = -1000;
 // They are randomily set to point one of the car images
 DImage* carImg = &carYellow;
 DImage* carImg2 = &carRed;
+DImage* carImg3 = &carBlue;
 
 
 
@@ -91,11 +101,10 @@ void setup()
     carRed = loadSVGImage("assets/map/carRed.svg");
     carBlue = loadSVGImage("assets/map/carBlue.svg");
     carGreen = loadSVGImage("assets/map/carGreen.svg");
-    carSports = loadSVGImage("assets/map/carSports.svg");
 
     // Create houses with random coloured walls
     // They need to be created in setup and stored so they kep their colour instead of getting new colour every frame
-    // We can store other settigns now as well
+    // We can store other settigns now as well so all the houses can be drawn with one loop
     
     // Vertical from corner (this is first so it gets drawn before stuff in front)
     for (int i = 0; i < 10; i++)
@@ -103,43 +112,63 @@ void setup()
         House* house = new House;
         house->wallCol = Color(randomInt(255), randomInt(255), randomInt(255));
         house->coordX = 890;
-        house->coordY = -i * (100 + gap) + 90;
+        house->coordY = i * (100 - gap) - 700;
         house->stores = 1;
         houses.push_back(house);
     }
-    // Horizontal
-    for (int i = 0; i < 10; i++)
+    // Horizontal before the road
+    for (int i = 0; i < 29; i++)
     {
         House* house = new House;
         house->wallCol = Color(randomInt(255), randomInt(255), randomInt(255));
-        house->stores = 1;
-        house->coordX = i * (100 + gap) - 100;
-        house->coordY = 200;
-
-        // One random tall building for the lols
-        if (i == 3) 
+        house->coordX = i * (100 + gap) - 2200;
+        house->coordY = 190;
+        house->stores = randomInt(1, 3);
+        // Randomize building size
+        // Don't let last few houses be tall so they don't render over the swimming pool
+        if (i > 20) house->stores = 1;
+        if (house->stores > 1)
         {
-            house->stores = 2;
-            house->coordY = 100;
+            house->coordY -= (house->stores - 1) * 100;
         }
 
         houses.push_back(house);
     }
     // Horizontal after the road
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 22; i++)
     {
         House* house = new House;
         house->wallCol = Color(randomInt(255), randomInt(255), randomInt(255));
-        house->stores = 1;
-        house->coordX = i * (100 + gap) - 100;
-        house->coordY = 200;
-        if (i == 3)
+        house->coordX = i * (100 + gap) + 1130;
+        house->coordY = 190;
+        // Randomize building size
+        house->stores = randomInt(1, 3);
+        if (house->stores > 1)
         {
-            house->stores = 2;
-            house->coordY = 100;
+            house->coordY -= (house->stores -1) * 100;
         }
 
         houses.push_back(house);
+    }
+    // Big lower area
+    // On it's own vector so it can be drawn on top of the cars
+    for (int i = 0; i < 22; i++)
+    {
+        for (int j = 0; j < 4; j++) // Rows
+        {
+            House* house = new House;
+            house->wallCol = Color(randomInt(255), randomInt(255), randomInt(255));
+            house->coordX = i * (100 + gap) + 1130;
+            house->coordY = 490 + j*300;
+            // Randomize building size
+            house->stores = randomInt(2, std::min(j+3,5));
+            if (house->stores > 1)
+            {
+                house->coordY -= (house->stores - 1) * 100;
+            }
+
+            houses2.push_back(house);
+        }
     }
 
     // Generate grassy texture using perlin noise
@@ -151,9 +180,9 @@ void setup()
             // Noise values are normalized meaning they go from 0 to 1 so noise value is multiplied by maximum color value
             unsigned char col = noise(x, y) * 255;
 
-            // Put value to green channel for grass and blue channel for water
+            // Put value to green channel for grass and blue + green channel for water for cyan colour
             grassTex[y * gen_width + x] = Color(0, col, 0, 150);
-            waterTex[y * gen_width + x] = Color(0, col/2, col, 100);
+            waterTex[y * gen_width + x] = Color(0, col, col, 100);
         }
     }
     // Apply the new pixels
@@ -163,9 +192,32 @@ void setup()
 
 void draw(float deltaTime)
 {
-    background(200, 255, 100);
+    // Animations
 
-    // Zoom and movement
+    // 1sec animation timer
+    animationTimer += deltaTime;
+    if (animationTimer > 1)
+    {
+        waterMovement = randomInt(0, 10);
+        animationTimer = 0;
+    }
+    // Car movement
+    carTimer += deltaTime * carSpeed;
+    if (carTimer > 1900)
+    {
+        carTimer = -1900;
+        carImg = randomCar();
+        carImg3 = randomCar();
+    }
+    carTimer2 += deltaTime * carSpeed;
+    if (carTimer > 1900)
+    {
+        carTimer = -1900;
+        carImg2 = randomCar();
+    }
+
+
+    // Camera zoom and position
 
     // Limit zoom level
     if (zoomlevel > 1) zoomlevel = 1;
@@ -179,108 +231,137 @@ void draw(float deltaTime)
     if (cameraY > 700) cameraY = 700;
     if (cameraY < -1000) cameraY = -1000;
 
-    // Mouse camera. Click & drag
-    if (shouldMoveCamera)
-    {
-        if ((pmouseX - mouseX) > 1 || (pmouseX - mouseX) < -1) // Reduce sliding
-            cameraX += (pmouseX - mouseX);
-        if ((pmouseY - mouseY) > 1 || (pmouseY - mouseY) < -1) // Reduce sliding
-            cameraY += (pmouseY - mouseY);
-    }
-
     // Move the world on the opposite direction to camera movement
     translate(-cameraX, -cameraY);
 
-    // Render gras texture
+
+    // Drawing elements
+
+    background(200, 255, 100);
+    // Grass texture over background
     image(grassTex, -4000, -4000, 8000, 8000);
 
-    // Draw Roads
+
+    // Roads
     noStroke();
     fill(colors::grey);
     // Intersecting roads. Width = 100
-    rect(1000, -2000, 100, 8000); // Horizontal
-    rect(-2000, 300, 8000, 100); // Vertical
+    rect(1000, -2000, 100, 8000); // Vertical
+    rect(-2000, 300, 8000, 100); // Horizontal
+    rect(1000, 1500, 3000, 100); // Horizontal under the houses
 
-    // Draw Swimming pool
+
+    // Swimming pool
     fill(colors::cyan);
-    noStroke();
     rect(400, 70, 200, 100);
     // Shadow
     fill(0, 200, 200);
     rect(400, 70, 200, 20);
-    //quad();
     quad(400, 70, 420, 70, 400, 170, 410, 170);
     // Texture with some random movment to resemble water moving
-    image(waterTex, 400, 70, 200, 100);
+    image(waterTex, 390 + waterMovement, 70, 210, 100);
     // Stone areas to hide the texture going over
     fill(colors::grey);
     rect(600, 70, 70, 100);
-    rect(600, 70, 70, 100);
-    
-    // Draw houses
+    rect(330, 70, 70, 100);
+
+    // Houses
     for (House* house : houses)
     {
-        strokeWeight(7);
+        strokeWeight(defaultBorder);
         fill(house->wallCol);
         rect(house->coordX, house->coordY, 100, house->stores * 100);
-
         // Shadow
         noStroke();
         fill(0, 0, 0, 50);
-        rect(house->coordX + 7, house->coordY, 20, house->stores * 100 - 7);
-
+        rect(house->coordX + defaultBorder, house->coordY, 20, house->stores * 100 - defaultBorder);
         // Door
         fill(colors::brown);
         rect(house->coordX + 40, house->coordY + 60 + (house->stores - 1) * 100 - 5, 20, 40);
-
         // Windows
         fill(colors::cyan);
-        rect(house->coordX + 20, house->coordY + 25 + (house->stores - 1) * 100, 15, 15);
+        rect(house->coordX + 30, house->coordY + (house->stores - 1) * 100 + 30, 15, 15);
+        rect(house->coordX + 60, house->coordY + (house->stores - 1) * 100 + 30, 15, 15);
         // Extra windows for higher houses
-        if (house->stores > 1)  
+        if (house->stores > 1)
         {
-            rect(house->coordX + 30, house->coordY + 30, 15, 15);
-            rect(house->coordX + 60, house->coordY + 30, 15, 15);
-            rect(house->coordX + 60, house->coordY + 70, 15, 15);
+            for (int i = 0; i < house->stores - 1; i++)
+            {
+                rect(house->coordX + 30, house->coordY + i * 100 + 30, 15, 15);
+                rect(house->coordX + 30, house->coordY + i * 100 + 70, 15, 15);
+                rect(house->coordX + 60, house->coordY + i * 100 + 30, 15, 15);
+                rect(house->coordX + 60, house->coordY + i * 100 + 70, 15, 15);
+            }
         }
     }
-    // Draw roofs 
+    // Roofs 
     // This is separate to get all the roofs drawn on top of the houses
     for (House* house : houses)
     {
-        strokeWeight(7);
-        fill(200,0,0);
+        strokeWeight(defaultBorder);
+        fill(150,0,0); // Dark red
         triangle(house->coordX -20, house->coordY + 20,
                  house->coordX + 50, house->coordY - 40,
                  house->coordX + 120, house->coordY + 20);
     }
 
-    // Custom house
-    fill(colors::blue);
-    rect(1100, 400, 100, 200);
-    rect(1100, 500, 200, 100);
-
 
     // Cars
+    // Car going to left
+    image(*carImg3, -carTimer + 1000, 250, -carImg->width() / 3, carImg->height() / 3);
+    // Car going to right
     image(*carImg, carTimer, 300, carImg->width() / 3, carImg->height() / 3);
-    // rotate other car 90 degrees
+    // rotate one car 90 degrees
     rotate(1.570796);
     image(*carImg2, carTimer, -1090, carImg->width() / 3, carImg->height() / 3);
+    // Rotate back
+    rotate(-1.570796);
 
-    // Car movement
-    carTimer += deltaTime * carSpeed;
-    if (carTimer > 1900)
+
+    // Houses that go over the cars
+    for (House* house : houses2)
     {
-        carTimer = -1900;
-        carImg = randomCar();
+        strokeWeight(defaultBorder);
+        fill(house->wallCol);
+        rect(house->coordX, house->coordY, 100, house->stores * 100);
+        // Shadow
+        noStroke();
+        fill(0, 0, 0, 50);
+        rect(house->coordX + defaultBorder, house->coordY, 20, house->stores * 100 - defaultBorder);
+        // Door
+        fill(colors::brown);
+        rect(house->coordX + 40, house->coordY + 60 + (house->stores - 1) * 100 - 5, 20, 40);
+        // Windows
+        fill(colors::cyan);
+        rect(house->coordX + 30, house->coordY + (house->stores - 1) * 100 + 30, 15, 15);
+        rect(house->coordX + 60, house->coordY + (house->stores - 1) * 100 + 30, 15, 15);
+        // Extra windows for higher houses
+        if (house->stores > 1)
+        {
+            for (int i = 0; i < house->stores - 1; i++)
+            {
+                rect(house->coordX + 30, house->coordY + i * 100 + 30, 15, 15);
+                rect(house->coordX + 30, house->coordY + i * 100 + 70, 15, 15);
+                rect(house->coordX + 60, house->coordY + i * 100 + 30, 15, 15);
+                rect(house->coordX + 60, house->coordY + i * 100 + 70, 15, 15);
+            }
+        }
+    }
+    // Roofs 
+    for (House* house : houses2)
+    {
+        strokeWeight(defaultBorder);
+        fill(150, 0, 0); // Dark red
+        triangle(house->coordX - 20, house->coordY + 20,
+            house->coordX + 50, house->coordY - 40,
+            house->coordX + 120, house->coordY + 20);
     }
 
-    carTimer2 += deltaTime * carSpeed;
-    if (carTimer > 1900)
-    {
-        carTimer = -1900;
-        carImg2 = randomCar();
-    }
+    // Park
+    fill(0,255,0,100);
+    noStroke();
+    rect(-1500, 500, 2000, 2000);
+
 }
 
 
@@ -290,17 +371,17 @@ void mouseWheel(float t)
     zoomlevel += t * 0.1f;
 }
 
-// Enable cameramovement on mouse when clicked
-// (Click & Drag to move)
-void mousePressed()
+// Mouse click & drag camera movement
+void mouseDragged()
 {
-    shouldMoveCamera = true;
+    cursor(HAND);
+    cameraX += (pmouseX - mouseX);
+    cameraY += (pmouseY - mouseY);
 }
 
-// Disable camera movement on mouse when not clicked
-void mouseReleased() 
+void mouseReleased()
 {
-    shouldMoveCamera = false;
+    cursor(ARROW);
 }
 
 // Key input
@@ -324,6 +405,18 @@ void keyPressed()
         cameraX += cameraSpeed;
     break;
 
+    case VK_1: // Artstyle 1
+        defaultBorder = 0;
+    break;
+
+    case VK_2: // Artstyle 2
+        defaultBorder = 3;
+    break;
+
+    case VK_3: // Artstyle 3
+        defaultBorder = 7;
+    break;
+
     case VK_ESC:
         exit(1);
     break;
@@ -337,11 +430,9 @@ int main()
 {
     Application app(1000, 800);
 
-    app.setMousePressed(mousePressed);
+    app.setMouseDragged(mouseDragged);
     app.setMouseReleased(mouseReleased);
-
     app.setMouseWheel(mouseWheel);
-
     app.setKeyPressed(keyPressed);
 
     return app.run(draw, setup);
