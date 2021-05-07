@@ -246,6 +246,10 @@ Some of the functions listed have several overloads, details of which you can lo
 - textFont()
     - Set the font which will be used for drawing text.
     - By default, no font is set, so to draw text, you must first set a font.
+- clip()
+    - Restrict the drawing area to a rectangle.
+- noClip()
+    - Disable clipping.
 
 
 <br>Position modes dictate what is considered the origin of the thing being drawn. Position mode ***CORNER*** means that the origin is in the upper left corner. For example, were you to draw a square in the coordinates (100,100), the upper left corner of the square, will be in the position (100,100).<br>
@@ -698,3 +702,5 @@ In any case, here are explanations of the functions used in the above example:<b
     - Will set the uniform at the location, to the value.
 
 The scale uniform location is cached because the operation of getting it is not very cheap. This is fine, because the location will not change, unless you recompile the filter. In newer versions of GLSL ES it's possible to set the uniform location explicitly in the shader, but we can't do that here.<br>
+
+Another thing you can do with filters, is to just use them as shader renderers. You can draw whatever you want in them, and you can choose to ignore the *source* texture.
