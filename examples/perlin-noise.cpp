@@ -75,6 +75,12 @@ void draw()
 
     // Print some helpful text on the screen
 
+    // Transparent box to see font better
+    fill(0,0,0,100);
+    rect(20,20,250,483);
+
+    // Back to font colour
+    fill(colors::white);
     // Print current values
     text("Seed: " + std::to_string(seed) + "\nOctaves: " + std::to_string(octaves) + "\nScale: " + std::to_string(nscale) + "\nFalloff: " + std::to_string(falloff), 30, 30);
     // Print controls 
