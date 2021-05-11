@@ -20,4 +20,6 @@ const Color colors::tan         = Color(210, 180, 140);
 const Color colors::olive       = Color(128, 128, 0);
 const Color colors::black       = Color(0, 0, 0);
 const Color colors::white       = Color(255, 255, 255);
+const Color colors::darkgrey   = Color(81, 81, 81);
+const Color colors::lightgrey   = Color(174, 174, 174);
 const Color colors::grey        = Color(128, 128, 128);

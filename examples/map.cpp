@@ -3,15 +3,16 @@
 
 // perlin noise settings
 // The size of perlin noise will be 512px * 512px
-int gen_height = 512;
-int gen_width = 512;
+int gen_height = 1024;
+int gen_width = 1024;
 
 // Camera
-float zoomlevel = 0.7f;
+float zoomlevel = 0.6f;
 int cameraX = -200;
 int cameraY = -100;
 float cameraSpeed = 10;
-bool shouldMoveCamera = false;
+float visibleAreaX;
+float visibleAreaY;
 
 // Animation settings
 
@@ -38,12 +39,20 @@ std::vector<House*> houses2;
 
 
 // Textures
-// 
+
 // Environment
 DImage grassTex;
 DImage waterTex;
 DImage bushTex;
 DImage treeTex;
+DImage gatewayTex;
+// Water
+DImage water0; // Empty state. No need to load texture. Otherwise treated as normal image
+DImage water1; // State 1
+DImage water2; // State 2
+DImage water3; // State 3
+std::vector<DImage*> waterAnimation; // Vector for all water animation images to push in
+int currentWater = 0; // Select correct animation state image with this index in animation loop
 // Cars
 DImage carYellow;
 DImage carRed;
@@ -102,14 +111,15 @@ void setup()
     waterTex = DImage(gen_width, gen_height);
 
     // Load car svg images as textures
-    carYellow = loadSVGImage("assets/map/carYellow.svg");
-    carRed = loadSVGImage("assets/map/carRed.svg");
-    carBlue = loadSVGImage("assets/map/carBlue.svg");
-    carGreen = loadSVGImage("assets/map/carGreen.svg");
+    carYellow = loadImage("assets/map/carYellow.png");
+    carRed = loadImage("assets/map/carRed.png");
+    carBlue = loadImage("assets/map/carBlue.png");
+    carGreen = loadImage("assets/map/carGreen.png");
 
     // Load bush and tree textures
     bushTex = loadImage("assets/map/bush.png");
     treeTex = loadImage("assets/map/tree.png");
+    gatewayTex = loadImage("assets/map/gateway.png");
 
     // Create houses with random coloured walls
     // They need to be created in setup and stored so they kep their colour instead of getting new colour every frame
@@ -194,22 +204,40 @@ void setup()
             waterTex[y * gen_width + x] = Color(0, col, col, 100);
         }
     }
-    // Apply the new pixels
+    // Apply new pixels
     grassTex.apply();
     waterTex.apply();
+
+    // Push fountain animation textures in vector
+    waterAnimation.push_back(&water0);
+    water1 = loadImage("assets/map/water1.png");
+    waterAnimation.push_back(&water1);
+    water2 = loadImage("assets/map/water2.png");
+    waterAnimation.push_back(&water2);
+    water3 = loadImage("assets/map/water3.png");
+    waterAnimation.push_back(&water3);
 }
 
+// Drwa loop with time of 1 frame taken to variable deltaTime
 void draw(float deltaTime)
 {
     // Animations
 
-    // 1sec animation timer
+    // 1sec animation timer using the deltaTime as measurement
     animationTimer += deltaTime;
     if (animationTimer > 1)
     {
-        waterMovement = randomInt(0, 10);
+        // Pool water animation
+        waterMovement = randomInt(0, 10); 
+
+        // Fountain water animation
+        currentWater++;
+        if (currentWater == 4) currentWater = 0;
+
+        // Animation timer reset
         animationTimer = 0;
     }
+
     // Car movement
     carTimer += deltaTime * carSpeed;
     if (carTimer > 1900)
@@ -230,15 +258,20 @@ void draw(float deltaTime)
 
     // Limit zoom level
     if (zoomlevel > 1) zoomlevel = 1;
-    else if (zoomlevel < 0.4) zoomlevel = 0.4;
+    else if (zoomlevel < 0.3) zoomlevel = 0.3;
     // Apply zoom level
     scale(zoomlevel);
 
     // Limit camera movement area
-    if (cameraX > 1000) cameraX = 1000;
+    // Relative to zoomlevel
+    visibleAreaX = (1 + (1 - zoomlevel)) * 1.11 * 1000;
+    visibleAreaY = (1 + (1 - zoomlevel)) * 1.11 * 800;
+    // Min
     if (cameraX < -2000) cameraX = -2000;
-    if (cameraY > 700) cameraY = 700;
     if (cameraY < -1000) cameraY = -1000;
+    // Max
+    if (cameraX > 2500 - visibleAreaX) cameraX = 2500 - visibleAreaX;
+    if (cameraY > 2000 - visibleAreaY) cameraY = 2000 - visibleAreaY;
 
     // Move the world on the opposite direction to camera movement
     translate(-cameraX, -cameraY);
@@ -249,6 +282,13 @@ void draw(float deltaTime)
     background(200, 255, 100);
     // Grass texture over background
     image(grassTex, -4000, -4000, 8000, 8000);
+
+
+    // Debug
+    printf("zoom: %f\n", zoomlevel);
+    printf("visibleX: %f\n", visibleAreaX);
+    printf("cameraX limit: %f\n", 2500 - visibleAreaX);
+    printf("Camera pos: %i, %i\n", cameraX, cameraY);
 
 
     // Roads
@@ -275,6 +315,7 @@ void draw(float deltaTime)
     rect(330, 70, 70, 100);
 
     // Houses
+    stroke(colors::black);
     for (House* house : houses)
     {
         strokeWeight(defaultBorder);
@@ -366,14 +407,62 @@ void draw(float deltaTime)
             house->coordX + 120, house->coordY + 20);
     }
 
+
     // Park
+
     fill(0,255,0,100);
-    noStroke();
+    //noStroke();
+    stroke(colors::grey);
+    strokeWeight(10);
     rect(-1500, 500, 2000, 2000);
 
-    image( treeTex, -1500, 500, treeTex.width(), treeTex.height() );
-    image( bushTex, -1300, 600, bushTex.width(), bushTex.height() );
+    // Pathways
+    noStroke();
+    fill(150, 75, 50, 100);
+    rect(-540, 400, 80, 870);   // Above fountain
+    rect(-540, 1730, 80, 770);  // Below fountain
+    circle(-500, 1500, 230);    // Around fountain
 
+    // Fountain
+    fill(colors::grey);
+    circle(-500, 1500, 150);
+    fill(0, 150, 150);
+    circle(-500, 1490, 135);
+    fill(colors::lightgrey);
+    circle(-500, 1490, 30);
+    fill(colors::grey);
+    circle(-500, 1490, 10);
+    // Set the image x,y to mean the center of image
+    // Moving the image to centre of fountain is now easier 
+    imageMode(CENTER); 
+    image(*waterAnimation[currentWater], -500, 1490, waterAnimation[currentWater]->width()*3, waterAnimation[currentWater]->height()*3);
+    // Set image coordinates back to up-left corner
+    imageMode(CORNER);
+
+    // Outline the park area with bushes
+    for (int y = 515; y < 2450; y += bushTex.height()) 
+    {
+        image(bushTex, -1500, y, bushTex.width() / 2, bushTex.height());    // Left
+        image(bushTex, 420, y, bushTex.width() / 2, bushTex.height());      // Right
+    }
+    for (int x = -1430; x < 410; x += bushTex.width())
+    {
+        // leave gateway
+        if (x < -700 || x > -550)
+        {
+            image(bushTex, x, 480, bushTex.width(), bushTex.height());      // Top
+        }
+        else
+        {
+            image(gatewayTex, x - 20, 400, bushTex.width() + 40, gatewayTex.height());
+        }
+        image(bushTex, x, 2400, bushTex.width(), bushTex.height());         // Bottom
+    }
+
+    // Trees
+    image(treeTex, -1000, 600, treeTex.width(), treeTex.height());
+    image(treeTex, 0, 1000, -treeTex.width() / 2, treeTex.height());
+    image(treeTex, -100, 1500, treeTex.width() / 2, treeTex.height());
 }
 
 
@@ -387,6 +476,7 @@ void mouseWheel(float t)
 void mouseDragged()
 {
     cursor(HAND);
+               //previous mouse position - current mouse position (both got from the engine)
     cameraX += (pmouseX - mouseX);
     cameraY += (pmouseY - mouseY);
 }
