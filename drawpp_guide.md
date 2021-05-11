@@ -544,6 +544,7 @@ As with random numbers, you can have multiple noise generators by using the Nois
 - exit()
     - Quit the application.
     - Calling this will not immediately exit, instead, the application will terminate after the current cycle is complete.
+    - Do not confuse this with ***exit(int)*** from the standard library.
 - frameRate()
     - Set the maximum framerate the application can run at.
 - vSync()
