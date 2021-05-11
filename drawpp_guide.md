@@ -20,6 +20,9 @@ Beginners guide to Drawpp
 - [Miscellaneous](#miscellaneous)
 - [Offscreen drawing](#offscreen-drawing)
 - [Filters](#filters)
+- [Vector and matrix](#vector-and-matrix)
+    - [DVector](#dvector)
+    - [DMatrix4](#dmatrix4)
 
 <br>
 
@@ -718,4 +721,140 @@ In any case, here are explanations of the functions used in the above example:<b
 
 The scale uniform location is cached because the operation of getting it is not very cheap. This is fine, because the location will not change, unless you recompile the filter. In newer versions of GLSL ES it's possible to set the uniform location explicitly in the shader, but we can't do that here.<br>
 
-Another thing you can do with filters, is to just use them as shader renderers. You can draw whatever you want in them, and you can choose to ignore the *source* texture.
+Another thing you can do with filters, is to just use them as shader renderers. You can draw whatever you want in them, and you can choose to ignore the *source* texture.<br>
+
+
+<br>
+
+## <a id="vector-and-matrix">Vector and matrix</a>
+
+<br>The Drawpp library gives you a vector class DVector, and a matrix class DMatrix4.<br>
+
+#### <a id="dvector">DVector</a>
+
+The DVector class contains 3 floating point values: x, y and z. They are public member and can be accessed as such.<br>
+DVector also has all the basic vector math functions you will need. Here is a list of them:
+
+##### Operators
+- \+ and +=
+    - Add the values of 2 vectors.
+- \- and -=
+    - Substract values of a vector from another.
+- Unary -
+    - Invert vector values.
+- \* and *=
+    - Multiply vector values by a value.
+    - Multiply vector values by the values of another vector.
+- / and /=
+    - Divide vector values by a value.
+    - Divide vector values by the values of another vector.
+
+##### Functions
+- mag()
+    - Get vector magnitude.
+- magSq()
+    - Get vector magnitude squared.
+- dot()
+    - Get the dot product of 2 vectors.
+- cross()
+    - Get the cross product of 2 vectors.
+- normalize() and normalized()
+    - Get the normalized vector.
+- limit()
+    - Limit the vector magnitude.
+- setMag()
+    - Set the vector magnitude.
+- heading()
+    - Get an angle (radians) of this vector.
+    - The z axis is ignored.
+- rotate()
+    - Rotate vector by an angle (radians).
+    - The z axis is ignored.
+- lerp()
+    - Linearly interpolate between 2 vectors.
+- angleBetween()
+    - Get the angle (radians) between 2 vectors.
+    - The z axis is ignored.
+- array()
+    - Convert the vector to an std::vector\<float>.
+
+##### Comparison operators
+- ==
+    - Test if vectors are equal.
+- !=
+    - Test if vectors are not equal.
+- <
+    - Test if magnitude of the left operand is smaller than the magnitude of the right operand.
+- <=
+    - Test if magnitude of the left operand is smaller or equal to the magnitude of the right operand.
+- \>
+    - Test if magnitude of the left operand is larger than the magnitude of the right operand.
+- =>
+    - Test if magnitude of the left operand is larger or equal to the magnitude of the right operand.
+<br>
+
+##### Initializers
+- random2D()
+    - Create a random 2D unit vector.
+    - The z component will be zero.
+- random3D()
+    - Create a random 3D unit vector.
+- fromAngle()
+    - Create a 2D unit vector from an angle (radians).
+
+#### <a id="dmatrix4">DMatrix4</a>
+
+The DMatrix4 class contains 16 floating point values, which can be accessed directly via the member array ***values***, or with the [] and () operators. Matrices can be used to apply a custom transform to the transform matrix, and to modify vectors.<br>
+Here is a list of the matrix functions:
+
+##### Operators
+- \+ and +=
+    - Add a value to all values in the matrix.
+    - Add values of 2 matrices.
+- \- and -=
+    - Substract a value from all values in the matrix.
+    - Substract values of a matrix from another.
+- Unary -
+    - Invert the values of the matrix.
+    - Not to be confused with ***invert()***.
+- \* and *=
+    - Multiply all values of the matrix by a value.
+    - Multiply matrix by another.
+- \* (DVector)
+    - Transform a vector by a matrix.
+- / and /=
+    - Divide all values of the matrix by a value.
+
+##### Functions
+- hproduct()
+    - Multiply matrix values by the values of another.
+- hdivision()
+    - Divide matrix values by the values of another.
+- det()
+    - Get the determinant of the matrix.
+- transpose() and transposed()
+    - Transpose the matrix.
+- invert() and inverse()
+    - Invert the matrix.
+- translate()
+    - Translate the matrix by a vector.
+- scale()
+    - Scale the matrix by a vector.
+- rotate()
+    - Rotate the matrix by an angle, on an axis.
+
+##### Comparison operators
+- ==
+    - Test if matrices are equal.
+- !=
+    - Test if matrices are not equal.
+
+##### Initializers
+- identity()
+    - Create an identity matrix.
+- translation()
+    - Create a translation matrix from a vector.
+- scaling()
+    - Create a scaling matrix from a vector.
+- rotation()
+    - Create a rotation matrix from an angle (radians), and an axis.
