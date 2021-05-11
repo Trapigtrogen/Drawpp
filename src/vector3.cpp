@@ -364,10 +364,10 @@ DVector& DVector::operator/=(const DVector& vec) { x /= vec.x;y /= vec.y;z /= ve
 
 bool DVector::operator==(const DVector& vec) const { return x==vec.x&&y==vec.y&&z==vec.z; }
 bool DVector::operator!=(const DVector& vec) const { return !(*this==vec); }
-bool DVector::operator<(const DVector& vec)  const { return mag()<vec.mag(); }
-bool DVector::operator>(const DVector& vec)  const { return mag()>vec.mag(); }
-bool DVector::operator<=(const DVector& vec) const { return mag()<=vec.mag(); }
-bool DVector::operator>=(const DVector& vec) const { return mag()>=vec.mag(); }
+bool DVector::operator<(const DVector& vec)  const { return magSq()<vec.magSq(); }
+bool DVector::operator>(const DVector& vec)  const { return magSq()>vec.magSq(); }
+bool DVector::operator<=(const DVector& vec) const { return magSq()<=vec.magSq(); }
+bool DVector::operator>=(const DVector& vec) const { return magSq()>=vec.magSq(); }
 
 float& DVector::operator[](size_t index) { return static_cast<float*>(&x)[index]; }
 float  DVector::operator[](size_t index) const { return static_cast<const float*>(&x)[index]; }

@@ -181,13 +181,13 @@ DMatrix4 DMatrix4::operator-(float n) const
     return m;
 }
 
-    DMatrix4 DMatrix4::operator-() const
-    {
-        DMatrix4 m;
-        for(int i = 0; i < 16; i++)
-            m[i] = -values[i];
-        return m;
-    }
+DMatrix4 DMatrix4::operator-() const
+{
+    DMatrix4 m;
+    for(int i = 0; i < 16; i++)
+        m[i] = -values[i];
+    return m;
+}
 
 DMatrix4 DMatrix4::operator* (const DMatrix4& mat) const
 {
@@ -264,6 +264,11 @@ bool DMatrix4::operator==(const DMatrix4& mat) const
             return false;
     }
     return true;
+}
+
+bool DMatrix4::operator!=(const DMatrix4& mat) const
+{
+    return !((*this)==mat);
 }
 
 float& DMatrix4::operator[](size_t index) { return values[index]; }

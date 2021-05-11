@@ -214,6 +214,10 @@ public:
     bool operator==(const DMatrix4& mat) const;
 
 
+    ///\brief Compare this matrix and \p mat
+    bool operator!=(const DMatrix4& mat) const;
+
+
     ///\brief access matrix elements by index
     float& operator[](size_t index);
 
@@ -229,11 +233,14 @@ public:
     ///\copydoc operator[](size_t index)
     float operator()(size_t row, size_t col) const;
 
+
     ///\copydoc operator*(float n) const
     friend DMatrix4 operator*(float n, const DMatrix4& m);
 
+
     ///\copydoc operator*(const DVector&) const
     friend DVector operator*(const DVector& vec, const DMatrix4& m);
+
 
     float values[16];
 
