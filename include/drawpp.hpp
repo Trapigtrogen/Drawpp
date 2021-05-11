@@ -310,6 +310,14 @@ void noTint();
 void bezierDetail(float d);
 
 
+///\copydoc DGraphics::clip(int,int,int,int)
+void clip(int x1, int y1, int x2, int y2);
+
+
+///\copydoc DGraphics::noClip()
+void noClip();
+
+
 // End group drawpp_drawing_properties_api
 ///@}
 
@@ -909,6 +917,10 @@ void timeReset();
 ///\copydoc DGraphics::save(const std::string&,ImageFormat)const
 bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG);
 
+
+///\ingroup drwapp_misc_api
+///\copydoc DGraphics::saveFrame(const std::string&,ImageFormat)const
+bool saveFrame(const std::string& basename, ImageFormat format = ImageFormat::PNG);
 
 // End group drawpp_function_api
 ///@}

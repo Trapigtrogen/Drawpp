@@ -71,6 +71,7 @@ public:
 
 private:
     static void init_lib();
+    static void cleanup_lib();
     
     std::shared_ptr<DFont_impl> impl;
 };

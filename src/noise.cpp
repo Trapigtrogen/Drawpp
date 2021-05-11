@@ -1,27 +1,34 @@
 #include <noise.hpp>
 #include <debug.hpp>
 #include <application.hpp>
+#include <random.hpp>
 
-#include <time.h>
+static Random noiseRandom;
+static int current_noise_seed = 1234;
 
 Noise::Noise()
 {
-	srand(time(NULL));
 	initNoise();
+}
+
+Noise::~Noise()
+{
+    delete[] perlinNoise1D;
+    delete[] perlinNoise2D;
+    delete[] noiseSeed1D;
+    delete[] noiseSeed2D;
 }
 
 void Noise::initNoise()
 {
-	delete[] noiseSeed1D;
-	noiseSeed1D = new float[outputWidth];
+    noiseRandom.randomSeed(current_noise_seed);
+
 	randomSeed1D();
 
 	delete[] perlinNoise1D;
 	perlinNoise1D = new float[outputWidth];
 	createPerlin1D(outputWidth, scale);
 
-	delete[] noiseSeed2D;
-	noiseSeed2D = new float[outputWidth * outputHeight];
 	randomSeed2D();
 
 	delete[] perlinNoise2D;
@@ -38,7 +45,9 @@ void Noise::resize(int width, int height)
 
 void Noise::noiseSeed(int seed)
 {
-	srand(seed);
+    current_noise_seed = seed;
+    noiseRandom.randomSeed(current_noise_seed);
+
 	randomSeed1D();
 	randomSeed2D();
 	createPerlin1D(outputWidth, scale);
@@ -52,7 +61,7 @@ void Noise::randomSeed1D()
 
 	for(int i = 0; i < outputWidth; i++)
 	{
-		noiseSeed1D[i] = (float)rand() / (float)RAND_MAX;
+        noiseSeed1D[i] = noiseRandom.randomFloat01();
 	}
 }
 
@@ -63,21 +72,18 @@ void Noise::randomSeed2D()
 
 	for(int i = 0; i < outputWidth * outputHeight; i++) 
 	{
-		noiseSeed2D[i] = (float)rand() / (float)RAND_MAX;
+        noiseSeed2D[i] = noiseRandom.randomFloat01();
 	}
 }
 
 float Noise::pNoise(unsigned int x)
 {
-	//if(x > static_cast<unsigned int>(outputWidth)) x -= outputWidth;
     x %= static_cast<unsigned int>(outputWidth);
 	return perlinNoise1D[x];
 }
 
 float Noise::pNoise(unsigned int x, unsigned int y)
 {
-	//if(x > static_cast<unsigned int>(outputWidth)) x -= outputWidth;
-	//if(y > static_cast<unsigned int>(outputHeight)) y -= outputHeight;
     x %= static_cast<unsigned int>(outputWidth);
     y %= static_cast<unsigned int>(outputHeight);
 	return perlinNoise2D[y * outputWidth + x];

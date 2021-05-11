@@ -66,6 +66,8 @@ struct GraphicsProperties
     PosMode imagemode = PosMode::CORNER;
     DFont font;
     float bezier_detail = 20;
+    bool use_clip = false;
+    int clip_x1, clip_x2, clip_y1, clip_y2;
 };
 
 ///\brief Graphics class describes a render target
@@ -565,9 +567,27 @@ public:
 
     ///\brief Save target pixels to a file as an image
     ///
-    ///\p filename should not include the extenstion, as it will be added according to \p format.
+    ///\p filename should not include the extension, as it will be added according to \p format.
     ///\return success
     bool save(const std::string& filename, ImageFormat format = ImageFormat::PNG) const;
+
+
+    ///\brief Save target pixels to a file sequence as an image
+    ///
+    ///When called, will save the target as \p basename, and append a frame number to it. \n
+    ///By default, the the frame number will be separated from the base name by an underscore, 
+    ///and will be padded with zeroes. Only 5 zeroes will be padded. 
+    ///If the frame number does not fit into 5 digits, there will be no padding. \n \n
+    ///
+    ///You can set your own format for the frame numbering of files, by including 1 or more '#' in \p basename. 
+    ///They will be replaced by the frame number, and padded with zeros. In this case, if the frame number does 
+    ///not fit into the given space, the save will fail. If you have multiple separated globs of '#' in \p basename,
+    ///the first one is used for the frame number. \n 
+    ///For example, "screen-###-##", could become "screen-123-##.png" \n \n
+    ///
+    ///\p filename should not include the extension, as it will be added according to \p format.
+    ///\return success
+    bool saveFrame(const std::string& basename, ImageFormat format = ImageFormat::PNG) const;
 
 
     ///\brief Draw text at ( \p x, \p y )
@@ -616,6 +636,16 @@ public:
 
     ///\brief Apply a filter to this target
     void filter(filters f, float param = 0);
+
+
+    ///\brief Restrict drawing area to a rectangle
+    ///
+    ///Top-left corner of the rectangle is at ( \p x1, \p y1 ), and its size is ( \p x2, \p y2 ).
+    void clip(int x1, int y1, int x2, int y2);
+
+
+    ///\brief Disable clipping.
+    void noClip();
 
 
     GraphicsProperties getStyle();

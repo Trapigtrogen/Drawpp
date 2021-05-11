@@ -573,6 +573,23 @@ void DFont_impl::init_lib()
     }
 }
 
+void DFont_impl::cleanup_lib()
+{
+    if(lib_ptr != nullptr)
+    {
+        int e = FT_Done_FreeType(reinterpret_cast<FT_Library>(lib_ptr));
+
+        if(e)
+        {
+            dbg::error("Failed to cleanup freetype: ", e);
+        }
+        else
+        {
+            lib_ptr = nullptr;
+        }
+    }
+}
+
 DFont DFont::load(const std::string& filename, float size, float row_spacing, float char_spacing)
 {
     static FontOptions opt;
@@ -650,6 +667,11 @@ DFont DFont::load(const std::string& filename, const FontOptions& options)
 void DFont::init_lib()
 {
     DFont_impl::init_lib();
+}
+
+void DFont::cleanup_lib()
+{
+    DFont_impl::cleanup_lib();
 }
 
 void DFont::ClearCharset(const std::wstring& new_charset)

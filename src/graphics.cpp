@@ -16,6 +16,8 @@
 #include <application.hpp>
 #include <filter.hpp>
 #include <filter_impl.hpp>
+#include <sstream>
+#include <iomanip>
 
 #include "stb_image_write.h"
 
@@ -114,6 +116,8 @@ static float quad_verts[] =
 static std::vector<float> txt_vert_buffer;
 static std::vector<float> txt_texc_buffer;
 static std::vector<vec2f> bezier_buffer;
+
+extern unsigned long long frameCount;
 
 #include <shaders/generic_vert.ipp>
 #include <shaders/ellipse_frag.ipp>
@@ -305,10 +309,24 @@ void DGraphics::beginDraw()
     transform_mat = DMatrix4::identity();
     glBindFramebuffer(GL_FRAMEBUFFER,buffer_id);
     glViewport(0,0,buffer_width,buffer_height);
+
+    if(properties.use_clip)
+    {
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(properties.clip_x1,
+                buffer_height-properties.clip_y1-properties.clip_y2,
+                properties.clip_x2,
+                properties.clip_y2);
+    }
+    else
+    {
+        glDisable(GL_SCISSOR_TEST);
+    }
 }
 
 void DGraphics::endDraw()
 {
+    glDisable(GL_SCISSOR_TEST);
     glBindFramebuffer(GL_FRAMEBUFFER,Application::GetInstance()->graphics_object().buffer_id);
 }
 
@@ -1250,6 +1268,63 @@ bool DGraphics::save(const std::string& filename, ImageFormat format) const
     return result == 1;
 }
 
+bool DGraphics::saveFrame(const std::string& basename, ImageFormat format) const
+{
+    bool custom = false;
+    unsigned i = 0;
+    for(; i < basename.size(); ++i)
+    {
+        if(basename[i] == '#')
+        {
+            custom = true;
+            break;
+        }
+    }
+
+    std::stringstream ns;
+
+    if(!custom)
+    {
+        ns << basename;
+        ns << '_';
+        ns << std::setfill('0') << std::setw(5);
+        ns << frameCount;
+    }
+    else
+    {
+        unsigned st = i;
+
+        for(; i < basename.size(); ++i)
+        {
+            if(basename[i] != '#')
+            {
+                break;
+            }
+        }
+
+        unsigned long long frameN = frameCount;
+        int d = 0;
+        while (frameN) {
+            frameN /= 10;
+            d++;
+        }
+
+        unsigned count = i - st;
+
+        if(d > count)
+        {
+            return false;
+        }
+
+        ns << std::string(basename.begin(),basename.begin()+st);
+        ns << std::setfill('0') << std::setw(count);
+        ns << frameCount;
+        ns << std::string(basename.begin()+st+count,basename.end());
+    }
+
+    return save(ns.str(),format);
+}
+
 void DGraphics::text(const std::string& txt, float x, float y)
 {
     text(std::wstring_convert<std::codecvt_utf8<wchar_t>>().from_bytes(txt),x,y);
@@ -1731,6 +1806,24 @@ void DGraphics::filter(filters f, float param)
             break;
         }
     }
+}
+
+void DGraphics::clip(int x1, int y1, int x2, int y2)
+{
+    properties.use_clip = true;
+    properties.clip_x1 = x1;
+    properties.clip_x2 = x2;
+    properties.clip_y1 = y1;
+    properties.clip_y2 = y2;
+
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(x1,buffer_height-y1-y2,x2,y2);
+}
+
+void DGraphics::noClip()
+{
+    properties.use_clip = false;
+    glDisable(GL_SCISSOR_TEST);
 }
 
 DGraphics& DGraphics::operator=(DGraphics&& other)

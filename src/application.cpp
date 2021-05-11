@@ -91,7 +91,10 @@ Application::Application(int width, int height, const char* title)
     window->properties.title = title;
 }
 
-Application::~Application() = default;
+Application::~Application()
+{
+    instance = nullptr;
+}
 
 int Application::run(std::function<void(float)> draw,
                       std::function<void()> setup,
@@ -478,6 +481,8 @@ void Application::cleanup_application()
     
     window.reset();
     graphics.reset();
+
+    DFont::cleanup_lib();
 }
 
 Application* Application::GetInstance()
