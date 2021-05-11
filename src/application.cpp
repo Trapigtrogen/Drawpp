@@ -328,6 +328,29 @@ void Application::hideCursor()
     glfwSetInputMode(window->GetHandle(),GLFW_CURSOR,GLFW_CURSOR_HIDDEN);
 }
 
+
+void Application::setLocation(int x, int y)
+{
+    glfwSetWindowPos(window->GetHandle(),x,y);
+}
+
+int Application::getMonitorWidth(int monitor)
+{
+    int c;
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetMonitors(&c)[monitor]);
+
+    return mode->width;
+}
+
+int Application::getMonitorHeight(int monitor)
+{
+    int c;
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetMonitors(&c)[monitor]);
+
+    return mode->height;
+}
+
+
 DGraphics& Application::graphics_object()
 {
     return *graphics;

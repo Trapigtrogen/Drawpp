@@ -246,6 +246,10 @@ Some of the functions listed have several overloads, details of which you can lo
 - textFont()
     - Set the font which will be used for drawing text.
     - By default, no font is set, so to draw text, you must first set a font.
+- clip()
+    - Restrict the drawing area to a rectangle.
+- noClip()
+    - Disable clipping.
 
 
 <br>Position modes dictate what is considered the origin of the thing being drawn. Position mode ***CORNER*** means that the origin is in the upper left corner. For example, were you to draw a square in the coordinates (100,100), the upper left corner of the square, will be in the position (100,100).<br>
@@ -311,15 +315,29 @@ void main()
 
 <br>Here is a list of all the available input callbacks:
 - keyPressed
+    - Called every time a keyboard key is pressed.
+    - Use the *key* and *keyCode* variables to get the key that was pressed.
 - keyReleased
+    - Called every time a keyboard key is released.
+    - Use the *key* and *keyCode* variables to get the key that was released.
 - mouseClicked
+    - Called when a mouse button is pressed down, and then released.
+    - Use the *mouseButton* variable to get the button that was clicked.
 - mousePressed
+    - Called every time a mouse button is pressed.
+    - Use the *mouseButton* variable to get the button that was pressed.
 - mouseReleased
+    - Called every time a mouse button is released.
+    - Use the *mouseButton* variable to get the button that was released.
 - mouseWheel
+    - Called every time the mouse wheel is moved.
+    - Takes one float as parameter, which will be the distance the mouse wheel was scrolled. The direction of the scroll can be interpreted from the sign of the value.
 - mouseMoved
+    - Called every time the mouse is moved, and no mouse buttons are being pressed.
 - mouseDragged
+    - Called every time the mouse is moved, while a mouse button is pressed.
 
-<br>Of all of these, only mouseWheel takes any parameters. It will take one float, which will be the distance the mouse wheel was scrolled. The direction of the scroll can be interpreted from the sign of the value.<br>
+<br>Of all of these, only mouseWheel takes any parameters.<br>
 
 In addition to the input callbacks, you also have some variables at your disposal:
 - key
@@ -544,10 +562,21 @@ As with random numbers, you can have multiple noise generators by using the Nois
     - To exit fullscreen mode, call size().
 - setTitle()
     - Set the window title.
+- setLocation()
+    - Set the application window location.
+    - Location is relative to the top left corner of the primary monitor.
+- getMonitorWidth()
+    - Get the pixel width of a given monitor.
+- getMonitorHeight()
+    - Get the pixel height of a given monitor. 
 - delay()
     - Stop the application for a number of milliseconds.
 - save()
     - Save a screenshot to the given path.
+- saveFrame()
+    - Save a screenshot to a given path, with the frame number appended.
+    - Appended frame number will be padded with zeros to up to 5 digits.
+    - Make your own format by using '#' characters in the path to mark the place for the frame number.
 
 
 <br>In addition to these functions, there is also a couple of variables:
@@ -687,3 +716,5 @@ In any case, here are explanations of the functions used in the above example:<b
     - Will set the uniform at the location, to the value.
 
 The scale uniform location is cached because the operation of getting it is not very cheap. This is fine, because the location will not change, unless you recompile the filter. In newer versions of GLSL ES it's possible to set the uniform location explicitly in the shader, but we can't do that here.<br>
+
+Another thing you can do with filters, is to just use them as shader renderers. You can draw whatever you want in them, and you can choose to ignore the *source* texture.
