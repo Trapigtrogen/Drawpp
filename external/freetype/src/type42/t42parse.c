@@ -4,7 +4,7 @@
  *
  *   Type 42 font parser (body).
  *
- * Copyright (C) 2002-2020 by
+ * Copyright (C) 2002-2021 by
  * Roberto Alameda.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -197,7 +197,7 @@
     else
     {
       /* read segment in memory */
-      if ( FT_ALLOC( parser->base_dict, size )       ||
+      if ( FT_QALLOC( parser->base_dict, size )      ||
            FT_STREAM_READ( parser->base_dict, size ) )
         goto Exit;
 
@@ -576,6 +576,9 @@
     old_string_size = 0;
     count           = 0;
 
+    FT_TRACE2(( "\n" ));
+    FT_TRACE2(( "t42_parse_sfnts:\n" ));
+
     while ( parser->root.cursor < limit )
     {
       FT_ULong  size;
@@ -680,6 +683,9 @@
         goto Fail;
       }
 
+      FT_TRACE2(( "  PS string size %5lu bytes, offset 0x%08lx (%lu)\n",
+                  string_size, count, count ));
+
       /* The whole TTF is now loaded into `string_buf'.  We are */
       /* checking its contents while copying it to `ttf_data'.  */
 
@@ -701,6 +707,9 @@
             num_tables     = 16 * face->ttf_data[4] + face->ttf_data[5];
             status         = BEFORE_TABLE_DIR;
             face->ttf_size = 12 + 16 * num_tables;
+
+            FT_TRACE2(( "  SFNT directory contains %d tables\n",
+                        num_tables ));
 
             if ( (FT_Long)size < face->ttf_size )
             {
@@ -727,12 +736,18 @@
             FT_ULong  len;
 
 
+            FT_TRACE2(( "\n" ));
+            FT_TRACE2(( "  table    length\n" ));
+            FT_TRACE2(( "  ------------------------------\n" ));
+
             for ( i = 0; i < num_tables; i++ )
             {
               FT_Byte*  p = face->ttf_data + 12 + 16 * i + 12;
 
 
               len = FT_PEEK_ULONG( p );
+              FT_TRACE2(( "   %4i  0x%08lx (%lu)\n", i, len, len ));
+
               if ( len > size                               ||
                    face->ttf_size > (FT_Long)( size - len ) )
               {
@@ -747,6 +762,10 @@
             }
 
             status = OTHER_TABLES;
+
+            FT_TRACE2(( "\n" ));
+            FT_TRACE2(( "  allocating %ld bytes\n", face->ttf_size + 1 ));
+            FT_TRACE2(( "\n" ));
 
             if ( FT_REALLOC( face->ttf_data, 12 + 16 * num_tables,
                              face->ttf_size + 1 ) )

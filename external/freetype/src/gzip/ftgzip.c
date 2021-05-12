@@ -8,7 +8,7 @@
  * parse compressed PCF fonts, as found with many X11 server
  * distributions.
  *
- * Copyright (C) 2002-2020 by
+ * Copyright (C) 2002-2021 by
  * David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -130,6 +130,7 @@
     FT_Pointer  p  = NULL;
 
 
+    /* allocate and zero out */
     (void)FT_ALLOC( p, sz );
     return p;
   }
@@ -671,7 +672,7 @@
         FT_Byte*  zip_buff = NULL;
 
 
-        if ( !FT_ALLOC( zip_buff, zip_size ) )
+        if ( !FT_QALLOC( zip_buff, zip_size ) )
         {
           FT_ULong  count;
 
