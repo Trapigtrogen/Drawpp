@@ -245,7 +245,7 @@ void bezier(const DVector& p1, const DVector& p2, const DVector& cp);
 
 
 ///\ingroup drawpp_loaders_api
-///\copydoc DFont::const std::string&, float, float, float)
+///\copydoc DFont::load(const std::string&, float, float, float)
 DFont loadFont(const std::string& filename, int size, float row_spacing = 0.0f, float char_spacing = 0.0f);
 
 ///\ingroup drawpp_loaders_api
@@ -547,7 +547,7 @@ Color lerpColor(const Color& from, const Color& to, float percentage);
 std::string hex(Color col);
 
 
-///\copydoc Color::hex(Color,int)
+///\copydoc Color::hex(const Color&,int)
 std::string hex(Color col, int num);
 
 

@@ -32,16 +32,16 @@ DFont_impl* DFont_impl::load_font(void* _face, const FontOptions& options)
 
     float size = options.size;
 
-    int err = FT_Set_Char_Size(face,0,64*size,0,0);
+    int err = FT_Set_Char_Size(face,0,static_cast<long>(64*size),0,0);
     if(err)
     {
         dbg::error("Failed to load font at 'set_size'\n\terror: ",err);
     }
 
     float mul = size / face->units_per_EM;
-    int c_width = (face->bbox.xMax - face->bbox.xMin)*mul;
+    int c_width = static_cast<int>((face->bbox.xMax - face->bbox.xMin)*mul);
     int width = charset_len * c_width;
-    int c_height = (face->bbox.yMax - face->bbox.yMin)*mul+1;
+    int c_height = static_cast<int>((face->bbox.yMax - face->bbox.yMin)*mul+1);
     int height = c_height;
     float c_height2 = c_height / 2.0f;
     float c_width2 = c_width / 2.0f;
@@ -119,19 +119,19 @@ DFont_impl* DFont_impl::load_font(void* _face, const FontOptions& options)
             goto no_space;
         }
 
-        int base_x = (cur_col * c_width) + c_width2 - (face->glyph->bitmap.width / 2.0f);
-        int base_y = (cur_row * c_height) + c_height2 - (face->glyph->bitmap.rows / 2.0f);
+        int base_x = static_cast<int>((cur_col * c_width) + c_width2 - (face->glyph->bitmap.width / 2.0f));
+        int base_y = static_cast<int>((cur_row * c_height) + c_height2 - (face->glyph->bitmap.rows / 2.0f));
 
-        data[c].tx_pos_x  = base_x;
-        data[c].tx_pos_y = base_y;
-        data[c].tx_width  = face->glyph->bitmap.width;
-        data[c].tx_height = face->glyph->bitmap.rows;
-        data[c].width     = face->glyph->bitmap.width;
-        data[c].height    = face->glyph->bitmap.rows;
-        data[c].bearing_x = face->glyph->bitmap_left;
-        data[c].bearing_y = -face->glyph->bitmap_top;    //y coords inversed
-        data[c].advance_x = face->glyph->advance.x;
-        data[c].advance_y = face->glyph->advance.y;
+        data[c].tx_pos_x  = static_cast<float>(base_x);
+        data[c].tx_pos_y  = static_cast<float>(base_y);
+        data[c].tx_width  = static_cast<float>(face->glyph->bitmap.width);
+        data[c].tx_height = static_cast<float>(face->glyph->bitmap.rows);
+        data[c].width     = static_cast<float>(face->glyph->bitmap.width);
+        data[c].height    = static_cast<float>(face->glyph->bitmap.rows);
+        data[c].bearing_x = static_cast<float>(face->glyph->bitmap_left);
+        data[c].bearing_y = static_cast<float>(-face->glyph->bitmap_top);    //y coords inversed
+        data[c].advance_x = static_cast<float>(face->glyph->advance.x);
+        data[c].advance_y = static_cast<float>(face->glyph->advance.y);
 
         for(unsigned int y = 0; y < face->glyph->bitmap.rows; ++y)
         {
@@ -149,9 +149,9 @@ DFont_impl* DFont_impl::load_font(void* _face, const FontOptions& options)
     no_space:
 
     //divide texture coordinates to 0..1 range
-    for( auto& c : data)
+    for( auto& _c : data)
     {
-        Char& cc = c.second;
+        Char& cc = _c.second;
 
         cc.tx_pos_x /= width;
         cc.tx_width /= width;
@@ -167,8 +167,8 @@ DFont_impl* DFont_impl::load_font(void* _face, const FontOptions& options)
     result->font_size = options.size;
     result->row_spacing = options.row_spacing;
     result->char_spacing = options.char_spacing;
-    result->char_height = c_height;
-    result->char_width = c_width;
+    result->char_height = static_cast<float>(c_height);
+    result->char_width  = static_cast<float>(c_width);
     result->baseline = baseline;
     result->loaded_chars = loaded_valid;
     result->current_column = cur_col;
@@ -204,7 +204,7 @@ bool DFont_impl::load_additional_char(wchar_t c)
 
     ++current_column;
     
-    int width = chars_per_row*char_width;
+    int width = static_cast<int>(chars_per_row*char_width);
     int height;
 
     if(current_column >= chars_per_row)
@@ -219,7 +219,7 @@ bool DFont_impl::load_additional_char(wchar_t c)
 
         ++current_row;
 
-        height = (current_row+1) * char_height;
+        height = static_cast<int>((current_row+1) * char_height);
 
         uint8_t* tmp = new uint8_t[width*height]();
 
@@ -240,9 +240,9 @@ bool DFont_impl::load_additional_char(wchar_t c)
 
         float old_height = current_row * char_height;
 
-        for(auto& c : chars)
+        for(auto& _c : chars)
         {
-            Char& cc = c.second;
+            Char& cc = _c.second;
             cc.tx_pos_y *= old_height;
             cc.tx_height *= old_height;
 
@@ -253,8 +253,8 @@ bool DFont_impl::load_additional_char(wchar_t c)
     }
     else if (current_column < chars_per_row && current_row == 0)
     {
-        height = char_height;
-        width = (current_column+1)*char_width;
+        height = static_cast<int>(char_height);
+        width  = static_cast<int>((current_column+1)*char_width);
 
         uint8_t* tmp = new uint8_t[width*height]();
 
@@ -265,7 +265,7 @@ bool DFont_impl::load_additional_char(wchar_t c)
             return false;
         }
 
-        int old_width = current_column * char_width;
+        int old_width = static_cast<int>(current_column * char_width);
 
         for(int i = 0; i < height; ++i)
         {
@@ -276,9 +276,9 @@ bool DFont_impl::load_additional_char(wchar_t c)
 
         bitmap = tmp;
 
-        for(auto& c : chars)
+        for(auto& _c : chars)
         {
-            Char& cc = c.second;
+            Char& cc = _c.second;
             cc.tx_pos_x *= old_width;
             cc.tx_width *= old_width;
 
@@ -288,22 +288,22 @@ bool DFont_impl::load_additional_char(wchar_t c)
     }
     else
     {
-        height = (current_row+1) * char_height;
+        height = static_cast<int>((current_row+1) * char_height);
     }
 
-    int base_x = ((current_column+0.5f) * char_width) - (face->glyph->bitmap.width / 2.0f);
-    int base_y = ((current_row+0.5f) * char_height) - (face->glyph->bitmap.rows / 2.0f);
+    int base_x = static_cast<int>(((current_column+0.5f) * char_width) - (face->glyph->bitmap.width / 2.0f));
+    int base_y = static_cast<int>(((current_row+0.5f) * char_height) - (face->glyph->bitmap.rows / 2.0f));
 
     chars[c].tx_pos_x  = base_x / float(width);
-    chars[c].tx_pos_y = base_y / float(height);
+    chars[c].tx_pos_y  = base_y / float(height);
     chars[c].tx_width  = face->glyph->bitmap.width / float(width);
     chars[c].tx_height = face->glyph->bitmap.rows / float(height);
-    chars[c].width     = face->glyph->bitmap.width;
-    chars[c].height    = face->glyph->bitmap.rows;
-    chars[c].bearing_x = face->glyph->bitmap_left;
-    chars[c].bearing_y = -face->glyph->bitmap_top;    //y coords inversed
-    chars[c].advance_x = face->glyph->advance.x;
-    chars[c].advance_y = face->glyph->advance.y;
+    chars[c].width     = static_cast<float>(face->glyph->bitmap.width);
+    chars[c].height    = static_cast<float>(face->glyph->bitmap.rows);
+    chars[c].bearing_x = static_cast<float>(face->glyph->bitmap_left);
+    chars[c].bearing_y = static_cast<float>(-face->glyph->bitmap_top);    //y coords inversed
+    chars[c].advance_x = static_cast<float>(face->glyph->advance.x);
+    chars[c].advance_y = static_cast<float>(face->glyph->advance.y);
 
     for(unsigned int y = 0; y < face->glyph->bitmap.rows; ++y)
     {
@@ -382,16 +382,16 @@ void DFont_impl::load_all_chars()
     float mul_height = (current_row+1) * char_height;
     float mul_width = old_w * char_width;
 
-    width *= char_width;
-    old_w *= char_width;
+    width = static_cast<int>(width * char_width);
+    old_w = static_cast<int>(old_w * char_width);
 
     if(height > chars_per_col)
     {
         height = chars_per_row;
     }
 
-    height *= char_height;
-    old_h  *= char_height;
+    height = static_cast<int>(height*char_height);
+    old_h  = static_cast<int>(old_h*char_height);
 
     uint8_t* tmp = new uint8_t[width*height]();
 
@@ -401,9 +401,9 @@ void DFont_impl::load_all_chars()
         return;
     }
 
-    for(auto& c : chars)
+    for(auto& _c : chars)
     {
-        Char& cc = c.second;
+        Char& cc = _c.second;
         cc.tx_pos_y *= mul_height;
         cc.tx_height *= mul_height;
         cc.tx_pos_x *= mul_width;
@@ -445,7 +445,7 @@ void DFont_impl::load_all_chars()
             break;
         }
 
-        if(chars.find(c) != chars.end())
+        if(chars.find(static_cast<wchar_t>(c)) != chars.end())
         {
             continue;
         }
@@ -474,26 +474,26 @@ void DFont_impl::load_all_chars()
             while(glyph_index)
             {
                 c = FT_Get_Next_Char(face,c,&glyph_index);
-                chars[c] = chars[L'\0'];
+                chars[static_cast<wchar_t>(c)] = chars[L'\0'];
             }
             current_column = chars_per_row-1;
             --current_row;
             goto no_space;
         }
 
-        int base_x = (current_column * char_width) + c_width2 - (face->glyph->bitmap.width / 2.0f);
-        int base_y = (current_row * char_height) + c_height2 - (face->glyph->bitmap.rows / 2.0f);
+        int base_x = static_cast<int>((current_column * char_width) + c_width2 - (face->glyph->bitmap.width / 2.0f));
+        int base_y = static_cast<int>((current_row * char_height) + c_height2 - (face->glyph->bitmap.rows / 2.0f));
 
-        chars[c].tx_pos_x  = base_x;
-        chars[c].tx_pos_y = base_y;
-        chars[c].tx_width  = face->glyph->bitmap.width;
-        chars[c].tx_height = face->glyph->bitmap.rows;
-        chars[c].width     = face->glyph->bitmap.width;
-        chars[c].height    = face->glyph->bitmap.rows;
-        chars[c].bearing_x = face->glyph->bitmap_left;
-        chars[c].bearing_y = -face->glyph->bitmap_top;    //y coords inversed
-        chars[c].advance_x = face->glyph->advance.x;
-        chars[c].advance_y = face->glyph->advance.y;
+        chars[static_cast<wchar_t>(c)].tx_pos_x  = static_cast<float>(base_x);
+        chars[static_cast<wchar_t>(c)].tx_pos_y  = static_cast<float>(base_y);
+        chars[static_cast<wchar_t>(c)].tx_width  = static_cast<float>(face->glyph->bitmap.width);
+        chars[static_cast<wchar_t>(c)].tx_height = static_cast<float>(face->glyph->bitmap.rows);
+        chars[static_cast<wchar_t>(c)].width     = static_cast<float>(face->glyph->bitmap.width);
+        chars[static_cast<wchar_t>(c)].height    = static_cast<float>(face->glyph->bitmap.rows);
+        chars[static_cast<wchar_t>(c)].bearing_x = static_cast<float>(face->glyph->bitmap_left);
+        chars[static_cast<wchar_t>(c)].bearing_y = static_cast<float>(-face->glyph->bitmap_top);    //y coords inversed
+        chars[static_cast<wchar_t>(c)].advance_x = static_cast<float>(face->glyph->advance.x);
+        chars[static_cast<wchar_t>(c)].advance_y = static_cast<float>(face->glyph->advance.y);
 
         for(unsigned int y = 0; y < face->glyph->bitmap.rows; ++y)
         {
@@ -511,9 +511,9 @@ void DFont_impl::load_all_chars()
 
     no_space:
 
-    for( auto& c : chars)
+    for( auto& _c : chars)
     {
-        Char& cc = c.second;
+        Char& cc = _c.second;
 
         cc.tx_pos_x /= width;
         cc.tx_width /= width;
@@ -542,18 +542,18 @@ void DFont_impl::apply_texture()
     //this is required so that the texture is correct in the shader
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    int width = chars_per_row * char_width;
+    int width;
 
     if(current_row > 0)
     {
-        width = chars_per_row * char_width;
+        width = static_cast<int>(chars_per_row * char_width);
     }
     else
     {
-        width = (current_column+1) * char_width;
+        width = static_cast<int>((current_column+1) * char_width);
     }
 
-    int height = (current_row+1) * char_height;
+    int height = static_cast<int>((current_row+1) * char_height);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, bitmap);
     

@@ -44,7 +44,7 @@ DImage::DImage(int width, int height)
 
     m_pixels = static_cast<Color*>(malloc(width * height * 4));
 
-    for(unsigned i = 0; i < width*height; ++i)
+    for(unsigned i = 0; i < static_cast<unsigned int>(width*height); ++i)
     {
         (m_pixels + i)->red     = 255;
         (m_pixels + i)->green   = 255;
@@ -172,8 +172,8 @@ DImage DImage::loadSVGImage(const std::string& filename, float scale)
 
     NSVGrasterizer* raster = nsvgCreateRasterizer();
 
-    int width = (image->width*scale);
-    int height = (image->height*scale);
+    int width  = static_cast<int>((image->width*scale));
+    int height = static_cast<int>((image->height*scale));
     unsigned int w4 = width*4;
 
     Color* imgdata = static_cast<Color*>(malloc(w4*height));

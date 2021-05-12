@@ -67,7 +67,7 @@ private:
 	void randomSeed1D();
 	void randomSeed2D();
 
-	void createPerlin1D(int nCount, float scale);
-	void createPerlin2D(int nWidth, int nHeight, float scale);
+	void createPerlin1D(int nCount);
+	void createPerlin2D(int nWidth, int nHeight);
 };
 #endif

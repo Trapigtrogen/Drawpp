@@ -857,7 +857,7 @@ bool saveFrame(const std::string& basename, ImageFormat format)
 
 DFont loadFont(const std::string& filename, int size, float row_spacing, float char_spacing)
 {
-    return DFont::load(filename,size,row_spacing,char_spacing);
+    return DFont::load(filename,static_cast<float>(size),row_spacing,char_spacing);
 }
 
 DFont loadFont(const std::string& filename, const FontOptions& opt)

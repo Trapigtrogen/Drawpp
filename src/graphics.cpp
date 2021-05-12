@@ -176,13 +176,10 @@ DGraphics::DGraphics(int width, int height)
         dbg::error("Failed to create secondary framebuffer");
     }
 
-    glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &format);
-    glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_TYPE, &type);
-
     glBindFramebuffer(GL_FRAMEBUFFER, prev_buffer);
 
     init_shaders();
-    view_mat = DMatrix4::identity().translate(DVector(-1.0,1.0)).scale(DVector(2.0/buffer_width,2.0/buffer_height));
+    view_mat = DMatrix4::identity().translate(DVector(-1.0f,1.0f)).scale(DVector(2.0f/buffer_width,2.0f/buffer_height));
 }
 
 DGraphics::~DGraphics()
@@ -338,7 +335,7 @@ void DGraphics::fill(Color rgba)
 
 void DGraphics::fill(Color rgb, float alpha)
 {
-    properties.fill_color = Color(rgb.red,rgb.green,rgb.blue,uint8_t(alpha / properties.color_maxa));
+    properties.fill_color = Color(rgb.red,rgb.green,rgb.blue,static_cast<uint8_t>(alpha / properties.color_maxa));
     properties.use_fill = true;
 }
 
@@ -373,7 +370,7 @@ void DGraphics::stroke(Color rgba)
 
 void DGraphics::stroke(Color rgb, float alpha)
 {
-    properties.stroke_color = Color(rgb.red,rgb.green,rgb.blue,alpha);
+    properties.stroke_color = Color(rgb.red,rgb.green,rgb.blue,static_cast<uint8_t>(alpha/properties.color_maxa));
     properties.use_stroke = true;
 }
 
@@ -419,7 +416,7 @@ void DGraphics::background(Color rgba)
 
 void DGraphics::background(Color rgb, float alpha)
 {
-    background(Color(rgb.red,rgb.green,rgb.blue,alpha));
+    background(Color(rgb.red,rgb.green,rgb.blue,static_cast<uint8_t>(alpha/properties.color_maxa)));
 }
 
 void DGraphics::background(float gray)
@@ -446,7 +443,7 @@ void DGraphics::background(const DImage& img)
 {
     PosMode imgm = properties.imagemode;
     properties.imagemode = PosMode::CORNER;
-    image(img,0,0,buffer_width,buffer_height);
+    image(img,0.0f,0.0f,static_cast<float>(buffer_width),static_cast<float>(buffer_height));
     properties.imagemode = imgm;
 }
 
@@ -489,7 +486,7 @@ void DGraphics::tint(Color rgba)
 
 void DGraphics::tint(Color rgb, float alpha)
 {
-    properties.tint_color = Color(rgb.red,rgb.green,rgb.blue,alpha);
+    properties.tint_color = Color(rgb.red,rgb.green,rgb.blue,static_cast<uint8_t>(alpha/properties.color_maxa));
     properties.use_tint = true;
 }
 
@@ -524,8 +521,8 @@ Color DGraphics::color(float grey)
 
 Color DGraphics::color(float grey, float alpha)
 {
-    uint8_t v = (grey / properties.color_max1) * 255;
-    uint8_t a = (alpha / properties.color_maxa) * 255;
+    uint8_t v = static_cast<uint8_t>((grey / properties.color_max1) * 255.0f);
+    uint8_t a = static_cast<uint8_t>((alpha / properties.color_maxa) * 255.0f);
 
     Color r(v, v, v, a);
 
@@ -989,7 +986,7 @@ void DGraphics::render_texture(unsigned int texture, float x, float y, float wid
 
 void DGraphics::image(const DImage& img, float x, float y)
 {
-    image(img,x,y,img.m_width,img.m_height);
+    image(img,x,y,static_cast<float>(img.m_width),static_cast<float>(img.m_height));
 }
 
 void DGraphics::image(const DImage& img, const DVector& p)
@@ -1009,12 +1006,12 @@ void DGraphics::image(const DImage& img, const DVector& p, const DVector& s)
 
 void DGraphics::image(const DGraphics& target, float x, float y )
 {
-    image(target,x,y,target.buffer_width,target.buffer_height);
+    image(target,x,y,static_cast<float>(target.buffer_width),static_cast<float>(target.buffer_height));
 }
 
 void DGraphics::image(const DGraphics& target, const DVector& p)
 {
-    image(target,p.x,p.y,target.buffer_width,target.buffer_height);
+    image(target,p.x,p.y,static_cast<float>(target.buffer_width),static_cast<float>(target.buffer_height));
 }
 
 void DGraphics::image(const DGraphics& target, float x, float y, float w, float h)
@@ -1303,7 +1300,7 @@ bool DGraphics::saveFrame(const std::string& basename, ImageFormat format) const
         }
 
         unsigned long long frameN = frameCount;
-        int d = 0;
+        unsigned int d = 0;
         while (frameN) {
             frameN /= 10;
             d++;
@@ -1472,7 +1469,7 @@ void DGraphics::text(const std::wstring& txt, float x, float y)
     glVertexAttribPointer(rect_shader_tpos_loc,2,GL_FLOAT,false,0, txt_texc_buffer.data());
     glVertexAttribPointer(rect_shader_vpos_loc,2,GL_FLOAT,false,0, txt_vert_buffer.data());
 
-    glDrawArrays(GL_TRIANGLES,0,txt_vert_buffer.size()/2);
+    glDrawArrays(GL_TRIANGLES,0,static_cast<int>(txt_vert_buffer.size())/2);
 
     glDisableVertexAttribArray(rect_shader_vpos_loc);
     glDisableVertexAttribArray(rect_shader_tpos_loc);
@@ -1487,16 +1484,16 @@ void DGraphics::text(const std::wstring& txt, const DVector& p)
 
 vec2f bezier_bezierCubic(vec2f a, vec2f b, vec2f c, vec2f d, float t)
 {
-    float f1 = 1.0-t;
+    float f1 = 1.0f-t;
     return f1*f1*f1*a + 
-    3.0*f1*f1*t*b + 
-    3.0*f1*t*t*c + 
+    3.0f*f1*f1*t*b + 
+    3.0f*f1*t*t*c + 
     t*t*t*d;
 }
 
 vec2f bezier_bezierQuadratic(vec2f p0, vec2f p1,vec2f p2, float t)
 {
-    float t1 = 1.0-t;
+    float t1 = 1.0f-t;
     return  t1*(t1*p0+t*p1)+t*(t1*p1+t*p2);
 }
 
@@ -1506,8 +1503,8 @@ void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t co
 {
     bezier_buffer.clear();
 
-    float s = 1.0/properties.bezier_detail;
-    float t = 1.0;
+    float s = 1.0f/properties.bezier_detail;
+    float t = 1.0f;
 
     vec2f a;
     vec2f d;
@@ -1534,23 +1531,23 @@ void DGraphics::generate_cubic_bezier_path(const struct vec2f* points, size_t co
         c.x = c.x * xscale + xoff;
         d.x = d.x * xscale + xoff;
 
-        t -= 1.0;
+        t -= 1.0f;
 
-        while(t < 1.0)
+        while(t < 1.0f)
         {
             bezier_buffer.push_back(bezier_bezierCubic(a,b,c,d,t));
             t += s;
         }
     }
-    bezier_buffer.push_back(bezier_bezierCubic(a,b,c,d,1.0));
+    bezier_buffer.push_back(bezier_bezierCubic(a,b,c,d,1.0f));
 }
 
 void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_t count, float xoff, float yoff, float xscale, float yscale, unsigned int stride)
 {
     bezier_buffer.clear();
 
-    float s = 1.0/properties.bezier_detail;
-    float t = 1.0;
+    float s = 1.0f/properties.bezier_detail;
+    float t = 1.0f;
 
     vec2f p0;
     vec2f p1;
@@ -1573,14 +1570,14 @@ void DGraphics::generate_quadratic_bezier_path(const struct vec2f* points, size_
         p1.x = p1.x * xscale + xoff;
         p2.x = p2.x * xscale + xoff;
 
-        t -= 1.0;
-        while(t < 1.0)
+        t -= 1.0f;
+        while(t < 1.0f)
         {
             bezier_buffer.push_back(bezier_bezierQuadratic(p0,p1,p2,t));
             t += s;
         }
     }
-    bezier_buffer.push_back(bezier_bezierQuadratic(p0,p1,p2,1.0));
+    bezier_buffer.push_back(bezier_bezierQuadratic(p0,p1,p2,1.0f));
 }
 
 void DGraphics::render_bezier_buffer()
@@ -1601,7 +1598,7 @@ void DGraphics::render_bezier_buffer()
 
     vec2f last_dir = dir;
 
-    for(unsigned i = 1; i < bezier_buffer.size()-1; ++i)
+    for(size_t i = 1; i < bezier_buffer.size()-1; ++i)
     {
         dir = (bezier_buffer[i+1] - bezier_buffer[i]);
         dir = dir / dir.len();
@@ -1636,7 +1633,7 @@ void DGraphics::render_bezier_buffer()
     glEnableVertexAttribArray(generic_colored_shader_vpos_loc);
     glVertexAttribPointer(generic_colored_shader_vpos_loc,2,GL_FLOAT,false,0, mesh.data());
 
-    glDrawArrays(GL_TRIANGLE_STRIP,0,mesh.size());
+    glDrawArrays(GL_TRIANGLE_STRIP,0, static_cast<int>(mesh.size()));
 
     glDisableVertexAttribArray(generic_colored_shader_vpos_loc);
 
@@ -1696,7 +1693,7 @@ GraphicsProperties DGraphics::getStyle()
 
 DImage DGraphics::toImage() const
 {
-    unsigned w4 = buffer_width*4;
+    size_t w4 = buffer_width*4;
     Color* data = static_cast<Color*>(malloc(w4*buffer_height));
 
     glBindTexture(GL_TEXTURE_2D,texture_id);
@@ -1731,7 +1728,7 @@ void DGraphics::filter(const DFilter& f, std::function<void(unsigned int)> initi
 
     glUseProgram(f.getProgram());
 
-    glUniform2f(f.impl->source_size_location,buffer_width,buffer_height);
+    glUniform2f(f.impl->source_size_location,static_cast<float>(buffer_width),static_cast<float>(buffer_height));
 
     glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture_id);
@@ -1842,8 +1839,6 @@ DGraphics& DGraphics::operator=(DGraphics&& other)
     texture_id = other.texture_id;
     buffer_width = other.buffer_width;
     buffer_height = other.buffer_height;
-    type = other.type;
-    format = other.format;
 
     other.buffer_id = static_cast<unsigned int>(-1);
     other.texture_id = 0;
@@ -1942,10 +1937,10 @@ Color DGraphics::get_rgba(float r, float g, float b, float a)
     b = to_0range(b,properties.color_max3);
     a = to_0range(a,properties.color_maxa);
     
-    uint8_t rv = (r / properties.color_max1)*255;
-    uint8_t gv = (g / properties.color_max2)*255;
-    uint8_t bv = (b / properties.color_max3)*255;
-    uint8_t av = (a / properties.color_maxa)*255;
+    uint8_t rv = static_cast<uint8_t>((r / properties.color_max1)*255.0f);
+    uint8_t gv = static_cast<uint8_t>((g / properties.color_max2)*255.0f);
+    uint8_t bv = static_cast<uint8_t>((b / properties.color_max3)*255.0f);
+    uint8_t av = static_cast<uint8_t>((a / properties.color_maxa)*255.0f);
 
     return Color(rv,gv,bv,av);
 }
