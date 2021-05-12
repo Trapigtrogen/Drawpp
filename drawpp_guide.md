@@ -1,4 +1,4 @@
-Beginners guide to Drawpp
+Beginner's guide to Drawpp
 ===
 
 ## Table of contents
