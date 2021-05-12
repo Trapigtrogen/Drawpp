@@ -258,20 +258,20 @@ void draw(float deltaTime)
 
     // Limit zoom level
     if (zoomlevel > 1) zoomlevel = 1;
-    else if (zoomlevel < 0.3) zoomlevel = 0.3;
+    else if (zoomlevel < -1.0) zoomlevel = -1.0;
     // Apply zoom level
-    scale(zoomlevel);
+    scale(1.0 / (1 + (1 - zoomlevel)));
 
     // Limit camera movement area
     // Relative to zoomlevel
-    visibleAreaX = (1 + (1 - zoomlevel)) * 1.11 * 1000;
-    visibleAreaY = (1 + (1 - zoomlevel)) * 1.11 * 800;
+    visibleAreaX = (1 + (1 - zoomlevel)) * 1000;
+    visibleAreaY = (1 + (1 - zoomlevel)) * 800;
     // Min
     if (cameraX < -2000) cameraX = -2000;
     if (cameraY < -1000) cameraY = -1000;
     // Max
-    if (cameraX > 2500 - visibleAreaX) cameraX = 2500 - visibleAreaX;
-    if (cameraY > 2000 - visibleAreaY) cameraY = 2000 - visibleAreaY;
+    if (cameraX > 3500 - visibleAreaX) cameraX = 3500 - visibleAreaX;
+    if (cameraY > 2700 - visibleAreaY) cameraY = 2700 - visibleAreaY;
 
     // Move the world on the opposite direction to camera movement
     translate(-cameraX, -cameraY);
@@ -294,10 +294,9 @@ void draw(float deltaTime)
     // Roads
     noStroke();
     fill(colors::grey);
-    // Intersecting roads. Width = 100
-    rect(1000, -2000, 100, 8000); // Vertical
-    rect(-2000, 300, 8000, 100); // Horizontal
-    rect(1000, 1500, 3000, 100); // Horizontal under the houses
+    rect(1000, -2000, 100, 8000);   // Vertical across the map
+    rect(-2000, 300, 8000, 100);    // Horizontal across the map
+    rect(1000, 1500, 3000, 100);    // Horizontal under the houses
 
 
     // Swimming pool
