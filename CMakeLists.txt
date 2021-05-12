@@ -32,7 +32,7 @@ add_library(${LIBNAME} STATIC external/glad/src/glad.c ${source_list})
 set_target_properties(${LIBNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 
 if(MSVC)
-    target_compile_options(${LIBNAME} PRIVATE /W4)
+    target_compile_options(${LIBNAME} PRIVATE /W0)
 else()
     target_compile_options(${LIBNAME} PRIVATE -Wall -Wextra)
 endif()
@@ -44,12 +44,15 @@ include_directories(external/glfw/include)
 include_directories(external/stb)
 include_directories(external/nanosvg)
 include_directories(external/freetype/include)
-
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
 option(GLFW_BUILD_DOCS OFF)
 add_subdirectory(external/glfw)
 add_subdirectory(external/freetype)
+
+target_compile_options(freetype PRIVATE /W0)
+target_compile_options(glfw PRIVATE /W0)
+
 target_link_libraries(${LIBNAME} glfw)
 target_link_libraries(${LIBNAME} freetype)
 
@@ -78,7 +81,7 @@ end")
 #    set(LIB_PATH ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a)
 endif (MSVC)
 
-find_package(Doxygen)
+find_package(Doxygen QUIET)
 
 if (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
     set(DOXYGEN_ALWAYS_DETAILED_SEC YES)

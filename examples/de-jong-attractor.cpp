@@ -41,14 +41,14 @@ constexpr float PX_HEIGHT = (W_HEIGHT / (float)GEN_HEIGHT);
 constexpr unsigned iterations = 2000000u;
 
 // Multiplier for each hit
-constexpr float multiplier = 0.995;
+constexpr float multiplier = 0.995f;
 
 // Histogram storing the values
 std::vector<float> histogram = std::vector<float>(GEN_WIDTH*GEN_HEIGHT);
 
 // Generator parameters
 // Try changing these
-float a = 2.0, b = 5.0, c = 3.5, d = 2.0;
+float a = 2.0f, b = 5.0f, c = 3.5f, d = 2.0f;
 
 // setup is called once before the application loop starts
 void setup()
@@ -61,13 +61,13 @@ void setup()
 void draw(float)
 {
     // Increment 'a' every frame to animate the attractor
-    a += 0.01;
+    a += 0.01f;
 
     // Initialize starting position x and y
-    float x = 0.0, y = 0.0;
+    float x = 0.0f, y = 0.0f;
     
     // Initialize histogram
-    std::fill(histogram.begin(),histogram.end(),1.0);
+    std::fill(histogram.begin(),histogram.end(),1.0f);
 
     for(unsigned i = 0; i < iterations; ++i)
     {   
