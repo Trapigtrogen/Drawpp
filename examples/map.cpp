@@ -1,13 +1,17 @@
 #include <drawpp.hpp>
 #include <algorithm> // std::min
 
+// Window settings
+int Wwidth = 1500;
+int Wheight = 1000;
+
 // perlin noise settings
 // The size of perlin noise will be 512px * 512px
 int gen_height = 1024;
 int gen_width = 1024;
 
 // Camera
-float zoomlevel = 0.6f;
+float zoomlevel = 0.0f;
 int cameraX = -200;
 int cameraY = -100;
 float cameraSpeed = 10;
@@ -88,6 +92,7 @@ DImage* randomCar()
 int carSpeed = 250;
 float carTimer = -100;
 float carTimer2 = -1000;
+float carTimer3 = -500;
 
 // These image pointers represent the cars on the road
 // They are randomily set to point one of the car images
@@ -239,18 +244,26 @@ void draw(float deltaTime)
     }
 
     // Car movement
-    carTimer += deltaTime * carSpeed;
-    if (carTimer > 1900)
+    // Horizontal left to right
+    carTimer += deltaTime * carSpeed; 
+    if (carTimer > 3500)
     {
-        carTimer = -1900;
+        carTimer = -3000;
         carImg = randomCar();
-        carImg3 = randomCar();
     }
+    // Vertical
     carTimer2 += deltaTime * carSpeed;
-    if (carTimer > 1900)
+    if (carTimer2 > 3500)
     {
-        carTimer = -1900;
+        carTimer2 = -2300;
         carImg2 = randomCar();
+    }
+    // Horizontal right to left 
+    carTimer3 += deltaTime * carSpeed;
+    if (carTimer3 > 3500)
+    {
+        carTimer3 = -2700;
+        carImg3 = randomCar();
     }
 
 
@@ -260,12 +273,14 @@ void draw(float deltaTime)
     if (zoomlevel > 1) zoomlevel = 1;
     else if (zoomlevel < -1.0) zoomlevel = -1.0;
     // Apply zoom level
-    scale(1.0 / (1 + (1 - zoomlevel)));
+    // Calculate scale level so that the limit can be used in same scale
+    // Since if we just use zoomlevel while going down and back up -> 100% * 90% * 110% = 99%
+    scale(1 / (1 + (1 - zoomlevel)));
 
     // Limit camera movement area
-    // Relative to zoomlevel
-    visibleAreaX = (1 + (1 - zoomlevel)) * 1000;
-    visibleAreaY = (1 + (1 - zoomlevel)) * 800;
+    // Visible area relative to zoomlevel
+    visibleAreaX = (1 + (1 - zoomlevel)) * Wwidth;
+    visibleAreaY = (1 + (1 - zoomlevel)) * Wheight;
     // Min
     if (cameraX < -2000) cameraX = -2000;
     if (cameraY < -1000) cameraY = -1000;
@@ -284,13 +299,6 @@ void draw(float deltaTime)
     image(grassTex, -4000, -4000, 8000, 8000);
 
 
-    // Debug
-    printf("zoom: %f\n", zoomlevel);
-    printf("visibleX: %f\n", visibleAreaX);
-    printf("cameraX limit: %f\n", 2500 - visibleAreaX);
-    printf("Camera pos: %i, %i\n", cameraX, cameraY);
-
-
     // Roads
     noStroke();
     fill(colors::grey);
@@ -307,7 +315,7 @@ void draw(float deltaTime)
     rect(400, 70, 200, 20);
     quad(400, 70, 420, 70, 400, 170, 410, 170);
     // Texture with some random movment to resemble water moving
-    image(waterTex, 390 + waterMovement, 70, 210, 100);
+    image(waterTex, 380 + waterMovement * 2, 70, 220, 100);
     // Stone areas to hide the texture going over
     fill(colors::grey);
     rect(600, 70, 70, 100);
@@ -357,12 +365,12 @@ void draw(float deltaTime)
 
     // Cars
     // Car going to left
-    image(*carImg3, -carTimer + 1000, 250, -carImg->width() / 3, carImg->height() / 3);
+    image(*carImg3, -carTimer3 + 1000, 250, -carImg->width() / 3, carImg->height() / 3);
     // Car going to right
     image(*carImg, carTimer, 300, carImg->width() / 3, carImg->height() / 3);
     // rotate one car 90 degrees
     rotate(1.570796);
-    image(*carImg2, carTimer, -1090, carImg->width() / 3, carImg->height() / 3);
+    image(*carImg2, carTimer2, -1090, carImg->width() / 3, carImg->height() / 3);
     // Rotate back
     rotate(-1.570796);
 
@@ -432,7 +440,7 @@ void draw(float deltaTime)
     fill(colors::grey);
     circle(-500, 1490, 10);
     // Set the image x,y to mean the center of image
-    // Moving the image to centre of fountain is now easier 
+    // Moving the image to centre of fountain is now easier
     imageMode(CENTER); 
     image(*waterAnimation[currentWater], -500, 1490, waterAnimation[currentWater]->width()*3, waterAnimation[currentWater]->height()*3);
     // Set image coordinates back to up-left corner
@@ -459,9 +467,39 @@ void draw(float deltaTime)
     }
 
     // Trees
-    image(treeTex, -1000, 600, treeTex.width(), treeTex.height());
     image(treeTex, 0, 1000, -treeTex.width() / 2, treeTex.height());
-    image(treeTex, -100, 1500, treeTex.width() / 2, treeTex.height());
+
+    image(treeTex, -1000, 700, treeTex.width(), treeTex.height());
+    image(treeTex, -1200, 1200, -treeTex.width() / 2, treeTex.height());
+
+    image(treeTex, -900, 2000, treeTex.width(), treeTex.height());
+    image(treeTex, -1100, 1700, treeTex.width() / 2, treeTex.height() / 1.5);
+
+    image(treeTex, -200, 1900, treeTex.width(), treeTex.height());
+    image(treeTex, 50, 1800, treeTex.width() / 2, treeTex.height());
+
+    // Bushes
+    image(bushTex, -920, 1450, bushTex.width(), bushTex.height());
+    image(bushTex, -250, 1450, bushTex.width(), bushTex.height());
+
+
+    // Sea
+    // Sand around the sea
+    fill(200, 175, 50);
+    rect(1100, 1600, 2300, 1200);
+    // Sunbathing chairs + umbrellas
+    for (int i = 0; i < 5; i++) 
+    {
+        fill(colors::brown);
+        rect(1300 + i * 300, 1605, 20, 50);
+        fill(150, 0, 50);
+        ellipse(1300 + i*300 + 20, 1615, 35, 25);
+    }
+    // Dark sea bottom
+    fill(100, 100, 50);
+    rect(1300, 1750, 2000, 1000);
+    // Texture with some random movment to resemble water moving
+    image(waterTex, 1300, 1710 + waterMovement * 4, 2000, 1040);
 }
 
 
@@ -529,7 +567,7 @@ void keyPressed()
 
 int main()
 {
-    Application app(1000, 800);
+    Application app(Wwidth, Wheight);
 
     app.setMouseDragged(mouseDragged);
     app.setMouseReleased(mouseReleased);
