@@ -67,7 +67,10 @@ struct GraphicsProperties
     DFont font;
     float bezier_detail = 20;
     bool use_clip = false;
-    int clip_x1, clip_x2, clip_y1, clip_y2;
+    int clip_x1 = 0;
+    int clip_x2 = 0;
+    int clip_y1 = 0;
+    int clip_y2 = 0;
 };
 
 ///\brief Graphics class describes a render target
@@ -703,8 +706,6 @@ private:
     unsigned int texture_id = 0;
     unsigned int buffer_width = 0;
     unsigned int buffer_height = 0;
-    int type = -1;
-    int format = -1;
 
     unsigned int filter_buffer_id = static_cast<unsigned int>(-1);
     unsigned int filter_texture_id = 0;

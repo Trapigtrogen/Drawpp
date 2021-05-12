@@ -23,10 +23,10 @@ Color::Color(uint8_t v1, uint8_t v2, uint8_t v3, uint8_t a)
 
 Color::Color(unsigned int c)
 {
-    alpha = c >> 24;
-    red = (c & 0x00FF0000) >> 16;
-    green = (c & 0x0000FF00) >> 8;
-    blue = c & 0x000000FF;
+    alpha = static_cast<uint8_t>(c >> 24);
+    red   = static_cast<uint8_t>((c & 0x00FF0000) >> 16);
+    green = static_cast<uint8_t>((c & 0x0000FF00) >> 8);
+    blue  = static_cast<uint8_t>(c & 0x000000FF);
 }
 
 Color::Color(const std::string& hexCol) 
@@ -56,10 +56,10 @@ Color Color::lerpColor(const Color& from, const Color& to, float percentage)
 	if(percentage < 0) percentage = 0.0;
 
 	// Lerp values
-	uint8_t lerpRed = from.red + percentage * (to.red - from.red);
-	uint8_t lerpGreen = from.green + percentage * (to.green - from.green);
-	uint8_t lerpBlue = from.blue + percentage * (to.blue - from.blue);
-    uint8_t lerpAlpha = from.alpha + percentage * (to.alpha - from.alpha);
+	uint8_t lerpRed   = static_cast<uint8_t>(from.red + percentage * (to.red - from.red));
+	uint8_t lerpGreen = static_cast<uint8_t>(from.green + percentage * (to.green - from.green));
+	uint8_t lerpBlue  = static_cast<uint8_t>(from.blue + percentage * (to.blue - from.blue));
+    uint8_t lerpAlpha = static_cast<uint8_t>(from.alpha + percentage * (to.alpha - from.alpha));
 	return Color(lerpRed,lerpGreen,lerpBlue,lerpAlpha);
 }
 
@@ -69,17 +69,17 @@ void Color::HSB2RGB(float h, float s, float b, float a)
 	float r, g, bb;
 	long i;
 
-	float ss = s / 100; // percentages to 0-1
+	float ss = s / 100.0f; // percentages to 0-1
 
 	
 	hh = h;
-	if(hh >= 360.0) hh = 0.0;
-	hh /= 60.0;
+	if(hh >= 360.0f) hh = 0.0f;
+	hh /= 60.0f;
 	i = (long)hh;
 	ff = hh - i;
-	p = b * (1.0 - ss);
-	q = b * (1.0 - (ss * ff));
-	t = b * (1.0 - (ss * (1.0 - ff)));
+	p = b * (1.0f - ss);
+	q = b * (1.0f - (ss * ff));
+	t = b * (1.0f - (ss * (1.0f - ff)));
 
 	switch(i) {
 		case 0:
@@ -116,63 +116,56 @@ void Color::HSB2RGB(float h, float s, float b, float a)
 		break;
 	}
 
-    red   =  r * 2.551;
-    green =  g * 2.551;
-    blue  = bb * 2.551;
-    alpha =  a * 2.551;
+    red   = static_cast<uint8_t>( r * 2.551f);
+    green = static_cast<uint8_t>( g * 2.551f);
+    blue  = static_cast<uint8_t>(bb * 2.551f);
+    alpha = static_cast<uint8_t>( a * 2.551f);
 }
 
 Color Color::HEX2RGB(const char* hexCol)
 {
 	bool valid = false;
-	int r, g, b;
+	int r = 0, g = 0, b = 0;
 	int a = 255;
 
 	// Is right format
 	if(hexCol[0] == '#')
 	{
-		// remove '#' from color string
-		//hexCol.erase(0, 1);
+		valid = true;
         ++hexCol;
-		//char* hexNum = new char;
-		//strcpy(hexNum, hexCol);
-        
-        //switch(hexCol.size())
+
 		switch(strlen(hexCol))
 		{
 			// Full hex with alpha
 			case 8:
-				sscanf(hexCol, "%02x%02x%02x%02x", &r, &g, &b, &a);
-				valid = true;
+				(void)sscanf(hexCol, "%02x%02x%02x%02x", &r, &g, &b, &a);
 			break;
 
 			// Full hex without alpha
 			case 6: 
-				sscanf(hexCol, "%02x%02x%02x", &r, &g, &b);
-				valid = true;
+				(void)sscanf(hexCol, "%02x%02x%02x", &r, &g, &b);
 			break;
 
 			// Compact hex with alpha
 			case 4: 
-				sscanf(hexCol, "%01x%01x%01x%01x", &r, &g, &b, &a);
+				(void)sscanf(hexCol, "%01x%01x%01x%01x", &r, &g, &b, &a);
 				r *= 25;
 				g *= 25;
 				b *= 25;
 				a *= 25;
-				valid = true;
 			break;
 
 			// Compact hex without alpha
 			case 3: 
-				sscanf(hexCol, "%01x%01x%01x", &r, &g, &b);
+				(void)sscanf(hexCol, "%01x%01x%01x", &r, &g, &b);
 				r *= 25;
 				g *= 25;
 				b *= 25;
-				valid = true;
 			break;
 
 			// Invalid
 			default:
+				valid = false;
 			break;
 		}
 	}
@@ -183,7 +176,10 @@ Color Color::HEX2RGB(const char* hexCol)
 		g = correctValue(g, 0, 255);
 		b = correctValue(b, 0, 255);
 		a = correctValue(a, 0, 255);
-		return Color(r, g, b, a);
+		return Color(static_cast<uint8_t>(r), 
+                    static_cast<uint8_t>(g), 
+                    static_cast<uint8_t>(b), 
+                    static_cast<uint8_t>(a));
 	}
 
 	dbg::error("Not a hex color. Should be \"#RRGGBB\", \"#RRGGBBAA\" or compact variant of either");

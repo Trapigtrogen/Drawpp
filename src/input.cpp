@@ -23,11 +23,11 @@ void Input::keyboard_callback(GLFWwindow*, int keyc, int, int action, int)
         switch (keyc)
         {
             //these keys should be within ascii range
-            case GLFW_KEY_BACKSPACE: keyCode = VK_BACKSPACE, key = keyCode; break;
-            case GLFW_KEY_TAB:       keyCode = VK_TAB, key = keyCode; break;
-            case GLFW_KEY_ENTER:     keyCode = VK_ENTER, key = keyCode; break;
-            case GLFW_KEY_ESCAPE:    keyCode = VK_ESC, key = keyCode; break;
-            case GLFW_KEY_DELETE:    keyCode = VK_DELETE, key = keyCode; break;
+            case GLFW_KEY_BACKSPACE: keyCode = VK_BACKSPACE, key = static_cast<char>(keyCode); break;
+            case GLFW_KEY_TAB:       keyCode = VK_TAB,       key = static_cast<char>(keyCode); break;
+            case GLFW_KEY_ENTER:     keyCode = VK_ENTER,     key = static_cast<char>(keyCode); break;
+            case GLFW_KEY_ESCAPE:    keyCode = VK_ESC,       key = static_cast<char>(keyCode); break;
+            case GLFW_KEY_DELETE:    keyCode = VK_DELETE,    key = static_cast<char>(keyCode); break;
 
             //rest of keys -> coded
             default:                 keyCode = keyc, key = CODED; break;
@@ -37,13 +37,13 @@ void Input::keyboard_callback(GLFWwindow*, int keyc, int, int action, int)
     else if(keyc > 0x40 && keyc < 0x5B)
     {
         keyCode = keyc+32;
-        key = keyCode;
+        key = static_cast<char>(keyCode);
     }
     //rest are ascii
     else
     {
         keyCode = keyc;
-        key = keyCode;
+        key = static_cast<char>(keyCode);
     }
 
     //if(action == GLFW_PRESS)  printf("%d - %d: %c\n",scancode,keyc,keyc);
@@ -95,7 +95,7 @@ void Input::mousewhl_callback(GLFWwindow*,double, double yoffset)
 {
     if(mouseWheel_func)
     {
-        mouseWheel_func(yoffset);
+        mouseWheel_func(static_cast<float>(yoffset));
     }
 }
 
