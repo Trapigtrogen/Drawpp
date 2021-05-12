@@ -234,7 +234,7 @@ std::string Color::hex(const Color& col, int num)
                    result.begin(), 
                    [] (unsigned char c) 
                     { 
-                       return std::toupper(c); 
+                       return ::toupper(c); 
                     });
 	return  result;
 }
