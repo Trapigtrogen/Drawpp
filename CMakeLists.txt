@@ -28,8 +28,7 @@ endif (MSVC)
 file( GLOB_RECURSE source_list RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
 add_library(${LIBNAME} STATIC external/glad/src/glad.c ${source_list})
 
-set_target_properties(${LIBNAME} PROPERTIES 
-                        ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
+set_target_properties(${LIBNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 
 if(MSVC)
     target_compile_options(${LIBNAME} PRIVATE /W4)
