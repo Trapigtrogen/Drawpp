@@ -734,7 +734,7 @@ Another thing you can do with filters, is to just use them as shader renderers. 
 
 #### <a id="dvector">DVector</a>
 
-The DVector class contains 3 floating point values: x, y and z. They are public member and can be accessed as such.<br>
+The DVector class contains 3 floating point values: x, y and z. They are public members and can be accessed as such.<br>
 DVector also has all the basic vector math functions you will need. Here is a list of them:
 
 ##### Operators
@@ -793,7 +793,6 @@ DVector also has all the basic vector math functions you will need. Here is a li
     - Test if magnitude of the left operand is larger than the magnitude of the right operand.
 - =>
     - Test if magnitude of the left operand is larger or equal to the magnitude of the right operand.
-<br>
 
 ##### Initializers
 - random2D()
@@ -803,6 +802,7 @@ DVector also has all the basic vector math functions you will need. Here is a li
     - Create a random 3D unit vector.
 - fromAngle()
     - Create a 2D unit vector from an angle (radians).
+<br>
 
 #### <a id="dmatrix4">DMatrix4</a>
 
@@ -843,7 +843,7 @@ Here is a list of the matrix functions:
 - scale()
     - Scale the matrix by a vector.
 - rotate()
-    - Rotate the matrix by an angle, on an axis.
+    - Rotate the matrix by an angle (radians), on an axis.
 
 ##### Comparison operators
 - ==
