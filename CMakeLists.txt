@@ -88,8 +88,6 @@ if (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
 
     doxygen_add_docs(doxygen ALL
                 ${CMAKE_SOURCE_DIR}/include)
-elseif(NOT DOXYGEN_FOUND)
-    message(SEND_ERROR "Doxygen executable not found")
 endif (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
 
 if (DPP_BUILD_TESTS)
