@@ -15,7 +15,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad.h>
-#include <filter.h>
+#include <filter.hpp>
 
 static float quad_coords[] = 
 {
