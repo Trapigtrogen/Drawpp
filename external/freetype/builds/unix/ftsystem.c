@@ -60,7 +60,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef HAVE_FCNTL_H
+#if 1
 #include <fcntl.h>
 #endif
 

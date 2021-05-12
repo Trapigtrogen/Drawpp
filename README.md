@@ -16,8 +16,7 @@ Linux: X11 only. Wayland works mostly but support for it isn't prioritized right
 * More stuff to do with vector graphics and SVG shapes
 
 # Building
-Clone with `git clone https://gitlab.com/Trapigtrogen/graphics-library.git --recursive` to get the dependensies also\
-You can also update the submodule afterwards with `git submodule update --init`
+Clone with `git clone https://gitlab.com/Trapigtrogen/graphics-library.git` where ever you want. graphics-library folder will be downloaded.
 
 ## Automatic
 We provide scripts for building releases.\
