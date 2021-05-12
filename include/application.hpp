@@ -10,7 +10,7 @@
 
 class Window;
 class DGraphics;
-class GLFWcursor;
+struct GLFWcursor;
 class DImage;
 class DFilter;
 

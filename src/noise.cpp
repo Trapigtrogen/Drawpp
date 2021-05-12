@@ -27,13 +27,13 @@ void Noise::initNoise()
 
 	delete[] perlinNoise1D;
 	perlinNoise1D = new float[outputWidth];
-	createPerlin1D(outputWidth, scale);
+	createPerlin1D(outputWidth);
 
 	randomSeed2D();
 
 	delete[] perlinNoise2D;
 	perlinNoise2D = new float[outputWidth * outputHeight];
-	createPerlin2D(outputWidth, outputHeight, scale);
+	createPerlin2D(outputWidth, outputHeight);
 }
 
 void Noise::resize(int width, int height) 
@@ -50,8 +50,8 @@ void Noise::noiseSeed(int seed)
 
 	randomSeed1D();
 	randomSeed2D();
-	createPerlin1D(outputWidth, scale);
-	createPerlin2D(outputWidth, outputHeight, scale);
+	createPerlin1D(outputWidth);
+	createPerlin2D(outputWidth, outputHeight);
 }
 
 void Noise::randomSeed1D() 
@@ -89,7 +89,7 @@ float Noise::pNoise(unsigned int x, unsigned int y)
 	return perlinNoise2D[y * outputWidth + x];
 }
 
-void Noise::createPerlin1D(int nCount, float scale)
+void Noise::createPerlin1D(int nCount)
 {
 	for(int x = 0; x < nCount; x++) 
 	{
@@ -102,7 +102,7 @@ void Noise::createPerlin1D(int nCount, float scale)
 			int nPitch = nCount;
 			for (int i = 0; i < o; i++)
 			{
-				nPitch = nPitch * falloff;
+				nPitch = static_cast<int>(nPitch * falloff);
 			}
 			int nSample1 = x;
 			if(nPitch != 0)
@@ -125,7 +125,7 @@ void Noise::createPerlin1D(int nCount, float scale)
 	}
 }
 
-void Noise::createPerlin2D(int nWidth, int nHeight, float scale)
+void Noise::createPerlin2D(int nWidth, int nHeight)
 {
 	for(int x = 0; x < nWidth; x++)
 	{
@@ -140,7 +140,7 @@ void Noise::createPerlin2D(int nWidth, int nHeight, float scale)
 				int nPitch = nWidth;
 				for (int i = 0; i < o; i++)
 				{
-					nPitch = nPitch * falloff;
+					nPitch = static_cast<int>(nPitch * falloff);
 				}
 				int nSampleX1 = x;
 				int nSampleY1 = y;
@@ -173,20 +173,20 @@ void Noise::createPerlin2D(int nWidth, int nHeight, float scale)
 void Noise::setOctaves(int lod)
 { 
 	nOctaves = lod;
-	createPerlin1D(outputWidth, scale);
-	createPerlin2D(outputWidth, outputHeight, scale);
+	createPerlin1D(outputWidth);
+	createPerlin2D(outputWidth, outputHeight);
 }
 
 void Noise::setFalloff(float foff)
 {
 	falloff = foff;
-	createPerlin1D(outputWidth, scale);
-	createPerlin2D(outputWidth, outputHeight, scale);
+	createPerlin1D(outputWidth);
+	createPerlin2D(outputWidth, outputHeight);
 }
 
 void Noise::setScale(float _scale)
 {
 	scale = _scale;
-	createPerlin1D(outputWidth, scale);
-	createPerlin2D(outputWidth, outputHeight, scale);
+	createPerlin1D(outputWidth);
+	createPerlin2D(outputWidth, outputHeight);
 }

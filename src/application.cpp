@@ -15,7 +15,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad.h>
-#include <filter.h>
+#include <filter.hpp>
 
 static float quad_coords[] = 
 {
@@ -102,7 +102,7 @@ int Application::run(std::function<void(float)> draw,
 {
     if(!draw)
     {
-        draw_func = [](float f){};
+        draw_func = [](float f){(void)f;};
     }
     else
     {
@@ -286,7 +286,7 @@ void Application::setFrameRate(int fps)
         return;
     }
 
-    min_delta = 1.0/(fps+1);
+    min_delta = 1.0f/(fps+1);
 }
 
 void Application::setVSync(bool vsync)

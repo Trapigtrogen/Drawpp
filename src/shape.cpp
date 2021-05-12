@@ -41,14 +41,14 @@ void DShape_impl::impl_loadShape(const NSVGshape& shape)
 {
     strokeWeight = shape.strokeWidth;
     strokeColor = shape.stroke.color;
-    reinterpret_cast<uint8_t*>(&strokeColor)[0] = 255/shape.opacity;
+    strokeColor.alpha = static_cast<uint8_t>(255.0f/shape.opacity);
     name = std::string(shape.id);
 
     for(const NSVGpath* p = shape.paths; p != nullptr; p = p->next)
     {
         Path np;
         np.closed = p->closed;
-        for(unsigned i = 0; i < p->npts*2-1; i+=2)
+        for(unsigned i = 0; i < static_cast<unsigned int>(p->npts*2-1); i+=2)
         {
             np.points.push_back({p->pts[i],p->pts[i+1]});
         }
@@ -113,7 +113,7 @@ int DShape::addChild(DShape& other)
 
 bool DShape::removeChild(int index)
 {
-    if(index < 0 || index >= impl->children.size())
+    if(static_cast<unsigned int>(index) >= impl->children.size())
     {
         return false;
     }
@@ -124,16 +124,16 @@ bool DShape::removeChild(int index)
 
 DShape& DShape::getChild(int index)
 {
-    return impl->children[index];
+    return impl->children[static_cast<unsigned int>(index)];
 }
 
 const DShape& DShape::getChild(int index) const noexcept(false)
 {
-    if(index < 0 || index >= impl->children.size())
+    if(static_cast<unsigned int>(index) >= impl->children.size())
     {
         throw std::out_of_range("Child index out or range");
     }
-    return impl->children[index];
+    return impl->children[static_cast<unsigned int>(index)];
 }
 
 int DShape::findChild(const std::string& id) const
@@ -180,14 +180,14 @@ bool DShape::isVisible() const
 
 void DShape::moveChild(int index, int newIndex)
 {
-    if(index == newIndex)
+    if(index == newIndex && impl->children.size() != 0)
     {
         return;
     }
 
-    if(newIndex > impl->children.size())
+    if(static_cast<unsigned int>(newIndex) > impl->children.size())
     {
-        newIndex = impl->children.size()-1;
+        newIndex = static_cast<int>(impl->children.size()-1);
     }
     else if(newIndex < 0)
     {

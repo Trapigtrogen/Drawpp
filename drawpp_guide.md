@@ -1,4 +1,4 @@
-Beginners guide to Drawpp
+Beginner's guide to Drawpp
 ===
 
 ## Table of contents
@@ -536,6 +536,8 @@ As with random numbers, you can have multiple noise generators by using the Nois
     - See generated documentation for details.
 - loadShape()
     - Loads an SVG file from the given path, as a shape.
+- loadFilterFromFile()
+    - Loads a post-processing filter from a file.
 
 
 <br>

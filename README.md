@@ -1,5 +1,7 @@
 Processing style graphic library for c++ using OpenGL. Support for Windows and Linux desktops and Raspberry Pi 3 upwards.\
-Linux: X11 only. Wayland works mostly but support for it isn't prioritized right now.
+Linux: X11 only. Wayland works mostly but support for it isn't prioritized right now.<br>
+
+For an in-depth user's manual, see [this](drawpp_guide.md).
 
 # Features
 * Draw lines and basic shapes
@@ -16,13 +18,12 @@ Linux: X11 only. Wayland works mostly but support for it isn't prioritized right
 * More stuff to do with vector graphics and SVG shapes
 
 # Building
-Clone with `git clone https://gitlab.com/Trapigtrogen/graphics-library.git --recursive` to get the dependensies also\
-You can also update the submodule afterwards with `git submodule update --init`
+Clone with `git clone https://gitlab.com/Trapigtrogen/graphics-library.git` where ever you want. graphics-library folder will be downloaded.
 
 ## Automatic
 We provide scripts for building releases.\
 Windows script 'build-release.bat' assumes you have cmake and Visual Studio installed.\
-On Linux there's 'install-dependencies.sh' which installs dependencies using you distro's package manager. 'build-release.sh' for building the release.
+On Linux there's 'install-dependencies.<area>sh' which installs dependencies using you distro's package manager. 'build-release.<area>sh' for building the release.
 
 Release folder will be created and deployed program will be build there.\
 External libraries are automatically combined to the releaseable Drawpp library

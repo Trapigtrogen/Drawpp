@@ -19,6 +19,7 @@ endif (DPP_BUILD_DEBUG)
 if (MSVC)
     set(LIBNAME ${PROJECT_NAME}_tmp)
     set(LIBDIR ${CMAKE_BINARY_DIR}/lib/tmp)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 else ()
     set(LIBNAME ${PROJECT_NAME})
     set(LIBDIR ${CMAKE_BINARY_DIR}/lib)
@@ -28,11 +29,10 @@ endif (MSVC)
 file( GLOB_RECURSE source_list RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp")
 add_library(${LIBNAME} STATIC external/glad/src/glad.c ${source_list})
 
-set_target_properties(${LIBNAME} PROPERTIES 
-                        ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
+set_target_properties(${LIBNAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR})
 
 if(MSVC)
-    target_compile_options(${LIBNAME} PRIVATE /W4)
+    target_compile_options(${LIBNAME} PRIVATE /W0)
 else()
     target_compile_options(${LIBNAME} PRIVATE -Wall -Wextra)
 endif()
@@ -44,12 +44,15 @@ include_directories(external/glfw/include)
 include_directories(external/stb)
 include_directories(external/nanosvg)
 include_directories(external/freetype/include)
-
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
 option(GLFW_BUILD_DOCS OFF)
 add_subdirectory(external/glfw)
 add_subdirectory(external/freetype)
+
+target_compile_options(freetype PRIVATE /W0)
+target_compile_options(glfw PRIVATE /W0)
+
 target_link_libraries(${LIBNAME} glfw)
 target_link_libraries(${LIBNAME} freetype)
 
@@ -78,7 +81,7 @@ end")
 #    set(LIB_PATH ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a)
 endif (MSVC)
 
-find_package(Doxygen)
+find_package(Doxygen QUIET)
 
 if (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
     set(DOXYGEN_ALWAYS_DETAILED_SEC YES)
@@ -88,8 +91,6 @@ if (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
 
     doxygen_add_docs(doxygen ALL
                 ${CMAKE_SOURCE_DIR}/include)
-elseif(NOT DOXYGEN_FOUND)
-    message(SEND_ERROR "Doxygen executable not found")
 endif (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
 
 if (DPP_BUILD_TESTS)
@@ -99,12 +100,3 @@ endif (DPP_BUILD_TESTS)
 if (DPP_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif (DPP_BUILD_EXAMPLES)
-
-
-# Fix bug in Linux where the HAVE_FCNTL_H is not defined even when it's found in the system
-if (UNIX)
-    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/external/freetype/builds/unix/ftsystem.c)
-        execute_process(COMMAND git submodule update --init --recursive)
-    endif ()
-    execute_process(COMMAND sed -i"s/#ifdef HAVE_FCNTL_H/#if 1/g" ${CMAKE_SOURCE_DIR}/external/freetype/builds/unix/ftsystem.c)
-endif (UNIX)
