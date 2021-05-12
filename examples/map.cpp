@@ -2,19 +2,19 @@
 #include <algorithm> // std::min
 
 // Window settings
-int Wwidth = 1500;
-int Wheight = 1000;
+constexpr int Wwidth = 1500;
+constexpr int Wheight = 1000;
 
 // perlin noise settings
 // The size of perlin noise will be 512px * 512px
-int gen_height = 1024;
-int gen_width = 1024;
+constexpr int gen_height = 1024;
+constexpr int gen_width = 1024;
 
 // Camera
 float zoomlevel = 0.0f;
 int cameraX = -200;
 int cameraY = -100;
-float cameraSpeed = 10;
+constexpr float cameraSpeed = 10;
 float visibleAreaX;
 float visibleAreaY;
 
@@ -36,7 +36,7 @@ struct House
     int coordY;
     int stores;
 };
-int gap = 10;
+constexpr int gap = 10;
 int defaultBorder = 0; // 0, 3 and 7 give nice different visual
 std::vector<House*> houses;
 std::vector<House*> houses2;
@@ -89,7 +89,7 @@ DImage* randomCar()
 }
 
 // Car movement settings
-int carSpeed = 250;
+constexpr int carSpeed = 250;
 float carTimer = -100;
 float carTimer2 = -1000;
 float carTimer3 = -500;
@@ -101,7 +101,7 @@ DImage* carImg2 = &carRed;
 DImage* carImg3 = &carBlue;
 
 
-
+// setup is called once before the application loop starts
 void setup()
 {
     // Limit fps
@@ -223,7 +223,8 @@ void setup()
     waterAnimation.push_back(&water3);
 }
 
-// Drwa loop with time of 1 frame taken to variable deltaTime
+// draw is called once every frame
+// deltaTime is the spent in the last frame
 void draw(float deltaTime)
 {
     // Animations
@@ -272,10 +273,11 @@ void draw(float deltaTime)
     // Limit zoom level
     if (zoomlevel > 1) zoomlevel = 1;
     else if (zoomlevel < -1.0) zoomlevel = -1.0;
+    
     // Apply zoom level
     // Calculate scale level so that the limit can be used in same scale
     // Since if we just use zoomlevel while going down and back up -> 100% * 90% * 110% = 99%
-    scale(1 / (1 + (1 - zoomlevel)));
+    scale(1.0f / (1.0f + (1.0f - zoomlevel)));
 
     // Limit camera movement area
     // Visible area relative to zoomlevel
@@ -369,10 +371,10 @@ void draw(float deltaTime)
     // Car going to right
     image(*carImg, carTimer, 300, carImg->width() / 3, carImg->height() / 3);
     // rotate one car 90 degrees
-    rotate(1.570796);
+    rotate(HALF_PI);
     image(*carImg2, carTimer2, -1090, carImg->width() / 3, carImg->height() / 3);
     // Rotate back
-    rotate(-1.570796);
+    rotate(-HALF_PI);
 
 
     // Houses that go over the cars
@@ -502,65 +504,68 @@ void draw(float deltaTime)
     image(waterTex, 1300, 1710 + waterMovement * 4, 2000, 1040);
 }
 
-
-// Zoom with mouse scroll
+// mouseWheel is called every time a mouse wheel is scrolled
+// 't' indicates the distance and direction of the scroll
 void mouseWheel(float t)
 {
+    // Zoom with mouse scroll
     zoomlevel += t * 0.1f;
 }
 
-// Mouse click & drag camera movement
+// mouseDragged is called every time a mouse button is pressed
+// down, and the mouse is moved
 void mouseDragged()
 {
+    // Mouse click & drag camera movement
     cursor(HAND);
-               //previous mouse position - current mouse position (both got from the engine)
+
+              //previous mouse position - current mouse position (both got from the engine)
     cameraX += (pmouseX - mouseX);
     cameraY += (pmouseY - mouseY);
 }
 
+// mouseReleased is called every time a mouse button is released
 void mouseReleased()
 {
     cursor(ARROW);
 }
 
-// Key input
+// keyPressed is called every time a keyboard key is pressed
+// 'key' is the keycode of the last keyboard key to be pressed
 void keyPressed()
 {
     switch (key)
     {
-    case VK_W: // move camera up
-        cameraY -= cameraSpeed;
-    break;
+        case VK_W: // move camera up
+            cameraY -= cameraSpeed;
+        break;
 
-    case VK_A: // move camera left
-        cameraX -= cameraSpeed;
-    break;
+        case VK_A: // move camera left
+            cameraX -= cameraSpeed;
+        break;
 
-    case VK_S: // move camera right
-        cameraY += cameraSpeed;
-    break;
+        case VK_S: // move camera right
+            cameraY += cameraSpeed;
+        break;
 
-    case VK_D: // move camera down
-        cameraX += cameraSpeed;
-    break;
+        case VK_D: // move camera down
+            cameraX += cameraSpeed;
+        break;
 
-    case VK_1: // Artstyle 1
-        defaultBorder = 0;
-    break;
+        case VK_1: // Artstyle 1
+            defaultBorder = 0;
+        break;
 
-    case VK_2: // Artstyle 2
-        defaultBorder = 3;
-    break;
+        case VK_2: // Artstyle 2
+            defaultBorder = 3;
+        break;
 
-    case VK_3: // Artstyle 3
-        defaultBorder = 7;
-    break;
+        case VK_3: // Artstyle 3
+            defaultBorder = 7;
+        break;
 
-    case VK_ESC:
-        exit(1);
-    break;
-
-    default:
+        case VK_ESC:
+            exit();
         break;
     }
 }
