@@ -101,6 +101,15 @@ for /f "delims=" %%i in ('type "%glfwproj%" ^& break ^> "%glfwproj%" ') do (
 	endlocal
 )
 
+set "freetypeproj=external\freetype\freetype.vcxproj"
+
+for /f "delims=" %%i in ('type "%freetypeproj%" ^& break ^> "%freetypeproj%" ') do (
+	set "line=%%i"
+	setlocal enabledelayedexpansion
+	>>"%freetypeproj%" echo(!line:DLL=!
+	endlocal
+)
+
 set "gllibproj=Drawpp_tmp.vcxproj"
 
 for /f "delims=" %%i in ('type "%gllibproj%" ^& break ^> "%gllibproj%" ') do (
@@ -114,7 +123,7 @@ endlocal
 
 :skip_crt
 
-"%msb%" Drawpp.sln /p:Configuration=%mode%
+"%msb%" Drawpp.sln /p:Configuration=%mode% /p:DebugSymbols=false
 
 if %errorlevel%==0 goto success
 
@@ -174,16 +183,16 @@ if %crt%==OFF goto dll_crt
 echo set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")>>CMakeLists.txt
 echo set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")>>CMakeLists.txt
 
-if %mode%==Release echo link_libraries(libcmt.lib)>>CMakeLists.txt & goto end_crt
-echo link_libraries(libcmtd.lib)>>CMakeLists.txt
+if %mode%==Release echo link_libraries(libcmt.lib libvcruntime.lib libucrt.lib)>>CMakeLists.txt & goto end_crt
+echo link_libraries(libcmtd.lib libvcruntimed.lib libucrtd.lib)>>CMakeLists.txt
 goto end_crt
 
 :dll_crt
 echo set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")>>CMakeLists.txt
 echo set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")>>CMakeLists.txt
 
-if %mode%==Release echo link_libraries(msvcrt.lib)>>CMakeLists.txt & goto end_crt
-echo link_libraries(msvcrtd.lib)>>CMakeLists.txt
+if %mode%==Release echo link_libraries(msvcrt.lib vcruntime.lib ucrt.lib)>>CMakeLists.txt & goto end_crt
+echo link_libraries(msvcrtd.lib vcruntimed.lib ucrtd.lib)>>CMakeLists.txt
 
 :end_crt
 
@@ -200,8 +209,12 @@ echo set_property(TARGET>>CMakeLists.txt
 for /r %%f in (*.cpp) do (
     echo example_%%~nf>>CMakeLists.txt
 )
-
 echo PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")>>CMakeLists.txt
+
+for /r %%f in (*.cpp) do (
+    echo target_compile_options( example_%%~nf PRIVATE /W0 /MP ^)>>CMakeLists.txt
+)
+
 echo set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT example_%startupFile%)>>CMakeLists.txt
 
 cd ..
@@ -212,7 +225,7 @@ if not exist _dpp_tmp_docs_build mkdir _dpp_tmp_docs_build
 cd _dpp_tmp_docs_build
 
 echo cmake_minimum_required(VERSION 3.13.4)>CMakeLists.txt
-echo project(Drawpp_Examples_Docs)>>CMakeLists.txt
+echo project(Drawpp)>>CMakeLists.txt
 echo find_package(Doxygen)>>CMakeLists.txt
 echo if (DOXYGEN_FOUND)>>CMakeLists.txt
 echo set(DOXYGEN_ALWAYS_DETAILED_SEC YES)>>CMakeLists.txt
@@ -226,7 +239,7 @@ echo endif (DOXYGEN_FOUND)>>CMakeLists.txt
 
 cmake .
 
-"%msb%" Drawpp_Examples_Docs.sln
+"%msb%" Drawpp.sln
 
 cd ..
 xcopy _dpp_tmp_docs_build\docs docs /E /I /Y /Q

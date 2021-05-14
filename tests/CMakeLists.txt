@@ -20,7 +20,7 @@ foreach( file_path ${source_list} )
     if (MSVC)
         add_dependencies(test_${filename} ${PROJECT_NAME})
         set_property(TARGET test_${filename} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests")
-        target_compile_options(test_${filename} PRIVATE /W0)
+        target_compile_options(test_${filename} PRIVATE /W0 /MP)
     endif (MSVC)
 endforeach()
 
