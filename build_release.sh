@@ -11,7 +11,7 @@ else
 fi
 
 # If -f is used use default settings
-if [ $1 == "-f" ]; then
+if [ $1 = "-f" ]; then
     incDoc="OFF"
     debugBuild="OFF"
 else
