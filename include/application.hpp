@@ -186,8 +186,6 @@ private:
     int application_shader_tex_uniform = 0;
 
     DFilter* stock_filters = nullptr;
-    int stock_filters_pixelate_scale_location;
-    int stock_filters_treshold_value_location;
 
     static Application* instance;
 };

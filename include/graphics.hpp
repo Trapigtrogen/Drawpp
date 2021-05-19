@@ -634,7 +634,7 @@ public:
 
 
     ///\brief Apply a filter to this target
-    void filter(const DFilter& f, std::function<void(unsigned int)> initializer = nullptr);
+    void filter(const DFilter& f);
 
 
     ///\brief Apply a filter to this target

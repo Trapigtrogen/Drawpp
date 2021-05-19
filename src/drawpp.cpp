@@ -539,9 +539,9 @@ void background(const DImage& image)
     Application::GetInstance()->graphics_object().background(image);
 }
 
-void filter(const DFilter& f, std::function<void(unsigned int)> initializer)
+void filter(const DFilter& f)
 {
-    Application::GetInstance()->graphics_object().filter(f,initializer);
+    Application::GetInstance()->graphics_object().filter(f);
 }
 
 void filter(filters f, float param)

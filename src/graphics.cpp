@@ -1717,7 +1717,7 @@ DImage DGraphics::toImage() const
     return DImage(data,texid,buffer_width,buffer_height);
 }
 
-void DGraphics::filter(const DFilter& f, std::function<void(unsigned int)> initializer)
+void DGraphics::filter(const DFilter& f)
 {
     if(!f.impl)
     {
@@ -1734,10 +1734,7 @@ void DGraphics::filter(const DFilter& f, std::function<void(unsigned int)> initi
 	glBindTexture(GL_TEXTURE_2D, texture_id);
     glUniform1i(f.impl->source_location,0);
 
-    if(initializer)
-    {
-        initializer(f.getProgram());
-    }
+    f.impl->upload_all_uniforms();
 
     glEnableVertexAttribArray(f.impl->vertex_pos_location);
 
@@ -1778,21 +1775,17 @@ void DGraphics::filter(filters f, float param)
     {
         case filters::PIXELATE:
         {
-            int scale_loc = Application::GetInstance()->stock_filters_pixelate_scale_location;
-            filter(Application::GetInstance()->stock_filters[f],[=](unsigned int p)
-                {
-                    glUniform1f(scale_loc,param);
-                });
+            DFilter& ft = Application::GetInstance()->stock_filters[f];
+            ft.setUniform("scale",param);
+            filter(ft);
             break;
         }
 
         case filters::THRESHOLD:
         {
-            int threshold_loc = Application::GetInstance()->stock_filters_treshold_value_location;
-            filter(Application::GetInstance()->stock_filters[f],[=](unsigned int p)
-                {
-                    glUniform1f(threshold_loc,param);
-                });
+            DFilter& ft = Application::GetInstance()->stock_filters[f];
+            ft.setUniform("threshold",param);
+            filter(ft);
             break;
         }
 

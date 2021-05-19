@@ -620,7 +620,7 @@ void background(const DImage& image);
 
 
 ///\brief Apply a filter to the window
-void filter(const DFilter& f, std::function<void(unsigned int)> initializer = nullptr);
+void filter(const DFilter& f);
 
 
 ///\brief Apply a filter to the window
