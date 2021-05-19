@@ -121,7 +121,7 @@ struct Vector3
     float& operator[](unsigned int index);
 
 
-    ///\copydoc operator[](unsigend int)
+    ///\copydoc Vector3::operator[](unsigned int)
     float operator[](unsigned int index) const;
 
 

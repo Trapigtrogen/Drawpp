@@ -121,7 +121,7 @@ struct Vector4
     float& operator[](unsigned int index);
 
 
-    ///\copydoc operator[](unsigend int)
+    ///\copydoc Vector4::operator[](unsigned int)
     float operator[](unsigned int index) const;
 
 

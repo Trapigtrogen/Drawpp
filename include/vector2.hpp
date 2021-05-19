@@ -132,7 +132,7 @@ struct Vector2
     float& operator[](unsigned int index);
 
 
-    ///\copydoc operator[](unsigend int)
+    ///\copydoc Vector2::operator[](unsigned int)
     float operator[](unsigned int index) const;
 
 
