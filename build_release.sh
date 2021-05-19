@@ -60,9 +60,6 @@ else
 
 fi
 
-# Update GLFW and Freetype
-git submodule update --recursive
-
 cd ./release
 
 # CMake and build

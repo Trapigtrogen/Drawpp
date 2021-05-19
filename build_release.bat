@@ -5,7 +5,7 @@ set crt=OFF
 set mode=Release
 set plat=x64
 
-if "%1"=="-f" goto update_modules
+if "%1"=="-f" goto start_build
 
 :query_docs
 set "docs_q=n"
@@ -53,19 +53,17 @@ goto query_debug
 set "plat_q=n"
 set /p "plat_q=x86 build? (y/n): "
 
-if "%plat_q%" == "y" set plat=win32 & goto update_modules
-if "%plat_q%" == "Y" set plat=win32 & goto update_modules
-if "%plat_q%" == "yes" set plat=win32 & goto update_modules
-if "%plat_q%" == "YES" set plat=win32 & goto update_modules
-if "%plat_q%" == "n" set plat=x64 & goto update_modules
-if "%plat_q%" == "N" set plat=x64 & goto update_modules
-if "%plat_q%" == "no" set plat=x64 & goto update_modules
-if "%plat_q%" == "NO" set plat=x64 & goto update_modules
+if "%plat_q%" == "y" set plat=win32 & goto start_build
+if "%plat_q%" == "Y" set plat=win32 & goto start_build
+if "%plat_q%" == "yes" set plat=win32 & goto start_build
+if "%plat_q%" == "YES" set plat=win32 & goto start_build
+if "%plat_q%" == "n" set plat=x64 & goto start_build
+if "%plat_q%" == "N" set plat=x64 & goto start_build
+if "%plat_q%" == "no" set plat=x64 & goto start_build
+if "%plat_q%" == "NO" set plat=x64 & goto start_build
 goto query_plat
 
-:update_modules
-git submodule update --init --recursive
-
+:start_build
 :: Clear old release
 if exist release RMDIR release /S /Q
 
