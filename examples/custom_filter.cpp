@@ -18,13 +18,9 @@ void setup()
         uniform float scale;
         void main()
         {
-            // By default, gl_FragCoord has the origin in bottom-left corner
-            // Drawpp library has origin in the top-left corner, so we invert the y coordinate
-            vec2 fragPos = vec2(gl_FragCoord.x,1.0-gl_FragCoord.y);
-
             // Get the current pixel coordinate, by dividing the 
             // fragment position by the source image size
-            vec2 pos = fragPos/source_size;
+            vec2 pos = gl_FragCoord.xy/source_size;
 
             // Clamp the coordinate with scale
             pos -= mod(pos, vec2(scale) / source_size);
