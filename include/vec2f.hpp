@@ -6,6 +6,9 @@ struct vec2f
 {
     float x = 0.0f, y = 0.0f;
 
+    vec2f(float a, float b) : x(a),y(b){};
+    vec2f() : x(0),y(0){};
+
     float len();
     static float dot(const vec2f& a, const vec2f& b);
     static vec2f lerp(const vec2f& a, const vec2f& b, float t);
