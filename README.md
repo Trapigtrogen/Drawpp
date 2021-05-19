@@ -18,6 +18,7 @@ For an in-depth user's manual, see [this](drawpp_guide.md).
 * More stuff to do with vector graphics and SVG shapes
 
 # Building
+Install git\
 Clone with `git clone https://gitlab.com/Trapigtrogen/graphics-library.git` where ever you want. graphics-library folder will be downloaded.
 
 ## Automatic
@@ -51,9 +52,12 @@ cmake ..
 
 ### Linux
 You need to install your distripution's development packages:
-* __Arch__ `sudo pacman -Sy base-devel git cmake doxygen --needed --noconfirm`
-* __Debian__/__Raspberry Pi OS__  `sudo apt-get -y install g++ git cmake doxygen libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev`\
-On Raspberry Pi make sure that you have using Legacy OpenGL driver from `sudo raspi-config` -> Advanced options -> GL Driver -> Legacy - Original non-GL desktop driver
+* __Arch__ `sudo pacman -Sy base-devel cmake --needed --noconfirm`
+  * If you want to build docs install `doxygen` as well
+* __Debian__/__Raspberry Pi OS__  `sudo apt-get -y install g++ cmake libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libglu1-mesa-dev libxxf86vm-dev`
+  * On Ubuntu the doxygen package is not found by default. You need to add `universe` repository first: `sudo apt-add-repository universe`
+  * Then you can install `doxygen` normally
+* On Raspberry Pi make sure that you have using Legacy OpenGL driver from `sudo raspi-config` -> Advanced options -> GL Driver -> Legacy - Original non-GL desktop driver
 
 Type following in the terminal:
 ```
