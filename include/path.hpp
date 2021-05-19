@@ -2,7 +2,7 @@
 #define DPP_PATH_H
 
 #include <vector>
-#include <vector3.hpp>
+#include <vector2.hpp>
 
 class Path
 {
@@ -16,15 +16,15 @@ public:
 
 
     ///\brief Get a reference to a vertex at \p index
-    DVector& operator[](size_t index);
+    Vector2& operator[](size_t index);
 
 
     ///\copydoc operator[](size_t)
-    const DVector& operator[](size_t index) const;
+    const Vector2& operator[](size_t index) const;
 
 private:
 
-    std::vector<DVector> points;
+    std::vector<Vector2> points;
     bool closed = false;
 };
 

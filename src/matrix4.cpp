@@ -1,5 +1,7 @@
 #include <matrix4.hpp>
 #include <limits>
+#include <vector3.hpp>
+#include <vector4.hpp>
 
 DMatrix4::DMatrix4() : values{1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1} {}
 
@@ -42,7 +44,7 @@ DMatrix4 DMatrix4::identity(float n)
     return DMatrix4(n,0,0,0,0,n,0,0,0,0,n,0,0,0,0,n);
 }
 
-DMatrix4 DMatrix4::translation(const DVector& vec)
+DMatrix4 DMatrix4::translation(const Vector3& vec)
 {
     DMatrix4 r = DMatrix4::identity();
     r(0,3) = vec.x;
@@ -51,7 +53,7 @@ DMatrix4 DMatrix4::translation(const DVector& vec)
     return r;
 }
 
-DMatrix4 DMatrix4::scaling(const DVector& vec)
+DMatrix4 DMatrix4::scaling(const Vector3& vec)
 {
     DMatrix4 r = DMatrix4::identity();
     r(0,0) = vec.x;
@@ -60,12 +62,12 @@ DMatrix4 DMatrix4::scaling(const DVector& vec)
     return r;
 }
 
-DMatrix4 DMatrix4::translate(const DVector& vec) const
+DMatrix4 DMatrix4::translate(const Vector3& vec) const
 {
     return *this*translation(vec);
 }
 
-DMatrix4 DMatrix4::scale(const DVector& vec) const
+DMatrix4 DMatrix4::scale(const Vector3& vec) const
 {
     return *this*scaling(vec);
 }
@@ -197,11 +199,19 @@ DMatrix4 DMatrix4::operator* (const DMatrix4& mat) const
                 (*this)(3,0)*mat(0,0)+(*this)(3,1)*mat(1,0)+(*this)(3,2)*mat(2,0)+(*this)(3,3)*mat(3,0),(*this)(3,0)*mat(0,1)+(*this)(3,1)*mat(1,1)+(*this)(3,2)*mat(2,1)+(*this)(3,3)*mat(3,1),(*this)(3,0)*mat(0,2)+(*this)(3,1)*mat(1,2)+(*this)(3,2)*mat(2,2)+(*this)(3,3)*mat(3,2),(*this)(3,0)*mat(0,3)+(*this)(3,1)*mat(1,3)+(*this)(3,2)*mat(2,3)+(*this)(3,3)*mat(3,3));
 }
 
-DVector DMatrix4::operator*(const DVector& vec) const
+Vector3 DMatrix4::operator*(const Vector3& vec) const
 {
-    return DVector(vec.x*(*this)(0,0) + vec.y*(*this)(0,1) + vec.z*(*this)(0,2) + (*this)(0,3),
-                vec.x*(*this)(1,0) + vec.y*(*this)(1,1) + vec.z*(*this)(1,2) + (*this)(1,3),
-                vec.x*(*this)(2,0) + vec.y*(*this)(2,1) + vec.z*(*this)(2,2) + (*this)(2,3));
+    return Vector3(vec.x*(*this)(0,0) + vec.y*(*this)(0,1) + vec.z*(*this)(0,2) + (*this)(0,3),
+                   vec.x*(*this)(1,0) + vec.y*(*this)(1,1) + vec.z*(*this)(1,2) + (*this)(1,3),
+                   vec.x*(*this)(2,0) + vec.y*(*this)(2,1) + vec.z*(*this)(2,2) + (*this)(2,3));
+}
+
+Vector4 DMatrix4::operator*(const Vector4& vec) const
+{
+    return Vector4(vec.x*(*this)(0,0) + vec.y*(*this)(0,1) + vec.z*(*this)(0,2) + vec.w*(*this)(0,3),
+                   vec.x*(*this)(1,0) + vec.y*(*this)(1,1) + vec.z*(*this)(1,2) + vec.w*(*this)(1,3),
+                   vec.x*(*this)(2,0) + vec.y*(*this)(2,1) + vec.z*(*this)(2,2) + vec.w*(*this)(2,3),
+                   vec.x*(*this)(3,0) + vec.y*(*this)(3,1) + vec.z*(*this)(3,2) + vec.w*(*this)(3,3));
 }
 
 DMatrix4 DMatrix4::operator*(float n) const
@@ -277,5 +287,5 @@ float& DMatrix4::operator()(size_t row, size_t col){ return values[row*4 + col];
 float DMatrix4::operator()(size_t row, size_t col) const { return values[row*4 + col]; }
 
 DMatrix4 operator*(float n, const DMatrix4& m) { return m*n; }
-DVector operator*(const DVector& vec, const DMatrix4& m) { return m*vec; }
+Vector3 operator*(const Vector3& vec, const DMatrix4& m) { return m*vec; }
 

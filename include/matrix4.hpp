@@ -2,7 +2,8 @@
 #define DPP_MATRIX4_H
 
 #include <cmath>
-#include <vector3.hpp>
+
+struct Vector3;
 
 enum Axis
 {
@@ -95,11 +96,11 @@ public:
 
 
     ///\brief Create a translation matrix from \p vec
-    static DMatrix4 translation(const DVector& vec);
+    static DMatrix4 translation(const Vector3& vec);
 
 
     ///\brief Create a scaling matrix from \p vec
-    static DMatrix4 scaling(const DVector& vec);
+    static DMatrix4 scaling(const Vector3& vec);
 
 
     ///\brief Rotate this matrix by \p angleRad
@@ -114,13 +115,13 @@ public:
     ///\brief Translate this matrix by \p vec
     ///
     ///\return A copy of this matrix translated
-    DMatrix4 translate(const DVector& vec) const;
+    DMatrix4 translate(const Vector3& vec) const;
 
 
     ///\brief Scale this matrix by \p vec
     ///
     ///\return A copy of this matrix scaled
-    DMatrix4 scale(const DVector& vec) const;
+    DMatrix4 scale(const Vector3& vec) const;
 
 
     ///\brief Get the determinant of this matrix
@@ -171,7 +172,11 @@ public:
 
 
     ///\brief Multiply \p vec by this matrix
-    DVector operator*(const DVector& vec) const;
+    Vector3 operator*(const Vector3& vec) const;
+
+
+    ///\brief Multiply \p vec by this matrix
+    struct Vector4 operator*(const Vector4& vec) const;
 
 
     ///\brief Multiply all values of this matrix by \p n
@@ -238,8 +243,8 @@ public:
     friend DMatrix4 operator*(float n, const DMatrix4& m);
 
 
-    ///\copydoc operator*(const DVector&) const
-    friend DVector operator*(const DVector& vec, const DMatrix4& m);
+    ///\copydoc operator*(const Vector3&) const
+    friend Vector3 operator*(const Vector3& vec, const DMatrix4& m);
 
 
     float values[16];

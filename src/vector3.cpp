@@ -1,177 +1,106 @@
 #include <vector3.hpp>
-#include <cmath>
 #include <application.hpp>
-#include <constants.hpp>
+#include <random.hpp>
+#include <vectormath.hpp>
+#include <cmath>
 
-DVector::DVector():x(0),y(0),z(0){}
-DVector::DVector(float n):x(n),y(n),z(n){}
-DVector::DVector(float x, float y):x(x),y(y),z(0){}
-DVector::DVector(float x, float y, float z):x(x),y(y),z(z){}
+Vector3::Vector3() = default;
 
-DVector& DVector::set(float _x, float _y, float _z)
+Vector3::Vector3(float v)
+: x(v),y(v),z(v) {}
+
+Vector3::Vector3(float _x, float _y, float _z)
+: x(_x),y(_y),z(_z) {}
+
+Vector3::Vector3(const Vector3& other)
+: x(other.x),y(other.y),z(other.z) {}
+
+
+Vector3 Vector3::random()
 {
-    x = _x;
-    y = _y;
-    z = _z;
+    return random(Application::GetInstance()->random);
+}
+
+Vector3 Vector3::random(Random& gen)
+{
+    return normalize(Vector3(
+        gen.randomFloat(-1.0f, 1.0f),
+        gen.randomFloat(-1.0f, 1.0f),
+        gen.randomFloat(-1.0f, 1.0f)
+    ));
+}
+
+
+float Vector3::mag() const
+{
+    return std::sqrt(magSq());
+}
+
+float Vector3::magSq() const
+{
+    return x*x+y*y+z*z;
+}
+
+Vector3 Vector3::operator+(const Vector3& vec) const
+{
+    return Vector3(x+vec.x,y+vec.y,z+vec.z);
+}
+
+Vector3 Vector3::operator-(const Vector3& vec) const
+{
+    return Vector3(x-vec.x,y-vec.y,z-vec.z);
+}
+
+Vector3 Vector3::operator-()                   const
+{
+    return Vector3(-x,-y,-z);
+}
+
+Vector3 Vector3::operator*(float n)            const
+{
+    return Vector3(x*n,y*n,z*n);
+}
+
+Vector3 Vector3::operator*(const Vector3& vec) const
+{
+    return Vector3(x*vec.x,y*vec.y,z*vec.z);
+}
+
+Vector3 Vector3::operator/(float n)            const
+{
+    return Vector3(x/n,y/n,z/n);
+}
+
+Vector3 Vector3::operator/(const Vector3& vec) const
+{
+    return Vector3(x/vec.x,y/vec.y,z/vec.z);
+}
+
+Vector3& Vector3::operator=(const Vector3& vec)
+{
+    x = vec.x;
+    y = vec.y;
+    z = vec.z;
     return *this;
 }
 
-DVector& DVector::set(float _x, float _y)
+Vector3& Vector3::operator+=(const Vector3& vec)
 {
-    x = _x;
-    y = _y;
-    z = 0;
+    x += vec.x;
+    y += vec.y;
+    z += vec.z;
     return *this;
 }
 
-DVector& DVector::set(const DVector& v)
+Vector3& Vector3::operator-=(const Vector3& vec)
 {
-    x = v.x;
-    y = v.y;
-    z = v.z;
+    x -= vec.x;
+    y -= vec.y;
+    z -= vec.z;
     return *this;
 }
 
-DVector DVector::random2D()
-{
-    return random2D(Application::GetInstance()->random);
-}
-
-DVector DVector::random2D(Random& gen)
-{
-    DVector res;
-    return random2D(res,gen);
-}
-
-DVector& DVector::random2D(DVector& target)
-{
-    return random2D(target,Application::GetInstance()->random);
-}
-
-DVector& DVector::random2D(DVector& target, Random& gen)
-{
-    float angle = gen.randomFloat01() * TWO_PI;
-
-    return target.set(fromAngle(angle));
-}
-
-DVector DVector::random3D()
-{
-    return random3D(Application::GetInstance()->random);
-}
-
-DVector DVector::random3D(Random& gen)
-{
-    DVector res;
-    return random3D(res,gen);
-}
-
-DVector& DVector::random3D(DVector& target)
-{
-    return random3D(target,Application::GetInstance()->random);
-}
-
-DVector& DVector::random3D(DVector& target, Random& gen)
-{
-    float angle = gen.randomFloat(0.0f,TWO_PI);
-    float _z = gen.randomFloat(-1.0f, 1.0f);
-    float p = std::sqrt(1 - _z*_z);
-
-    return target.set(std::cos(angle) * p, std::sin(angle) * p, _z);
-}
-
-DVector DVector::fromAngle(float angle)
-{
-    return DVector(std::cos(angle),std::sin(angle));
-}
-
-DVector& DVector::fromAngle(float angle, DVector& target)
-{
-    return target.set(std::cos(angle),std::sin(angle));
-}
-
-DVector DVector::copy() const
-{
-    return *this;
-}
-
-float DVector::mag() const 
-{ 
-    return std::sqrt(x*x+y*y+z*z);
-}
-
-float DVector::magSq() const 
-{
-    return DVector::dot(*this,*this);
-}
-
-DVector& DVector::add(const DVector& v1)
-{
-    x += v1.x;
-    y += v1.y;
-    z += v1.z;
-    return *this;
-}
-
-DVector& DVector::add(float _x, float _y)
-{
-    x += _x;
-    y += _y;
-    return *this;
-}
-
-DVector& DVector::add(float _x, float _y, float _z)
-{
-    x += _x;
-    y += _y;
-    z += _z;
-    return *this;
-}
-
-DVector DVector::add(const DVector& v1, const DVector& v2)
-{
-    return DVector(v1).add(v2);
-}
-
-DVector& DVector::add(const DVector& v1, const DVector& v2, DVector& target)
-{
-    return target.set(v1).add(v2);
-}
-
-DVector& DVector::sub(const DVector& v1)
-{
-    x -= v1.x;
-    y -= v1.y;
-    z -= v1.z;
-    return *this;
-}
-
-DVector& DVector::sub(float _x, float _y)
-{
-    x -= _x;
-    y -= _y;
-    return *this;
-}
-
-DVector& DVector::sub(float _x, float _y, float _z)
-{
-    x -= _x;
-    y -= _y;
-    z -= _z;
-    return *this;
-}
-
-DVector DVector::sub(const DVector& v1, const DVector& v2)
-{
-    return DVector(v1).sub(v2);
-}
-
-DVector& DVector::sub(const DVector& v1, const DVector& v2, DVector& target)
-{
-    return target.set(v1).sub(v2);
-}
-
-DVector& DVector::mult(float n)
+Vector3& Vector3::operator*=(float n)
 {
     x *= n;
     y *= n;
@@ -179,17 +108,15 @@ DVector& DVector::mult(float n)
     return *this;
 }
 
-DVector DVector::mult(const DVector& v1, float n)
+Vector3& Vector3::operator*=(const Vector3& vec)
 {
-    return DVector(v1).mult(n);
+    x *= vec.x;
+    y *= vec.y;
+    z *= vec.z;
+    return *this;
 }
 
-DVector& DVector::mult(const DVector& v1, float n, DVector& target)
-{
-    return target.set(v1).mult(n);
-}
-
-DVector& DVector::div(float n)
+Vector3& Vector3::operator/=(float n)
 {
     x /= n;
     y /= n;
@@ -197,179 +124,55 @@ DVector& DVector::div(float n)
     return *this;
 }
 
-DVector DVector::div(const DVector& v1, float n)
+Vector3& Vector3::operator/=(const Vector3& vec)
 {
-    return DVector(v1).div(n);
-}
-
-DVector& DVector::div(const DVector& v1, float n, DVector& target)
-{
-    return target.set(v1).div(n);
-}
-
-float DVector::dist(const DVector& v1) const
-{
-    return dist(*this,v1);
-}
-
-float DVector::dist(const DVector& v1, const DVector& v2)
-{
-    float xd = v1.x-v2.x;
-    float yd = v1.y-v2.y;
-    float zd = v1.z-v2.z;
-    return std::sqrt(xd*xd + yd*yd + zd*zd);
-}
-
-float DVector::dot(const DVector& v1) const
-{
-    return dot(*this,v1);
-}
-
-float DVector::dot(float _x, float _y, float _z) const
-{
-    return x*_x+y*_y+z*_z;
-}
-
-float DVector::dot(const DVector& v1, const DVector& v2) 
-{
-     return v1.x*v2.x+v1.y*v2.y+v1.z*v2.z; 
-}
-
-DVector DVector::cross(const DVector& v1) const
-{
-    return cross(*this,v1);
-}
-
-DVector& DVector::cross(const DVector& v1, DVector& target) const
-{
-    return cross(*this,v1,target);
-}
-
-DVector& DVector::cross(const DVector& v1, const DVector& v2, DVector& target)
-{
-    return target.set(v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x* v2.z, v1.x*v2.y - v1.y*v2.x);
-}
-
-DVector DVector::cross(const DVector& v1, const DVector& v2) 
-{ 
-    return DVector(v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x* v2.z, v1.x*v2.y - v1.y*v2.x);
-}
-
-DVector& DVector::normalize()
-{ 
-    float m = mag();
-    x /= m;
-    y /= m;
-    z /= m;
+    x /= vec.x;
+    y /= vec.y;
+    z /= vec.z;
     return *this;
 }
 
-DVector& DVector::normalize(DVector& target) const
+bool Vector3::operator==(const Vector3& vec) const
 {
-    return target.set(*this).normalize();
+    return x == vec.x && y == vec.y && z == vec.z;
 }
 
-DVector DVector::normalized() const
+bool Vector3::operator!=(const Vector3& vec) const
 {
-    DVector r(*this);
-    float m = mag();
-    r.x /= m;
-    r.y /= m;
-    r.z /= m;
-    return r;
+    return !(*this == vec);
 }
 
-DVector& DVector::limit(float max)
+bool Vector3::operator<(const Vector3& vec)  const
 {
-    float m = mag();
-
-    if(m > max)
-    {
-        (void)mult(max / m);
-    }
-
-    return *this;
+    return magSq()<vec.magSq();
 }
 
-DVector& DVector::setMag(float len)
+bool Vector3::operator>(const Vector3& vec)  const
 {
-    return mult(len / mag());
+    return magSq()>vec.magSq();
 }
 
-DVector& DVector::setMag(DVector& target, float len) const
+bool Vector3::operator<=(const Vector3& vec) const
 {
-    return target.set(*this).setMag(len);
+    return magSq()<=vec.magSq();
 }
 
-float DVector::heading() const
+bool Vector3::operator>=(const Vector3& vec) const
 {
-    return std::atan2(x,y);
+    return magSq()>=vec.magSq();
 }
 
-DVector& DVector::rotate(float theta)
+float& Vector3::operator[](unsigned int index)
 {
-    float _x = x, _y = y;
-    
-    x = _x * std::cos(theta) - _y * std::sin(theta);
-    y = _x * std::sin(theta) + _y * std::cos(theta);
-
-    return *this;
+    return (&x)[index];
 }
 
-DVector& DVector::lerp(const DVector& v1, float t)
+float Vector3::operator[](unsigned int index) const
 {
-    x = x + (v1.x - x) * t;
-    y = y + (v1.y - y) * t;
-    z = z + (v1.z - z) * t;
-    return *this;
+    return (&x)[index];
 }
 
-DVector& DVector::lerp(float _x, float _y, float _z, float t)
+Vector3 operator*(float n, const Vector3& vec)
 {
-    x = x + (_x - x) * t;
-    y = y + (_y - y) * t;
-    z = z + (_z - z) * t;
-    return *this;
+    return vec*n;
 }
-
-DVector DVector::lerp(const DVector& v1, const DVector& v2, float t)
-{
-    return DVector(v1).lerp(v2,t);
-}
-
-float DVector::angleBetween(const DVector& v1, const DVector& v2)
-{
-    return std::atan2(dot(v1,v2),v1.x * v2.y - v1.y * v2.x);
-}
-
-std::vector<float> DVector::array() const
-{
-    return std::vector<float>({x,y,z});
-}
-
-DVector DVector::operator+(const DVector& vec) const { return DVector(x+vec.x,y+vec.y,z+vec.z); }
-DVector DVector::operator-(const DVector& vec) const { return DVector(x-vec.x,y-vec.y,z-vec.z); }
-DVector DVector::operator-()                   const { return DVector(-x,-y,-z); }
-DVector DVector::operator*(float n)            const { return DVector(x*n,y*n,z*n); }
-DVector DVector::operator*(const DVector& vec) const { return DVector(x*vec.x,y*vec.y,z*vec.z); }
-DVector DVector::operator/(float n)            const { return DVector(x/n,y/n,z/n); }
-
-DVector& DVector::operator= (const DVector& vec) { return set(vec); }
-DVector& DVector::operator+=(const DVector& vec) { return add(vec); }
-DVector& DVector::operator-=(const DVector& vec) { return sub(vec); }
-DVector& DVector::operator*=(float n)            { return mult(n);  }
-DVector& DVector::operator*=(const DVector& vec) { x *= vec.x;y *= vec.y;z *= vec.z; return *this; }
-DVector& DVector::operator/=(float n)            { return div(n);   }
-DVector& DVector::operator/=(const DVector& vec) { x /= vec.x;y /= vec.y;z /= vec.z; return *this; }
-
-bool DVector::operator==(const DVector& vec) const { return x==vec.x&&y==vec.y&&z==vec.z; }
-bool DVector::operator!=(const DVector& vec) const { return !(*this==vec); }
-bool DVector::operator<(const DVector& vec)  const { return magSq()<vec.magSq(); }
-bool DVector::operator>(const DVector& vec)  const { return magSq()>vec.magSq(); }
-bool DVector::operator<=(const DVector& vec) const { return magSq()<=vec.magSq(); }
-bool DVector::operator>=(const DVector& vec) const { return magSq()>=vec.magSq(); }
-
-float& DVector::operator[](size_t index) { return static_cast<float*>(&x)[index]; }
-float  DVector::operator[](size_t index) const { return static_cast<const float*>(&x)[index]; }
-
-DVector operator*(float n, const DVector& vec) { return vec*n; }
