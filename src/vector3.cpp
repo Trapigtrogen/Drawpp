@@ -12,9 +12,6 @@ Vector3::Vector3(float v)
 Vector3::Vector3(float _x, float _y, float _z)
 : x(_x),y(_y),z(_z) {}
 
-Vector3::Vector3(const Vector3& other)
-: x(other.x),y(other.y),z(other.z) {}
-
 
 Vector3 Vector3::random()
 {

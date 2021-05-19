@@ -12,9 +12,6 @@ Vector4::Vector4(float v)
 Vector4::Vector4(float _x, float _y, float _z, float _w)
 : x(_x),y(_y),z(_z),w(_w) {}
 
-Vector4::Vector4(const Vector4& other)
-: x(other.x),y(other.y),z(other.z),w(other.w) {}
-
 
 Vector4 Vector4::random()
 {
