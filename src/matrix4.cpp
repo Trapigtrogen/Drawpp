@@ -16,12 +16,12 @@ DMatrix4::DMatrix4(float m00, float m01, float m02, float m03,
                           m20,m21,m22,m23,
                           m30,m31,m32,m33} {}
 
-DMatrix4::DMatrix4(float vals[16]) { for(int i=0;i<16;i++){values[i]=vals[i];} }
+DMatrix4::DMatrix4(float vals[16]) { for(unsigned int i=0;i<16;++i){values[i]=vals[i];} }
 
 DMatrix4 DMatrix4::hproduct(const DMatrix4& mat1,const DMatrix4& mat2)
 {
     DMatrix4 r;
-    for(int i = 0; i < 16; i++)
+    for(unsigned int i = 0; i < 16; ++i)
         r[i] = mat1[i]*mat2[i];
     return r;
 }
@@ -29,7 +29,7 @@ DMatrix4 DMatrix4::hproduct(const DMatrix4& mat1,const DMatrix4& mat2)
 DMatrix4 DMatrix4::hdivision(const DMatrix4& mat1,const DMatrix4& mat2)
 {
     DMatrix4 r;
-    for(int i = 0; i < 16; i++)
+    for(unsigned int i = 0; i < 16; ++i)
         r[i] = mat1[i]/mat2[i];
     return r;
 }
@@ -72,7 +72,7 @@ DMatrix4 DMatrix4::scale(const Vector3& vec) const
     return *this*scaling(vec);
 }
 
-float DMatrix4::det()
+float DMatrix4::det() const
 {
     return  (*this)(0,3) * (*this)(1,2) * (*this)(2,1) * (*this)(3,0)-(*this)(0,2) * (*this)(1,3) * (*this)(2,1) * (*this)(3,0)-
             (*this)(0,3) * (*this)(1,1) * (*this)(2,2) * (*this)(3,0)+(*this)(0,1) * (*this)(1,3) * (*this)(2,2) * (*this)(3,0)+
@@ -88,10 +88,10 @@ float DMatrix4::det()
             (*this)(0,1) * (*this)(1,0) * (*this)(2,2) * (*this)(3,3)+(*this)(0,0) * (*this)(1,1) * (*this)(2,2) * (*this)(3,3);
 }
 
-DMatrix4 DMatrix4::transposed()
+DMatrix4 DMatrix4::transposed() const
 {
     DMatrix4 m;
-    for(int i = 0; i<4; i++){
+    for(unsigned int i = 0; i<4; ++i){
         for(int j = 0; j<4; j++)
             m(i,j) = (*this)(j,i);
     }
@@ -100,7 +100,7 @@ DMatrix4 DMatrix4::transposed()
 
 void DMatrix4::transpose()
 {
-    for(int i = 0; i<3; i++){
+    for(unsigned int i = 0; i<3; ++i){
         for(int j = i+1; j<4; j++){
             float t = (*this)(i,j);
             (*this)(i,j) = (*this)(j,i);
@@ -109,13 +109,13 @@ void DMatrix4::transpose()
     }
 }
 
-DMatrix4 DMatrix4::inverse()
+DMatrix4 DMatrix4::inverse() const
 {
     float d = 1/det();
     return inverse(d);
 }
 
-DMatrix4 DMatrix4::inverse(float s)
+DMatrix4 DMatrix4::inverse(float s) const
 {
     return DMatrix4(((*this)(1,2)*(*this)(2,3)*(*this)(3,1)-(*this)(1,3)*(*this)(2,2)*(*this)(3,1)+(*this)(1,3)*(*this)(2,1)*(*this)(3,2)-(*this)(1,1)*(*this)(2,3)*(*this)(3,2)-(*this)(1,2)*(*this)(2,1)*(*this)(3,3)+(*this)(1,1)*(*this)(2,2)*(*this)(3,3))*s,
                 ((*this)(0,3)*(*this)(2,2)*(*this)(3,1)-(*this)(0,2)*(*this)(2,3)*(*this)(3,1)-(*this)(0,3)*(*this)(2,1)*(*this)(3,2)+(*this)(0,1)*(*this)(2,3)*(*this)(3,2)+(*this)(0,2)*(*this)(2,1)*(*this)(3,3)-(*this)(0,1)*(*this)(2,2)*(*this)(3,3))*s,
@@ -146,7 +146,7 @@ bool DMatrix4::invert()
     }
     else
     {
-        *this = inverse();
+        *this = inverse(d);
         return true;
     }
 }
@@ -154,7 +154,7 @@ bool DMatrix4::invert()
 DMatrix4 DMatrix4::operator+(const DMatrix4& mat) const
 {
     DMatrix4 m;
-    for(int i = 0; i < 16; i++)
+    for(unsigned int i = 0; i < 16; ++i)
         m[i] = mat[i]+values[i];
     return m;
 }
@@ -162,7 +162,7 @@ DMatrix4 DMatrix4::operator+(const DMatrix4& mat) const
 DMatrix4 DMatrix4::operator+(float n) const
 {
     DMatrix4 m;
-    for(int i = 0; i < 16; i++)
+    for(unsigned int i = 0; i < 16; ++i)
         m[i] = n+values[i];
     return m;
 }
@@ -170,15 +170,15 @@ DMatrix4 DMatrix4::operator+(float n) const
 DMatrix4 DMatrix4::operator-(const DMatrix4& mat) const
 {
     DMatrix4 m;
-    for(int i = 0; i < 16; i++)
-        m[i] = mat[i]-values[i];
+    for(unsigned int i = 0; i < 16; ++i)
+        m[i] = values[i]-mat[i];
     return m;
 }
 
 DMatrix4 DMatrix4::operator-(float n) const
 {
     DMatrix4 m;
-    for(int i = 0; i < 16; i++)
+    for(unsigned int i = 0; i < 16; ++i)
         m[i] = values[i]-n;
     return m;
 }
@@ -186,7 +186,7 @@ DMatrix4 DMatrix4::operator-(float n) const
 DMatrix4 DMatrix4::operator-() const
 {
     DMatrix4 m;
-    for(int i = 0; i < 16; i++)
+    for(unsigned int i = 0; i < 16; ++i)
         m[i] = -values[i];
     return m;
 }
@@ -217,7 +217,7 @@ Vector4 DMatrix4::operator*(const Vector4& vec) const
 DMatrix4 DMatrix4::operator*(float n) const
 {
     DMatrix4 rm;
-    for(int i = 0; i < 16; i++)
+    for(unsigned int i = 0; i < 16; ++i)
         rm[i] = values[i]*n;
     return rm;
 }
@@ -225,7 +225,7 @@ DMatrix4 DMatrix4::operator*(float n) const
 DMatrix4 DMatrix4::operator/(float n) const
 {
     DMatrix4 m;
-    for(int i = 0; i < 16; i++)
+    for(unsigned int i = 0; i < 16; ++i)
         m[i] = values[i]/n;
     return m;
 }
@@ -268,7 +268,7 @@ DMatrix4& DMatrix4::operator/=(float n){
 
 bool DMatrix4::operator==(const DMatrix4& mat) const
 {
-    for(int i= 0; i < 16; i++)
+    for(unsigned int i= 0; i < 16; ++i)
     {
         if(values[i] != mat[i])
             return false;
@@ -281,11 +281,12 @@ bool DMatrix4::operator!=(const DMatrix4& mat) const
     return !((*this)==mat);
 }
 
-float& DMatrix4::operator[](size_t index) { return values[index]; }
-float DMatrix4::operator[](size_t index) const { return values[index]; }
-float& DMatrix4::operator()(size_t row, size_t col){ return values[row*4 + col]; }
-float DMatrix4::operator()(size_t row, size_t col) const { return values[row*4 + col]; }
+float& DMatrix4::operator[](unsigned int index) { return values[index]; }
+float DMatrix4::operator[](unsigned int index) const { return values[index]; }
+float& DMatrix4::operator()(unsigned int row, unsigned int col){ return values[row*4 + col]; }
+float DMatrix4::operator()(unsigned int row, unsigned int col) const { return values[row*4 + col]; }
 
 DMatrix4 operator*(float n, const DMatrix4& m) { return m*n; }
 Vector3 operator*(const Vector3& vec, const DMatrix4& m) { return m*vec; }
+Vector4 operator*(const Vector4& vec, const DMatrix4& m) { return m*vec; }
 

@@ -21,7 +21,7 @@ public:
     DMatrix4();
 
 
-    ///\brief Initialize matrix to \p n indentity
+    ///\brief Initialize all matrix values to \p n
     DMatrix4(float n);
 
 
@@ -51,7 +51,7 @@ public:
     static DMatrix4 hdivision(const DMatrix4& mat1,const DMatrix4& mat2);
 
 
-    ///\brief Create a identity matrix
+    ///\brief Create an identity matrix
     static DMatrix4 identity();
 
 
@@ -125,11 +125,11 @@ public:
 
 
     ///\brief Get the determinant of this matrix
-    float det();
+    float det() const;
 
 
     ///\brief Get a copy of this matrix transposed
-    DMatrix4 transposed();
+    DMatrix4 transposed() const;
 
 
     ///\brief Transpose this matrix
@@ -137,7 +137,7 @@ public:
 
 
     ///\brief Get a copy of this matrix inversed
-    DMatrix4 inverse();
+    DMatrix4 inverse() const;
 
 
     ///\brief Invert this matrix
@@ -224,19 +224,19 @@ public:
 
 
     ///\brief access matrix elements by index
-    float& operator[](size_t index);
+    float& operator[](unsigned int index);
 
 
-    ///\copydoc operator[](size_t index)
-    float operator[](size_t index) const;
+    ///\copydoc operator[](unsigned int)
+    float operator[](unsigned int index) const;
 
 
-    ///\copydoc operator[](size_t index)
-    float& operator()(size_t row, size_t col);
+    ///\copydoc operator[](unsigned int)
+    float& operator()(unsigned int row, unsigned int col);
 
 
-    ///\copydoc operator[](size_t index)
-    float operator()(size_t row, size_t col) const;
+    ///\copydoc operator[](unsigned int)
+    float operator()(unsigned int row, unsigned int col) const;
 
 
     ///\copydoc operator*(float n) const
@@ -246,12 +246,16 @@ public:
     ///\copydoc operator*(const Vector3&) const
     friend Vector3 operator*(const Vector3& vec, const DMatrix4& m);
 
+    
+    ///\copydoc operator*(const Vector4&) const
+    friend Vector4 operator*(const Vector4& vec, const DMatrix4& m);
+
 
     float values[16];
 
 private:
     
-    DMatrix4 inverse(float);
+    DMatrix4 inverse(float) const;
 };
 
 #endif
