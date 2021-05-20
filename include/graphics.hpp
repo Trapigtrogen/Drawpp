@@ -752,7 +752,6 @@ private:
     int line_shader_strokeColor_loc;
     int line_shader_transform_loc;
     int line_shader_view_loc;
-    int line_shader_cap_loc;
     int line_shader_vpos_loc;
     int line_shader_tpos_loc;
 

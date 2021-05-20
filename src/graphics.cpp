@@ -254,7 +254,6 @@ void DGraphics::init_shaders()
     line_shader_strokeColor_loc = glGetUniformLocation(line_shader->getId(),"strokeColor"); 
     line_shader_transform_loc = glGetUniformLocation(line_shader->getId(),"transform");  
     line_shader_view_loc = glGetUniformLocation(line_shader->getId(),"view");
-    //line_shader_cap_loc = glGetUniformLocation(line_shader->getId(),"captype");
     line_shader_tpos_loc = glGetAttribLocation(line_shader->getId(),"texpos");
     line_shader_vpos_loc = glGetAttribLocation(line_shader->getId(),"pos");
 
@@ -903,7 +902,6 @@ void DGraphics::triangle(const DVector& p1,const DVector& p2,const DVector& p3)
 void DGraphics::line(float x1, float y1, float x2, float y2)
 {
     glUseProgram(line_shader->getId());
-    //glUniform1f(line_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f);
     glUniform4f(line_shader_points_loc,x1,y1,x2,y2);
     glUniform4f(line_shader_strokeColor_loc,properties.stroke_color.red/255.0f,
                                                                     properties.stroke_color.green/255.0f,
@@ -911,8 +909,10 @@ void DGraphics::line(float x1, float y1, float x2, float y2)
                                                                     properties.stroke_color.alpha/255.0f);
     glUniformMatrix4fv(line_shader_transform_loc,1,GL_FALSE,transform_mat.values);
     glUniformMatrix4fv(line_shader_view_loc,1,GL_FALSE,view_mat.values);
-    //glUniform1i(line_shader_cap_loc,properties.strokecap);
-    glUniform2f(line_shader_strokeWeight_loc,properties.use_stroke?properties.stroke_weight:0.0f,float(properties.strokecap));
+    
+    glUniform2f(line_shader_strokeWeight_loc,
+        properties.use_stroke?properties.stroke_weight:0.0f,
+        float(properties.strokecap));
 
     glEnableVertexAttribArray(line_shader_vpos_loc);
     glEnableVertexAttribArray(line_shader_tpos_loc);
@@ -1890,7 +1890,6 @@ DGraphics& DGraphics::operator=(DGraphics&& other)
     line_shader_strokeColor_loc = other.line_shader_strokeColor_loc;
     line_shader_transform_loc = other.line_shader_transform_loc;
     line_shader_view_loc = other.line_shader_view_loc;
-    line_shader_cap_loc = other.line_shader_cap_loc;
     line_shader_vpos_loc = other.line_shader_vpos_loc;
     line_shader_tpos_loc = other.line_shader_tpos_loc;
     image_shader_offset_loc = other.image_shader_offset_loc;
