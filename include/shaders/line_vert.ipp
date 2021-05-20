@@ -4,8 +4,9 @@ static const char* line_shader_v = R"(
     uniform mat4 transform;
     uniform mat4 view;
     uniform vec4 points;
-    uniform float strokeWeight;
-    uniform int captype;
+    //uniform float strokeWeight;
+    uniform vec2 strokeWeight;
+    //uniform int captype;
     attribute vec2 pos;
     attribute vec2 texpos;
     varying vec2 texc;
@@ -24,12 +25,12 @@ static const char* line_shader_v = R"(
         float angle = atan2(diff.x,diff.y);
         
         float height = distance(points.xy,points.zw);
-        float width = strokeWeight;
+        float width = strokeWeight.x;
 
-        if(captype == 1)
-        {
-            height = height + strokeWeight;
-        }
+        //if(captype == 1)
+        //{
+            height = height + strokeWeight.x * strokeWeight.y;
+        //}
         
         mat4 transl = mat4(1.0);
         transl[0][3] = ppos.x;

@@ -1,19 +1,21 @@
 static const char* line_shader_f = R"(
     #version 100
     precision mediump float;
-    uniform float strokeWeight;
+    //uniform float strokeWeight;
+    uniform vec2 strokeWeight;
     uniform vec4 strokeColor;
-    uniform int captype;
+    //uniform int captype;
     varying vec2 texc;
     varying vec2 size;
 
     void main()
     {
-        if(captype == 1)
+        //if(captype == 1)
+        if(strokeWeight.y > 0.5)
         {
             vec2 px = vec2(1.0) / size;
 
-            vec2 stroke = vec2(strokeWeight) * px / 2.0;
+            vec2 stroke = vec2(strokeWeight.x) * px / 2.0;
 
             vec2 pos = texc;
 
