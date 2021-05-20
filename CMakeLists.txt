@@ -89,6 +89,7 @@ endif (MSVC)
 find_package(Doxygen QUIET)
 
 if (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
+    set(DOXYGEN_GENERATE_LATEX YES)
     set(DOXYGEN_ALWAYS_DETAILED_SEC YES)
     set(DOXYGEN_WARN_IF_UNDOCUMENTED NO)
     set(doxyfile ${CMAKE_BINARY_DIR}/doxyfile)

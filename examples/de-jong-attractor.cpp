@@ -123,7 +123,7 @@ void draw(float)
             fill(c);
             
             // Draw a pixel sized ellipse at the x,y position
-            ellipse(_x, _y, PX_WIDTH, PX_HEIGHT);
+            ellipse(_x, _y, PX_WIDTH* 1.45, PX_HEIGHT* 1.45);
         }
     }
 }
