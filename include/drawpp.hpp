@@ -857,8 +857,8 @@ void pop();
 ///\addtogroup drawpp_transform_api
 ///@{
 
-///\copydoc DGraphics::applyMatrix(const DMatrix4&)
-void applyMatrix(const DMatrix4& m);
+///\copydoc DGraphics::applyMatrix(const Matrix4&)
+void applyMatrix(const Matrix4& m);
 
 
 ///\copydoc DGraphics::pushMatrix()

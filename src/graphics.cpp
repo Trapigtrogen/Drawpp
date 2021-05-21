@@ -180,7 +180,7 @@ DGraphics::DGraphics(int width, int height)
     glBindFramebuffer(GL_FRAMEBUFFER, prev_buffer);
 
     init_shaders();
-    view_mat = DMatrix4::identity().translate(Vector3(-1.0f,1.0f,0.0f)).scale(Vector3(2.0f/buffer_width,2.0f/buffer_height,1.0f));
+    view_mat = Matrix4::identity().translate(Vector3(-1.0f,1.0f,0.0f)).scale(Vector3(2.0f/buffer_width,2.0f/buffer_height,1.0f));
 }
 
 DGraphics::~DGraphics()
@@ -296,7 +296,7 @@ void DGraphics::init_shaders()
 
 void DGraphics::beginDraw()
 {
-    transform_mat = DMatrix4::identity();
+    transform_mat = Matrix4::identity();
     glBindFramebuffer(GL_FRAMEBUFFER,buffer_id);
     glViewport(0,0,buffer_width,buffer_height);
 
@@ -668,14 +668,14 @@ void DGraphics::scale(const Vector2& s)
 
 void DGraphics::shearX(float a)
 {
-    DMatrix4 m;
+    Matrix4 m;
     m(0,1) = a;
     transform_mat = transform_mat * m;
 }
 
 void DGraphics::shearY(float a)
 {
-    DMatrix4 m;
+    Matrix4 m;
     m(1,0) = a;
     transform_mat = transform_mat * m;
 }
@@ -693,7 +693,7 @@ void DGraphics::pop()
     popStyle();
 }
 
-void DGraphics::applyMatrix(const DMatrix4& m)
+void DGraphics::applyMatrix(const Matrix4& m)
 {
     transform_mat = transform_mat * m;
 }

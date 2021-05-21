@@ -417,7 +417,7 @@ public:
 
 
     ///\brief Multiply the transform matrix by \p m
-    void applyMatrix(const DMatrix4& m);
+    void applyMatrix(const Matrix4& m);
 
 
     ///\brief Push current transformations to the stack
@@ -682,13 +682,13 @@ private:
     GraphicsProperties properties;
 
     //is this needed?
-    DMatrix4 transform_mat = DMatrix4::identity();
+    Matrix4 transform_mat = Matrix4::identity();
 
     //View transformations
-    DMatrix4 view_mat;
+    Matrix4 view_mat;
 
     //View transformations stack
-    std::stack<DMatrix4> matrix_stack;
+    std::stack<Matrix4> matrix_stack;
 
     //Style properties stack
     std::stack<GraphicsProperties> property_stack;

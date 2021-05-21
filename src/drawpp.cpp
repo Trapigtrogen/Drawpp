@@ -806,7 +806,7 @@ void pop()
     Application::GetInstance()->graphics_object().pop();
 }
 
-void applyMatrix(const DMatrix4& m)
+void applyMatrix(const Matrix4& m)
 {
     Application::GetInstance()->graphics_object().applyMatrix(m);
 }
