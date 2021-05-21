@@ -17,6 +17,7 @@ Beginner's guide to Drawpp
 - [Random](#random)
 - [Noise](#noise)
 - [File loading](#file-loading)
+- [Image](#image)
 - [Miscellaneous](#miscellaneous)
 - [Offscreen drawing](#offscreen-drawing)
 - [Filters](#filters)
