@@ -20,9 +20,9 @@ Beginner's guide to Drawpp
 - [Miscellaneous](#miscellaneous)
 - [Offscreen drawing](#offscreen-drawing)
 - [Filters](#filters)
-- [Vector and matrix](#vector-and-matrix)
-    - [DVector](#dvector)
-    - [DMatrix4](#dmatrix4)
+- [Vectors and matrices](#vector-and-matrix)
+    - [Vectors](#vectors)
+    - [Matrices](#matrices)
 
 <br>
 
@@ -542,6 +542,37 @@ As with random numbers, you can have multiple noise generators by using the Nois
 
 <br>
 
+## <a id="image">Image</a>
+
+<br>The DImage class will store an image.<br>
+
+Image pixels can be modified in runtime. You can do this by accessing the pixels with the [] operator, or the ***pixels()*** function. After modifications have been made, you need to call apply() to upload the changes to the GPU.<br>
+
+Here is a simple example, where we set each pixel of an image to a random color:
+
+```cpp
+#include<drawpp.hpp>
+
+DImage img;
+
+void setup()
+{
+    img = DImage(100,100);
+
+    for(unsigned int i = 0; i < 100*100; ++i)
+    {
+        img[i] = color(randomInt(0,255),randomInt(0,255),randomInt(0,255));
+    }
+
+    img.apply();
+}
+```
+
+Remember, as with other things, images must be initialized in the setup function, and not any earlier.
+
+
+<br>
+
 ## <a id="miscellaneous">Miscellaneous</a>
 
 <br>Here are various functions you can use for different things:
@@ -669,7 +700,9 @@ The filters are written in GLSL ES 1.0.0, and you can read the documentation of 
 
 <br>Note also, that the uniform name ***pos*** is reserved by the library. You can still have a variable called pos, but it cannot be a uniform.<br>
 
-If you need uniforms in your filter, you can add them into the GLSL ES source. To set their values in runtime, you need to pass a initializer function to the ***filter()*** call, which will do the required OpenGL calls. This function must take one parameter of type unsigned int, which will be the shader program id for the filter. You don't have to use it, but the function signature must match. For all this, you need to include glad.h in your source code.<br>
+Another important variable is gl_FragCoord, which is provided by GLSL. It is of type vec4, but you really only need to care about the x and y components, which are the x and y coordinates of the current pixel. You can use it, to get the current position in the source texture, which will have texture coordinates in range [0.0,1.0]. To do this, divide gl_FragCoord.xy by source_size.
+
+If you need uniforms in your filter, you can add them into the GLSL ES source. To set their values in runtime, use the filter member function ***setUniform()***. See details in the generated documentation.
 
 Here is an example of a custom filter, recreating the pixelate effect:
 
@@ -678,9 +711,6 @@ Here is an example of a custom filter, recreating the pixelate effect:
 #include <glad.h>
 
 DFilter pixelate;
-int pixelate_scale_location;
-
-float pixel_scale = 10;
 
 void setup()
 {
@@ -693,15 +723,12 @@ void setup()
             gl_FragColor = texture2D(source, pos);
         }
     )");
-
-    glGetUniformLocation(pixelate.getProgram(),"scale");
 }
 
 void draw(float)
 {
-    filter(pixelate,[=](unsigned int p){
-        glUniform1f(pixelate_scale_location,pixel_scale);
-    });
+    pixelate.setUniform("scale", 10.0f);
+    filter(pixelate);
 }
 
 int main()
@@ -711,31 +738,22 @@ int main()
 }
 ```
 
-<br>Ideally, if you are creating your own filters, and setting uniforms in them, you'd be familiar with GLSL ES and the OpenGL API.<br>
-In any case, here are explanations of the functions used in the above example:<br>
+<br>Ideally, if you are creating your own filters, you'd be familiar with GLSL ES and the OpenGL API.<br>
 
-- glGetUniformLocation()
-    - Takes a shader program id, and a uniform name string as parameters.
-    - Will return the location of that uniform in the shader program.
-- glUniform1f()
-    - Takes a uniform location, and a float value as parameters.
-    - Will set the uniform at the location, to the value.
 
-The scale uniform location is cached because the operation of getting it is not very cheap. This is fine, because the location will not change, unless you recompile the filter. In newer versions of GLSL ES it's possible to set the uniform location explicitly in the shader, but we can't do that here.<br>
-
-Another thing you can do with filters, is to just use them as shader renderers. You can draw whatever you want in them, and you can choose to ignore the *source* texture.<br>
+<br>Another thing you can do with filters, is to just use them as shader renderers. You can draw whatever you want in them, and you can choose to ignore the *source* texture.<br>
 
 
 <br>
 
 ## <a id="vector-and-matrix">Vector and matrix</a>
 
-<br>The Drawpp library gives you a vector class DVector, and a matrix class DMatrix4.<br>
+<br>The Drawpp library provides you with basic vector and matrix classes.<br>
 
-#### <a id="dvector">DVector</a>
+#### <a id="vectors">Vectors</a>
 
-The DVector class contains 3 floating point values: x, y and z. They are public member and can be accessed as such.<br>
-DVector also has all the basic vector math functions you will need. Here is a list of them:
+You are given 3 vector classes, Vector2, Vector3 and Vector4.<br>
+Here is a list of function common to all of them:
 
 ##### Operators
 - \+ and +=
@@ -756,29 +774,6 @@ DVector also has all the basic vector math functions you will need. Here is a li
     - Get vector magnitude.
 - magSq()
     - Get vector magnitude squared.
-- dot()
-    - Get the dot product of 2 vectors.
-- cross()
-    - Get the cross product of 2 vectors.
-- normalize() and normalized()
-    - Get the normalized vector.
-- limit()
-    - Limit the vector magnitude.
-- setMag()
-    - Set the vector magnitude.
-- heading()
-    - Get an angle (radians) of this vector.
-    - The z axis is ignored.
-- rotate()
-    - Rotate vector by an angle (radians).
-    - The z axis is ignored.
-- lerp()
-    - Linearly interpolate between 2 vectors.
-- angleBetween()
-    - Get the angle (radians) between 2 vectors.
-    - The z axis is ignored.
-- array()
-    - Convert the vector to an std::vector\<float>.
 
 ##### Comparison operators
 - ==
@@ -796,18 +791,45 @@ DVector also has all the basic vector math functions you will need. Here is a li
 <br>
 
 ##### Initializers
-- random2D()
-    - Create a random 2D unit vector.
-    - The z component will be zero.
-- random3D()
-    - Create a random 3D unit vector.
+- random()
+    - Create a random unit vector.
+
+<br>There are a couple functions exclusive to Vector2:
+- heading()
+    - Get an angle (radians) of this vector.
+- rotate()
+    - Rotate vector by an angle (radians).
 - fromAngle()
     - Create a 2D unit vector from an angle (radians).
 
-#### <a id="dmatrix4">DMatrix4</a>
+<br>Here is a list of non-member functions for vectors:
+- dot()
+    - Get the dot product of 2 vectors.
+- cross()
+    - Get the cross product of 2 vectors.
+- normalize()
+    - Get a normalized vector.
+- limit()
+    - Limit vector magnitude.
+- setMag()
+    - Set vector magnitude.
+- lerp()
+    - Linearly interpolate between 2 vectors.
+- angleBetween()
+    - Get the angle (radians) between 2 vectors.
+- abs()
+    - Apply std::abs() to all vector values.
+
+
+#### <a id="matrices">Matrices</a>
 
 The DMatrix4 class contains 16 floating point values, which can be accessed directly via the member array ***values***, or with the [] and () operators. Matrices can be used to apply a custom transform to the transform matrix, and to modify vectors.<br>
-Here is a list of the matrix functions:
+
+You are given 3 matrix classes, Matrix2, Matrix3 and Matrix4. Matrices can be used to apply a custom transform to the transform matrix, and to modify vectors.<br>
+
+When modifying vectors, you should always use a one order higher matrix. For example, To modify a Vector3, use a Matrix4. The modification itself is as simple as just multiplying the vector, with the matrix.<br>
+
+Here is a list of functions common to all matrices, with the exception of Matrix2 not having translate() or translation():
 
 ##### Operators
 - \+ and +=
@@ -822,7 +844,7 @@ Here is a list of the matrix functions:
 - \* and *=
     - Multiply all values of the matrix by a value.
     - Multiply matrix by another.
-- \* (DVector)
+- \* (Vector)
     - Transform a vector by a matrix.
 - / and /=
     - Divide all values of the matrix by a value.
