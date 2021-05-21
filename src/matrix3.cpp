@@ -63,6 +63,11 @@ Matrix3 Matrix3::scaling(const Vector2& s)
     return Matrix3(s.x,0,0,0,s.y,0,0,0,1);
 }
 
+Matrix3 Matrix3::scaling(const Vector3& s)
+{
+    return Matrix3(s.x,0,0,0,s.y,0,0,0,s.z);
+}
+
 Matrix3 Matrix3::rotate(float angle) const
 {
     return *this * Matrix3::rotation(angle);

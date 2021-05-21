@@ -10,6 +10,14 @@
 #include <font.hpp>
 #include <constants.hpp>
 #include <filter.hpp>
+#include <time.hpp>
+#include <application.hpp>
+#include <matrix2.hpp>
+#include <matrix3.hpp>
+#include <matrix4.hpp>
+#include <vector2.hpp>
+#include <vector3.hpp>
+#include <vector4.hpp>
 
 
 ///\file

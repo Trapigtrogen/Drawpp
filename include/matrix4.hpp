@@ -2,27 +2,21 @@
 #define DPP_MATRIX4_H
 
 #include <cmath>
+#include <constants.hpp>
 
 struct Vector3;
-
-enum Axis
-{
-    X,
-    Y,
-    Z
-};
 
 ///\brief A basic 4x4 matrix class
 class DMatrix4
 {
 public:
 
-    ///\brief Initialized matrix to identity
+    ///\brief Initialize matrix to identity
     DMatrix4();
 
 
-    ///\brief Initialize all matrix values to \p n
-    DMatrix4(float n);
+    ///\brief Initialize all matrix values to \p v
+    DMatrix4(float v);
 
 
     ///\brief Initialize matrix values
