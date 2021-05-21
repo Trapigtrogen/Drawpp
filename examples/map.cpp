@@ -106,7 +106,7 @@ void setup()
 {
     // Limit fps
     frameRate(90); 
-    setTitle("Game Map");
+    setTitle("Drawpp example: Game map");
 
     // Grass settings
     noiseSeed( randomInt(1000000) );
