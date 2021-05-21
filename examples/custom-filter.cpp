@@ -6,10 +6,6 @@
 // The filter variable
 DFilter pixelate;
 
-// Scale of the pixels we want. You can change this in runtime
-float pixel_scale = 10;
-
-
 // setup is called once before the application loop starts
 void setup()
 {
