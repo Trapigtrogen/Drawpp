@@ -6,7 +6,7 @@
 
 struct Vector3;
 
-///\brief A basic 4x4 matrix class
+///\brief 4x4 matrix class
 class Matrix4
 {
 public:

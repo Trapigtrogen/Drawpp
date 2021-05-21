@@ -1,6 +1,12 @@
 #include <filter.hpp>
 #include <filter_impl.hpp>
 #include <debug.hpp>
+#include <vector2.hpp>
+#include <vector3.hpp>
+#include <vector4.hpp>
+#include <matrix2.hpp>
+#include <matrix3.hpp>
+#include <matrix4.hpp>
 
 
 DFilter DFilter::loadFilter(const std::string& filterSource)
@@ -118,13 +124,79 @@ void DFilter_impl::setUniform(const std::string& name, float value1, float value
     ptr->value[3] = value4;
 }
 
+void DFilter_impl::setUniform(const std::string& name, const Vector2& value)
+{
+    setUniform(name,value.x,value.y);
+}
+
+void DFilter_impl::setUniform(const std::string& name, const Vector3& value)
+{
+    setUniform(name,value.x,value.y,value.z);
+}
+
+void DFilter_impl::setUniform(const std::string& name, const Vector4& value)
+{
+    setUniform(name,value.x,value.y,value.z,value.w);
+}
+
+
 void DFilter_impl::setUniform(const std::string& name, int count, float* value)
 {
     UniformData1fv* ptr = getUniformDataPtr<UniformData1fv>(name);
     ptr->count = count;
-    ptr->value = value;
+    ptr->value.clear();
+    ptr->value.reserve(count);
+
+    for(unsigned int i = 0; i < count; ++i)
+    {
+        ptr->value.push_back(value[i]);
+    }
 }
 
+void DFilter_impl::setUniform(const std::string& name, int count, Vector2* value)
+{
+    UniformData2fv* ptr = getUniformDataPtr<UniformData2fv>(name);
+    ptr->count = count;
+    ptr->value.clear();
+    ptr->value.reserve(count*2);
+
+    for(unsigned int i = 0; i < count; ++i)
+    {
+        ptr->value.push_back(value[i].x);
+        ptr->value.push_back(value[i].y);
+    }
+}
+
+void DFilter_impl::setUniform(const std::string& name, int count, Vector3* value)
+{
+    UniformData3fv* ptr = getUniformDataPtr<UniformData3fv>(name);
+    ptr->count = count;
+    ptr->value.clear();
+    ptr->value.reserve(count*3);
+
+    for(unsigned int i = 0; i < count; ++i)
+    {
+        ptr->value.push_back(value[i].x);
+        ptr->value.push_back(value[i].y);
+        ptr->value.push_back(value[i].z);
+    }
+}
+
+void DFilter_impl::setUniform(const std::string& name, int count, Vector4* value)
+{
+    UniformData4fv* ptr = getUniformDataPtr<UniformData4fv>(name);
+    ptr->count = count;
+    ptr->value.clear();
+    ptr->value.reserve(count*4);
+
+    for(unsigned int i = 0; i < count; ++i)
+    {
+        ptr->value.push_back(value[i].x);
+        ptr->value.push_back(value[i].y);
+        ptr->value.push_back(value[i].z);
+        ptr->value.push_back(value[i].w);
+    }
+}
 
 void DFilter_impl::setUniform(const std::string& name, int value)
 {
@@ -158,8 +230,91 @@ void DFilter_impl::setUniform(const std::string& name, int value1, int value2, i
 void DFilter_impl::setUniform(const std::string& name, int count, int* value)
 {
     UniformData1iv* ptr = getUniformDataPtr<UniformData1iv>(name);
+    ptr->value.clear();
+    ptr->value.reserve(count);
+
+    for(unsigned int i = 0; i < count; ++i)
+    {
+        ptr->value.push_back(value[i]);
+    }
+}
+
+void DFilter_impl::setUniform(const std::string& name, const Matrix2& value)
+{
+    UniformDataMatrix2f* ptr = getUniformDataPtr<UniformDataMatrix2f>(name);
+
+    ptr->value[0] = value[0];
+    ptr->value[1] = value[1];
+    ptr->value[2] = value[2];
+    ptr->value[3] = value[3];
+}
+
+void DFilter_impl::setUniform(const std::string& name, const Matrix3& value)
+{
+    UniformDataMatrix3f* ptr = getUniformDataPtr<UniformDataMatrix3f>(name);
+
+    for(unsigned int i = 0; i < 9; ++i)
+    {
+        ptr->value[i] = value[i];
+    }
+}
+
+void DFilter_impl::setUniform(const std::string& name, const Matrix4& value)
+{
+    UniformDataMatrix4f* ptr = getUniformDataPtr<UniformDataMatrix4f>(name);
+
+    for(unsigned int i = 0; i < 16; ++i)
+    {
+        ptr->value[i] = value[i];
+    }
+}
+
+void DFilter_impl::setUniform(const std::string& name, int count, Matrix2* value)
+{
+    UniformDataMatrix2fv* ptr = getUniformDataPtr<UniformDataMatrix2fv>(name);
     ptr->count = count;
-    ptr->value = value;
+    ptr->value.clear();
+    ptr->value.reserve(count*4);
+    
+    for(unsigned int i = 0; i < count; ++i)
+    {
+        ptr->value[i*4+0] = value[i][0];
+        ptr->value[i*4+1] = value[i][1];
+        ptr->value[i*4+2] = value[i][2];
+        ptr->value[i*4+3] = value[i][3];
+    }
+}
+
+void DFilter_impl::setUniform(const std::string& name, int count, Matrix3* value)
+{
+    UniformDataMatrix3fv* ptr = getUniformDataPtr<UniformDataMatrix3fv>(name);
+    ptr->count = count;
+    ptr->value.clear();
+    ptr->value.reserve(count*9);
+    
+    for(unsigned int i = 0; i < count; ++i)
+    {
+        for(unsigned int j = 0; j < 9; ++j)
+        {
+            ptr->value[i*9+j] = value[i][j];
+        }
+    }
+}
+
+void DFilter_impl::setUniform(const std::string& name, int count, Matrix4* value)
+{
+    UniformDataMatrix4fv* ptr = getUniformDataPtr<UniformDataMatrix4fv>(name);
+    ptr->count = count;
+    ptr->value.clear();
+    ptr->value.reserve(count*16);
+    
+    for(unsigned int i = 0; i < count; ++i)
+    {
+        for(unsigned int j = 0; j < 16; ++j)
+        {
+            ptr->value[i*16+j] = value[i][j];
+        }
+    }
 }
 
 
@@ -184,11 +339,62 @@ void DFilter::setUniform(const std::string& name, float value1, float value2, fl
     impl->setUniform(name,value1,value2,value3,value4);
 }
 
+
+void DFilter::setUniform(const std::string& name, const Vector2& value)
+{
+    impl->setUniform(name,value);
+}
+
+void DFilter::setUniform(const std::string& name, const Vector3& value)
+{
+    impl->setUniform(name,value);
+}
+
+void DFilter::setUniform(const std::string& name, const Vector4& value)
+{
+    impl->setUniform(name,value);
+}
+
+
 void DFilter::setUniform(const std::string& name, int count, float* value)
 {
+    if(count < 0)
+    {
+        return;
+    }
+
     impl->setUniform(name,count,value);
 }
 
+void DFilter::setUniform(const std::string& name, int count, Vector2* value)
+{
+    if(count < 0)
+    {
+        return;
+    }
+    
+    impl->setUniform(name,count,value);
+}
+
+void DFilter::setUniform(const std::string& name, int count, Vector3* value)
+{
+    if(count < 0)
+    {
+        return;
+    }
+    
+    impl->setUniform(name,count,value);
+}
+
+void DFilter::setUniform(const std::string& name, int count, Vector4* value)
+{
+    if(count < 0)
+    {
+        return;
+    }
+    
+    impl->setUniform(name,count,value);
+}
 
 void DFilter::setUniform(const std::string& name, int value)
 {
@@ -212,8 +418,59 @@ void DFilter::setUniform(const std::string& name, int value1, int value2, int va
 
 void DFilter::setUniform(const std::string& name, int count, int* value)
 {
+    if(count < 0)
+    {
+        return;
+    }
+    
     impl->setUniform(name,count,value);
 }
+
+void DFilter::setUniform(const std::string& name, const Matrix2& value)
+{
+    impl->setUniform(name,value);
+}
+
+void DFilter::setUniform(const std::string& name, const Matrix3& value)
+{
+    impl->setUniform(name,value);
+}
+
+void DFilter::setUniform(const std::string& name, const Matrix4& value)
+{
+    impl->setUniform(name,value);
+}
+
+void DFilter::setUniform(const std::string& name, int count, Matrix2* value)
+{
+    if(count < 0)
+    {
+        return;
+    }
+    
+    impl->setUniform(name,count,value);
+}
+
+void DFilter::setUniform(const std::string& name, int count, Matrix3* value)
+{
+    if(count < 0)
+    {
+        return;
+    }
+    
+    impl->setUniform(name,count,value);
+}
+
+void DFilter::setUniform(const std::string& name, int count, Matrix4* value)
+{
+    if(count < 0)
+    {
+        return;
+    }
+    
+    impl->setUniform(name,count,value);
+}
+
 
 
 void UniformData1f::set()
@@ -238,7 +495,22 @@ void UniformData4f::set()
 
 void  UniformData1fv::set()
 {
-    glUniform1fv(location,count,value);
+    glUniform1fv(location,count,value.data());
+};
+
+void  UniformData2fv::set()
+{
+    glUniform2fv(location,count,value.data());
+};
+
+void  UniformData3fv::set()
+{
+    glUniform3fv(location,count,value.data());
+};
+
+void  UniformData4fv::set()
+{
+    glUniform4fv(location,count,value.data());
 };
 
 
@@ -264,5 +536,35 @@ void UniformData4i::set()
 
 void UniformData1iv::set()
 {
-    glUniform1iv(location,count,value);
+    glUniform1iv(location,value.size(),value.data());
+}
+
+void UniformDataMatrix2f::set()
+{
+    glUniformMatrix2fv(location,1,GL_FALSE,value);
+}
+
+void UniformDataMatrix3f::set()
+{
+    glUniformMatrix3fv(location,1,GL_FALSE,value);
+}
+
+void UniformDataMatrix4f::set()
+{
+    glUniformMatrix4fv(location,1,GL_FALSE,value);
+}
+
+void UniformDataMatrix2fv::set()
+{
+    glUniformMatrix2fv(location,count,GL_FALSE,value.data());
+}
+
+void UniformDataMatrix3fv::set()
+{
+    glUniformMatrix3fv(location,count,GL_FALSE,value.data());
+}
+
+void UniformDataMatrix4fv::set()
+{
+    glUniformMatrix4fv(location,count,GL_FALSE,value.data());
 }

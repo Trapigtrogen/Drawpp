@@ -3,6 +3,7 @@
 
 struct Vector2;
 
+///\brief 2x2 matrix class
 class Matrix2
 {
 public:

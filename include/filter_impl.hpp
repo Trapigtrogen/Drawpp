@@ -7,6 +7,13 @@
 #include <filter_uniform_data.hpp>
 #include <glad.h>
 
+struct Vector2;
+struct Vector3;
+struct Vector4;
+struct Matrix2;
+struct Matrix3;
+struct Matrix4;
+
 ///\private
 struct DFilter_impl
 {
@@ -37,8 +44,14 @@ struct DFilter_impl
     void setUniform(const std::string& name, float value1, float value2);
     void setUniform(const std::string& name, float value1, float value2, float value3);
     void setUniform(const std::string& name, float value1, float value2, float value3, float value4);
+    void setUniform(const std::string& name, const Vector2& value);
+    void setUniform(const std::string& name, const Vector3& value);
+    void setUniform(const std::string& name, const Vector4& value);
 
     void setUniform(const std::string& name, int count, float* value);
+    void setUniform(const std::string& name, int count, Vector2* value);
+    void setUniform(const std::string& name, int count, Vector3* value);
+    void setUniform(const std::string& name, int count, Vector4* value);
 
     void setUniform(const std::string& name, int value);
     void setUniform(const std::string& name, int value1, int value2);
@@ -47,6 +60,13 @@ struct DFilter_impl
     
     void setUniform(const std::string& name, int count, int* value);
 
+    void setUniform(const std::string& name, const Matrix2& value);
+    void setUniform(const std::string& name, const Matrix3& value);
+    void setUniform(const std::string& name, const Matrix4& value);
+
+    void setUniform(const std::string& name, int count, Matrix2* value);
+    void setUniform(const std::string& name, int count, Matrix3* value);
+    void setUniform(const std::string& name, int count, Matrix4* value);
 
     void upload_all_uniforms();
 
