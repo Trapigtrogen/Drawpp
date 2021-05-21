@@ -159,6 +159,7 @@ copy "..\..\include\path.hpp"           "path.hpp"
 copy "..\..\include\constants.hpp"      "constants.hpp"
 copy "..\..\include\filter.hpp"         "filter.hpp"
 copy "..\..\include\filters.hpp"        "filters.hpp"
+copy "..\..\include\time.hpp"        "time.hpp"
 
 copy "..\..\external\glad\include\glad\glad.h"          "glad.h"
 copy "..\..\external\glad\include\KHR\khrplatform.h"    "KHR/khrplatform.h"
