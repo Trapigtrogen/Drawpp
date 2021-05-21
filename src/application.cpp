@@ -442,10 +442,6 @@ void Application::init_filters()
         gl_FragColor = texture2D(source, pos);
     })");
 
-    stock_filters_pixelate_scale_location = 
-        glGetUniformLocation(stock_filters[0].getProgram(),"scale");
-
-
     stock_filters[filters::INVERT] = DFilter::loadFilter(R"(
     void main()
     {
@@ -478,9 +474,6 @@ void Application::init_filters()
             gl_FragColor = vec4(1.0);
         }
     })");
-
-    stock_filters_treshold_value_location = 
-        glGetUniformLocation(stock_filters[filters::THRESHOLD].getProgram(),"threshold");
 }
 
 void Application::cleanup_application()

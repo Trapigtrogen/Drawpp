@@ -85,11 +85,15 @@ cp ../include/drawpp.hpp ./include/
 cp ../include/graphics.hpp ./include/
 cp ../include/image.hpp ./include/
 cp ../include/keys.hpp ./include/
+cp ../include/matrix2.hpp ./include/
+cp ../include/matrix3.hpp ./include/
 cp ../include/matrix4.hpp ./include/
 cp ../include/noise.hpp ./include/
 cp ../include/random.hpp ./include/
 cp ../include/shape.hpp ./include/
+cp ../include/vector2.hpp ./include/
 cp ../include/vector3.hpp ./include/
+cp ../include/vector4.hpp ./include/
 cp ../include/font.hpp ./include/
 cp ../include/path.hpp ./include/
 cp ../include/constants.hpp ./include/

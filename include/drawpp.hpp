@@ -10,6 +10,14 @@
 #include <font.hpp>
 #include <constants.hpp>
 #include <filter.hpp>
+#include <time.hpp>
+#include <application.hpp>
+#include <matrix2.hpp>
+#include <matrix3.hpp>
+#include <matrix4.hpp>
+#include <vector2.hpp>
+#include <vector3.hpp>
+#include <vector4.hpp>
 
 
 ///\file
@@ -137,96 +145,96 @@ DShape loadShape(const std::string& filename);
 void circle(float x, float y, float radius);
 
 
-///\copydoc DGraphics::circle(const DVector&,float)
-void circle(const DVector& p, float radius);
+///\copydoc DGraphics::circle(const Vector2&,float)
+void circle(const Vector2& p, float radius);
 
 
 ///\copydoc DGraphics::ellipse(float,float,float,float)
 void ellipse(float x, float y, float width, float height);
 
 
-///\copydoc DGraphics::ellipse(const DVector&,const DVector&)
-void ellipse(const DVector& p, const DVector& s);
+///\copydoc DGraphics::ellipse(const Vector2&,const Vector2&)
+void ellipse(const Vector2& p, const Vector2& s);
 
 
 ///\copydoc DGraphics::line(float,float,float,float)
 void line(float x1, float y1, float x2, float y2);
 
 
-///\copydoc DGraphics::line(const DVector&,const DVector&)
-void line(const DVector& p1,const DVector& p2);
+///\copydoc DGraphics::line(const Vector2&,const Vector2&)
+void line(const Vector2& p1,const Vector2& p2);
 
 
 ///\copydoc DGraphics::point(float,float)
 void point(float x, float y);
 
 
-///\copydoc DGraphics::point(const DVector&)
-void point(const DVector& p);
+///\copydoc DGraphics::point(const Vector2&)
+void point(const Vector2& p);
 
 
 ///\copydoc DGraphics::quad(float,float,float,float,float,float,float,float)
 void quad(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
 
 
-///\copydoc DGraphics::quad(const DVector&,const DVector&,const DVector&,const DVector&)
-void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4);
+///\copydoc DGraphics::quad(const Vector2&,const Vector2&,const Vector2&,const Vector2&)
+void quad(const Vector2& p1, const Vector2& p2, const Vector2& p3, const Vector2& p4);
 
 
 ///\copydoc DGraphics::rect(float,float,float,float)
 void rect(float x, float y, float w, float h);
 
 
-///\copydoc DGraphics::rect(const DVector&,const DVector&)
-void rect(const DVector& p, const DVector& s);
+///\copydoc DGraphics::rect(const Vector2&,const Vector2&)
+void rect(const Vector2& p, const Vector2& s);
 
 
 ///\copydoc DGraphics::rect(float,float,float,float,float)
 void rect(float x, float y, float w, float h, float radii);
 
 
-///\copydoc DGraphics::rect(const DVector&,const DVector&,float)
-void rect(const DVector& p, const DVector& s, float radii);
+///\copydoc DGraphics::rect(const Vector2&,const Vector2&,float)
+void rect(const Vector2& p, const Vector2& s, float radii);
 
 
 ///\copydoc DGraphics::rect(float,float,float,float,float,float,float,float)
 void rect(float x, float y, float w, float h, float tl, float tr, float br, float bl);
 
 
-///\copydoc DGraphics::rect(const DVector&,const DVector&,float,float,float,float)
-void rect(const DVector& p, const DVector& s, float tl, float tr, float br, float bl);
+///\copydoc DGraphics::rect(const Vector2&,const Vector2&,float,float,float,float)
+void rect(const Vector2& p, const Vector2& s, float tl, float tr, float br, float bl);
 
 
 ///\copydoc DGraphics::square(float,float,float)
 void square(float x, float y, float size);
 
 
-///\copydoc DGraphics::square(const DVector&,float)
-void square(const DVector& p, float size);
+///\copydoc DGraphics::square(const Vector2&,float)
+void square(const Vector2& p, float size);
 
 
 ///\copydoc DGraphics::triangle(float,float,float,float,float,float)
 void triangle(float x1, float y1, float x2, float y2, float x3, float y3);
 
 
-///\copydoc DGraphics::triangle(const DVector&,const DVector&,const DVector&)
-void triangle(const DVector& p1, const DVector& p2, const DVector& p3);
+///\copydoc DGraphics::triangle(const Vector2&,const Vector2&,const Vector2&)
+void triangle(const Vector2& p1, const Vector2& p2, const Vector2& p3);
 
 
 ///\copydoc DGraphics::bezier(float,float,float,float,float,float,float,float)
 void bezier(float x1, float y1, float x2, float y2, float cx1, float cy1, float cx2, float cy2);
 
 
-///\copydoc DGraphics::bezier(const DVector&,const DVector&,const DVector&,const DVector&)
-void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2);
+///\copydoc DGraphics::bezier(const Vector2&,const Vector2&,const Vector2&,const Vector2&)
+void bezier(const Vector2& p1, const Vector2& p2, const Vector2& cp1, const Vector2& cp2);
 
 
 ///\copydoc DGraphics::bezier(float,float,float,float,float,float)
 void bezier(float x1, float y1, float x2, float y2, float cx, float cy);
 
 
-///\copydoc DGraphics::bezier(const DVector&,const DVector&,const DVector&)
-void bezier(const DVector& p1, const DVector& p2, const DVector& cp);
+///\copydoc DGraphics::bezier(const Vector2&,const Vector2&,const Vector2&)
+void bezier(const Vector2& p1, const Vector2& p2, const Vector2& cp);
 
 
 // Shapes 3D
@@ -267,16 +275,16 @@ void textFont(DFont font);
 void text(const std::string& txt, float x, float y);
 
 
-///\copydoc DGraphics::text(const std::string&,const DVector&)
-void text(const std::string& txt, const DVector& p);
+///\copydoc DGraphics::text(const std::string&,const Vector2&)
+void text(const std::string& txt, const Vector2& p);
 
 
 ///\copydoc DGraphics::text(const std::wstring&,float,float)
 void text(const std::wstring& txt, float x, float y);
 
 
-///\copydoc DGraphics::text(const std::wstring&,const DVector&)
-void text(const std::wstring& txt, const DVector& p);
+///\copydoc DGraphics::text(const std::wstring&,const Vector2&)
+void text(const std::wstring& txt, const Vector2& p);
 
 
 // End group drawpp_drawing_api
@@ -587,32 +595,32 @@ DImage createImage(std::vector<Color> pixelData, int width, int height);
 void image(const DImage& image, float x, float y);
 
 
-///\copydoc DGraphics::image(const DImage&,const DVector&)
-void image(const DImage& image, const DVector& p);
+///\copydoc DGraphics::image(const DImage&,const Vector2&)
+void image(const DImage& image, const Vector2& p);
 
 
 ///\copydoc DGraphics::image(const DImage&,float,float,float,float)
 void image(const DImage& image, float x, float y, float width, float height);
 
 
-///\copydoc DGraphics::image(const DImage&,const DVector&,const DVector&)
-void image(const DImage& image, const DVector& p, const DVector s);
+///\copydoc DGraphics::image(const DImage&,const Vector2&,const Vector2&)
+void image(const DImage& image, const Vector2& p, const Vector2 s);
 
 
 ///\copydoc DGraphics::image(const DGraphics&,float,float)
 void image(const DGraphics& target, float x, float y );
 
 
-///\copydoc DGraphics::image(const DGraphics&,const DVector&)
-void image(const DGraphics& target, const DVector& p);
+///\copydoc DGraphics::image(const DGraphics&,const Vector2&)
+void image(const DGraphics& target, const Vector2& p);
 
 
 ///\copydoc DGraphics::image(const DGraphics&,float,float,float,float)
 void image(const DGraphics& target, float x, float y, float w, float h);
 
 
-///\copydoc DGraphics::image(const DGraphics&,const DVector&,const DVector&)
-void image(const DGraphics& target, const DVector& p, const DVector& s);
+///\copydoc DGraphics::image(const DGraphics&,const Vector2&,const Vector2&)
+void image(const DGraphics& target, const Vector2& p, const Vector2& s);
 
 
 ///\copydoc DGraphics::background(const DImage&)
@@ -620,7 +628,7 @@ void background(const DImage& image);
 
 
 ///\brief Apply a filter to the window
-void filter(const DFilter& f, std::function<void(unsigned int)> initializer = nullptr);
+void filter(const DFilter& f);
 
 
 ///\brief Apply a filter to the window
@@ -657,12 +665,8 @@ DFilter loadFilterFromFile(const std::string& filename);
 void translate(float x, float y);
 
 
-///\copydoc DGraphics::translate(float,float,float
-void translate(float x, float y, float z);
-
-
-///\copydoc DGraphics::translate(const DVector&)
-void translate(const DVector& t);
+///\copydoc DGraphics::translate(const Vector2&)
+void translate(const Vector2& t);
 
 
 ///\copydoc DGraphics::rotate(float)
@@ -689,12 +693,8 @@ void scale(float s);
 void scale(float x, float y);
 
 
-///\copydoc DGraphics::scale(float,float,float)
-void scale(float x, float y, float z);
-
-
-///\copydoc DGraphics::scale(const DVector&)
-void scale(const DVector& s);
+///\copydoc DGraphics::scale(const Vector2&)
+void scale(const Vector2& s);
 
 
 ///\copydoc DGraphics::shearX(float)
@@ -857,8 +857,8 @@ void pop();
 ///\addtogroup drawpp_transform_api
 ///@{
 
-///\copydoc DGraphics::applyMatrix(const DMatrix4&)
-void applyMatrix(const DMatrix4& m);
+///\copydoc DGraphics::applyMatrix(const Matrix4&)
+void applyMatrix(const Matrix4& m);
 
 
 ///\copydoc DGraphics::pushMatrix()

@@ -13,7 +13,7 @@
 
 class DImage;
 class Shader;
-struct DVector;
+struct Vector2;
 class DShape;
 class DFilter;
 
@@ -368,12 +368,8 @@ public:
     void translate(float x, float y );
 
 
-    ///\brief Translate view by \p x, \p y and \p z
-    void translate(float x, float y, float z);
-
-
     ///\brief Translate view by \p t
-    void translate(const DVector& t);
+    void translate(const Vector2& t);
 
 
     ///\brief Rotate view by \p angle
@@ -399,13 +395,9 @@ public:
     ///\brief Scale view by \p x and \p y
     void scale(float x, float y );
 
-    
-    ///\brief Scale view by \p x, \p y and \p z
-    void scale(float x, float y, float z);
 
-    
     ///\brief Scale view by \p s
-    void scale(const DVector& s);
+    void scale(const Vector2& s);
 
 
     ///\brief Shear in the X direction by \p a
@@ -425,7 +417,7 @@ public:
 
 
     ///\brief Multiply the transform matrix by \p m
-    void applyMatrix(const DMatrix4& m);
+    void applyMatrix(const Matrix4& m);
 
 
     ///\brief Push current transformations to the stack
@@ -449,7 +441,7 @@ public:
 
 
     ///\brief Draw an ellipse at \p p, with size \p s
-    void ellipse(const DVector& p, const DVector& s);
+    void ellipse(const Vector2& p, const Vector2& s);
 
 
     ///\brief Draw a circle at ( \p x, \p y ), with radius \p radius
@@ -457,7 +449,7 @@ public:
 
 
     ///\brief Draw a circle at \p p, with radius \p radius
-    void circle(const DVector& p, float radius);
+    void circle(const Vector2& p, float radius);
 
 
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey )
@@ -465,7 +457,7 @@ public:
 
 
     ///\brief Draw a rectangle at \p p, with size \p s
-    void rect(const DVector& p, const DVector& s);
+    void rect(const Vector2& p, const Vector2& s);
 
 
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey ), and with corners rounded by \p radii
@@ -473,7 +465,7 @@ public:
 
     
     ///\brief Draw a rectangle at \p p, with size \p s, and with corners rounded by \p radii
-    void rect(const DVector& p, const DVector& s, float radii);
+    void rect(const Vector2& p, const Vector2& s, float radii);
 
 
     ///\brief Draw a rectangle at ( \p x, \p y ), with size ( \p sizex, \p sizey ), and with corners rounded by \p tl, \p tr, \p br and \p bl
@@ -481,7 +473,7 @@ public:
 
 
     ///\brief Draw a rectangle at \p p, with size \p s, and with corners rounded by \p tl, \p tr, \p br and \p bl
-    void rect(const DVector& p, const DVector& s, float tl, float tr, float br, float bl);
+    void rect(const Vector2& p, const Vector2& s, float tl, float tr, float br, float bl);
 
 
     ///\brief Draw a square at ( \p x, \p y ), with \p size
@@ -489,7 +481,7 @@ public:
 
 
     ///\brief Draw a square at \p p, with \p size
-    void square(const DVector& p, float size);
+    void square(const Vector2& p, float size);
 
 
     ///\brief Draw a triangle from points ( \p x1, \p y1), ( \p x2, \p y2) and ( \p x3, \p y3)
@@ -497,7 +489,7 @@ public:
 
 
     ///\brief Draw a triangle from points \p p1, \p p2 and \p p3
-    void triangle(const DVector& p1,const DVector& p2,const DVector& p3);
+    void triangle(const Vector2& p1,const Vector2& p2,const Vector2& p3);
 
 
     ///\brief Draw a line from ( \p x1, \p y1) to ( \p x2, \p y2)
@@ -509,7 +501,7 @@ public:
     ///\brief Draw a line from \p p1 to \p p2
     ///
     ///Line cap style is determined by target cap style.
-    void line(const DVector& p1,const DVector& p2);
+    void line(const Vector2& p1,const Vector2& p2);
 
 
     ///\brief Draw a point at ( \p x, \p y )
@@ -521,7 +513,7 @@ public:
     ///\brief Draw a point at \p p
     ///
     ///Target cap style must be ROUND for the point to be visible.
-    void point(const DVector& p);
+    void point(const Vector2& p);
 
 
     ///\brief Draw image \p image at ( \p x, \p y )
@@ -529,7 +521,7 @@ public:
 
 
     ///\brief Draw image \p image at \p p
-    void image(const DImage& image, const DVector& p);
+    void image(const DImage& image, const Vector2& p);
 
 
     ///\brief Draw image \p image at ( \p x, \p y ), resized to ( \p w, \p h)
@@ -537,7 +529,7 @@ public:
 
 
     ///\brief Draw image \p image at \p p, resized to \p s
-    void image(const DImage& image, const DVector& p, const DVector& s);
+    void image(const DImage& image, const Vector2& p, const Vector2& s);
 
 
     ///\brief Draw target at ( \p x, \p y )
@@ -545,7 +537,7 @@ public:
 
 
     ///\brief Draw target at \p p
-    void image(const DGraphics& target, const DVector& p);
+    void image(const DGraphics& target, const Vector2& p);
 
 
     ///\brief Draw target at ( \p x, \p y ), resized to ( \p w, \p h)
@@ -553,7 +545,7 @@ public:
 
 
     ///\brief Draw target at \p p, resized to \p s
-    void image(const DGraphics& target, const DVector& p, const DVector& s);
+    void image(const DGraphics& target, const Vector2& p, const Vector2& s);
 
 
     ///\brief Draw shape \p s at ( \p x, \p y ), resized to ( \p w, \p h)
@@ -565,7 +557,7 @@ public:
 
 
     ///\brief Draw a quad from points \p p1, \p p2, \p p3 and \p p4
-    void quad(const DVector& p1, const DVector& p2, const DVector& p3, const DVector& p4);
+    void quad(const Vector2& p1, const Vector2& p2, const Vector2& p3, const Vector2& p4);
 
 
     ///\brief Save target pixels to a file as an image
@@ -602,15 +594,15 @@ public:
     ///\brief Draw text at \p p
     ///
     ///A font must be set with textFont() before drawing any text.
-    void text(const std::string& txt, const DVector& p);
+    void text(const std::string& txt, const Vector2& p);
 
 
     ///\copydoc text(const std::string&,float,float);
     void text(const std::wstring& txt, float x, float y);
 
 
-    ///\copydoc text(const std::string&,const DVector&)
-    void text(const std::wstring& txt, const DVector& p);
+    ///\copydoc text(const std::string&,const Vector2&)
+    void text(const std::wstring& txt, const Vector2& p);
 
 
     ///\brief Draw a cubic bezier curve from 4 points.
@@ -618,7 +610,7 @@ public:
 
 
     ///\brief Draw a cubic bezier curve from 4 points.
-    void bezier(const DVector& p1, const DVector& p2, const DVector& cp1, const DVector& cp2);
+    void bezier(const Vector2& p1, const Vector2& p2, const Vector2& cp1, const Vector2& cp2);
 
 
     ///\brief Draw a quadratic bezier curve from 3 points
@@ -626,7 +618,7 @@ public:
 
 
     ///\brief Draw a quadratic bezier curve from 3 points
-    void bezier(const DVector& p1, const DVector& p2, const DVector& cp);
+    void bezier(const Vector2& p1, const Vector2& p2, const Vector2& cp);
 
 
     ///\brief Create an image from the contents of this draw target
@@ -634,7 +626,7 @@ public:
 
 
     ///\brief Apply a filter to this target
-    void filter(const DFilter& f, std::function<void(unsigned int)> initializer = nullptr);
+    void filter(const DFilter& f);
 
 
     ///\brief Apply a filter to this target
@@ -672,9 +664,9 @@ private:
 
     //expects curves to have 1 common point
     //stride = bytes between elements in array
-    void generate_cubic_bezier_path(const struct vec2f* points, size_t count, float xoff = 0, float yoff = 0, float xscale = 1.0, float yscale = 1.0, unsigned int stride = 0);
+    void generate_cubic_bezier_path(const Vector2* points, size_t count, float xoff = 0, float yoff = 0, float xscale = 1.0, float yscale = 1.0, unsigned int stride = 0);
 
-    void generate_quadratic_bezier_path(const struct vec2f* points, size_t count, float xoff = 0, float yoff = 0, float xscale = 1.0, float yscale = 1.0, unsigned int stride = 0);
+    void generate_quadratic_bezier_path(const Vector2* points, size_t count, float xoff = 0, float yoff = 0, float xscale = 1.0, float yscale = 1.0, unsigned int stride = 0);
 
     void render_bezier_buffer();
 
@@ -690,13 +682,13 @@ private:
     GraphicsProperties properties;
 
     //is this needed?
-    DMatrix4 transform_mat = DMatrix4::identity();
+    Matrix4 transform_mat = Matrix4::identity();
 
     //View transformations
-    DMatrix4 view_mat;
+    Matrix4 view_mat;
 
     //View transformations stack
-    std::stack<DMatrix4> matrix_stack;
+    std::stack<Matrix4> matrix_stack;
 
     //Style properties stack
     std::stack<GraphicsProperties> property_stack;

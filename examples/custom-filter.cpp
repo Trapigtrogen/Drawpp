@@ -3,14 +3,8 @@
 
 #include <drawpp.hpp>
 
-// We need glad for OpenGL API calls
-#include <glad.h>
-
-
+// The filter variable
 DFilter pixelate;
-
-// Location of the scale uniform in our filter
-int pixelate_scale_location;
 
 // Scale of the pixels we want. You can change this in runtime
 float pixel_scale = 10;
@@ -24,14 +18,17 @@ void setup()
         uniform float scale;
         void main()
         {
+            // Get the current pixel coordinate, by dividing the 
+            // fragment position by the source image size
             vec2 pos = gl_FragCoord.xy/source_size;
+
+            // Clamp the coordinate with scale
             pos -= mod(pos, vec2(scale) / source_size);
+
+            // Set pixel color to be the same as at pos
             gl_FragColor = texture2D(source, pos);
         }
     )");
-
-    // Get the location of the scale uniform
-    pixelate_scale_location = glGetUniformLocation(pixelate.getProgram(),"scale");
 }
 
 // draw is called once every frame
@@ -46,12 +43,12 @@ void draw(float)
     strokeWeight(20);
     circle(500,500,200);
 
-    // Apply the filter, with a lambda as the initializer function
-    filter(pixelate,[=](unsigned int p){
 
-        // Here we set the scale uniform value
-        glUniform1f(pixelate_scale_location,pixel_scale);
-    });
+    // Set the pixel scale
+    pixelate.setUniform("scale", 10.0f);
+
+    // Apply the filter
+    filter(pixelate);
 }
 
 int main()
