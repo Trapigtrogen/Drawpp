@@ -12,15 +12,15 @@ class Path
 public:
 
     ///\brief Get the number of vertices in the path
-    size_t size() const;
+    std::size_t size() const;
 
 
     ///\brief Get a reference to a vertex at \p index
-    Vector2& operator[](size_t index);
+    Vector2& operator[](std::size_t index);
 
 
     ///\copydoc operator[](size_t)
-    const Vector2& operator[](size_t index) const;
+    const Vector2& operator[](std::size_t index) const;
 
 private:
 
