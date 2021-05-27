@@ -57,6 +57,7 @@ You need to install your distripution's development packages:
 * __Debian__/__Raspberry Pi OS__  `sudo apt-get -y install g++ cmake libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libglu1-mesa-dev libxxf86vm-dev`
   * On Ubuntu the doxygen package is not found by default. You need to add `universe` repository first: `sudo apt-add-repository universe`
   * Then you can install `doxygen` normally
+  * Ubuntu cannot link some libraries so the release won't work. Any other debian based should work just fine
 * On Raspberry Pi make sure that you have using Legacy OpenGL driver from `sudo raspi-config` -> Advanced options -> GL Driver -> Legacy - Original non-GL desktop driver
 
 Type following in the terminal:
