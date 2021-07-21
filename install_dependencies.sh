@@ -41,22 +41,22 @@ if [ "$OS" =  "Arch Linux" ]; then
      echo "Using Pacman"
      manager="pacman"
 elif [ "$OS" =  "Debian" ]; then
-    echo "Using Aptitude"
-    manager="aptitude"
+    echo "Using Apt"
+    manager="apt"
 elif [ "$OS" =  "Raspbian GNU/Linux" ]; then
-    echo "Using aptitude"
-    manager="aptitude"
+    echo "Using apt"
+    manager="apt"
 else
     echo "This distro is not officially supported by us."
     echo "However if you know your distribution should work you can select packet manager manually:"
     while true
     do
-        read -r -p "1.Aptitude 2.Pacman 3.Quit [1/2/q] " managerMan
+        read -r -p "1.Apt 2.Pacman 3.Quit [1/2/q] " managerMan
 
         case $managerMan in
         [1])
-            echo "Using aptitude"
-            manager="aptitude"
+            echo "Using apt"
+            manager="apt"
             break
             ;;
         [2])
@@ -75,7 +75,7 @@ else
     done
 fi
 
-if [ "$manager" = "aptitude" ]; then
+if [ "$manager" = "apt" ]; then
     sudo apt-get update && sudo apt-get -y install doxygen git cmake sed\
                 g++ libxcursor-dev libxrandr-dev libxinerama-dev\
                 libxi-dev libopenal-dev libglu1-mesa-dev libxxf86vm-dev
