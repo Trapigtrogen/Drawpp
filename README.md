@@ -69,4 +69,4 @@ cd build
 cmake ..
 make
 ```
-If you want to merge external libraries into the releaseable Drawpp library use `ar -M <combine.mri` in build directory
+If you want to merge external libraries into the releaseable Drawpp library use `ar -M <combine` in build directory
