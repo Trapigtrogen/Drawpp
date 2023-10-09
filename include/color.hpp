@@ -7,7 +7,7 @@
 class HSBColor;
 
 /// Color API
-class Color 
+class Color
 {
     friend class DGraphics;
     friend class HSBColor;
@@ -56,7 +56,7 @@ public:
 
 
     ///\brief lerp color from two given colors
-    /// 
+    ///
     ///Lerps the color between two given colors by given percentage
     ///\returns New Color lerped between \p from and \p to Colors
     static Color lerpColor(const Color& from, const Color& to, float percentage);
@@ -75,7 +75,7 @@ public:
     uint8_t alpha = 255;
 
 private:
-    
+
     void HSB2RGB(float h, float s, float b, float a);
 
     static Color HEX2RGB(const char* hexCol);

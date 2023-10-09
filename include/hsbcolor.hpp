@@ -2,6 +2,7 @@
 #define DPP_HSBCOLOR_H
 
 #include <color.hpp>
+#include <stdint.h>
 #include <string>
 
 class Color;

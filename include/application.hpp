@@ -31,7 +31,7 @@ public:
     ///\addtogroup drawpp_application_api
     ///@{
 
-    ///\brief Construct an application 
+    ///\brief Construct an application
     ///
     ///Only once instance of Application is allowed to exist while the program is running.
     ///Attempting to instantiate multiple Applications will crash the program.
@@ -43,7 +43,7 @@ public:
     ///
     ///If you don't need the draw function, you can pass a nullptr as the draw function.
     int run(std::function<void(float)> draw, std::function<void()> setup = [](){}, std::function<void()> cleanup = [](){});
-    
+
 
     ///\brief Set the KeyPressed callback
     void setKeyPressed(std::function<void()>);
@@ -55,23 +55,23 @@ public:
 
     ///\brief Set the MouseClicked callback
     void setMouseClicked(std::function<void()>);
-    
+
 
     ///\brief Set the MousePressed callback
     void setMousePressed(std::function<void()>);
-    
+
 
     ///\brief Set the MouseReleased callback
     void setMouseReleased(std::function<void()>);
-    
+
 
     ///\brief Set the MouseWheel callback
     void setMouseWheel(std::function<void(float)>);
-    
+
 
     ///\brief Set the MouseMoved callback
     void setMouseMoved(std::function<void()>);
-    
+
 
     ///\brief Set the MouseDragged callback
     void setMouseDragged(std::function<void()>);
@@ -145,7 +145,7 @@ public:
 
     ///\brief Get the current window height
     int getHeight() const;
-    
+
 
     ///\brief Get a pointer to the application singleton
     static Application* GetInstance();
@@ -167,7 +167,7 @@ private:
     float min_delta = -1;
 
     void draw_buffer();
-    
+
     std::unique_ptr<Window> window;
     std::unique_ptr<DGraphics> graphics;
     bool quit_flag = false;
