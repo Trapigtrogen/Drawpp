@@ -5,59 +5,40 @@ cd `dirname $(realpath $0)`
 
 # Either create or empty release folder
 if [ ! -d ./release ]; then
-    mkdir -p ./release;
+	mkdir -p ./release;
 else
-    rm -rf ./release/*
+	rm -rf ./release/*
 fi
 
 # If -f is used use default settings
 if [ $1 = "-f" ]; then
-    incDoc="OFF"
-    debugBuild="OFF"
+	incDoc="OFF"
+	debugBuild="OFF"
 else
 
-    while true
-    do
-        read -r -p "Include documentation? [y/n] " docs
+	read -r -p "Include documentation? [Y/n] " docs
+	case $docs in
+	[nN])
+		echo "Won't include documentation"
+		incDoc="OFF"
+		;;
+	*|"")
+		echo "Will include documentation"
+		incDoc="ON"
+		;;
+	esac
 
-        case $docs in
-        [yY])
-            echo "Will include documentation"
-            incDoc="ON"
-            break
-            ;;
-        [nN])
-            echo "Won't include documentation"
-            incDoc="OFF"
-            break
-            ;;
-        *)
-            echo "Invalid input. Should be y/n"
-            ;;
-        esac
-    done
-
-    while true
-    do
-        read -r -p "Debug build? [y/n] " mode
-
-        case $mode in
-        [yY])
-            echo "Will build in debug mode"
-            debugBuild="ON"
-            break
-            ;;
-        [nN])
-            echo "Will build in release mode"
-            debugBuild="OFF"
-            break
-            ;;
-        *)
-            echo "Invalid input. Should be y/n"
-            ;;
-        esac
-    done
-
+	read -r -p "Debug build? [y/N] " mode
+	case $mode in
+	[yY])
+		echo "Will build in debug mode"
+		debugBuild="ON"
+		;;
+	*|"")
+		echo "Will build in release mode"
+		debugBuild="OFF"
+		;;
+	esac
 fi
 
 cd ./release
@@ -116,14 +97,14 @@ rm -r ./tests
 # move tests to main folder
 rm -rf ./tests
 if [ -d ./bin/tests ] && [ $debugBuild = "ON" ]; then
-    echo "Copying tests over..."
-    mv ./bin/tests ./
+	echo "Copying tests over..."
+	mv ./bin/tests ./
 fi
 
 
 # EXAMPLES:
 if [ ! -d ./examples ]; then
-    mkdir examples
+	mkdir examples
 fi
 
 cp -r ../examples ./
@@ -202,9 +183,9 @@ echo "include_directories(\${DPP_WINCS})">>./examples/CMakeLists.txt
 # Add examples to CMakeLists.txt
 for file in ./examples/*.cpp
 do
-    filename=$(basename "$file")
-    fname="${filename%.*}"
-    echo "add_executable(example_$fname $filename)">>./examples/CMakeLists.txt
+	filename=$(basename "$file")
+	fname="${filename%.*}"
+	echo "add_executable(example_$fname $filename)">>./examples/CMakeLists.txt
 done
 
 
