@@ -44,12 +44,15 @@ include_directories(external/glad/include/glad)
 include_directories(external/glfw/include)
 include_directories(external/stb)
 include_directories(external/nanosvg)
-# include_directories(external/freetype/include) # In Linux this breaks building of freetype itself
+include_directories(external/freetype/include)
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
 option(GLFW_BUILD_DOCS OFF)
 add_subdirectory(external/glfw)
 add_subdirectory(external/freetype)
+
+# find_package(Freetype REQUIRED)
+# include_directories(${FREETYPE_INCLUDE_DIRS})
 
 if(MSVC)
     target_compile_options(freetype PRIVATE /W0 /MP)
@@ -59,6 +62,7 @@ if(MSVC)
 endif(MSVC)
 
 target_link_libraries(${LIBNAME} glfw)
+# target_link_libraries(${LIBNAME} ${FREETYPE_LIBRARIES})
 target_link_libraries(${LIBNAME} freetype)
 
 if (MSVC)
@@ -70,14 +74,14 @@ if (MSVC)
 else ()
     set(LIB_PATH ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a)
 
-    file(GENERATE OUTPUT ${CMAKE_BINARY_DIR}/combine CONTENT 
+    file(GENERATE OUTPUT ${CMAKE_BINARY_DIR}/combine CONTENT
 "create lib${PROJECT_NAME}.a
 addlib lib/lib${PROJECT_NAME}.a
 addlib external/freetype/libfreetype.a
 addlib external/glfw/src/libglfw3.a
 save
 end")
-    
+
 #    add_custom_target(${PROJECT_NAME} ALL
 #                    COMMAND ar -M <combine.ar
 #                    COMMAND ar -s ${CMAKE_BINARY_DIR}/lib/${PROJECT_NAME}.a

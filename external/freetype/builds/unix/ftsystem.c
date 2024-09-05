@@ -26,9 +26,9 @@
 #include <freetype/internal/ftstream.h>
 
   /* memory-mapping includes and definitions */
-#ifdef HAVE_UNISTD_H
+// #ifdef HAVE_UNISTD_H # Not working in subdirectory, disabling for now
 #include <unistd.h>
-#endif
+// #endif # Not working in subdirectory, disabling for now
 
 #include <sys/mman.h>
 #ifndef MAP_FILE
@@ -60,9 +60,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef HAVE_FCNTL_H
+// #ifdef HAVE_FCNTL_H # Not working in subdirectory, disabling for now
 #include <fcntl.h>
-#endif
+// #endif # Not working in subdirectory, disabling for now
 
 #include <stdio.h>
 #include <stdlib.h>

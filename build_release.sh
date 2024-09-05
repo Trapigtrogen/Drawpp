@@ -53,12 +53,11 @@ else
 		;;
 	esac
 fi
-sleep 1
 
 cd ./release
 
 # CMake and build
-cmake .. "-DDPP_BUILD_DOCS=$incDoc -DPP_BUILD_TESTS=$debugBuild -DPP_BUILD_EXAMPLES=$buildExamples -DPP_BUILD_DEBUG=$debugBuild"
+cmake .. -DDPP_BUILD_DOCS="$incDoc" -DPP_BUILD_TESTS="$debugBuild" -DPP_BUILD_EXAMPLES="$buildExamples" -DPP_BUILD_DEBUG="$debugBuild"
 make || { echo "Build failed. Exiting.."; exit 1; }
 
 echo "Removing some build files..."
