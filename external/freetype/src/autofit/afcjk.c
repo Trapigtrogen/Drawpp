@@ -4,7 +4,7 @@
  *
  *   Auto-fitter hinting routines for CJK writing system (body).
  *
- * Copyright (C) 2006-2021 by
+ * Copyright (C) 2006-2019 by
  * David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -22,8 +22,9 @@
    *
    */
 
-#include <freetype/ftadvanc.h>
-#include <freetype/internal/ftdebug.h>
+#include <ft2build.h>
+#include FT_ADVANCES_H
+#include FT_INTERNAL_DEBUG_H
 
 #include "afglobal.h"
 #include "aflatin.h"
@@ -72,11 +73,11 @@
     AF_GlyphHintsRec  hints[1];
 
 
-    FT_TRACE5(( "\n" ));
-    FT_TRACE5(( "cjk standard widths computation (style `%s')\n",
+    FT_TRACE5(( "\n"
+                "cjk standard widths computation (style `%s')\n"
+                "===================================================\n"
+                "\n",
                 af_style_names[metrics->root.style_class->style] ));
-    FT_TRACE5(( "===================================================\n" ));
-    FT_TRACE5(( "\n" ));
 
     af_glyph_hints_init( hints, face->memory );
 
@@ -157,7 +158,7 @@
       if ( !glyph_index )
         goto Exit;
 
-      FT_TRACE5(( "standard character: U+%04lX (glyph index %ld)\n",
+      FT_TRACE5(( "standard character: U+%04lX (glyph index %d)\n",
                   ch, glyph_index ));
 
       error = FT_Load_Glyph( face, glyph_index, FT_LOAD_NO_SCALE );
@@ -260,9 +261,9 @@
                       dim == AF_DIMENSION_VERT ? "horizontal"
                                                : "vertical" ));
 
-          FT_TRACE5(( "  %ld (standard)", axis->standard_width ));
+          FT_TRACE5(( "  %d (standard)", axis->standard_width ));
           for ( i = 1; i < axis->width_count; i++ )
-            FT_TRACE5(( " %ld", axis->widths[i].org ));
+            FT_TRACE5(( " %d", axis->widths[i].org ));
 
           FT_TRACE5(( "\n" ));
         }
@@ -314,9 +315,9 @@
     /* style's entry in the `af_blue_stringset' array, computing its */
     /* extremum points (depending on the string properties)          */
 
-    FT_TRACE5(( "cjk blue zones computation\n" ));
-    FT_TRACE5(( "==========================\n" ));
-    FT_TRACE5(( "\n" ));
+    FT_TRACE5(( "cjk blue zones computation\n"
+                "==========================\n"
+                "\n" ));
 
 #ifdef FT_CONFIG_OPTION_USE_HARFBUZZ
     shaper_buf = af_shaper_buf_create( face );
@@ -555,8 +556,9 @@
       if ( AF_CJK_IS_TOP_BLUE( bs ) )
         blue->flags |= AF_CJK_BLUE_TOP;
 
-      FT_TRACE5(( "    -> reference = %ld\n", *blue_ref ));
-      FT_TRACE5(( "       overshoot = %ld\n", *blue_shoot ));
+      FT_TRACE5(( "    -> reference = %ld\n"
+                  "       overshoot = %ld\n",
+                  *blue_ref, *blue_shoot ));
 
     } /* end for loop */
 
@@ -726,7 +728,7 @@
 
         delta2 = FT_MulFix( delta2, scale );
 
-        FT_TRACE5(( "delta: %ld", delta1 ));
+        FT_TRACE5(( "delta: %d", delta1 ));
         if ( delta2 < 32 )
           delta2 = 0;
 #if 0
@@ -735,19 +737,19 @@
 #endif
         else
           delta2 = FT_PIX_ROUND( delta2 );
-        FT_TRACE5(( "/%ld\n", delta2 ));
+        FT_TRACE5(( "/%d\n", delta2 ));
 
         if ( delta1 < 0 )
           delta2 = -delta2;
 
         blue->shoot.fit = blue->ref.fit - delta2;
 
-        FT_TRACE5(( ">> active cjk blue zone %c%d[%ld/%ld]:\n",
+        FT_TRACE5(( ">> active cjk blue zone %c%d[%ld/%ld]:\n"
+                    "     ref:   cur=%.2f fit=%.2f\n"
+                    "     shoot: cur=%.2f fit=%.2f\n",
                     ( dim == AF_DIMENSION_HORZ ) ? 'H' : 'V',
-                    nn, blue->ref.org, blue->shoot.org ));
-        FT_TRACE5(( "     ref:   cur=%.2f fit=%.2f\n",
-                    blue->ref.cur / 64.0, blue->ref.fit / 64.0 ));
-        FT_TRACE5(( "     shoot: cur=%.2f fit=%.2f\n",
+                    nn, blue->ref.org, blue->shoot.org,
+                    blue->ref.cur / 64.0, blue->ref.fit / 64.0,
                     blue->shoot.cur / 64.0, blue->shoot.fit / 64.0 ));
 
         blue->flags |= AF_CJK_BLUE_ACTIVE;
@@ -804,7 +806,7 @@
   {
     AF_AxisHints  axis          = &hints->axis[dim];
     AF_Segment    segments      = axis->segments;
-    AF_Segment    segment_limit = FT_OFFSET( segments, axis->num_segments );
+    AF_Segment    segment_limit = segments + axis->num_segments;
     FT_Error      error;
     AF_Segment    seg;
 
@@ -1182,8 +1184,6 @@
 
 
         seg = edge->first;
-        if ( !seg )
-          goto Skip_Loop;
 
         do
         {
@@ -1239,14 +1239,13 @@
               edge2->flags |= AF_EDGE_SERIF;
             }
             else
-              edge->link = edge2;
+              edge->link  = edge2;
           }
 
           seg = seg->edge_next;
 
         } while ( seg != edge->first );
 
-      Skip_Loop:
         /* set the round/straight flags */
         edge->flags = AF_EDGE_NORMAL;
 
@@ -1642,7 +1641,7 @@
 
     stem_edge->pos = base_edge->pos + fitted_width;
 
-    FT_TRACE5(( "  CJKLINK: edge %ld @%d (opos=%.2f) linked to %.2f,"
+    FT_TRACE5(( "  CJKLINK: edge %d @%d (opos=%.2f) linked to %.2f,"
                 " dist was %.2f, now %.2f\n",
                 stem_edge - hints->axis[dim].edges, stem_edge->fpos,
                 stem_edge->opos / 64.0, stem_edge->pos / 64.0,
@@ -1864,7 +1863,7 @@
           continue;
 
 #ifdef FT_DEBUG_LEVEL_TRACE
-        FT_TRACE5(( "  CJKBLUE: edge %ld @%d (opos=%.2f) snapped to %.2f,"
+        FT_TRACE5(( "  CJKBLUE: edge %d @%d (opos=%.2f) snapped to %.2f,"
                     " was %.2f\n",
                     edge1 - edges, edge1->fpos, edge1->opos / 64.0,
                     blue->fit / 64.0, edge1->pos / 64.0 ));
@@ -1928,7 +1927,7 @@
       /* this should not happen, but it's better to be safe */
       if ( edge2->blue_edge )
       {
-        FT_TRACE5(( "ASSERTION FAILED for edge %ld\n", edge2-edges ));
+        FT_TRACE5(( "ASSERTION FAILED for edge %d\n", edge2-edges ));
 
         af_cjk_align_linked_edge( hints, dim, edge2, edge );
         edge->flags |= AF_EDGE_DONE;

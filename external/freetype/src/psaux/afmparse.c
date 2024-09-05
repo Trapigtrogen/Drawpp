@@ -4,7 +4,7 @@
  *
  *   AFM parser (body).
  *
- * Copyright (C) 2006-2021 by
+ * Copyright (C) 2006-2019 by
  * David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -15,9 +15,10 @@
  *
  */
 
-#include <freetype/freetype.h>
-#include <freetype/internal/ftdebug.h>
-#include <freetype/internal/psaux.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_INTERNAL_DEBUG_H
+#include FT_INTERNAL_POSTSCRIPT_AUX_H
 
 #ifndef T1_CONFIG_OPTION_NO_AFM
 
@@ -667,7 +668,7 @@
 
 
   /* compare two kerning pairs */
-  FT_COMPARE_DEF( int )
+  FT_CALLBACK_DEF( int )
   afm_compare_kern_pairs( const void*  a,
                           const void*  b )
   {
@@ -952,8 +953,7 @@
         error = afm_parse_kern_data( parser );
         if ( error )
           goto Fail;
-        /* we only support kern data, so ... */
-        /* fall through                      */
+        /* fall through since we only support kern data */
 
       case AFM_TOKEN_ENDFONTMETRICS:
         return FT_Err_Ok;
