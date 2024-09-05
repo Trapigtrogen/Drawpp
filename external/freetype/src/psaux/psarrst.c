@@ -37,7 +37,7 @@
 
 
 #include "psft.h"
-#include FT_INTERNAL_DEBUG_H
+#include <freetype/internal/ftdebug.h>
 
 #include "psglue.h"
 #include "psarrst.h"
@@ -110,7 +110,7 @@
 
       FT_ASSERT( newSize > 0 );   /* avoid realloc with zero size */
 
-      if ( !FT_REALLOC( arrstack->ptr, arrstack->totalSize, newSize ) )
+      if ( !FT_QREALLOC( arrstack->ptr, arrstack->totalSize, newSize ) )
       {
         arrstack->allocated = numElements;
         arrstack->totalSize = newSize;

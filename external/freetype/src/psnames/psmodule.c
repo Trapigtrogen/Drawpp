@@ -4,7 +4,7 @@
  *
  *   psnames module implementation (body).
  *
- * Copyright (C) 1996-2019 by
+ * Copyright (C) 1996-2021 by
  * David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -16,10 +16,9 @@
  */
 
 
-#include <ft2build.h>
-#include FT_INTERNAL_DEBUG_H
-#include FT_INTERNAL_OBJECTS_H
-#include FT_SERVICE_POSTSCRIPT_CMAPS_H
+#include <freetype/internal/ftdebug.h>
+#include <freetype/internal/ftobjs.h>
+#include <freetype/internal/services/svpscmap.h>
 
 #include "psmodule.h"
 
@@ -180,7 +179,7 @@
 
 
   /* ft_qsort callback to sort the unicode map */
-  FT_CALLBACK_DEF( int )
+  FT_COMPARE_DEF( int )
   compare_uni_maps( const void*  a,
                     const void*  b )
   {
@@ -329,7 +328,7 @@
     table->num_maps = 0;
     table->maps     = NULL;
 
-    if ( !FT_NEW_ARRAY( table->maps, num_glyphs + EXTRA_GLYPH_LIST_SIZE ) )
+    if ( !FT_QNEW_ARRAY( table->maps, num_glyphs + EXTRA_GLYPH_LIST_SIZE ) )
     {
       FT_UInt     n;
       FT_UInt     count;
@@ -344,7 +343,7 @@
         const char*  gname = get_glyph_name( glyph_data, n );
 
 
-        if ( gname )
+        if ( gname && *gname )
         {
           ps_check_extra_glyph_name( gname, n,
                                      extra_glyphs, extra_glyph_list_states );
@@ -392,9 +391,9 @@
         /* Reallocate if the number of used entries is much smaller. */
         if ( count < num_glyphs / 2 )
         {
-          (void)FT_RENEW_ARRAY( table->maps,
-                                num_glyphs + EXTRA_GLYPH_LIST_SIZE,
-                                count );
+          (void)FT_QRENEW_ARRAY( table->maps,
+                                 num_glyphs + EXTRA_GLYPH_LIST_SIZE,
+                                 count );
           error = FT_Err_Ok;
         }
 
