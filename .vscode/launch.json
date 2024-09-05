@@ -11,7 +11,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_background",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -37,7 +37,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_draw_bezier",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -63,7 +63,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_draw_ellipse_circle",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -89,7 +89,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_draw_filter",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -115,7 +115,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_draw_line_point",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -141,7 +141,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_draw_quad",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -167,7 +167,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_draw_rect_square",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -193,7 +193,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_draw_text",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -219,7 +219,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_draw_triangle",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -245,7 +245,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_input",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -271,7 +271,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_movement",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -297,7 +297,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_multiobjectmovement",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -323,7 +323,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_shape",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -349,7 +349,7 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_textures",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",
@@ -375,7 +375,345 @@
 			"program": "${workspaceFolder}/build/bin/tests/test_window",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/build/bin/tests",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_buttons",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_buttons",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_color-mousewheel",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_color-mousewheel",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_custom-filter",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_custom-filter",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_de-jong-attractor",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_de-jong-attractor",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_draw",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_draw",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_mandelbrot-shader",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_mandelbrot-shader",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_map",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_map",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_patterns",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_patterns",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_perlin-noise",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_perlin-noise",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_repeat-window",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_repeat-window",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_shape-animation",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_shape-animation",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_tickle",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_tickle",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+			    {
+				"description": "Enable pretty-printing for gdb",
+				"text": "-enable-pretty-printing",
+				"ignoreFailures": true
+			    },
+			    {
+				"description": "Set Disassembly Flavor to Intel",
+				"text": "-gdb-set disassembly-flavor intel",
+				"ignoreFailures": true
+			    }
+			],
+            		"preLaunchTask": "CMake: build"
+		},
+
+		{
+			"name": "example_window-modes",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/bin/examples/example_window-modes",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}/build/bin/examples",
 			"environment": [],
 			"externalConsole": false,
 			"MIMode": "gdb",

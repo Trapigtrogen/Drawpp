@@ -11,9 +11,10 @@ else
 fi
 
 # If -f is used use default settings
-if [ $1 = "-f" ]; then
+if [ "$1" == "-f" ]; then
 	incDoc="OFF"
 	debugBuild="OFF"
+	buildExamples="OFF"
 else
 
 	read -r -p "Include documentation? [Y/n] " docs
@@ -31,7 +32,7 @@ else
 	read -r -p "Debug build? [y/N] " mode
 	case $mode in
 	[yY])
-		echo "Will build in debug mode"
+		echo "Will build in debug mode. Also building tests"
 		debugBuild="ON"
 		;;
 	*|"")
@@ -39,14 +40,26 @@ else
 		debugBuild="OFF"
 		;;
 	esac
+
+	read -r -p "Build examples? [y/N] " mode
+	case $mode in
+	[yY])
+		echo "Will build examples"
+		buildExamples="ON"
+		;;
+	*|"")
+		echo "Won't build examples"
+		buildExamples="OFF"
+		;;
+	esac
 fi
+sleep 1
 
 cd ./release
 
 # CMake and build
-cmake .. -DDPP_BUILD_DOCS=$incDoc -DPP_BUILD_TESTS=$debugBuild -DPP_BUILD_EXAMPLES=OFF -DPP_BUILD_DEBUG=$debugBuild
+cmake .. "-DDPP_BUILD_DOCS=$incDoc -DPP_BUILD_TESTS=$debugBuild -DPP_BUILD_EXAMPLES=$buildExamples -DPP_BUILD_DEBUG=$debugBuild"
 make || { echo "Build failed. Exiting.."; exit 1; }
-
 
 echo "Removing some build files..."
 # remove all loose files
@@ -93,24 +106,26 @@ rm combine
 
 
 # TESTS:
-rm -r ./tests
-# move tests to main folder
 rm -rf ./tests
+# move tests to main folder
 if [ -d ./bin/tests ] && [ $debugBuild = "ON" ]; then
-	echo "Copying tests over..."
+	echo "Moving tests over..."
 	mv ./bin/tests ./
 fi
 
-
 # EXAMPLES:
-if [ ! -d ./examples ]; then
-	mkdir examples
+rm -rf ./examples
+mkdir -p ./examples/build
+# move examples to main folder
+if [ -d ./bin/examples ] && [ $buildExamples = "ON" ]; then
+	echo "Moving examples over..."
+	mv ./bin/examples ./examples/build/bin
+else
+	mkdir -p ./examples/build/bin
+	cp -r ../examples/assets ./examples/build/bin/
 fi
+cp ../examples/*.cpp ./examples/
 
-cp -r ../examples ./
-mkdir ./examples/build
-mkdir ./examples/build/bin
-mv ./examples/assets ./examples/build/bin/
 
 # Create CMakeLists.txt file for building examples
 echo "cmake_minimum_required(VERSION 3.13.4)">./examples/CMakeLists.txt

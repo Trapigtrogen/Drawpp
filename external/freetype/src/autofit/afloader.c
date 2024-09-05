@@ -4,7 +4,7 @@
  *
  *   Auto-fitter glyph loading routines (body).
  *
- * Copyright (C) 2003-2021 by
+ * Copyright (C) 2003-2024 by
  * David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -55,10 +55,8 @@
       error = af_face_globals_new( face, &loader->globals, module );
       if ( !error )
       {
-        face->autohint.data =
-          (FT_Pointer)loader->globals;
-        face->autohint.finalizer =
-          (FT_Generic_Finalizer)af_face_globals_free;
+        face->autohint.data      = (FT_Pointer)loader->globals;
+        face->autohint.finalizer = af_face_globals_free;
       }
     }
 
@@ -229,9 +227,6 @@
     AF_WritingSystemClass  writing_system_class;
 
 
-    if ( !size )
-      return FT_THROW( Invalid_Size_Handle );
-
     FT_ZERO( &scaler );
 
     if ( !size_internal->autohint_metrics.x_scale                          ||
@@ -296,12 +291,6 @@
     error = af_loader_reset( loader, module, face );
     if ( error )
       goto Exit;
-
-#ifdef FT_OPTION_AUTOFIT2
-    /* XXX: undocumented hook to activate the latin2 writing system. */
-    if ( load_flags & ( 1UL << 20 ) )
-      style_options = AF_STYLE_LTN2_DFLT;
-#endif
 
     /*
      * Glyphs (really code points) are assigned to scripts.  Script
@@ -479,8 +468,8 @@
           FT_Pos  pp2x = loader->pp2.x;
 
 
-          loader->pp1.x = FT_PIX_ROUND( pp1x + hints->xmin_delta );
-          loader->pp2.x = FT_PIX_ROUND( pp2x + hints->xmax_delta );
+          loader->pp1.x = FT_PIX_ROUND( pp1x );
+          loader->pp2.x = FT_PIX_ROUND( pp2x );
 
           slot->lsb_delta = loader->pp1.x - pp1x;
           slot->rsb_delta = loader->pp2.x - pp2x;

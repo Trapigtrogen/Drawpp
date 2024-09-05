@@ -168,7 +168,7 @@ behaviour of FreeType at runtime.
     If `FT_DEBUG_LOGGING' is defined, two more options are available.
 
     * -v: Print also  the name of FreeType's component  from which the
-          current log is produced.
+          current log is produced, together with the tracing level.
 
     * -t: Print also the time.
 
@@ -176,7 +176,7 @@ behaviour of FreeType at runtime.
 
       FT2_DEBUG="any:7 memory:5 -vt"
 
-        => [20:32:02:44969 ttload]    table directory loaded
+        => [20:32:02:44969 ttload:2]    table directory loaded
 
       FT2_DEBUG="any:7 memory:5 -t"
 
@@ -184,7 +184,7 @@ behaviour of FreeType at runtime.
 
       FT2_DEBUG="any:7 memory:5 -v"
 
-        => [ttload]    table directory loaded
+        => [ttload:2]    table directory loaded
 
 
   FT_LOGGING_FILE
@@ -270,12 +270,12 @@ to access them.
     `FT2_DEBUG' environment  variable.  Use this function  to override
     the value with `level'.  Use value `NULL' to disable tracing.
 
-  FT_Trace_Set_Default_Level():
+  FT_Trace_Set_Default_Level( void )
 
     Reset the tracing levels to the default value, i.e., the value of
     the `FT2_DEBUG' environment variable or no tracing if not set.
 
-  FT_Set_Log_Handler( ft_custom_log_handler  handler ):
+  FT_Set_Log_Handler( ft_custom_log_handler  handler )
 
     Use `handler' as a custom handler for formatting tracing and error
     messages.  The  `ft_custom_log_handler' typedef has  the following
@@ -290,14 +290,14 @@ to access them.
    first argument  of `FT_TRACE' or  `FT_ERROR', and `args'  holds the
    remaining arguments.
 
-  FT_Set_Default_Log_Handler():
+  FT_Set_Default_Log_Handler( void )
 
     Reset the log handler to the default version.
 
 
 ------------------------------------------------------------------------
 
-Copyright (C) 2002-2021 by
+Copyright (C) 2002-2024 by
 David Turner, Robert Wilhelm, and Werner Lemberg.
 
 This  file is  part  of the  FreeType  project, and  may  only be  used,

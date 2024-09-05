@@ -44,7 +44,7 @@ include_directories(external/glad/include/glad)
 include_directories(external/glfw/include)
 include_directories(external/stb)
 include_directories(external/nanosvg)
-include_directories(external/freetype/include)
+# include_directories(external/freetype/include) # In Linux this breaks building of freetype itself
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
 option(GLFW_BUILD_DOCS OFF)
@@ -88,7 +88,7 @@ endif (MSVC)
 
 find_package(Doxygen QUIET)
 
-if (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
+if(DPP_BUILD_DOCS AND DOXYGEN_FOUND)
     set(DOXYGEN_GENERATE_LATEX YES)
     set(DOXYGEN_ALWAYS_DETAILED_SEC YES)
     set(DOXYGEN_WARN_IF_UNDOCUMENTED NO)
@@ -97,12 +97,12 @@ if (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
 
     doxygen_add_docs(doxygen ALL
                 ${CMAKE_SOURCE_DIR}/include)
-endif (DPP_BUILD_DOCS AND DOXYGEN_FOUND)
+endif(DPP_BUILD_DOCS AND DOXYGEN_FOUND)
 
-if (DPP_BUILD_TESTS)
+if(DPP_BUILD_TESTS)
     add_subdirectory(tests)
 endif (DPP_BUILD_TESTS)
 
-if (DPP_BUILD_EXAMPLES)
+if(DPP_BUILD_EXAMPLES)
     add_subdirectory(examples)
-endif (DPP_BUILD_EXAMPLES)
+endif(DPP_BUILD_EXAMPLES)
