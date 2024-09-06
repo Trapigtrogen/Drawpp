@@ -1,7 +1,8 @@
-Processing style graphic library for c++ using OpenGL. Support for Windows and Linux desktops and Raspberry Pi 3 upwards.\
-Linux: X11 only. Wayland works mostly but support for it isn't prioritized right now.<br>
+[Processing](https://processing.org/) style graphic library for c++ using OpenGL. Support for Windows and Linux desktops and Raspberry Pi 3 upwards.\
+Linux build is X11 and Wayland native.
+#### Note: Latest tested Windows build is the [1.0.0 release](https://gitlab.com/Trapigtrogen/graphics-library/-/releases/v1.0.0). I don't have any Windows machines or knowledge of what is needed for Windows. Master may or may not work.
 
-For an in-depth user's manual, see [this](drawpp_guide.md).
+For an in-depth user's manual, see the [beginner's guide](drawpp_guide.md).
 
 # Features
 * Draw lines and basic shapes
@@ -14,27 +15,24 @@ For an in-depth user's manual, see [this](drawpp_guide.md).
 * Perlin noise generator
 * Load and render fonts
 
-### Upcoming
-* More stuff to do with vector graphics and SVG shapes
-
 # Building
 Install git\
 Clone with `git clone https://gitlab.com/Trapigtrogen/graphics-library.git` where ever you want. graphics-library folder will be downloaded.
 
 ## Automatic
-We provide scripts for building releases.\
+A scripts for building releases is provided in the project's root directory.\
 Windows script 'build-release.bat' assumes you have cmake and Visual Studio installed.\
-On Linux there's 'install-dependencies.<area>sh' which installs dependencies using you distro's package manager. 'build-release.<area>sh' for building the release.
+On Linux there's 'install-dependencies.sh' which installs dependencies using you distro's package manager. 'build-release.sh' for building the release.
 
 Release folder will be created and deployed program will be build there.\
-External libraries are automatically combined to the releaseable Drawpp library
+External libraries are automatically combined to the releaseable Drawpp library.
 
 ## Manual
 The build tests and examples will be in graphics-library/build/bin folder\
-And library in graphics-library/build/lib folder
+And library in graphics-library/build/lib folder.
 
 ### Windows
-Use CMake-gui 
+Use CMake-gui
 
   * Where is the source code: "path to graphics-library"
   * Where to build the binaries: "path to graphics-library"\build
@@ -49,6 +47,7 @@ md build
 cd build
 cmake ..
 ```
+and open the snl with Visual Studio
 
 ### Linux
 You need to install your distripution's development packages:
