@@ -1,5 +1,7 @@
 #include <drawpp.hpp>
 
+float timer = 1;
+
 void setup()
 {
 	colorMode(RGB);
@@ -35,15 +37,14 @@ void setup()
 	// Hex not case sensitive
 	Color hexCol("#00FAB5");
 	background(hexCol); // full hex color used from object
-	
+
 	background("#1f5"); // compact hex color
 	background("#10f050"); // full hex color
 	background("#1f5f"); // compact hex color with alpha
 	background("#10f050ff"); // full hex color with alpha
 	// Invalid hex colors i.e. "#RAY" give random results (usually white) but won't break the program
 
-	// Not implemented
-	//background("blue"); // color by name
+	background("blue"); // color by name
 
 	// Print Color as HEX
 	Color hextest(250, 0, 181);
@@ -55,12 +56,17 @@ void setup()
 }
 
 
-void draw(float) 
+void draw(float deltaTime)
 {
-	background(randomInt(255),randomInt(255),randomInt(255));
+	// Timer preventing rapidly flashing colours
+	timer += deltaTime;
+	if (timer > 1)	{
+		background(randomInt(255),randomInt(255),randomInt(255));
+		timer = 0;
+	}
 }
 
-int main() 
+int main()
 {
 	Application app(500, 300);
 	return app.run(draw, setup);

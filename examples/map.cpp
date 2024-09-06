@@ -105,7 +105,7 @@ DImage* carImg3 = &carBlue;
 void setup()
 {
     // Limit fps
-    frameRate(90); 
+    frameRate(90);
     setTitle("Drawpp example: Game map");
 
     // Grass settings
@@ -129,7 +129,7 @@ void setup()
     // Create houses with random coloured walls
     // They need to be created in setup and stored so they kep their colour instead of getting new colour every frame
     // We can store other settigns now as well so all the houses can be drawn with one loop
-    
+
     // Vertical from corner (this is first so it gets drawn before stuff in front)
     for (int i = 0; i < 10; i++)
     {
